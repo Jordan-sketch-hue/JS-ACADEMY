@@ -3,9 +3,9 @@ import { use, useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
-import { getCourse, TRACKS, LEVEL_COLORS } from '@/lib/courses'
+import { getCourse, COURSES, TRACKS, LEVEL_COLORS } from '@/lib/courses'
 import { completeCourse, isCourseCompleted, getWatchProgress, saveWatchProgress } from '@/lib/progress'
-import { ArrowLeft, Clock, CheckCircle, ChevronRight, BookOpen, Zap } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Clock, CheckCircle, ChevronRight, BookOpen, Zap } from 'lucide-react'
 
 type Phase = 'reading' | 'terms' | 'quiz' | 'done'
 
@@ -13,6 +13,9 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
   const { id } = use(params)
   const course = getCourse(id)
   const router = useRouter()
+  const courseIdx = COURSES.findIndex(c => c.id === id)
+  const prevCourse = courseIdx > 0 ? COURSES[courseIdx - 1] : null
+  const nextCourse = courseIdx < COURSES.length - 1 ? COURSES[courseIdx + 1] : null
   const [phase, setPhase] = useState<Phase>('reading')
   const [readPct, setReadPct] = useState(0)
   const [quizAnswers, setQuizAnswers] = useState<(number | null)[]>([])
@@ -51,6 +54,11 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
     )
   }
 
+  if (course.content === 'LANGUAGE_LAB_REDIRECT') {
+    router.replace('/language')
+    return null
+  }
+
   const track = TRACKS[course.track]
   const levelColor = LEVEL_COLORS[course.level]
 
@@ -87,7 +95,7 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
           <div className="h-3 w-px bg-neutral-200" />
           <span className="text-[12px] text-neutral-400" style={{ color: track.color }}>{track.label}</span>
           <div className="h-3 w-px bg-neutral-200" />
-          <span className="text-[12px] text-neutral-600 truncate max-w-xs">{course.title}</span>
+          <span className="text-[12px] text-neutral-600 truncate max-w-[140px] md:max-w-xs">{course.title}</span>
           <div className="ml-auto flex items-center gap-3">
             <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
               <Clock size={12} />
@@ -97,6 +105,18 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
               {course.level}
             </span>
             <span className="text-[11px] text-gold font-medium">+{course.xp} XP</span>
+            {prevCourse && (
+              <Link href={`/courses/${prevCourse.id}`} title={prevCourse.title}
+                className="w-7 h-7 border border-neutral-200 rounded-full flex items-center justify-center hover:border-neutral-400 transition-colors">
+                <ArrowLeft size={11} className="text-neutral-500" />
+              </Link>
+            )}
+            {nextCourse && (
+              <Link href={`/courses/${nextCourse.id}`} title={nextCourse.title}
+                className="w-7 h-7 border border-neutral-200 rounded-full flex items-center justify-center hover:border-neutral-400 transition-colors">
+                <ArrowRight size={11} className="text-neutral-500" />
+              </Link>
+            )}
           </div>
         </div>
 
@@ -110,13 +130,25 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
               <CheckCircle size={48} className="text-green-400 mx-auto mb-4" />
               <div className="text-white text-xl font-medium mb-2">Course complete</div>
               <div className="text-neutral-400 text-[13px] mb-6">+{xpEarned} XP earned</div>
-              <div className="flex gap-3 justify-center">
+              <div className="flex gap-3 justify-center flex-wrap">
                 <Link href="/" className="px-4 py-2 border border-neutral-700 text-neutral-300 rounded text-[13px] hover:border-neutral-500">
                   Dashboard
                 </Link>
-                <button onClick={() => router.back()} className="px-4 py-2 bg-white text-ink rounded text-[13px] font-medium">
-                  Next course
-                </button>
+                {prevCourse && (
+                  <Link href={`/courses/${prevCourse.id}`} className="px-4 py-2 border border-neutral-700 text-neutral-300 rounded text-[13px] flex items-center gap-1.5 hover:border-neutral-500">
+                    <ArrowLeft size={12} /> Prev
+                  </Link>
+                )}
+                {nextCourse && (
+                  <Link href={`/courses/${nextCourse.id}`} className="px-4 py-2 bg-white text-ink rounded text-[13px] font-medium flex items-center gap-1.5">
+                    Next course <ArrowRight size={12} />
+                  </Link>
+                )}
+                {!nextCourse && (
+                  <button onClick={() => router.back()} className="px-4 py-2 bg-white text-ink rounded text-[13px] font-medium">
+                    All courses
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -209,60 +241,70 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
           </div>
         ) : (
           <div className="flex flex-1 overflow-hidden">
+            {/* Scrollable content */}
             <div ref={contentRef} className="flex-1 overflow-auto bg-white">
-              <div className="max-w-2xl mx-auto px-8 py-6">
-                <div className="mb-6">
+              <div className="max-w-2xl mx-auto px-5 md:px-8 py-5 md:py-6 pb-32 md:pb-6">
+                <div className="mb-5">
                   <div className="text-[10px] tracking-[0.2em] uppercase mb-2" style={{ color: track.color }}>
                     {track.label} · {course.level}
                   </div>
-                  <h1 className="text-xl font-medium text-ink leading-snug mb-1">{course.title}</h1>
-                  <div className="text-[13px] text-neutral-500 mb-4">{course.subtitle}</div>
-                  <div className="flex items-center gap-4 text-[11px] text-neutral-400">
+                  <h1 className="text-[18px] md:text-xl font-medium text-ink leading-snug mb-1">{course.title}</h1>
+                  <div className="text-[13px] text-neutral-500 mb-3">{course.subtitle}</div>
+                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-neutral-400">
                     <span className="flex items-center gap-1"><Clock size={11} />{course.duration} min read</span>
                     <span className="text-gold">+{course.xp} XP on completion</span>
                     {course.certArea && <span>Cert: {course.certArea}</span>}
                   </div>
                 </div>
-                <div className="border-t border-neutral-100 pt-6 course-prose">
+                <div className="border-t border-neutral-100 pt-5 course-prose">
                   {renderMarkdown(course.content)}
                 </div>
               </div>
             </div>
 
-            <div className="w-56 border-l border-neutral-100 bg-neutral-50 overflow-auto flex-shrink-0">
+            {/* Desktop sidebar — hidden on mobile */}
+            <div className="hidden md:flex w-56 border-l border-neutral-100 bg-neutral-50 overflow-auto flex-shrink-0 flex-col">
               <div className="p-4">
                 <div className="text-[9px] tracking-[0.2em] uppercase text-neutral-400 mb-3">Reading progress</div>
                 <div className="bg-neutral-200 rounded h-1.5 overflow-hidden mb-1">
                   <div className="h-full bg-gold rounded transition-all" style={{ width: `${readPct}%` }} />
                 </div>
                 <div className="text-[10px] text-neutral-400 mb-5">{readPct}% read</div>
-
-                <button
-                  onClick={() => setPhase('terms')}
-                  className="w-full py-2 bg-ink text-white text-[11px] rounded mb-2 font-medium"
-                >
+                <button onClick={() => setPhase('terms')} className="w-full py-2 bg-ink text-white text-[11px] rounded mb-2 font-medium">
                   Key terms →
                 </button>
-                <button
-                  onClick={startQuiz}
-                  className="w-full py-2 border border-neutral-200 text-neutral-600 text-[11px] rounded hover:border-ink"
-                >
+                <button onClick={startQuiz} className="w-full py-2 border border-neutral-200 text-neutral-600 text-[11px] rounded hover:border-ink">
                   Skip to quiz
                 </button>
-
                 {alreadyDone && (
                   <div className="mt-4 flex items-center gap-1.5 text-[11px] text-green-600">
-                    <CheckCircle size={12} />
-                    Already completed
+                    <CheckCircle size={12} /> Already completed
                   </div>
                 )}
-
                 <div className="mt-5 border-t border-neutral-100 pt-4">
                   <div className="text-[9px] tracking-[0.2em] uppercase text-neutral-400 mb-2">In this module</div>
                   {course.keyTerms.slice(0, 4).map(t => (
                     <div key={t.term} className="text-[10px] text-neutral-500 mb-1.5 leading-snug">{t.term}</div>
                   ))}
                 </div>
+              </div>
+            </div>
+
+            {/* Mobile sticky action bar */}
+            <div className="md:hidden fixed bottom-16 left-0 right-0 bg-white border-t border-neutral-100 px-4 py-3 z-20">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="flex-1 bg-neutral-100 rounded h-1.5 overflow-hidden">
+                  <div className="h-full bg-gold rounded transition-all" style={{ width: `${readPct}%` }} />
+                </div>
+                <span className="text-[10px] text-neutral-400 flex-shrink-0">{readPct}%</span>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setPhase('terms')} className="flex-1 py-2.5 bg-ink text-white text-[12px] rounded font-medium">
+                  Key terms →
+                </button>
+                <button onClick={startQuiz} className="flex-1 py-2.5 border border-neutral-200 text-neutral-600 text-[12px] rounded">
+                  Skip to quiz
+                </button>
               </div>
             </div>
           </div>

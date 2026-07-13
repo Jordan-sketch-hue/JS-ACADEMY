@@ -50,8 +50,10 @@ export default function Dashboard() {
   const dayOfWeek = today.getDay() || 7
   const rawDay = dayOfWeek <= 5 ? dayOfWeek : 1
   const availableDays = [...new Set(COURSES.filter(c => c.weekNumber === 1).map(c => c.dayOfWeek))].sort()
-  const activeDay = availableDays.includes(rawDay) ? rawDay : availableDays[0] ?? 1
-  const todayCourses = COURSES.filter(c => c.weekNumber === 1 && c.dayOfWeek === activeDay)
+  const todayDay = availableDays.includes(rawDay) ? rawDay : availableDays[0] ?? 1
+  const [selectedDay, setSelectedDay] = useState<number>(todayDay)
+  const sortTradingLast = (a: Course, b: Course) => (a.track === 'trading' ? 1 : 0) - (b.track === 'trading' ? 1 : 0)
+  const todayCourses = COURSES.filter(c => c.weekNumber === 1 && c.dayOfWeek === selectedDay).sort(sortTradingLast)
   const allFirstWeek = COURSES.filter(c => c.weekNumber === 1)
 
   useEffect(() => {
@@ -121,45 +123,71 @@ export default function Dashboard() {
           <span className="text-[10px] text-neutral-400 flex-shrink-0">{pct}% → L{level + 1}</span>
         </div>
 
-        {/* Today's courses */}
-        <div className="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-neutral-50 flex items-center justify-between">
-            <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-400">Today's courses</div>
-            <div className="text-[10px] text-neutral-300">
-              {today.toLocaleDateString('en-US', { weekday: 'long' })}
-            </div>
-          </div>
-          {todayCourses.map(c => <CourseRow key={c.id} course={c} />)}
+        {/* Day switcher tabs */}
+        <div className="flex gap-1.5">
+          {days.map(({ label, n }) => {
+            const isToday = n === todayDay
+            const isSelected = n === selectedDay
+            const hasCourses = allFirstWeek.some(c => c.dayOfWeek === n)
+            return (
+              <button key={n} onClick={() => setSelectedDay(n)}
+                className={`flex-1 py-2 rounded-lg text-[10px] font-medium tracking-[0.1em] uppercase transition-colors ${
+                  isSelected
+                    ? 'bg-[#0a0a0a] text-white'
+                    : 'bg-white border border-neutral-100 text-neutral-400 hover:border-neutral-300'
+                } ${!hasCourses ? 'opacity-40' : ''}`}>
+                {label}
+                {isToday && <span className="block text-[8px] mt-0.5 opacity-60">today</span>}
+              </button>
+            )
+          })}
         </div>
 
-        {/* Week schedule */}
+        {/* Selected day courses */}
+        <div className="bg-white border border-neutral-100 rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-neutral-50 flex items-center justify-between">
+            <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-400">
+              {selectedDay === todayDay ? "Today's courses" : days.find(d => d.n === selectedDay)?.label + "'s courses"}
+            </div>
+            <div className="text-[10px] text-neutral-300">{todayCourses.length} courses · {todayCourses.reduce((s,c)=>s+c.duration,0)}m</div>
+          </div>
+          {todayCourses.length > 0
+            ? todayCourses.map(c => <CourseRow key={c.id} course={c} />)
+            : <div className="px-4 py-6 text-center text-[12px] text-neutral-300">No courses scheduled</div>
+          }
+        </div>
+
+        {/* Week overview */}
         <div className="bg-white border border-neutral-100 rounded-xl overflow-hidden">
           <div className="px-4 py-3 border-b border-neutral-50">
             <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-400">This week</div>
           </div>
           {days.map(({ label, n }) => {
             const dayCourses = allFirstWeek.filter(c => c.dayOfWeek === n)
-            const isToday = n === activeDay
+            const isToday = n === todayDay
+            const isSelected = n === selectedDay
             const doneCount = dayCourses.filter(c => isCourseCompleted(c.id)).length
             return (
-              <div key={n} className={`px-4 py-3 border-b border-neutral-50 last:border-0 ${isToday ? 'bg-neutral-50' : ''}`}>
+              <button key={n} onClick={() => setSelectedDay(n)}
+                className={`w-full text-left px-4 py-3 border-b border-neutral-50 last:border-0 transition-colors ${isSelected ? 'bg-neutral-50' : 'hover:bg-neutral-50/50'}`}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className={`text-[11px] font-medium tracking-[0.08em] uppercase ${isToday ? 'text-[#0a0a0a]' : 'text-neutral-400'}`}>
-                    {label}{isToday && <span className="text-[#c9a84c] ml-1.5">← today</span>}
+                  <span className={`text-[11px] font-medium tracking-[0.08em] uppercase ${isSelected ? 'text-[#0a0a0a]' : 'text-neutral-400'}`}>
+                    {label}
+                    {isToday && <span className="text-[#c9a84c] ml-1.5">← today</span>}
                   </span>
                   <span className="text-[10px] text-neutral-300">{doneCount}/{dayCourses.length} · {dayCourses.reduce((s, c) => s + c.duration, 0)}m</span>
                 </div>
                 <div className="space-y-1">
                   {dayCourses.map(c => (
-                    <Link key={c.id} href={`/courses/${c.id}`} className="flex items-center gap-1.5 active:opacity-60">
+                    <Link key={c.id} href={`/courses/${c.id}`} onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 active:opacity-60">
                       <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: TRACKS[c.track]?.color }} />
                       <span className="text-[11px] text-neutral-500 leading-snug truncate">{c.title}</span>
                       {isCourseCompleted(c.id) && <CheckCircle size={10} className="text-green-400 flex-shrink-0" />}
                     </Link>
                   ))}
-                  {dayCourses.length === 0 && <span className="text-[11px] text-neutral-300">Rest day</span>}
+                  {dayCourses.length === 0 && <span className="text-[11px] text-neutral-300">No courses yet</span>}
                 </div>
-              </div>
+              </button>
             )
           })}
         </div>
