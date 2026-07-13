@@ -1,841 +1,828 @@
-<title>JST & JSM — Ad Carousel Campaigns</title>
+<title>JST & JSM — Ad Carousels</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --obsidian: #0C0C10;
-    --obsidian-mid: #16161E;
-    --obsidian-surface: #1E1E2A;
-    --obsidian-border: #2A2A38;
-
-    --jst-accent: #1D4ED8;
-    --jst-accent-light: #3B82F6;
-    --jst-accent-pale: #EEF2FF;
-    --jst-accent-dim: #1e3a8a;
-
-    --jsm-accent: #D97706;
-    --jsm-accent-light: #F59E0B;
-    --jsm-accent-pale: #FEF7E8;
-    --jsm-accent-dim: #92400e;
-
-    --text-primary: #F4F6FF;
-    --text-secondary: #8892A4;
-    --text-muted: #4A5060;
-
-    --bg: #0A0A0E;
-    --surface: #14141C;
-    --border: #22222E;
-
-    font-size: 16px;
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #F0F0F6;
-      --surface: #FAFAFF;
-      --border: #D8DAE8;
-      --text-primary: #0C0C10;
-      --text-secondary: #4A5070;
-      --text-muted: #9098B0;
-      --obsidian-surface: #E4E4EE;
-      --obsidian-border: #CBCBDB;
-    }
-  }
-
-  :root[data-theme="dark"] {
-    --bg: #0A0A0E;
-    --surface: #14141C;
-    --border: #22222E;
-    --text-primary: #F4F6FF;
-    --text-secondary: #8892A4;
-    --text-muted: #4A5060;
-    --obsidian-surface: #1E1E2A;
-    --obsidian-border: #2A2A38;
-  }
-
-  :root[data-theme="light"] {
-    --bg: #F0F0F6;
-    --surface: #FAFAFF;
-    --border: #D8DAE8;
-    --text-primary: #0C0C10;
-    --text-secondary: #4A5070;
-    --text-muted: #9098B0;
-    --obsidian-surface: #E4E4EE;
-    --obsidian-border: #CBCBDB;
-  }
-
-  body {
-    background: var(--bg);
-    color: var(--text-primary);
-    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-    min-height: 100vh;
-    padding: 0 0 80px;
-  }
-
-  /* ── Page header ── */
-  .page-header {
-    padding: 40px 24px 32px;
-    max-width: 680px;
-    margin: 0 auto;
-  }
-
-  .page-eyebrow {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-  }
-
-  .page-title {
-    font-size: clamp(28px, 5vw, 42px);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    color: var(--text-primary);
-    text-wrap: balance;
-  }
-
-  .page-title span.jst { color: var(--jst-accent-light); }
-  .page-title span.jsm { color: var(--jsm-accent-light); }
-
-  .page-sub {
-    margin-top: 12px;
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    max-width: 520px;
-  }
-
-  /* ── Brand switcher ── */
-  .brand-switch {
-    display: flex;
-    gap: 8px;
-    padding: 0 24px;
-    max-width: 680px;
-    margin: 0 auto 36px;
-  }
-
-  .brand-btn {
-    padding: 10px 24px;
-    border-radius: 6px;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.18s ease;
-  }
-
-  .brand-btn.jst.active {
-    background: var(--jst-accent);
-    border-color: var(--jst-accent);
-    color: #fff;
-  }
-
-  .brand-btn.jsm.active {
-    background: var(--jsm-accent);
-    border-color: var(--jsm-accent);
-    color: #fff;
-  }
-
-  .brand-btn:hover:not(.active) {
-    border-color: var(--text-secondary);
-    color: var(--text-primary);
-  }
-
-  /* ── Section label ── */
-  .section-label {
-    padding: 0 24px;
-    max-width: 680px;
-    margin: 0 auto 20px;
-  }
-
-  .section-label h2 {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  .section-label p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-top: 4px;
-  }
-
-  /* ── Campaign block ── */
-  .campaign-section {
-    display: none;
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  .campaign-section.active {
-    display: block;
-  }
-
-  /* ── Phone frame ── */
-  .phone-frame {
-    background: #1A1A24;
-    border-radius: 32px;
-    padding: 14px;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
-    max-width: 420px;
-    margin: 0 auto 32px;
-  }
-
-  .phone-notch {
-    width: 100px;
-    height: 24px;
-    background: #0C0C14;
-    border-radius: 12px;
-    margin: 0 auto 12px;
-  }
-
-  .phone-screen {
-    background: #0C0C10;
-    border-radius: 22px;
-    overflow: hidden;
-  }
-
-  /* ── Mock social header ── */
-  .social-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 14px 10px;
-    background: #111118;
-  }
-
-  .avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    flex-shrink: 0;
-  }
-
-  .avatar.jst { background: var(--jst-accent); color: #fff; }
-  .avatar.jsm { background: var(--jsm-accent); color: #fff; }
-
-  .social-meta { flex: 1; }
-  .social-name { font-size: 12px; font-weight: 700; color: #E8EAFF; }
-  .social-time { font-size: 10px; color: #5A5A70; margin-top: 1px; }
-
-  .social-dots { color: #4A4A60; font-size: 16px; letter-spacing: 1px; }
-
-  /* ── Carousel viewport ── */
-  .carousel-wrap {
-    position: relative;
-    aspect-ratio: 1;
-    overflow: hidden;
-  }
-
-  .carousel-track {
-    display: flex;
-    transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
-    height: 100%;
-  }
-
-  /* ── Slide base ── */
-  .slide {
-    flex: 0 0 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 28px 26px;
-  }
-
-  /* JST slide themes */
-  .slide.jst-dark {
-    background: #080810;
-  }
-
-  .slide.jst-accent-bg {
-    background: var(--jst-accent);
-  }
-
-  .slide.jst-light {
-    background: #EEF2FF;
-    color: #0C0C10;
-  }
-
-  /* JSM slide themes */
-  .slide.jsm-dark {
-    background: #080808;
-  }
-
-  .slide.jsm-accent-bg {
-    background: var(--jsm-accent);
-  }
-
-  .slide.jsm-light {
-    background: #FEF7E8;
-    color: #1A0800;
-  }
-
-  /* ── Slide content ── */
-  .slide-eyebrow {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    opacity: 0.55;
-  }
-
-  .slide-hook {
-    font-size: clamp(22px, 6vw, 30px);
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    margin-bottom: 14px;
-    text-wrap: balance;
-  }
-
-  .slide-hook .underline-word {
-    display: inline;
-    border-bottom: 3px solid currentColor;
-    padding-bottom: 1px;
-  }
-
-  .slide-hook .accent-word {
-    color: var(--jst-accent-light);
-  }
-
-  .slide-hook .accent-word-jsm {
-    color: var(--jsm-accent-light);
-  }
-
-  .slide-body {
-    font-size: 13px;
-    line-height: 1.65;
-    opacity: 0.8;
-    max-width: 90%;
-  }
-
-  .slide-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 18px;
-    padding: 10px 18px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    background: #fff;
-    color: #0C0C10;
-    width: fit-content;
-  }
-
-  .slide-cta.outline {
-    background: transparent;
-    border: 1.5px solid rgba(255,255,255,0.35);
-    color: #fff;
-  }
-
-  .slide-cta.dark {
-    background: #0C0C10;
-    color: #fff;
-  }
-
-  .slide-cta.jst-filled {
-    background: var(--jst-accent);
-    color: #fff;
-  }
-
-  .slide-cta.jsm-filled {
-    background: var(--jsm-accent);
-    color: #fff;
-  }
-
-  /* Slide decorative elements */
-  .slide-number-bg {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    font-size: 120px;
-    font-weight: 900;
-    opacity: 0.04;
-    line-height: 1;
-    letter-spacing: -0.06em;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .slide-rule {
-    width: 40px;
-    height: 3px;
-    border-radius: 2px;
-    margin-bottom: 16px;
-  }
-
-  .slide-rule.jst { background: var(--jst-accent-light); }
-  .slide-rule.jsm { background: var(--jsm-accent-light); }
-  .slide-rule.white { background: rgba(255,255,255,0.6); }
-  .slide-rule.dark { background: rgba(0,0,0,0.4); }
-
-  /* stat highlight */
-  .stat-block {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-
-  .stat-number {
-    font-size: 52px;
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .stat-label {
-    font-size: 12px;
-    font-weight: 600;
-    opacity: 0.65;
-    line-height: 1.3;
-    max-width: 100px;
-  }
-
-  /* Tier comparison in slide */
-  .tier-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 14px;
-  }
-
-  .tier-item {
-    flex: 1;
-    padding: 10px 10px 8px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.04);
-  }
-
-  .tier-item.featured {
-    border-color: var(--jst-accent-light);
-    background: rgba(29, 78, 216, 0.18);
-  }
-
-  .tier-price {
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-  }
-
-  .tier-name {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.5;
-    margin-bottom: 4px;
-  }
-
-  .tier-detail {
-    font-size: 10px;
-    opacity: 0.5;
-    margin-top: 4px;
-  }
-
-  .tier-item.featured .tier-name,
-  .tier-item.featured .tier-price { opacity: 1; color: #93C5FD; }
-  .tier-item.featured .tier-detail { opacity: 0.75; }
-
-  /* ── Carousel nav ── */
-  .carousel-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    background: #111118;
-  }
-
-  .nav-dots {
-    display: flex;
-    gap: 5px;
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #3A3A50;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-
-  .dot.active.jst { background: var(--jst-accent-light); width: 18px; border-radius: 3px; }
-  .dot.active.jsm { background: var(--jsm-accent-light); width: 18px; border-radius: 3px; }
-
-  .nav-arrows {
-    display: flex;
-    gap: 8px;
-  }
-
-  .nav-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid #2A2A3A;
-    background: #1A1A28;
-    color: #8892A4;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-    user-select: none;
-  }
-
-  .nav-btn:hover { border-color: #4A4A60; color: #C0C8D8; }
-  .nav-btn:active { transform: scale(0.94); }
-
-  /* ── Social action bar ── */
-  .social-actions {
-    display: flex;
-    gap: 18px;
-    padding: 10px 14px 14px;
-    background: #111118;
-  }
-
-  .action-icon {
-    font-size: 18px;
-    opacity: 0.45;
-  }
-
-  /* ── Context notes ── */
-  .context-strip {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 32px;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .context-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-  }
-
-  .context-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 8px;
-    align-items: flex-start;
-  }
-
-  .context-tag {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 4px;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .context-tag.jst { background: rgba(29,78,216,0.2); color: var(--jst-accent-light); }
-  .context-tag.jsm { background: rgba(217,119,6,0.2); color: var(--jsm-accent-light); }
-  .context-tag.psych { background: rgba(139,92,246,0.18); color: #A78BFA; }
-
-  .context-text {
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.55;
-  }
-
-  /* ── Slide counter ── */
-  .slide-counter {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    opacity: 0.45;
-  }
-
-  /* ── All campaigns grid (below) ── */
-  .all-campaigns {
-    max-width: 680px;
-    margin: 48px auto 0;
-    padding: 0 24px;
-  }
-
-  .campaigns-heading {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-
-  .campaign-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 20px;
-    margin-bottom: 12px;
-  }
-
-  .campaign-card-top {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-
-  .campaign-badge {
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
-
-  .campaign-badge.loss { background: rgba(239,68,68,0.15); color: #F87171; }
-  .campaign-badge.anchor { background: rgba(139,92,246,0.15); color: #C4B5FD; }
-  .campaign-badge.decoy { background: rgba(16,185,129,0.15); color: #6EE7B7; }
-  .campaign-badge.scarcity { background: rgba(245,158,11,0.15); color: #FCD34D; }
-  .campaign-badge.proof { background: rgba(59,130,246,0.15); color: #93C5FD; }
-  .campaign-badge.urgency { background: rgba(245,158,11,0.15); color: #FCD34D; }
-  .campaign-badge.reframe { background: rgba(16,185,129,0.15); color: #6EE7B7; }
-
-  .campaign-headline {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.35;
-  }
-
-  .campaign-body {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-  }
-
-  .campaign-meta {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-  }
-
-  .meta-pill {
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: var(--obsidian-surface);
-    color: var(--text-muted);
-    font-weight: 600;
-  }
-
-  /* divider */
-  .section-divider {
-    max-width: 680px;
-    margin: 40px auto;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .section-divider::before,
-  .section-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .divider-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    white-space: nowrap;
-  }
-
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* JST tokens */
+  --jst-bg: #FFFFFF;
+  --jst-ink: #141414;
+  --jst-ink-800: #1F1F1F;
+  --jst-ink-700: #3D3D3D;
+  --jst-ink-500: #737373;
+  --jst-ink-300: #CFCFCF;
+  --jst-ink-100: #F4F4F4;
+  --jst-ink-50: #FAFAFA;
+
+  /* JSM tokens */
+  --jsm-bg: #141414;
+  --jsm-ink: #FFFFFF;
+  --jsm-ink-600: rgba(255,255,255,0.62);
+  --jsm-ink-400: rgba(255,255,255,0.38);
+  --jsm-ink-200: rgba(255,255,255,0.14);
+  --jsm-surface: #1C1C1C;
+  --jsm-surface2: #242424;
+
+  /* Page chrome */
+  --page-bg: #0A0A0A;
+  --page-surface: #141414;
+  --page-border: #222222;
+  --page-text: #ECECEC;
+  --page-text2: #888888;
+  --page-text3: #444444;
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+}
+
+body {
+  background: var(--page-bg);
+  color: var(--page-text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* ── Page header ── */
+.page-header {
+  padding: 44px 24px 36px;
+  max-width: 680px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--page-border);
+  margin-bottom: 36px;
+}
+
+.page-eye {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--page-text3);
+  margin-bottom: 14px;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  color: var(--page-text);
+  text-wrap: balance;
+}
+
+.page-sub {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--page-text2);
+  line-height: 1.65;
+}
+
+/* ── Brand switcher ── */
+.brand-switch {
+  display: flex;
+  gap: 8px;
+  padding: 0 24px;
+  max-width: 680px;
+  margin: 0 auto 32px;
+}
+
+.brand-btn {
+  padding: 9px 22px;
+  border-radius: 100px;
+  border: 1px solid var(--page-border);
+  background: transparent;
+  color: var(--page-text3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.brand-btn.active {
+  background: var(--page-text);
+  border-color: var(--page-text);
+  color: var(--page-bg);
+}
+
+.brand-btn:hover:not(.active) {
+  border-color: var(--page-text2);
+  color: var(--page-text2);
+}
+
+/* ── Section ── */
+.campaign-section {
+  display: none;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.campaign-section.active { display: block; }
+
+.section-label {
+  margin-bottom: 20px;
+}
+
+.section-label h2 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--page-text3);
+}
+
+.section-label p {
+  font-size: 13px;
+  color: var(--page-text2);
+  margin-top: 4px;
+}
+
+/* ── Phone frame ── */
+.phone-frame {
+  background: #1A1A1A;
+  border-radius: 32px;
+  padding: 12px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05);
+  max-width: 400px;
+  margin: 0 auto 28px;
+}
+
+.phone-notch {
+  width: 90px;
+  height: 22px;
+  background: #0A0A0A;
+  border-radius: 11px;
+  margin: 0 auto 10px;
+}
+
+.phone-screen {
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+/* ── Social header ── */
+.social-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px 9px;
+}
+
+.social-header.jst-header { background: #FAFAFA; border-bottom: 1px solid #EBEBEB; }
+.social-header.jsm-header { background: #0E0E0E; border-bottom: 1px solid #222; }
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+
+.avatar.jst {
+  background: #141414;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+}
+
+.avatar.jsm {
+  background: #141414;
+  color: #FFFFFF;
+  font-family: var(--font-serif);
+  font-style: italic;
+  border: 1px solid #333;
+}
+
+.social-meta { flex: 1; }
+.social-name { font-size: 11px; font-weight: 700; }
+.social-name.jst-name { color: #141414; font-family: var(--font-display); }
+.social-name.jsm-name { color: #FFFFFF; font-family: var(--font-body); }
+.social-time { font-size: 9px; margin-top: 1px; }
+.social-time.jst-time { color: #888; }
+.social-time.jsm-time { color: rgba(255,255,255,0.4); }
+.social-dots { font-size: 14px; letter-spacing: 1px; }
+.social-dots.jst-dots { color: #AAAAAA; }
+.social-dots.jsm-dots { color: rgba(255,255,255,0.3); }
+
+/* ── Carousel viewport ── */
+.carousel-wrap {
+  aspect-ratio: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── JST Slides — WHITE dominant, monochrome ── */
+.slide-jst {
+  flex: 0 0 100%;
+  height: 100%;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide-jst.invert {
+  background: #141414;
+}
+
+.jst-rule {
+  width: 32px;
+  height: 2px;
+  background: #141414;
+  margin-bottom: 14px;
+}
+
+.slide-jst.invert .jst-rule { background: #FFFFFF; }
+
+.jst-eye {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.slide-jst.invert .jst-eye { color: rgba(255,255,255,0.38); }
+
+.jst-hook {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 5.5vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: #141414;
+  margin-bottom: 12px;
+  text-wrap: balance;
+}
+
+.slide-jst.invert .jst-hook { color: #FFFFFF; }
+
+.jst-body {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: #525252;
+  line-height: 1.65;
+  max-width: 88%;
+}
+
+.slide-jst.invert .jst-body { color: rgba(255,255,255,0.55); }
+
+.jst-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 9px 18px;
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #141414;
+  color: #FFFFFF;
+  width: fit-content;
+}
+
+.slide-jst.invert .jst-cta {
+  background: #FFFFFF;
+  color: #141414;
+}
+
+/* Tier table for JST */
+.jst-tier-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.jst-tier {
+  flex: 1;
+  padding: 10px 10px 8px;
+  border-radius: 6px;
+  border: 1px solid #E6E6E6;
+}
+
+.jst-tier.featured {
+  border-color: #141414;
+  background: #FAFAFA;
+}
+
+.jst-tier-name {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.jst-tier.featured .jst-tier-name { color: #141414; }
+
+.jst-tier-price {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: #CFCFCF;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.jst-tier.featured .jst-tier-price { color: #141414; }
+
+.jst-tier-detail {
+  font-size: 9px;
+  color: #CFCFCF;
+  margin-top: 3px;
+}
+
+.jst-tier.featured .jst-tier-detail { color: #525252; }
+
+/* Stat block */
+.jst-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.jst-stat-num {
+  font-family: var(--font-display);
+  font-size: 60px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: #141414;
+  font-variant-numeric: tabular-nums;
+}
+
+.slide-jst.invert .jst-stat-num { color: #FFFFFF; }
+
+.jst-stat-label {
+  font-size: 11px;
+  color: #737373;
+  line-height: 1.3;
+  max-width: 90px;
+}
+
+.slide-counter-jst {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #CFCFCF;
+}
+
+.slide-jst.invert .slide-counter-jst { color: rgba(255,255,255,0.25); }
+
+/* ── JSM Slides — DARK #141414, monochrome ── */
+.slide-jsm {
+  flex: 0 0 100%;
+  height: 100%;
+  background: #141414;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide-jsm.light {
+  background: #FFFFFF;
+}
+
+.jsm-rule {
+  width: 32px;
+  height: 1px;
+  background: rgba(255,255,255,0.38);
+  margin-bottom: 14px;
+}
+
+.slide-jsm.light .jsm-rule { background: rgba(20,20,20,0.3); }
+
+.jsm-eye {
+  font-family: var(--font-body);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+  margin-bottom: 10px;
+}
+
+.slide-jsm.light .jsm-eye { color: rgba(20,20,20,0.4); }
+
+.jsm-hook {
+  font-family: var(--font-body);
+  font-size: clamp(19px, 5vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+  text-wrap: balance;
+}
+
+.slide-jsm.light .jsm-hook { color: #141414; }
+
+.jsm-body {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.65;
+  max-width: 88%;
+}
+
+.slide-jsm.light .jsm-body { color: rgba(20,20,20,0.55); }
+
+.jsm-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 9px 18px;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.9);
+  color: #FFFFFF;
+  background: transparent;
+  width: fit-content;
+}
+
+.slide-jsm.light .jsm-cta {
+  border-color: #141414;
+  color: #141414;
+}
+
+.slide-counter-jsm {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ROI stat for JSM */
+.jsm-roi {
+  font-family: var(--font-body);
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: #FFFFFF;
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Nav bar ── */
+.carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 13px;
+}
+
+.carousel-nav.jst-nav { background: #F4F4F4; border-top: 1px solid #EBEBEB; }
+.carousel-nav.jsm-nav { background: #0E0E0E; border-top: 1px solid #222; }
+
+.nav-dots { display: flex; gap: 5px; }
+
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.dot.jst-dot { background: #CFCFCF; }
+.dot.jst-dot.active { background: #141414; width: 18px; border-radius: 3px; }
+.dot.jsm-dot { background: #333; }
+.dot.jsm-dot.active { background: #FFFFFF; width: 18px; border-radius: 3px; }
+
+.nav-arrows { display: flex; gap: 6px; }
+
+.nav-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.nav-btn.jst-btn { background: #E6E6E6; color: #141414; }
+.nav-btn.jst-btn:hover { background: #141414; color: #FFFFFF; }
+.nav-btn.jsm-btn { background: #242424; color: rgba(255,255,255,0.6); }
+.nav-btn.jsm-btn:hover { background: #FFFFFF; color: #141414; }
+
+/* ── Social action bar ── */
+.social-actions { display: flex; gap: 16px; padding: 9px 13px 12px; }
+.social-actions.jst-actions { background: #F4F4F4; }
+.social-actions.jsm-actions { background: #0E0E0E; }
+.action-icon { font-size: 17px; opacity: 0.3; }
+
+/* ── Context strip ── */
+.context-strip {
+  background: var(--page-surface);
+  border: 1px solid var(--page-border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 32px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.context-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--page-text3);
+  margin-bottom: 12px;
+}
+
+.context-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+  align-items: flex-start;
+}
+
+.context-row:last-child { margin-bottom: 0; }
+
+.context-slide {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  background: var(--page-bg);
+  border: 1px solid var(--page-border);
+  color: var(--page-text3);
+  letter-spacing: 0.06em;
+}
+
+.context-text {
+  font-size: 12px;
+  color: var(--page-text2);
+  line-height: 1.55;
+}
+
+.context-text strong { color: var(--page-text); }
+
+/* ── Divider ── */
+.divider {
+  max-width: 680px;
+  margin: 32px auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--page-border);
+}
+.divider span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--page-text3);
+  white-space: nowrap;
+}
+
+/* ── Campaign library ── */
+.library {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.lib-heading {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--page-text3);
+  margin-bottom: 16px;
+}
+
+.lib-card {
+  background: var(--page-surface);
+  border: 1px solid var(--page-border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+}
+
+.lib-top {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.lib-badge {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border: 1px solid var(--page-border);
+  color: var(--page-text3);
+}
+
+.lib-hl { font-size: 13px; font-weight: 700; color: var(--page-text); line-height: 1.3; }
+.lib-body { font-size: 12px; color: var(--page-text2); line-height: 1.6; }
+
+.lib-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.lib-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--page-bg);
+  border: 1px solid var(--page-border);
+  color: var(--page-text3);
+}
 </style>
 
 <!-- Page header -->
 <header class="page-header">
-  <p class="page-eyebrow">J Supreme Conglomerate · Ad Campaign System</p>
-  <h1 class="page-title"><span class="jst">JST</span> & <span class="jsm">JSM</span><br>Targeted Campaigns</h1>
-  <p class="page-sub">Psychology-led carousel ads built for each brand's target audience — from cold awareness to booked call. Swipe through the slides below or review the full campaign library.</p>
+  <p class="page-eye">J Supreme Conglomerate · Ad Campaign System · Brand-Correct</p>
+  <h1 class="page-title">JST + JSM<br>Targeted Ad Carousels</h1>
+  <p class="page-sub">Rebuilt to brand spec. JST: white-dominant, monochrome, Space Grotesk. JSM: dark #141414, monochrome, fashion-house Bodoni feel. Zero color accent on either brand.</p>
 </header>
 
 <!-- Brand switcher -->
-<div class="brand-switch" role="tablist">
-  <button class="brand-btn jst active" onclick="switchBrand('jst')" role="tab" aria-selected="true">J Supreme Tech</button>
-  <button class="brand-btn jsm" onclick="switchBrand('jsm')" role="tab" aria-selected="false">J Supreme Marketing</button>
+<div class="brand-switch">
+  <button class="brand-btn active" onclick="switchBrand('jst')">J Supreme Tech</button>
+  <button class="brand-btn" onclick="switchBrand('jsm')">J Supreme Marketing</button>
 </div>
 
 <!-- JST Campaign -->
 <div class="campaign-section active" id="section-jst">
   <div class="section-label">
-    <h2>J Supreme Tech — Carousel Campaign</h2>
-    <p>5-slide carousel · Audience: entrepreneurs & SMBs with no digital presence</p>
+    <h2>J Supreme Tech — 5-slide carousel · @jsupremetech</h2>
+    <p>White surface · Space Grotesk · monochrome · "We design the system. You run the business."</p>
   </div>
 
   <div class="phone-frame">
     <div class="phone-notch"></div>
     <div class="phone-screen">
-      <div class="social-header">
+
+      <div class="social-header jst-header">
         <div class="avatar jst">JST</div>
         <div class="social-meta">
-          <div class="social-name">J Supreme Tech</div>
-          <div class="social-time">Sponsored · Jamaica</div>
+          <div class="social-name jst-name">J Supreme Tech</div>
+          <div class="social-time jst-time">Sponsored · Jamaica</div>
         </div>
-        <div class="social-dots">···</div>
+        <div class="social-dots jst-dots">···</div>
       </div>
 
       <div class="carousel-wrap">
         <div class="carousel-track" id="jst-track">
 
-          <!-- Slide 1: Hook / Loss Aversion -->
-          <div class="slide jst-dark">
-            <div class="slide-number-bg">1</div>
-            <div class="slide-counter">1 / 5</div>
-            <div class="slide-rule jst"></div>
-            <div class="slide-eyebrow" style="color:#8892A4;">To every business owner in Jamaica</div>
-            <div class="slide-hook" style="color:#F4F6FF;">
-              While you wait,<br>your competitor<br>just <span class="underline-word" style="border-color:var(--jst-accent-light);color:var(--jst-accent-light);">went live.</span>
-            </div>
-            <div class="slide-body" style="color:#6B7A99;">
-              Google doesn't know your business exists. Your customers search — and find someone else. That's not bad luck. That's a missing website.
-            </div>
+          <!-- Slide 1: Loss Aversion — white -->
+          <div class="slide-jst">
+            <span class="slide-counter-jst">1 / 5</span>
+            <div class="jst-rule"></div>
+            <div class="jst-eye">To every Jamaican business owner</div>
+            <div class="jst-hook">While you wait,<br>your competitor<br>just went live.</div>
+            <div class="jst-body">Google doesn't know your business exists. Your customers search — and find someone else. That's not bad luck. That's a missing website.</div>
           </div>
 
-          <!-- Slide 2: Pain / Identity -->
-          <div class="slide jst-dark">
-            <div class="slide-number-bg">2</div>
-            <div class="slide-counter">2 / 5</div>
-            <div class="slide-rule jst"></div>
-            <div class="slide-eyebrow" style="color:#8892A4;">This post is for you if...</div>
-            <div class="slide-hook" style="color:#F4F6FF; font-size:clamp(16px,4.5vw,22px); font-weight:800;">
-              You have a real business.<br>A real service.<br>Real customers.<br><span style="color:var(--jst-accent-light);">But nothing online.</span>
+          <!-- Slide 2: Identity calling — white -->
+          <div class="slide-jst">
+            <span class="slide-counter-jst">2 / 5</span>
+            <div class="jst-rule"></div>
+            <div class="jst-eye">This is for you if —</div>
+            <div class="jst-hook" style="font-size:clamp(15px,4vw,20px);line-height:1.4;">
+              You have a real business.<br>A real service.<br>Real customers.<br>But nothing online.
             </div>
-            <div class="slide-body" style="color:#6B7A99;">
-              Logistics. Legal. Food service. Tourism. Health. If you serve people but can't be found online, every week costs you.
-            </div>
+            <div class="jst-body">Logistics. Legal. Food service. Tourism. Health. If you serve people but can't be found online, every week costs you.</div>
           </div>
 
-          <!-- Slide 3: Proof -->
-          <div class="slide jst-dark">
-            <div class="slide-number-bg">3</div>
-            <div class="slide-counter">3 / 5</div>
-            <div class="slide-rule white"></div>
-            <div class="slide-eyebrow" style="color:#8892A4;">Client result</div>
-            <div class="stat-block">
-              <div class="stat-number" style="color:#F4F6FF;">4</div>
-              <div class="stat-label" style="color:#6B7A99;">weeks from zero to fully booked online</div>
+          <!-- Slide 3: Social proof — inverted dark -->
+          <div class="slide-jst invert">
+            <span class="slide-counter-jst">3 / 5</span>
+            <div class="jst-rule"></div>
+            <div class="jst-eye">Client result</div>
+            <div class="jst-stat">
+              <div class="jst-stat-num">4</div>
+              <div class="jst-stat-label" style="color:rgba(255,255,255,0.4);">weeks from zero to fully booked online</div>
             </div>
-            <div class="slide-hook" style="color:#F4F6FF; font-size:clamp(17px,4.5vw,21px);">
-              Ferguson Law went from no digital presence to a full site with online booking and a client portal.
-            </div>
-            <div class="slide-body" style="color:#6B7A99; margin-top:8px;">
-              That's what a proper build looks like. Not a template. A system.
-            </div>
+            <div class="jst-hook" style="font-size:clamp(14px,3.8vw,18px);">Ferguson Law — full site, booking system, client portal. Built in 4 weeks.</div>
+            <div class="jst-body">Not a template. A system. This is what proper looks like.</div>
           </div>
 
-          <!-- Slide 4: Pricing anchor / decoy -->
-          <div class="slide jst-dark">
-            <div class="slide-number-bg">4</div>
-            <div class="slide-counter">4 / 5</div>
-            <div class="slide-rule jst"></div>
-            <div class="slide-eyebrow" style="color:#8892A4;">Transparent pricing</div>
-            <div class="slide-hook" style="color:#F4F6FF; font-size:18px; margin-bottom:16px;">
-              Right-sized for where you are now.
-            </div>
-            <div class="tier-row">
-              <div class="tier-item">
-                <div class="tier-name">Starter</div>
-                <div class="tier-price" style="color:#6B7A99;">J$25K</div>
-                <div class="tier-detail">5-page site</div>
+          <!-- Slide 4: Decoy pricing — white -->
+          <div class="slide-jst">
+            <span class="slide-counter-jst">4 / 5</span>
+            <div class="jst-rule"></div>
+            <div class="jst-eye">Transparent pricing</div>
+            <div class="jst-hook" style="font-size:16px; margin-bottom:14px;">Right-sized for where you are now.</div>
+            <div class="jst-tier-row">
+              <div class="jst-tier">
+                <div class="jst-tier-name">Starter</div>
+                <div class="jst-tier-price">J$25K</div>
+                <div class="jst-tier-detail">5 pages</div>
               </div>
-              <div class="tier-item featured">
-                <div class="tier-name">Pro ★ Best</div>
-                <div class="tier-price">J$55K</div>
-                <div class="tier-detail">10 pages + SEO</div>
+              <div class="jst-tier featured">
+                <div class="jst-tier-name">Pro · Most chosen</div>
+                <div class="jst-tier-price">J$55K</div>
+                <div class="jst-tier-detail">10 pages + SEO</div>
               </div>
-              <div class="tier-item">
-                <div class="tier-name">Enterprise</div>
-                <div class="tier-price" style="color:#6B7A99;">J$120K+</div>
-                <div class="tier-detail">Custom</div>
+              <div class="jst-tier">
+                <div class="jst-tier-name">Enterprise</div>
+                <div class="jst-tier-price">J$120K+</div>
+                <div class="jst-tier-detail">Custom</div>
               </div>
             </div>
-            <div class="slide-body" style="color:#6B7A99;">Same team. Same quality. Every tier gets full attention.</div>
+            <div class="jst-body">Same team. Same quality. Every tier gets our full attention.</div>
           </div>
 
-          <!-- Slide 5: Scarcity CTA -->
-          <div class="slide jst-accent-bg">
-            <div class="slide-number-bg" style="color:#fff;">5</div>
-            <div class="slide-counter" style="color:rgba(255,255,255,0.5);">5 / 5</div>
-            <div class="slide-rule white"></div>
-            <div class="slide-eyebrow" style="color:rgba(255,255,255,0.55);">July — 1 spot remaining</div>
-            <div class="slide-hook" style="color:#fff;">
-              We cap at 3 new clients per month so every build gets our full attention.
-            </div>
-            <div class="slide-body" style="color:rgba(255,255,255,0.75);">
-              If you've been thinking about it — July is the time. August spots are already filling.
-            </div>
-            <div class="slide-cta dark" style="margin-top:20px;">
-              Book a free scope call →
-            </div>
+          <!-- Slide 5: Scarcity CTA — white -->
+          <div class="slide-jst">
+            <span class="slide-counter-jst">5 / 5</span>
+            <div class="jst-rule"></div>
+            <div class="jst-eye">July · 1 spot remaining</div>
+            <div class="jst-hook">We take 3 new clients per month.<br>1 spot left.</div>
+            <div class="jst-body">We cap intake so every build gets full attention. If you've been thinking about it — now is the time. August is already filling.</div>
+            <div class="jst-cta">Book a free scope call →</div>
           </div>
 
         </div>
       </div>
 
-      <div class="carousel-nav">
+      <div class="carousel-nav jst-nav">
         <div class="nav-dots" id="jst-dots">
-          <div class="dot active jst" onclick="goToSlide('jst',0)"></div>
-          <div class="dot" onclick="goToSlide('jst',1)"></div>
-          <div class="dot" onclick="goToSlide('jst',2)"></div>
-          <div class="dot" onclick="goToSlide('jst',3)"></div>
-          <div class="dot" onclick="goToSlide('jst',4)"></div>
+          <div class="dot jst-dot active" onclick="goToSlide('jst',0)"></div>
+          <div class="dot jst-dot" onclick="goToSlide('jst',1)"></div>
+          <div class="dot jst-dot" onclick="goToSlide('jst',2)"></div>
+          <div class="dot jst-dot" onclick="goToSlide('jst',3)"></div>
+          <div class="dot jst-dot" onclick="goToSlide('jst',4)"></div>
         </div>
         <div class="nav-arrows">
-          <button class="nav-btn" onclick="prevSlide('jst')" aria-label="Previous">‹</button>
-          <button class="nav-btn" onclick="nextSlide('jst')" aria-label="Next">›</button>
+          <button class="nav-btn jst-btn" onclick="prevSlide('jst')">‹</button>
+          <button class="nav-btn jst-btn" onclick="nextSlide('jst')">›</button>
         </div>
       </div>
 
-      <div class="social-actions">
+      <div class="social-actions jst-actions">
         <span class="action-icon">♡</span>
         <span class="action-icon">💬</span>
         <span class="action-icon">↗</span>
@@ -843,28 +830,27 @@
     </div>
   </div>
 
-  <!-- Context strip JST -->
   <div class="context-strip">
     <div class="context-title">Psychology layers · JST</div>
     <div class="context-row">
-      <span class="context-tag psych">Slide 1</span>
-      <span class="context-text"><strong style="color:var(--text-primary)">Loss Aversion</strong> — "your competitor just went live" creates immediate imagined loss without being aggressive.</span>
+      <span class="context-slide">S1</span>
+      <span class="context-text"><strong>Loss Aversion</strong> — competitor framing creates invisible, imagined loss before any pitch lands.</span>
     </div>
     <div class="context-row">
-      <span class="context-tag psych">Slide 2</span>
-      <span class="context-text"><strong style="color:var(--text-primary)">Identity Calling</strong> — naming industries directly triggers "that's me" recognition before any pitch.</span>
+      <span class="context-slide">S2</span>
+      <span class="context-text"><strong>Identity Calling</strong> — naming industries directly triggers "that's me" recognition.</span>
     </div>
     <div class="context-row">
-      <span class="context-tag psych">Slide 3</span>
-      <span class="context-text"><strong style="color:var(--text-primary)">Social Proof</strong> — a named client + specific outcome (4 weeks) is more persuasive than any testimonial.</span>
+      <span class="context-slide">S3</span>
+      <span class="context-text"><strong>Social Proof</strong> — named client + specific number (4 weeks) beats any testimonial.</span>
     </div>
     <div class="context-row">
-      <span class="context-tag psych">Slide 4</span>
-      <span class="context-text"><strong style="color:var(--text-primary)">Decoy Pricing</strong> — 3-tier structure with Pro visually featured makes J$55K feel like the rational choice.</span>
+      <span class="context-slide">S4</span>
+      <span class="context-text"><strong>Decoy Pricing</strong> — 3-tier structure makes Pro feel like the obvious rational pick.</span>
     </div>
     <div class="context-row">
-      <span class="context-tag psych">Slide 5</span>
-      <span class="context-text"><strong style="color:var(--text-primary)">Real Scarcity</strong> — capping at 3 clients signals quality, not desperation. "1 spot left" is credible.</span>
+      <span class="context-slide">S5</span>
+      <span class="context-text"><strong>Scarcity</strong> — capping at 3 clients signals quality, not desperation.</span>
     </div>
   </div>
 </div>
@@ -872,105 +858,83 @@
 <!-- JSM Campaign -->
 <div class="campaign-section" id="section-jsm">
   <div class="section-label">
-    <h2>J Supreme Marketing — Carousel Campaign</h2>
-    <p>4-slide carousel · Audience: established brands that post but don't convert</p>
+    <h2>J Supreme Marketing — 4-slide carousel · @jsuprememarketing</h2>
+    <p>Dark #141414 surface · monochrome · fashion-house luxury · "Attraction, Not Chase."</p>
   </div>
 
   <div class="phone-frame">
     <div class="phone-notch"></div>
     <div class="phone-screen">
-      <div class="social-header">
+
+      <div class="social-header jsm-header">
         <div class="avatar jsm">JSM</div>
         <div class="social-meta">
-          <div class="social-name">J Supreme Marketing</div>
-          <div class="social-time">Sponsored · Jamaica</div>
+          <div class="social-name jsm-name">J Supreme Marketing</div>
+          <div class="social-time jsm-time">Sponsored · Jamaica</div>
         </div>
-        <div class="social-dots">···</div>
+        <div class="social-dots jsm-dots">···</div>
       </div>
 
       <div class="carousel-wrap">
         <div class="carousel-track" id="jsm-track">
 
-          <!-- Slide 1: Hook -->
-          <div class="slide jsm-dark">
-            <div class="slide-number-bg">1</div>
-            <div class="slide-counter">1 / 4</div>
-            <div class="slide-rule jsm"></div>
-            <div class="slide-eyebrow" style="color:#8892A4;">For brands with a following and no sales</div>
-            <div class="slide-hook" style="color:#F4F6FF;">
-              You post every day.<br>Your sales<br><span class="underline-word" style="border-color:var(--jsm-accent-light);color:var(--jsm-accent-light);">don't show it.</span>
-            </div>
-            <div class="slide-body" style="color:#6B7A99;">
-              That's not a content problem. Content is fine. What's missing is the system that turns content into customers.
-            </div>
+          <!-- Slide 1: Pain mirror — dark -->
+          <div class="slide-jsm">
+            <span class="slide-counter-jsm">1 / 4</span>
+            <div class="jsm-rule"></div>
+            <div class="jsm-eye">For brands with a following and no sales</div>
+            <div class="jsm-hook">You post every day.<br>Your sales<br>don't show it.</div>
+            <div class="jsm-body">That's not a content problem. Content is fine. What's missing is the system that turns content into customers.</div>
           </div>
 
-          <!-- Slide 2: Pain / Diagnosis -->
-          <div class="slide jsm-dark">
-            <div class="slide-number-bg">2</div>
-            <div class="slide-counter">2 / 4</div>
-            <div class="slide-rule jsm"></div>
-            <div class="slide-eyebrow" style="color:#8892A4;">What's actually broken</div>
-            <div class="slide-hook" style="color:#F4F6FF; font-size:clamp(16px,4.5vw,21px);">
-              No content calendar.<br>No offer ladder.<br>No follow-up.<br><span style="color:var(--jsm-accent-light);">Just posts into the void.</span>
+          <!-- Slide 2: Diagnosis — dark -->
+          <div class="slide-jsm">
+            <span class="slide-counter-jsm">2 / 4</span>
+            <div class="jsm-rule"></div>
+            <div class="jsm-eye">What's actually broken</div>
+            <div class="jsm-hook" style="font-size:clamp(15px,4vw,20px);line-height:1.35;">
+              No content calendar.<br>No offer ladder.<br>No follow-up.<br>Just posts into the void.
             </div>
-            <div class="slide-body" style="color:#6B7A99; margin-top:8px;">
-              Strategy isn't optional — it's what separates brands that grow from brands that stay busy.
-            </div>
+            <div class="jsm-body">Strategy is what separates brands that grow from brands that stay busy.</div>
           </div>
 
-          <!-- Slide 3: ROI Reframe -->
-          <div class="slide jsm-accent-bg">
-            <div class="slide-number-bg" style="color:#000;">3</div>
-            <div class="slide-counter" style="color:rgba(0,0,0,0.35);">3 / 4</div>
-            <div class="slide-rule dark"></div>
-            <div class="slide-eyebrow" style="color:rgba(0,0,0,0.45);">The math</div>
-            <div class="stat-block">
-              <div class="stat-number" style="color:#0A0A00; font-size:44px;">5×</div>
-              <div class="stat-label" style="color:rgba(0,0,0,0.55); max-width:160px;">average return on a JSM retainer in 90 days</div>
-            </div>
-            <div class="slide-hook" style="color:#1A0800; font-size:clamp(16px,4.5vw,20px);">
-              Our clients generate J$300K+/mo from content we manage for J$55K.
-            </div>
-            <div class="slide-body" style="color:rgba(26,8,0,0.65); margin-top:8px;">
-              That's not a cost. That's the most efficient marketing decision your business makes.
-            </div>
+          <!-- Slide 3: ROI reframe — light invert -->
+          <div class="slide-jsm light">
+            <span class="slide-counter-jsm" style="color:rgba(20,20,20,0.25);">3 / 4</span>
+            <div class="jsm-rule"></div>
+            <div class="jsm-eye" style="color:rgba(20,20,20,0.38);">The math</div>
+            <div class="jsm-roi" style="color:#141414;">5×</div>
+            <div class="jsm-hook" style="color:#141414;font-size:clamp(14px,3.8vw,18px);">Average return on a JSM retainer in 90 days. J$300K+/mo from content we manage for J$55K.</div>
+            <div class="jsm-body" style="color:rgba(20,20,20,0.55);">That's not a cost. That's the most efficient marketing decision your business makes.</div>
           </div>
 
-          <!-- Slide 4: Scarcity CTA -->
-          <div class="slide jsm-dark">
-            <div class="slide-number-bg">4</div>
-            <div class="slide-counter">4 / 4</div>
-            <div class="slide-rule jsm"></div>
-            <div class="slide-eyebrow" style="color:#8892A4;">Q3 retainer spots</div>
-            <div class="slide-hook" style="color:#F4F6FF;">
-              3 spots left.<br>We close July 31.
-            </div>
-            <div class="slide-body" style="color:#6B7A99;">
-              We don't manage unlimited clients — the brands we work with grow, and that takes real attention. If you're ready, now is the window.
-            </div>
-            <div class="slide-cta jsm-filled" style="margin-top:18px;">
-              Apply for a retainer spot →
-            </div>
+          <!-- Slide 4: Scarcity CTA — dark -->
+          <div class="slide-jsm">
+            <span class="slide-counter-jsm">4 / 4</span>
+            <div class="jsm-rule"></div>
+            <div class="jsm-eye">Q3 retainer · closes July 31</div>
+            <div class="jsm-hook">3 spots left.<br>We don't manage unlimited clients.</div>
+            <div class="jsm-body">The brands we work with grow — that takes real attention. If you're ready, July 31 is the window.</div>
+            <div class="jsm-cta">Apply for a retainer spot →</div>
           </div>
 
         </div>
       </div>
 
-      <div class="carousel-nav">
+      <div class="carousel-nav jsm-nav">
         <div class="nav-dots" id="jsm-dots">
-          <div class="dot active jsm" onclick="goToSlide('jsm',0)"></div>
-          <div class="dot" onclick="goToSlide('jsm',1)"></div>
-          <div class="dot" onclick="goToSlide('jsm',2)"></div>
-          <div class="dot" onclick="goToSlide('jsm',3)"></div>
+          <div class="dot jsm-dot active" onclick="goToSlide('jsm',0)"></div>
+          <div class="dot jsm-dot" onclick="goToSlide('jsm',1)"></div>
+          <div class="dot jsm-dot" onclick="goToSlide('jsm',2)"></div>
+          <div class="dot jsm-dot" onclick="goToSlide('jsm',3)"></div>
         </div>
         <div class="nav-arrows">
-          <button class="nav-btn" onclick="prevSlide('jsm')" aria-label="Previous">‹</button>
-          <button class="nav-btn" onclick="nextSlide('jsm')" aria-label="Next">›</button>
+          <button class="nav-btn jsm-btn" onclick="prevSlide('jsm')">‹</button>
+          <button class="nav-btn jsm-btn" onclick="nextSlide('jsm')">›</button>
         </div>
       </div>
 
-      <div class="social-actions">
+      <div class="social-actions jsm-actions">
         <span class="action-icon">♡</span>
         <span class="action-icon">💬</span>
         <span class="action-icon">↗</span>
@@ -978,190 +942,159 @@
     </div>
   </div>
 
-  <!-- Context strip JSM -->
   <div class="context-strip">
     <div class="context-title">Psychology layers · JSM</div>
     <div class="context-row">
-      <span class="context-tag psych">Slide 1</span>
-      <span class="context-text"><strong style="color:var(--text-primary)">Pain Mirror</strong> — reflects exactly what the audience already feels ("I post and nothing happens") before offering anything.</span>
+      <span class="context-slide">S1</span>
+      <span class="context-text"><strong>Pain Mirror</strong> — reflects what audience already feels before offering anything.</span>
     </div>
     <div class="context-row">
-      <span class="context-tag psych">Slide 2</span>
-      <span class="context-text"><strong style="color:var(--text-primary)">Diagnosis Frame</strong> — names the specific gaps (no calendar, no offer ladder, no follow-up) so the reader feels understood, not sold to.</span>
+      <span class="context-slide">S2</span>
+      <span class="context-text"><strong>Diagnosis Frame</strong> — names the specific gaps so they feel understood, not sold to.</span>
     </div>
     <div class="context-row">
-      <span class="context-tag psych">Slide 3</span>
-      <span class="context-text"><strong style="color:var(--text-primary)">Value Reframe</strong> — repositions the retainer fee as an investment with a concrete 5× return, removing sticker shock.</span>
+      <span class="context-slide">S3</span>
+      <span class="context-text"><strong>Value Reframe</strong> — flips to white, repositions fee as investment with 5× return.</span>
     </div>
     <div class="context-row">
-      <span class="context-tag psych">Slide 4</span>
-      <span class="context-text"><strong style="color:var(--text-primary)">Exclusivity + Scarcity</strong> — "we don't manage unlimited clients" signals quality. July 31 deadline creates real urgency.</span>
+      <span class="context-slide">S4</span>
+      <span class="context-text"><strong>Exclusivity + Deadline</strong> — "don't manage unlimited clients" signals quality, July 31 is a hard gate.</span>
     </div>
   </div>
 </div>
 
-<!-- Full campaign library -->
-<div class="section-divider"><span class="divider-label">Full Campaign Library</span></div>
+<!-- Campaign library -->
+<div class="divider"><span>Full Campaign Library · Copy-Ready</span></div>
+<div class="library">
+  <div class="lib-heading">8 campaigns · JST + JSM · Psychology-mapped</div>
 
-<div class="all-campaigns">
-  <div class="campaigns-heading">All campaigns · JST + JSM · Copy-ready</div>
-
-  <!-- JST campaigns -->
-  <div class="campaign-card">
-    <div class="campaign-card-top">
-      <span class="campaign-badge loss">Loss Aversion</span>
-      <div class="campaign-headline">"Every week without a website, someone else gets your customer."</div>
+  <div class="lib-card">
+    <div class="lib-top">
+      <span class="lib-badge">Loss Aversion</span>
+      <div class="lib-hl">"While you wait, your competitor just went live."</div>
     </div>
-    <div class="campaign-body">Your competitor went live last month. They're showing up on Google. You're not. The business you're losing is real — you just can't see it yet.</div>
-    <div class="campaign-meta">
-      <span class="meta-pill">JST</span>
-      <span class="meta-pill">Feed + Story</span>
-      <span class="meta-pill">Cold audience</span>
+    <div class="lib-body">Google doesn't know your business exists. Your customers search — and find someone else. That's not bad luck. That's a missing website.</div>
+    <div class="lib-meta">
+      <span class="lib-pill">JST</span><span class="lib-pill">Feed + Story</span><span class="lib-pill">Cold audience</span>
     </div>
   </div>
 
-  <div class="campaign-card">
-    <div class="campaign-card-top">
-      <span class="campaign-badge anchor">Price Anchor</span>
-      <div class="campaign-headline">Show the full package first — Professional Web App J$180K — then land on J$25K.</div>
+  <div class="lib-card">
+    <div class="lib-top">
+      <span class="lib-badge">Price Anchor</span>
+      <div class="lib-hl">Lead with J$180K professional app — land on J$25K starter.</div>
     </div>
-    <div class="campaign-body">Professional Web App — J$180,000. Starter Site — J$25,000. Same team. Same quality. Right-sized for where you are now.</div>
-    <div class="campaign-meta">
-      <span class="meta-pill">JST</span>
-      <span class="meta-pill">Carousel</span>
-      <span class="meta-pill">Warm audience</span>
+    <div class="lib-body">Same team. Same quality. Right-sized for where you are now.</div>
+    <div class="lib-meta">
+      <span class="lib-pill">JST</span><span class="lib-pill">Carousel</span><span class="lib-pill">Warm audience</span>
     </div>
   </div>
 
-  <div class="campaign-card">
-    <div class="campaign-card-top">
-      <span class="campaign-badge decoy">Decoy Pricing</span>
-      <div class="campaign-headline">3-tier structure with Pro visually featured — pushes rational choice to J$55K.</div>
+  <div class="lib-card">
+    <div class="lib-top">
+      <span class="lib-badge">Decoy Pricing</span>
+      <div class="lib-hl">3-tier structure with Pro visually featured — J$55K becomes the obvious pick.</div>
     </div>
-    <div class="campaign-body">Basic J$25K · Pro J$55K ★ · Enterprise J$120K. Most clients choose Pro. Here's why that makes sense for you.</div>
-    <div class="campaign-meta">
-      <span class="meta-pill">JST</span>
-      <span class="meta-pill">Carousel</span>
-      <span class="meta-pill">Decision stage</span>
+    <div class="lib-body">Basic J$25K · Pro J$55K ★ · Enterprise J$120K. Most clients choose Pro.</div>
+    <div class="lib-meta">
+      <span class="lib-pill">JST</span><span class="lib-pill">Carousel</span><span class="lib-pill">Decision stage</span>
     </div>
   </div>
 
-  <div class="campaign-card">
-    <div class="campaign-card-top">
-      <span class="campaign-badge scarcity">Scarcity</span>
-      <div class="campaign-headline">"We take 3 new clients per month. 1 spot left in July."</div>
+  <div class="lib-card">
+    <div class="lib-top">
+      <span class="lib-badge">Scarcity</span>
+      <div class="lib-hl">"We take 3 new clients per month. 1 spot left in July."</div>
     </div>
-    <div class="campaign-body">We cap intake so every build gets full attention. If you've been thinking about it — now's the time. August spots are already filling.</div>
-    <div class="campaign-meta">
-      <span class="meta-pill">JST</span>
-      <span class="meta-pill">Story + Reel</span>
-      <span class="meta-pill">Retargeting</span>
+    <div class="lib-body">We cap intake so every build gets full attention. August is already filling.</div>
+    <div class="lib-meta">
+      <span class="lib-pill">JST</span><span class="lib-pill">Story</span><span class="lib-pill">Retargeting</span>
     </div>
   </div>
 
-  <div class="campaign-card">
-    <div class="campaign-card-top">
-      <span class="campaign-badge proof">Social Proof</span>
-      <div class="campaign-headline">"Ferguson Law went from zero to booked online. 4 weeks."</div>
+  <div class="lib-card">
+    <div class="lib-top">
+      <span class="lib-badge">Social Proof</span>
+      <div class="lib-hl">"Ferguson Law. Zero to fully booked online. 4 weeks."</div>
     </div>
-    <div class="campaign-body">Full site. Online booking. Client portal. This is what a proper digital setup looks like. Your business is next.</div>
-    <div class="campaign-meta">
-      <span class="meta-pill">JST</span>
-      <span class="meta-pill">Feed</span>
-      <span class="meta-pill">All stages</span>
+    <div class="lib-body">Full site. Online booking. Client portal. Not a template. A system. Your business is next.</div>
+    <div class="lib-meta">
+      <span class="lib-pill">JST</span><span class="lib-pill">Feed</span><span class="lib-pill">All stages</span>
     </div>
   </div>
 
-  <!-- JSM campaigns -->
-  <div class="campaign-card">
-    <div class="campaign-card-top">
-      <span class="campaign-badge loss">Loss Aversion</span>
-      <div class="campaign-headline">"You're posting every day and getting nothing back. That's not a content problem."</div>
+  <div class="lib-card">
+    <div class="lib-top">
+      <span class="lib-badge">Pain Mirror</span>
+      <div class="lib-hl">"You post every day. Your sales don't show it. That's not a content problem."</div>
     </div>
-    <div class="campaign-body">It's a strategy problem. Content without direction is noise — and noise doesn't convert. We fix that.</div>
-    <div class="campaign-meta">
-      <span class="meta-pill">JSM</span>
-      <span class="meta-pill">Feed + Story</span>
-      <span class="meta-pill">Cold audience</span>
+    <div class="lib-body">It's a strategy problem. Content without direction is noise — and noise doesn't convert.</div>
+    <div class="lib-meta">
+      <span class="lib-pill">JSM</span><span class="lib-pill">Feed + Story</span><span class="lib-pill">Cold audience</span>
     </div>
   </div>
 
-  <div class="campaign-card">
-    <div class="campaign-card-top">
-      <span class="campaign-badge urgency">Urgency</span>
-      <div class="campaign-headline">"Q3 retainer spots close July 31. We don't take on unlimited clients."</div>
+  <div class="lib-card">
+    <div class="lib-top">
+      <span class="lib-badge">Urgency</span>
+      <div class="lib-hl">"Q3 retainer spots close July 31. 3 left."</div>
     </div>
-    <div class="campaign-body">The brands we manage grow. The ones we don't — stay stuck posting into the void. 3 spots left.</div>
-    <div class="campaign-meta">
-      <span class="meta-pill">JSM</span>
-      <span class="meta-pill">Story</span>
-      <span class="meta-pill">Warm + retargeting</span>
+    <div class="lib-body">The brands we manage grow. The ones we don't — stay busy. This is the window.</div>
+    <div class="lib-meta">
+      <span class="lib-pill">JSM</span><span class="lib-pill">Story</span><span class="lib-pill">Warm + retargeting</span>
     </div>
   </div>
 
-  <div class="campaign-card">
-    <div class="campaign-card-top">
-      <span class="campaign-badge reframe">Value Reframe</span>
-      <div class="campaign-headline">"Our clients generate J$300K+/mo from content we manage for J$55K."</div>
+  <div class="lib-card">
+    <div class="lib-top">
+      <span class="lib-badge">Value Reframe</span>
+      <div class="lib-hl">"Our clients generate J$300K+/mo from content we manage for J$55K. That's a 5× return."</div>
     </div>
-    <div class="campaign-body">That's not a cost. That's a 5× return. When you frame it as investment, the math makes the decision for you.</div>
-    <div class="campaign-meta">
-      <span class="meta-pill">JSM</span>
-      <span class="meta-pill">Carousel</span>
-      <span class="meta-pill">Decision stage</span>
+    <div class="lib-body">That's not a cost. That's the most efficient marketing decision your business makes.</div>
+    <div class="lib-meta">
+      <span class="lib-pill">JSM</span><span class="lib-pill">Carousel</span><span class="lib-pill">Decision stage</span>
     </div>
   </div>
-
 </div>
 
 <script>
-  const state = { jst: 0, jsm: 0 };
-  const counts = { jst: 5, jsm: 4 };
+const state = { jst: 0, jsm: 0 };
+const counts = { jst: 5, jsm: 4 };
 
-  function goToSlide(brand, index) {
-    const total = counts[brand];
-    state[brand] = Math.max(0, Math.min(index, total - 1));
-    const track = document.getElementById(brand + '-track');
-    track.style.transform = 'translateX(-' + (state[brand] * 100) + '%)';
-    const dots = document.getElementById(brand + '-dots').querySelectorAll('.dot');
-    dots.forEach((d, i) => {
-      d.className = 'dot' + (i === state[brand] ? ' active ' + brand : '');
-    });
-  }
-
-  function nextSlide(brand) {
-    goToSlide(brand, (state[brand] + 1) % counts[brand]);
-  }
-
-  function prevSlide(brand) {
-    goToSlide(brand, (state[brand] - 1 + counts[brand]) % counts[brand]);
-  }
-
-  function switchBrand(brand) {
-    document.querySelectorAll('.campaign-section').forEach(s => s.classList.remove('active'));
-    document.getElementById('section-' + brand).classList.add('active');
-    document.querySelectorAll('.brand-btn').forEach(b => {
-      b.classList.toggle('active', b.classList.contains(brand));
-    });
-  }
-
-  // Touch/swipe support
-  ['jst', 'jsm'].forEach(brand => {
-    const el = document.getElementById(brand + '-track').parentElement;
-    let startX = 0;
-    el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-    el.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) > 40) dx < 0 ? nextSlide(brand) : prevSlide(brand);
-    }, { passive: true });
+function goToSlide(brand, i) {
+  state[brand] = Math.max(0, Math.min(i, counts[brand] - 1));
+  document.getElementById(brand + '-track').style.transform = 'translateX(-' + (state[brand] * 100) + '%)';
+  const dotClass = brand + '-dot';
+  document.getElementById(brand + '-dots').querySelectorAll('.dot').forEach((d, idx) => {
+    d.className = 'dot ' + dotClass + (idx === state[brand] ? ' active' : '');
   });
+}
+function nextSlide(b) { goToSlide(b, (state[b] + 1) % counts[b]); }
+function prevSlide(b) { goToSlide(b, (state[b] - 1 + counts[b]) % counts[b]); }
 
-  // Keyboard nav
-  document.addEventListener('keydown', e => {
-    const active = document.querySelector('.campaign-section.active');
-    if (!active) return;
-    const brand = active.id.replace('section-', '');
-    if (e.key === 'ArrowRight') nextSlide(brand);
-    if (e.key === 'ArrowLeft') prevSlide(brand);
+function switchBrand(brand) {
+  document.querySelectorAll('.campaign-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + brand).classList.add('active');
+  document.querySelectorAll('.brand-btn').forEach((b, i) => {
+    b.classList.toggle('active', (brand === 'jst' && i === 0) || (brand === 'jsm' && i === 1));
   });
+}
+
+['jst','jsm'].forEach(brand => {
+  const el = document.getElementById(brand + '-track').parentElement;
+  let sx = 0;
+  el.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+  el.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) > 40) dx < 0 ? nextSlide(brand) : prevSlide(brand);
+  }, { passive: true });
+});
+
+document.addEventListener('keydown', e => {
+  const active = document.querySelector('.campaign-section.active');
+  if (!active) return;
+  const brand = active.id.replace('section-', '');
+  if (e.key === 'ArrowRight') nextSlide(brand);
+  if (e.key === 'ArrowLeft') prevSlide(brand);
+});
 </script>
