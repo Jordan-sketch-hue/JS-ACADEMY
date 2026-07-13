@@ -1,0 +1,1279 @@
+<title>JST & JSM — Content Hub</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --obsidian: #0A0A0E;
+  --surface: #13131B;
+  --surface2: #1A1A26;
+  --border: #22222E;
+  --border2: #2E2E3E;
+
+  --jst: #2563EB;
+  --jst-light: #60A5FA;
+  --jst-pale: #EEF2FF;
+  --jsm: #D97706;
+  --jsm-light: #FBBF24;
+  --jsm-pale: #FEF7E8;
+
+  --text: #F0F2FF;
+  --text2: #8892A4;
+  --text3: #4A5060;
+
+  --tiktok: #010101;
+  --tiktok-pink: #FF004F;
+  --tiktok-cyan: #00F2EA;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --obsidian: #F0F0F8;
+    --surface: #FAFAFF;
+    --surface2: #EBEBF5;
+    --border: #D4D4E8;
+    --border2: #C0C0D8;
+    --text: #0A0A14;
+    --text2: #4A5070;
+    --text3: #9098B0;
+  }
+}
+:root[data-theme="dark"] {
+  --obsidian: #0A0A0E; --surface: #13131B; --surface2: #1A1A26;
+  --border: #22222E; --border2: #2E2E3E;
+  --text: #F0F2FF; --text2: #8892A4; --text3: #4A5060;
+}
+:root[data-theme="light"] {
+  --obsidian: #F0F0F8; --surface: #FAFAFF; --surface2: #EBEBF5;
+  --border: #D4D4E8; --border2: #C0C0D8;
+  --text: #0A0A14; --text2: #4A5070; --text3: #9098B0;
+}
+
+body {
+  background: var(--obsidian);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* ── NAV ── */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--obsidian);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.topnav::-webkit-scrollbar { display: none; }
+
+.nav-logo {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text2);
+  padding: 16px 20px 16px 0;
+  border-right: 1px solid var(--border);
+  margin-right: 16px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-tab {
+  padding: 16px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.15s, border-color 0.15s;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.nav-tab:hover { color: var(--text2); }
+.nav-tab.active { color: var(--text); border-bottom-color: var(--text); }
+
+/* ── SECTIONS ── */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* ── HERO ── */
+.hero {
+  padding: 52px 24px 40px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.hero-eye {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 14px;
+}
+.hero-title {
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.hero-title .jst-c { color: var(--jst-light); }
+.hero-title .jsm-c { color: var(--jsm-light); }
+.hero-title .tt-c { color: var(--tiktok-pink); }
+.hero-sub {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.65;
+  max-width: 540px;
+}
+
+/* ── REEL SECTION LAYOUT ── */
+.reels-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.reel-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.reel-phone {
+  aspect-ratio: 9/16;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 14px;
+  min-height: 0;
+}
+
+/* animated gradient bg per reel */
+.reel-phone.reel1-bg {
+  background: linear-gradient(160deg, #0A0A1A 0%, #0D1A3A 50%, #060C1F 100%);
+}
+.reel-phone.reel2-bg {
+  background: linear-gradient(160deg, #1A0800 0%, #3D1A00 50%, #0F0500 100%);
+}
+.reel-phone.reel3-bg {
+  background: linear-gradient(160deg, #080818 0%, #1A1028 50%, #050510 100%);
+}
+
+/* TikTok UI chrome */
+.tt-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.tt-top-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.02em;
+}
+.tt-top-live {
+  position: absolute;
+  right: 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.7);
+}
+
+.tt-right-actions {
+  position: absolute;
+  right: 10px;
+  bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.tt-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.tt-action-icon { font-size: 24px; }
+.tt-action-count {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.8);
+}
+
+.tt-avatar-ring {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 900;
+  position: relative;
+}
+.tt-avatar-ring::after {
+  content: '+';
+  position: absolute;
+  bottom: -8px;
+  width: 16px;
+  height: 16px;
+  background: var(--tiktok-pink);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 900;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* On-screen text overlays */
+.reel-overlay {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.reel-hook-text {
+  font-size: clamp(18px, 4vw, 26px);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+  margin-bottom: 10px;
+}
+
+.reel-hook-text .hl-jst {
+  color: #60A5FA;
+  font-style: italic;
+}
+.reel-hook-text .hl-jsm {
+  color: #FBBF24;
+  font-style: italic;
+}
+.reel-hook-text .hl-pink {
+  color: var(--tiktok-pink);
+}
+
+.reel-sub-text {
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.5;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+}
+
+.tt-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tt-username {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+}
+.tt-caption {
+  font-size: 11px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.4;
+  max-width: 80%;
+}
+.tt-sound {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+}
+.tt-sound-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.tt-progress {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.2);
+}
+.tt-progress-fill {
+  height: 100%;
+  background: #fff;
+  animation: progress 15s linear infinite;
+}
+@keyframes progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+/* animated line sweep on reel */
+.reel-line-sweep {
+  position: absolute;
+  top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+  animation: sweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes sweep {
+  from { left: -60%; }
+  to { left: 120%; }
+}
+
+/* ── Reel info panel ── */
+.reel-info {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reel-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reel-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.reel-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+  margin-top: 4px;
+}
+
+.reel-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.reel-badge.jst { background: rgba(37,99,235,0.2); color: var(--jst-light); }
+.reel-badge.jsm { background: rgba(217,119,6,0.2); color: var(--jsm-light); }
+.reel-badge.both { background: rgba(255,0,79,0.15); color: #FF6B9D; }
+
+/* Script section */
+.script-block {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.script-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+
+.script-header-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.script-toggle {
+  font-size: 11px;
+  color: var(--text3);
+  transition: transform 0.2s;
+}
+.script-toggle.open { transform: rotate(180deg); }
+
+.script-body {
+  display: none;
+  padding: 14px;
+}
+.script-body.open { display: block; }
+
+.script-line {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: start;
+}
+.script-line:last-child { margin-bottom: 0; }
+
+.script-ts {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text3);
+  padding-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.script-vo {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.script-vo em {
+  font-style: normal;
+  color: var(--text3);
+  font-size: 11px;
+}
+
+.script-direction {
+  font-size: 11px;
+  color: var(--jsm-light);
+  font-style: italic;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Voice note */
+.voice-note {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.voice-icon { font-size: 16px; flex-shrink: 0; }
+.voice-text { font-size: 12px; color: var(--text2); line-height: 1.55; }
+.voice-text strong { color: var(--text); }
+
+/* spec tags */
+.spec-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.spec-tag {
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  font-weight: 600;
+}
+
+/* Caption copy */
+.caption-copy {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.caption-copy-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+.caption-copy-text {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+/* ── CAROUSEL SECTION ── */
+.carousel-section {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.carousel-embed-notice {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  text-align: center;
+}
+.embed-icon { font-size: 32px; margin-bottom: 12px; }
+.embed-title { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.embed-sub { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
+.embed-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  background: var(--jst);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ── TikTok API section ── */
+.api-section {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.api-hero {
+  background: linear-gradient(135deg, #010101 0%, #1A0010 50%, #010101 100%);
+  border: 1px solid #2A0020;
+  border-radius: 16px;
+  padding: 32px 28px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.api-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -20%;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,0,79,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.api-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -50%; left: -10%;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,242,234,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.api-hero-eye {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,0,79,0.7);
+  margin-bottom: 10px;
+}
+.api-hero-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.api-hero-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+.api-status-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.api-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.api-status-pill.green { background: rgba(16,185,129,0.15); color: #6EE7B7; }
+.api-status-pill.yellow { background: rgba(251,191,36,0.15); color: #FCD34D; }
+.api-status-pill.red { background: rgba(239,68,68,0.15); color: #FCA5A5; }
+.api-dot { width: 6px; height: 6px; border-radius: 50%; }
+.api-dot.green { background: #10B981; }
+.api-dot.yellow { background: #F59E0B; }
+.api-dot.red { background: #EF4444; }
+
+.api-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.api-step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.api-step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  flex-shrink: 0;
+}
+
+.api-step-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.api-step-body {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.api-step-body code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--tiktok-cyan);
+}
+
+.api-warning {
+  background: rgba(251,191,36,0.06);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+}
+.api-warning-icon { font-size: 18px; flex-shrink: 0; }
+.api-warning-text { font-size: 13px; color: rgba(251,191,36,0.85); line-height: 1.6; }
+
+/* ── Section headings ── */
+.section-hed {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  padding: 40px 24px 0;
+}
+.section-hed-eye {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+.section-hed-title {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.section-hed-sub {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-top: 6px;
+}
+
+/* divider */
+.divider {
+  max-width: 760px;
+  margin: 32px auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.divider span { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--text3); white-space:nowrap; }
+</style>
+
+<!-- Sticky nav -->
+<nav class="topnav">
+  <div class="nav-logo">J Supreme</div>
+  <button class="nav-tab active" onclick="showSection('reels')">TikTok Reels</button>
+  <button class="nav-tab" onclick="showSection('carousels')">Ad Carousels</button>
+  <button class="nav-tab" onclick="showSection('api')">TikTok API</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — REELS
+════════════════════════════════════════════ -->
+<section class="page-section active" id="sec-reels">
+
+  <div class="hero">
+    <p class="hero-eye">J Supreme Conglomerate · TikTok Content</p>
+    <h1 class="hero-title">3 Reels.<br><span class="tt-c">TikTok-ready.</span><br><span class="jst-c">JST</span> + <span class="jsm-c">JSM.</span></h1>
+    <p class="hero-sub">Scripts written for a smooth, soft, high female voiceover — no AI sounds. On-screen text directions included. Captions and hashtags copy-ready.</p>
+  </div>
+
+  <div class="reels-grid">
+
+    <!-- ─────── REEL 1 ─────── -->
+    <div class="reel-card">
+      <div class="reel-phone reel1-bg">
+        <div class="reel-line-sweep"></div>
+
+        <div class="tt-top">
+          <div class="tt-top-label">For You</div>
+        </div>
+
+        <div class="reel-overlay">
+          <div class="reel-hook-text">
+            If your business<br>isn't online,<br><span class="hl-jst">you don't exist.</span>
+          </div>
+          <div class="reel-sub-text">And your customers are finding someone who does.</div>
+        </div>
+
+        <div class="tt-right-actions">
+          <div class="tt-action">
+            <div class="tt-avatar-ring" style="background:var(--jst); color:#fff;">JST</div>
+          </div>
+          <div class="tt-action">
+            <div class="tt-action-icon">♡</div>
+            <div class="tt-action-count">4.2K</div>
+          </div>
+          <div class="tt-action">
+            <div class="tt-action-icon">💬</div>
+            <div class="tt-action-count">218</div>
+          </div>
+          <div class="tt-action">
+            <div class="tt-action-icon">↗</div>
+            <div class="tt-action-count">1.1K</div>
+          </div>
+        </div>
+
+        <div class="tt-bottom">
+          <div class="tt-username">@jsupremetech</div>
+          <div class="tt-caption">Jamaican businesses leaving money on the table every single day 🇯🇲 #JST #DigitalJamaica</div>
+          <div class="tt-sound"><div class="tt-sound-dot"></div> Original audio · jsupremetech</div>
+        </div>
+
+        <div class="tt-progress"><div class="tt-progress-fill"></div></div>
+      </div>
+
+      <div class="reel-info">
+        <div class="reel-title-row">
+          <div>
+            <div class="reel-num">Reel 01</div>
+            <div class="reel-name">The Invisible Business</div>
+          </div>
+          <span class="reel-badge jst">JST</span>
+        </div>
+
+        <div class="voice-note">
+          <div class="voice-icon">🎙</div>
+          <div class="voice-text"><strong>Voice direction:</strong> Soft and clear. Conversational, not salesy. Slight pause after "online" — let it land. End on a warm, almost conspiratorial tone like you're letting them in on something they already know.</div>
+        </div>
+
+        <div class="script-block">
+          <div class="script-header" onclick="toggleScript(this)">
+            <span class="script-header-label">Full voiceover script</span>
+            <span class="script-toggle">▼</span>
+          </div>
+          <div class="script-body">
+            <div class="script-line">
+              <span class="script-ts">0:00 – 0:03</span>
+              <span class="script-vo">"If your business isn't online..."<span class="script-direction">[pause 0.5s — let text appear on screen]</span></span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:03 – 0:05</span>
+              <span class="script-vo">"...you don't exist."<span class="script-direction">[firm but gentle — not dramatic]</span></span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:05 – 0:10</span>
+              <span class="script-vo">"And right now, your customers are searching on Google, on Instagram — and finding your competitor instead."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:10 – 0:18</span>
+              <span class="script-vo">"I work with Jamaican businesses — logistics, legal, food service, health — who have a real service, real customers, but nothing online to show for it."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:18 – 0:25</span>
+              <span class="script-vo">"We built Ferguson Law's full site — booking system, client portal — in four weeks. They went from zero digital presence to fully booked online."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:25 – 0:30</span>
+              <span class="script-vo">"If you've been putting this off — the link is in the bio. Free scope call. No jargon."<span class="script-direction">[warm smile in voice on last line]</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="caption-copy">
+          <div class="caption-copy-label">Caption · copy ready</div>
+          <div class="caption-copy-text">If your business isn't online, your customers are finding someone who is.
+
+We build real digital presence for Jamaican businesses — no templates, no shortcuts.
+
+Ferguson Law went from zero to fully booked online in 4 weeks. Your business is next.
+
+🔗 Free scope call in bio.
+
+#JSupremeTech #DigitalJamaica #WebDesignJamaica #JamaicanBusiness #SmallBusinessJamaica #JST #WebDevelopment</div>
+        </div>
+
+        <div class="spec-row">
+          <span class="spec-tag">30 sec</span>
+          <span class="spec-tag">Vertical 9:16</span>
+          <span class="spec-tag">Cold audience</span>
+          <span class="spec-tag">Loss aversion</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────── REEL 2 ─────── -->
+    <div class="reel-card">
+      <div class="reel-phone reel2-bg">
+        <div class="reel-line-sweep"></div>
+
+        <div class="tt-top">
+          <div class="tt-top-label">For You</div>
+        </div>
+
+        <div class="reel-overlay">
+          <div class="reel-hook-text">
+            You're posting<br>every day.<br><span class="hl-jsm">Your sales don't<br>show it.</span>
+          </div>
+          <div class="reel-sub-text">That's not a content problem — it's a strategy problem.</div>
+        </div>
+
+        <div class="tt-right-actions">
+          <div class="tt-action">
+            <div class="tt-avatar-ring" style="background:var(--jsm); color:#fff;">JSM</div>
+          </div>
+          <div class="tt-action">
+            <div class="tt-action-icon">♡</div>
+            <div class="tt-action-count">8.7K</div>
+          </div>
+          <div class="tt-action">
+            <div class="tt-action-icon">💬</div>
+            <div class="tt-action-count">543</div>
+          </div>
+          <div class="tt-action">
+            <div class="tt-action-icon">↗</div>
+            <div class="tt-action-count">2.4K</div>
+          </div>
+        </div>
+
+        <div class="tt-bottom">
+          <div class="tt-username">@jsuprememarketing</div>
+          <div class="tt-caption">Nobody tells brand owners this 👇 #JSM #MarketingJamaica #ContentStrategy</div>
+          <div class="tt-sound"><div class="tt-sound-dot"></div> Original audio · jsuprememarketing</div>
+        </div>
+
+        <div class="tt-progress"><div class="tt-progress-fill" style="animation-delay:-5s"></div></div>
+      </div>
+
+      <div class="reel-info">
+        <div class="reel-title-row">
+          <div>
+            <div class="reel-num">Reel 02</div>
+            <div class="reel-name">The Posting Trap</div>
+          </div>
+          <span class="reel-badge jsm">JSM</span>
+        </div>
+
+        <div class="voice-note">
+          <div class="voice-icon">🎙</div>
+          <div class="voice-text"><strong>Voice direction:</strong> Start empathetic — like you understand the frustration. Build gently. The "that's not a content problem" line should feel like a lightbulb moment, not a lecture. Finish with warmth and a little confidence.</div>
+        </div>
+
+        <div class="script-block">
+          <div class="script-header" onclick="toggleScript(this)">
+            <span class="script-header-label">Full voiceover script</span>
+            <span class="script-toggle">▼</span>
+          </div>
+          <div class="script-body">
+            <div class="script-line">
+              <span class="script-ts">0:00 – 0:04</span>
+              <span class="script-vo">"You're posting every single day..."<span class="script-direction">[let this breathe — knowing tone]</span></span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:04 – 0:07</span>
+              <span class="script-vo">"...and your sales don't show it."<span class="script-direction">[gentle, not harsh]</span></span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:07 – 0:12</span>
+              <span class="script-vo">"Here's what nobody tells you — that's not a content problem. Your content is fine. What's missing is the system."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:12 – 0:20</span>
+              <span class="script-vo">"No content calendar. No offer ladder. No follow-up sequence. Just posts going out — into the void. Likes, maybe. Sales? Not really."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:20 – 0:28</span>
+              <span class="script-vo">"The brands we manage at J Supreme Marketing — they average five times their retainer back in ninety days. One client went from content that got views to content that generates three hundred thousand Jamaican dollars a month."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:28 – 0:33</span>
+              <span class="script-vo">"We take three retainer clients per quarter. Two spots left for Q3. If this hit — link is in the bio."<span class="script-direction">[casual, confident close]</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="caption-copy">
+          <div class="caption-copy-label">Caption · copy ready</div>
+          <div class="caption-copy-text">Posting every day with nothing to show for it isn't a content problem. It's a strategy problem.
+
+No content calendar. No offer ladder. No follow-up. Just noise.
+
+Our clients average 5× their retainer back in 90 days. One generates J$300K+/mo from content we manage for J$55K.
+
+Q3 retainer spots: 2 left. Closes July 31.
+
+🔗 Apply in bio.
+
+#JSupremeMarketing #MarketingJamaica #ContentStrategy #JamaicanBusiness #BrandGrowth #JSM #SocialMediaMarketing</div>
+        </div>
+
+        <div class="spec-row">
+          <span class="spec-tag">33 sec</span>
+          <span class="spec-tag">Vertical 9:16</span>
+          <span class="spec-tag">Warm audience</span>
+          <span class="spec-tag">Pain mirror + ROI</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────── REEL 3 ─────── -->
+    <div class="reel-card">
+      <div class="reel-phone reel3-bg">
+        <div class="reel-line-sweep"></div>
+
+        <div class="tt-top">
+          <div class="tt-top-label">For You</div>
+        </div>
+
+        <div class="reel-overlay">
+          <div class="reel-hook-text">
+            <span style="font-size:0.75em; font-weight:700; opacity:0.6; letter-spacing:0.08em; text-transform:uppercase; display:block; margin-bottom:6px;">Jamaica's digital brand</span>
+            One team.<br><span class="hl-jst">Build it.</span><br><span class="hl-jsm">Grow it.</span>
+          </div>
+          <div class="reel-sub-text">J Supreme Tech builds your presence. J Supreme Marketing sells it.</div>
+        </div>
+
+        <div class="tt-right-actions">
+          <div class="tt-action">
+            <div class="tt-avatar-ring" style="background: linear-gradient(135deg, var(--jst), var(--jsm)); color:#fff; font-size:9px;">JS</div>
+          </div>
+          <div class="tt-action">
+            <div class="tt-action-icon">♡</div>
+            <div class="tt-action-count">12.1K</div>
+          </div>
+          <div class="tt-action">
+            <div class="tt-action-icon">💬</div>
+            <div class="tt-action-count">891</div>
+          </div>
+          <div class="tt-action">
+            <div class="tt-action-icon">↗</div>
+            <div class="tt-action-count">3.8K</div>
+          </div>
+        </div>
+
+        <div class="tt-bottom">
+          <div class="tt-username">@jsupreme</div>
+          <div class="tt-caption">Build it + grow it. That's the full system 🇯🇲 #JSupreme #DigitalJamaica #TechAndMarketing</div>
+          <div class="tt-sound"><div class="tt-sound-dot"></div> Original audio · jsupreme</div>
+        </div>
+
+        <div class="tt-progress"><div class="tt-progress-fill" style="animation-delay:-10s"></div></div>
+      </div>
+
+      <div class="reel-info">
+        <div class="reel-title-row">
+          <div>
+            <div class="reel-num">Reel 03</div>
+            <div class="reel-name">Build It. Grow It.</div>
+          </div>
+          <span class="reel-badge both">JST + JSM</span>
+        </div>
+
+        <div class="voice-note">
+          <div class="voice-icon">🎙</div>
+          <div class="voice-text"><strong>Voice direction:</strong> This one has energy — not hype, but momentum. Like you're walking someone through a reveal. Slight lift in tone on "J Supreme Tech" and "J Supreme Marketing" each time — pride, not performance. Close should feel like a quiet flex.</div>
+        </div>
+
+        <div class="script-block">
+          <div class="script-header" onclick="toggleScript(this)">
+            <span class="script-header-label">Full voiceover script</span>
+            <span class="script-toggle">▼</span>
+          </div>
+          <div class="script-body">
+            <div class="script-line">
+              <span class="script-ts">0:00 – 0:05</span>
+              <span class="script-vo">"Most Caribbean businesses have one of two problems."<span class="script-direction">[calm, direct opener]</span></span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:05 – 0:10</span>
+              <span class="script-vo">"Either they don't have a digital presence at all — no website, no booking system, nothing."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:10 – 0:16</span>
+              <span class="script-vo">"Or they have a presence — but nobody's converting. They're posting, they have followers, and the sales just aren't there."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:16 – 0:24</span>
+              <span class="script-vo">"We built J Supreme to solve both. J Supreme Tech builds your digital foundation — custom sites, apps, booking systems, portals. Starting at twenty-five thousand Jamaican dollars."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:24 – 0:31</span>
+              <span class="script-vo">"J Supreme Marketing takes everything you've built and turns it into consistent revenue — content strategy, offer systems, retainer-based management."</span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:31 – 0:37</span>
+              <span class="script-vo">"Build it. Grow it. That's the full system. And it's built right here, for Jamaica."<span class="script-direction">[quiet confidence — let it sit]</span></span>
+            </div>
+            <div class="script-line">
+              <span class="script-ts">0:37 – 0:40</span>
+              <span class="script-vo">"Link is in the bio — wherever you are in that journey."</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="caption-copy">
+          <div class="caption-copy-label">Caption · copy ready</div>
+          <div class="caption-copy-text">Two problems. One team.
+
+No digital presence? → J Supreme Tech builds it. Custom sites, apps, booking systems. From J$25K.
+
+Has presence but no conversions? → J Supreme Marketing grows it. Strategy, content systems, retainer management. 5× average ROI.
+
+Built for Jamaica. Running the full system.
+
+🔗 Start wherever you are — link in bio.
+
+#JSupreme #JSupremeTech #JSupremeMarketing #DigitalJamaica #JamaicanBusiness #Caribbean #BuildAndGrow</div>
+        </div>
+
+        <div class="spec-row">
+          <span class="spec-tag">40 sec</span>
+          <span class="spec-tag">Vertical 9:16</span>
+          <span class="spec-tag">All audiences</span>
+          <span class="spec-tag">Brand awareness</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /reels-grid -->
+
+  <div class="divider"><span>Voice & production notes</span></div>
+
+  <div style="max-width:760px; margin:0 auto; padding:0 24px;">
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px;">
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Voice brief</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.65;">Smooth, soft, high. Natural Jamaican inflection where it fits — not performed. Think: a confident woman explaining something clearly to a friend, not a voiceover artist. Record in one clean take per reel. No reverb. Light compression if needed.</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">On-screen text</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.65;">Bold white text, centered, appearing in sync with VO. Key phrases only — not full sentences. Use the hook lines from each reel as the primary text overlays. Add subtle fade-in, no bounce animations.</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Sound layer</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.65;">No AI sounds. Use a royalty-free ambient track under the VO — something clean and minimal. TikTok sound library: search "calm background" or "soft ambient." Keep music at 15–20% volume so VO leads clearly.</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — CAROUSELS
+════════════════════════════════════════════ -->
+<section class="page-section" id="sec-carousels">
+  <div class="section-hed">
+    <div class="section-hed-eye">Ad Carousels · Facebook & Instagram</div>
+    <div class="section-hed-title">JST + JSM Carousel Campaigns</div>
+    <div class="section-hed-sub">5-slide JST carousel + 4-slide JSM carousel with full psychology annotations. Click through to the live interactive version.</div>
+  </div>
+  <div class="carousel-section">
+    <div class="carousel-embed-notice">
+      <div class="embed-icon">📱</div>
+      <div class="embed-title">Interactive Carousel Simulator</div>
+      <div class="embed-sub">The full carousel viewer — phone frame mockup, swipeable slides, brand switcher, and psychology annotations — is published as a separate interactive artifact. Open it to preview each slide exactly as it would appear in feed, then screenshot to post.</div>
+      <a class="embed-btn" href="https://claude.ai/code/artifact/1dfd10c8-3dce-4e58-84f3-0d72a5bdf8fa" target="_blank">Open Carousel Viewer →</a>
+    </div>
+
+    <div class="divider"><span>Campaign summary</span></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--jst-light);margin-bottom:12px;">J Supreme Tech — 5 slides</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;">
+          1 · Loss aversion hook<br>
+          2 · Identity calling (name industries)<br>
+          3 · Ferguson Law proof (4 weeks)<br>
+          4 · Decoy pricing (3-tier)<br>
+          5 · Scarcity CTA (1 July spot)
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--jsm-light);margin-bottom:12px;">J Supreme Marketing — 4 slides</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;">
+          1 · Pain mirror (posting = no sales)<br>
+          2 · Diagnosis (name missing systems)<br>
+          3 · ROI reframe (5× / J$300K)<br>
+          4 · Exclusivity + July 31 deadline
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — TIKTOK API
+════════════════════════════════════════════ -->
+<section class="page-section" id="sec-api">
+  <div class="section-hed">
+    <div class="section-hed-eye">TikTok Content Posting API</div>
+    <div class="section-hed-title">Can we automate TikTok posting?</div>
+    <div class="section-hed-sub">Straight answer: yes, with setup. Here's exactly what's possible and what the path looks like.</div>
+  </div>
+
+  <div class="api-section">
+    <div class="api-hero">
+      <div class="api-hero-eye">Current status</div>
+      <div class="api-hero-title">TikTok Content Posting API is real — but gated.</div>
+      <div class="api-hero-sub">TikTok has an official Content Posting API that lets apps upload videos directly to your account. The catch: it requires OAuth login through TikTok's developer portal and app approval. I cannot connect to it from this environment directly, but you can set it up — here's the exact path.</div>
+      <div class="api-status-row">
+        <div class="api-status-pill green"><div class="api-dot green"></div>API exists & is documented</div>
+        <div class="api-status-pill yellow"><div class="api-dot yellow"></div>Requires developer app setup</div>
+        <div class="api-status-pill red"><div class="api-dot red"></div>Can't auth from this session</div>
+      </div>
+    </div>
+
+    <div class="api-steps">
+      <div class="api-step">
+        <div class="api-step-num">1</div>
+        <div>
+          <div class="api-step-title">Create a TikTok Developer App</div>
+          <div class="api-step-body">Go to <code>developers.tiktok.com</code> → My Apps → Create App. Set app type to "Web." You need a business account linked. This gives you a <code>client_key</code> and <code>client_secret</code>.</div>
+        </div>
+      </div>
+      <div class="api-step">
+        <div class="api-step-num">2</div>
+        <div>
+          <div class="api-step-title">Enable Content Posting API scope</div>
+          <div class="api-step-body">Inside your app settings, add the scope <code>video.upload</code> and <code>video.publish</code>. TikTok reviews this — approval takes 1–3 business days for personal creator accounts, longer for business apps targeting others.</div>
+        </div>
+      </div>
+      <div class="api-step">
+        <div class="api-step-num">3</div>
+        <div>
+          <div class="api-step-title">OAuth login flow (one time)</div>
+          <div class="api-step-body">Your app redirects you to TikTok login, you authorize it, and it returns an <code>access_token</code>. This token lets scripts post on your behalf. Valid for 24 hours — refresh tokens last 365 days.</div>
+        </div>
+      </div>
+      <div class="api-step">
+        <div class="api-step-num">4</div>
+        <div>
+          <div class="api-step-title">Upload video via API</div>
+          <div class="api-step-body">POST to <code>open.tiktokapis.com/v2/post/publish/video/init/</code> with your video file URL, caption, and privacy settings. TikTok handles the encoding. Your reel goes live (or to draft for review first if you prefer).</div>
+        </div>
+      </div>
+      <div class="api-step">
+        <div class="api-step-num">5</div>
+        <div>
+          <div class="api-step-title">Build the automation here (JST Academy)</div>
+          <div class="api-step-body">Once you have the access token, I can write a Node.js or Python script inside this repo that takes a video file + caption and posts it automatically. We can schedule posts via cron, trigger from a content calendar, or build a simple dashboard for it — your call.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="api-warning">
+      <div class="api-warning-icon">⚠</div>
+      <div class="api-warning-text"><strong>The "open in browser" limitation:</strong> TikTok's API requires an OAuth authorization flow — it can't be done by reading your open browser tab directly. That's a TikTok security requirement, not a technical limitation on my end. The one-time login through their portal is the step I need you to complete. Once you have a token, everything else can be automated from here.</div>
+    </div>
+
+    <div style="margin-top:20px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Easier alternative while you set up the API</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;">
+        <strong style="color:var(--text);">Buffer or Later</strong> — both connect to TikTok Business accounts and let you schedule video posts from a dashboard. Free tiers available. You upload the reel + caption here, set a post time, done. Connecting these to the JST Academy automation system is straightforward once the API token is in place.
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleScript(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.script-toggle');
+  const open = body.classList.toggle('open');
+  arrow.classList.toggle('open', open);
+}
+</script>
