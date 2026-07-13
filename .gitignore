@@ -1,0 +1,7 @@
+tiktok/.env
+node_modules/
+videos/
+*.mp4
+*.mov
+*.wav
+.DS_Store
