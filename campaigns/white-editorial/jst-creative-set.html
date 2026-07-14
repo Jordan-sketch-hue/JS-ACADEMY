@@ -1,0 +1,662 @@
+<title>JST — White Editorial Creative Set</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #FFFFFF;
+  --fg: #0A0A0A;
+  --fg2: #6B6B6B;
+  --accent: #1455FF;
+  --accent-sub: rgba(20,85,255,0.07);
+  --surface: #F6F6F6;
+  --border: #E8E8E8;
+  --font: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#0D0D0D; --fg:#F4F4F4; --fg2:#888; --surface:#181818; --border:#2A2A2A; --accent-sub:rgba(20,85,255,.12); }
+}
+:root[data-theme="light"] { --bg:#FFFFFF; --fg:#0A0A0A; --fg2:#6B6B6B; --surface:#F6F6F6; --border:#E8E8E8; --accent-sub:rgba(20,85,255,.07); }
+:root[data-theme="dark"]  { --bg:#0D0D0D; --fg:#F4F4F4; --fg2:#888;    --surface:#181818; --border:#2A2A2A; --accent-sub:rgba(20,85,255,.12); }
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { font-size:16px; }
+body { font-family:var(--font); background:var(--bg); color:var(--fg); min-height:100vh; }
+
+/* ── PAGE HEADER ── */
+.ph { border-bottom:1px solid var(--border); padding:20px 32px 0; position:sticky; top:0; background:var(--bg); z-index:100; }
+.ph-wm { font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
+.tabs { display:flex; gap:0; }
+.tb { font-family:var(--font); font-size:12px; font-weight:600; letter-spacing:.04em; padding:10px 18px; border:none; background:none; color:var(--fg2); cursor:pointer; border-bottom:2px solid transparent; transition:color .18s,border-color .18s; }
+.tb:hover { color:var(--fg); }
+.tb.on { color:var(--accent); border-bottom-color:var(--accent); }
+
+/* ── MAIN ── */
+.main { padding:36px 32px; max-width:1100px; margin:0 auto; }
+.tab-panel { display:none; }
+.tab-panel.on { display:block; }
+
+/* ── TWO-COL LAYOUT ── */
+.two-col { display:grid; grid-template-columns:auto 1fr; gap:48px; align-items:start; }
+
+/* ── PHONE SHELL ── */
+.phone-wrap { flex-shrink:0; }
+.frame-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--fg2); margin-bottom:10px; }
+.phone { width:300px; height:532px; border-radius:34px; border:5px solid #1A1A1A; overflow:hidden; position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.16),0 0 0 1px rgba(0,0,0,.06); }
+.phone::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:90px; height:22px;
+  background:#1A1A1A; border-radius:0 0 14px 14px; z-index:20; }
+
+/* ── REEL CANVAS ── */
+.rc { width:100%; height:100%; background:#fff; position:relative; overflow:hidden; font-family:var(--font); }
+.top-bar { position:absolute; top:0; left:0; right:0; height:3px; background:#1455FF; z-index:10; }
+
+/* ── MOCK VIDEO BG ── */
+.mvb { position:absolute; inset:0; background:#fff; overflow:hidden; }
+@keyframes beam1 { 0%{transform:translateX(-120%) rotate(-18deg);opacity:0} 15%{opacity:1} 85%{opacity:1} 100%{transform:translateX(220%) rotate(-18deg);opacity:0} }
+@keyframes beam2 { 0%{transform:translateX(-100%) rotate(12deg);opacity:0} 20%{opacity:.5} 80%{opacity:.5} 100%{transform:translateX(200%) rotate(12deg);opacity:0} }
+@keyframes floatA { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-18px) rotate(4deg)} }
+.b1 { position:absolute; width:35%; height:200%; top:-50%; left:-10%;
+  background:linear-gradient(90deg,transparent,rgba(20,85,255,.05),transparent);
+  animation:beam1 9s ease-in-out infinite; }
+.b2 { position:absolute; width:25%; height:200%; top:-50%; left:20%;
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.035),transparent);
+  animation:beam2 13s ease-in-out 2.5s infinite; }
+.gc { position:absolute; width:260px; height:260px; border-radius:50%; border:1px solid rgba(0,0,0,.07); bottom:-55px; right:-55px; animation:floatA 11s ease-in-out infinite; }
+.gc2 { position:absolute; width:160px; height:160px; border-radius:50%; border:1px solid rgba(20,85,255,.09); top:70px; left:-38px; animation:floatA 15s ease-in-out 3s infinite; }
+.gl { position:absolute; width:1px; height:100px; background:linear-gradient(to bottom,transparent,rgba(20,85,255,.14),transparent); right:42px; top:110px; animation:floatA 10s ease-in-out 1s infinite; }
+
+/* ── REEL SCENES ── */
+.rs { position:absolute; inset:28px 20px 72px; display:flex; flex-direction:column; justify-content:center;
+  opacity:0; transform:translateY(10px); transition:opacity .45s ease,transform .45s ease; pointer-events:none; }
+.rs.on { opacity:1; transform:translateY(0); }
+.s-ey { font-size:8.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#1455FF; margin-bottom:10px; }
+.s-h  { font-size:26px; font-weight:700; line-height:1.1; color:#0A0A0A; text-wrap:balance; margin-bottom:14px; }
+.s-h .ac { color:#1455FF; }
+.s-b  { font-size:11px; font-weight:400; line-height:1.7; color:#4A4A4A; }
+.s-b strong { font-weight:700; color:#0A0A0A; }
+
+/* ── SERVICE LIST (scene 3) ── */
+.svc-list { display:flex; flex-direction:column; gap:9px; margin-top:8px; }
+.svc-item { display:flex; align-items:center; gap:8px; font-size:11px; font-weight:600; color:#0A0A0A;
+  opacity:0; transform:translateX(-6px); transition:opacity .35s,transform .35s; }
+.svc-item.vis { opacity:1; transform:translateX(0); }
+.svc-dot { width:5px; height:5px; border-radius:50%; background:#1455FF; flex-shrink:0; }
+
+/* ── PRICE STACK ── */
+.ps { display:flex; flex-direction:column; gap:7px; margin-top:8px; }
+.pi { display:flex; justify-content:space-between; align-items:center; padding:9px 12px; border:1px solid #E5E5E5; border-radius:2px; }
+.pi.feat { border-color:#1455FF; background:rgba(20,85,255,.04); }
+.pt { font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#0A0A0A; }
+.pa { font-size:15px; font-weight:700; color:#1455FF; }
+.pa small { font-size:9px; color:#8A8A8A; font-weight:400; }
+
+/* ── CTA block ── */
+.cta-btn { display:inline-block; background:#1455FF; color:#fff; font-size:10px; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; padding:11px 18px; border-radius:2px; margin-bottom:10px; }
+.contact { font-size:9.5px; color:#6B6B6B; line-height:1.8; }
+.contact strong { color:#0A0A0A; }
+
+/* ── REEL BOTTOM ── */
+.rb { position:absolute; bottom:0; left:0; right:0; height:64px; padding:0 20px;
+  display:flex; align-items:center; justify-content:space-between; border-top:1px solid #F0F0F0; }
+.rb-brand { font-size:9.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#0A0A0A; }
+.rb-sub { font-size:8.5px; color:#8A8A8A; }
+.progress { position:absolute; bottom:64px; left:20px; right:20px; height:2px; background:#F0F0F0; border-radius:1px; overflow:hidden; }
+.progress-fill { height:100%; background:#1455FF; border-radius:1px; width:0%; transition:width .1s linear; }
+.sc-count { position:absolute; top:20px; right:16px; font-size:8.5px; font-weight:600; letter-spacing:.1em; color:#C0C0C0; z-index:5; }
+
+/* ── VO PANEL ── */
+.vo { max-width:400px; }
+.vo-title { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--fg2); margin-bottom:18px; }
+.vo-note-box { background:var(--accent-sub); border-left:2px solid var(--accent); padding:12px 14px; margin-bottom:18px; border-radius:0 2px 2px 0; font-size:11.5px; line-height:1.65; color:var(--fg); }
+.vo-note-box strong { font-weight:700; }
+.voe { display:grid; grid-template-columns:44px 1fr; gap:10px 14px; padding:13px 0; border-bottom:1px solid var(--border); }
+.voe:last-of-type { border-bottom:none; }
+.vt { font-size:10.5px; font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums; padding-top:2px; }
+.vx { font-size:12.5px; line-height:1.65; color:var(--fg); }
+.vn { font-size:10.5px; color:var(--fg2); font-style:italic; margin-top:3px; }
+.spec-row { display:flex; justify-content:space-between; align-items:baseline; padding:7px 0; border-bottom:1px solid var(--border); font-size:11.5px; }
+.spec-row:last-child { border-bottom:none; }
+.sl { color:var(--fg2); }
+.sv { font-weight:600; color:var(--fg); }
+.spec-g { margin-top:24px; }
+.sg-label { font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+
+/* ── IG FEED 1:1 ── */
+.feed-frame { width:400px; height:400px; border:1px solid var(--border); position:relative; overflow:hidden;
+  background:#fff; box-shadow:0 6px 36px rgba(0,0,0,.08); font-family:var(--font); }
+.ff-bg { position:absolute; inset:0; overflow:hidden; }
+.ff-bg::before { content:''; position:absolute; width:300px; height:300px; border-radius:50%;
+  border:1px solid rgba(0,0,0,.06); bottom:-70px; right:-50px; }
+.ff-bg::after  { content:''; position:absolute; width:150px; height:150px; border-radius:50%;
+  border:1px solid rgba(20,85,255,.09); top:50px; left:-45px; }
+.ff-c { position:absolute; inset:3px 0 0; padding:26px 28px 24px; display:flex; flex-direction:column; justify-content:space-between; }
+.ff-top { display:flex; justify-content:space-between; align-items:flex-start; }
+.ff-logo { font-size:12px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:#0A0A0A; }
+.ff-region { font-size:8.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#1455FF; margin-top:3px; }
+.ff-badge { width:30px; height:30px; border:1.5px solid #0A0A0A; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:#0A0A0A; }
+.ff-mid { flex:1; display:flex; flex-direction:column; justify-content:center; padding:10px 0; }
+.ff-h { font-size:32px; font-weight:700; line-height:1.05; color:#0A0A0A; text-wrap:balance; margin-bottom:16px; }
+.ff-h .ac { color:#1455FF; }
+.ff-svcs { display:grid; grid-template-columns:1fr 1fr; gap:5px 18px; margin-bottom:16px; }
+.ff-svc { font-size:9.5px; font-weight:600; color:#4A4A4A; display:flex; align-items:center; gap:6px; }
+.ff-svc::before { content:''; display:block; width:4px; height:4px; border-radius:50%; background:#1455FF; flex-shrink:0; }
+.ff-prices { display:flex; gap:7px; }
+.ff-pc { padding:5px 9px; border:1px solid #E5E5E5; border-radius:2px; font-size:9px; font-weight:600; color:#0A0A0A; }
+.ff-pc .amt { color:#1455FF; display:block; font-size:12px; font-weight:700; }
+.ff-pc .amt small { font-size:8px; color:#8A8A8A; font-weight:400; }
+.ff-bot { display:flex; justify-content:space-between; align-items:flex-end; }
+.ff-cta { font-size:9.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#1455FF; line-height:1.7; }
+.ff-contact { text-align:right; font-size:8px; font-weight:600; color:#8A8A8A; line-height:1.9; }
+
+/* ── TIKTOK EXTRA ── */
+.tt-badge { position:absolute; top:12px; left:14px; z-index:10; display:flex; align-items:center; gap:5px; }
+.tt-dot { width:7px; height:7px; background:#1455FF; border-radius:50%; }
+.tt-handle { font-size:8.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#0A0A0A; }
+.tt-sidebar { position:absolute; right:10px; bottom:100px; display:flex; flex-direction:column; align-items:center; gap:16px; z-index:8; }
+.tt-act { display:flex; flex-direction:column; align-items:center; gap:3px; }
+.tt-icon { width:32px; height:32px; border-radius:50%; border:1.5px solid #0A0A0A; display:flex; align-items:center; justify-content:center; font-size:12px; background:rgba(255,255,255,.85); }
+.tt-cnt { font-size:7.5px; font-weight:700; color:#0A0A0A; }
+.tt-bot { position:absolute; bottom:0; left:0; right:0; height:84px; padding:10px 16px 8px; border-top:1px solid #F0F0F0; background:#fff; }
+.tt-bot-brand { font-size:9.5px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:#0A0A0A; margin-bottom:3px; }
+.tt-bot-url { font-size:8.5px; color:#1455FF; font-weight:600; margin-bottom:7px; }
+.tt-prog { height:2px; background:#F0F0F0; border-radius:1px; overflow:hidden; }
+.tt-pf { height:100%; background:#1455FF; width:0%; transition:width .1s linear; }
+.tt-scene { position:absolute; inset:32px 52px 130px 14px; display:flex; flex-direction:column; justify-content:center;
+  opacity:0; transform:translateY(8px); transition:opacity .32s,transform .32s; pointer-events:none; }
+.tt-scene.on { opacity:1; transform:translateY(0); }
+.tt-ey { font-size:8px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:#1455FF; margin-bottom:7px; }
+.tt-h  { font-size:20px; font-weight:700; line-height:1.15; color:#0A0A0A; margin-bottom:10px; text-wrap:balance; }
+.tt-b  { font-size:10px; color:#4A4A4A; line-height:1.6; }
+
+/* ── API CODE ── */
+.api-wrap { max-width:700px; }
+.api-intro { font-size:13.5px; line-height:1.75; color:var(--fg); margin-bottom:30px; max-width:580px; }
+.cb { background:var(--surface); border:1px solid var(--border); border-radius:4px; overflow-x:auto; margin-bottom:24px; }
+.cb-head { display:flex; justify-content:space-between; align-items:center; padding:9px 16px; border-bottom:1px solid var(--border); }
+.cb-label { font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--fg2); }
+.cb-copy { font-family:var(--font); font-size:9.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+  background:none; border:1px solid var(--border); color:var(--fg2); padding:4px 9px; border-radius:2px; cursor:pointer; transition:color .2s,border-color .2s; }
+.cb-copy:hover { color:var(--fg); border-color:var(--fg2); }
+.cb pre { padding:18px; font-size:11.5px; line-height:1.75; font-family:'SF Mono','Fira Code','Consolas',monospace; color:var(--fg); tab-size:2; white-space:pre; }
+.kw  { color:#1455FF; font-weight:600; }
+.str { color:#C7600A; }
+.cmt { color:var(--fg2); font-style:italic; }
+.fn  { color:#8B3EC8; }
+.num { color:#1A8038; }
+.sec-label { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--fg2); margin-bottom:16px; }
+</style>
+
+<!-- PAGE HEADER -->
+<div class="ph">
+  <div class="ph-wm">JST · White Editorial Creative Set</div>
+  <nav class="tabs">
+    <button class="tb on" data-tab="ig-reel">IG / FB Reel 9:16</button>
+    <button class="tb" data-tab="ig-feed">IG Feed 1:1</button>
+    <button class="tb" data-tab="tiktok">TikTok 9:16</button>
+    <button class="tb" data-tab="api-code">Pexels API Integration</button>
+  </nav>
+</div>
+
+<div class="main">
+
+  <!-- ════════════════════════ IG REEL ════════════════════════ -->
+  <div class="tab-panel on" id="ig-reel">
+    <div class="two-col">
+
+      <div class="phone-wrap">
+        <div class="frame-label">IG / FB Reel — 9:16 · Animated</div>
+        <div class="phone">
+          <div class="rc" id="ig-rc">
+            <div class="top-bar"></div>
+            <div class="mvb"><div class="b1"></div><div class="b2"></div><div class="gc"></div><div class="gc2"></div><div class="gl"></div></div>
+            <div class="sc-count" id="ig-ct">1 / 6</div>
+
+            <div class="rs on" id="ig-s1">
+              <div class="s-ey">Caribbean &amp; Global</div>
+              <div class="s-h">Your Business<br>Deserves to<br><span class="ac">Be Seen.</span></div>
+              <div class="s-b">Digital marketing that<br>works while you do.</div>
+            </div>
+            <div class="rs" id="ig-s2">
+              <div class="s-ey">The Problem</div>
+              <div class="s-h">Online Silence<br>is <span class="ac">Costing You.</span></div>
+              <div class="s-b">Every day without a strong digital presence is a customer going to your competitor.</div>
+            </div>
+            <div class="rs" id="ig-s3">
+              <div class="s-ey">What We Do</div>
+              <div class="s-h">Full-Stack<br><span class="ac">Digital</span><br>Management.</div>
+              <div class="svc-list" id="ig-svcs">
+                <div class="svc-item" data-d="0"><div class="svc-dot"></div>Social Media Management</div>
+                <div class="svc-item" data-d="160"><div class="svc-dot"></div>SEO &amp; Content Strategy</div>
+                <div class="svc-item" data-d="320"><div class="svc-dot"></div>Paid Advertising</div>
+                <div class="svc-item" data-d="480"><div class="svc-dot"></div>Email &amp; Automation</div>
+              </div>
+            </div>
+            <div class="rs" id="ig-s4">
+              <div class="s-ey">Plans &amp; Pricing</div>
+              <div class="s-h">Built for<br>Every Budget.</div>
+              <div class="ps">
+                <div class="pi"><span class="pt">Starter</span><span class="pa">$99<small>/mo</small></span></div>
+                <div class="pi feat"><span class="pt">Growth</span><span class="pa">$225<small>/mo</small></span></div>
+                <div class="pi"><span class="pt">Full-Stack</span><span class="pa">$399<small>/mo</small></span></div>
+              </div>
+            </div>
+            <div class="rs" id="ig-s5">
+              <div class="s-ey">Limited Slots Available</div>
+              <div class="s-h">Book Your<br>Free Audit<br><span class="ac">Today.</span></div>
+              <div style="margin-top:14px">
+                <div class="cta-btn">Book Free Audit →</div>
+                <div class="contact"><strong>jsupremetech.online</strong><br>(658) 218-2282</div>
+              </div>
+            </div>
+            <div class="rs" id="ig-s6">
+              <div class="s-ey">J Supreme Tech</div>
+              <div class="s-h" style="font-size:44px;line-height:1">JST</div>
+              <div class="s-b" style="margin-top:8px">Digital Marketing Agency<br><span style="color:#1455FF;font-weight:600">Caribbean &amp; Global</span></div>
+            </div>
+
+            <div class="rb">
+              <div><div class="rb-brand">J Supreme Tech</div><div class="rb-sub">jsupremetech.online</div></div>
+              <div class="rb-sub">(658) 218-2282</div>
+            </div>
+            <div class="progress"><div class="progress-fill" id="ig-pf"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VO SCRIPT -->
+      <div class="vo">
+        <div class="vo-title">Voice-Over Script — IG / FB Reel</div>
+        <div class="vo-note-box"><strong>Voice:</strong> Azure Neural — en-US-AriaNeural (US female) or en-JM (JA female accent). Rate: −8%. Pitch: −2%. Tone: calm, premium, unhurried.</div>
+        <div class="voe"><div class="vt">[0:00]</div><div><div class="vx">"Your business deserves to be seen."</div><div class="vn">0.5 s pause — let it land before cut.</div></div></div>
+        <div class="voe"><div class="vt">[0:04]</div><div><div class="vx">"Every day without a strong digital presence... is a customer walking straight to your competitor."</div><div class="vn">Truth statement. Drop energy slightly mid-sentence.</div></div></div>
+        <div class="voe"><div class="vt">[0:09]</div><div><div class="vx">"J Supreme Tech handles it all — social media, SEO, paid ads, email. Everything, managed for you."</div><div class="vn">List items crisp. One beat each.</div></div></div>
+        <div class="voe"><div class="vt">[0:15]</div><div><div class="vx">"Plans starting at just ninety-nine dollars a month. Built for businesses at every stage."</div><div class="vn">Confident. Not salesy.</div></div></div>
+        <div class="voe"><div class="vt">[0:21]</div><div><div class="vx">"Book your free audit today. Slots are limited."</div><div class="vn">Weight on "Slots are limited." Slight urgency.</div></div></div>
+        <div class="voe"><div class="vt">[0:25]</div><div><div class="vx">"J Supreme Tech. Caribbean and global. jsupremetech.online."</div><div class="vn">URL spoken clearly — two syllables per beat.</div></div></div>
+
+        <div class="spec-g">
+          <div class="sg-label">Azure TTS Settings</div>
+          <div class="spec-row"><span class="sl">Primary voice</span><span class="sv">en-US-AriaNeural</span></div>
+          <div class="spec-row"><span class="sl">JA accent alt</span><span class="sv">en-JM-WayneNeural (F)</span></div>
+          <div class="spec-row"><span class="sl">Rate</span><span class="sv">prosody rate="-8%"</span></div>
+          <div class="spec-row"><span class="sl">Pitch</span><span class="sv">prosody pitch="-2%"</span></div>
+          <div class="spec-row"><span class="sl">Duration</span><span class="sv">~28 s</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════ IG FEED ════════════════════════ -->
+  <div class="tab-panel" id="ig-feed">
+    <div class="two-col">
+
+      <div>
+        <div class="frame-label">IG Feed — 1:1 · Static Production Post</div>
+        <div class="feed-frame">
+          <div class="top-bar"></div>
+          <div class="ff-bg"></div>
+          <div class="ff-c">
+            <div class="ff-top">
+              <div><div class="ff-logo">J Supreme Tech</div><div class="ff-region">Caribbean &amp; Global</div></div>
+              <div class="ff-badge">JST</div>
+            </div>
+            <div class="ff-mid">
+              <div class="ff-h">Stop Being<br>Invisible<br><span class="ac">Online.</span></div>
+              <div class="ff-svcs">
+                <div class="ff-svc">Social Media</div>
+                <div class="ff-svc">Paid Ads</div>
+                <div class="ff-svc">SEO &amp; Content</div>
+                <div class="ff-svc">Email</div>
+              </div>
+              <div class="ff-prices">
+                <div class="ff-pc"><span>Starter</span><span class="amt">$99<small>/mo</small></span></div>
+                <div class="ff-pc"><span>Growth</span><span class="amt">$225<small>/mo</small></span></div>
+                <div class="ff-pc"><span>Full-Stack</span><span class="amt">$399<small>/mo</small></span></div>
+              </div>
+            </div>
+            <div class="ff-bot">
+              <div class="ff-cta">Book Free Audit →<br><span style="font-size:8px;letter-spacing:.08em">Limited Slots</span></div>
+              <div class="ff-contact">jsupremetech.online<br>(658) 218-2282</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPECS -->
+      <div class="vo">
+        <div class="vo-title">Production Specifications</div>
+        <div class="spec-g">
+          <div class="sg-label">Format</div>
+          <div class="spec-row"><span class="sl">Dimensions</span><span class="sv">1080 × 1080 px</span></div>
+          <div class="spec-row"><span class="sl">Export</span><span class="sv">PNG · 300 dpi</span></div>
+          <div class="spec-row"><span class="sl">File size target</span><span class="sv">&lt; 8 MB</span></div>
+        </div>
+        <div class="spec-g">
+          <div class="sg-label">Typography (at 1080 px)</div>
+          <div class="spec-row"><span class="sl">Headline</span><span class="sv">Space Grotesk 700 · 96 pt</span></div>
+          <div class="spec-row"><span class="sl">Labels / services</span><span class="sv">Space Grotesk 600 · 24 pt</span></div>
+          <div class="spec-row"><span class="sl">Contact / fine print</span><span class="sv">Space Grotesk 400 · 18 pt</span></div>
+        </div>
+        <div class="spec-g">
+          <div class="sg-label">Color Tokens</div>
+          <div class="spec-row"><span class="sl">Background</span><span class="sv">#FFFFFF</span></div>
+          <div class="spec-row"><span class="sl">Primary type</span><span class="sv">#0A0A0A</span></div>
+          <div class="spec-row"><span class="sl">Accent — price / CTA only</span><span class="sv">#1455FF</span></div>
+          <div class="spec-row"><span class="sl">Muted text</span><span class="sv">#6B6B6B</span></div>
+          <div class="spec-row"><span class="sl">Top bar</span><span class="sv">3 px solid #1455FF</span></div>
+        </div>
+        <div class="spec-g">
+          <div class="sg-label">IG Caption Copy</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;font-size:11.5px;line-height:1.75;color:var(--fg)">
+            Your business can't afford to be invisible online.<br><br>
+            We manage your entire digital presence — social media, SEO, paid ads, and email — so you can focus on what you do best.<br><br>
+            Plans from $99/month. Caribbean &amp; Global.<br><br>
+            Book your free audit today. Link in bio.<br><br>
+            #DigitalMarketing #SocialMedia #JSupremeTech #Caribbean #SEO #SmallBusiness #OnlineGrowth
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════ TIKTOK ════════════════════════ -->
+  <div class="tab-panel" id="tiktok">
+    <div class="two-col">
+
+      <div class="phone-wrap">
+        <div class="frame-label">TikTok Reel — 9:16 · Animated</div>
+        <div class="phone">
+          <div class="rc" id="tt-rc">
+            <div class="top-bar"></div>
+            <div class="mvb"><div class="b1"></div><div class="b2"></div><div class="gc"></div><div class="gc2"></div><div class="gl"></div></div>
+            <div class="tt-badge"><div class="tt-dot"></div><span class="tt-handle">@jsupreme.tech</span></div>
+            <div class="sc-count" id="tt-ct">1 / 5</div>
+
+            <div class="tt-scene on" id="tt-s1">
+              <div class="tt-ey">Wait — do you know this?</div>
+              <div class="tt-h">Most businesses lose 70% of their leads online.</div>
+              <div class="tt-b">Not because the product is bad.<br>Because nobody can find you.</div>
+            </div>
+            <div class="tt-scene" id="tt-s2">
+              <div class="tt-ey">Here's the fix</div>
+              <div class="tt-h">J Supreme Tech — full digital management.</div>
+              <div class="tt-b">Social. SEO. Ads. Email.<br>We do it all so you don't have to.</div>
+            </div>
+            <div class="tt-scene" id="tt-s3">
+              <div class="tt-ey">Real pricing. No games.</div>
+              <div class="tt-h">Starting at $99/month.</div>
+              <div class="ps" style="max-width:190px;margin-top:8px">
+                <div class="pi" style="padding:7px 10px"><span class="pt" style="font-size:8.5px">Starter</span><span class="pa" style="font-size:13px">$99<small>/mo</small></span></div>
+                <div class="pi feat" style="padding:7px 10px"><span class="pt" style="font-size:8.5px">Growth</span><span class="pa" style="font-size:13px">$225<small>/mo</small></span></div>
+                <div class="pi" style="padding:7px 10px"><span class="pt" style="font-size:8.5px">Full-Stack</span><span class="pa" style="font-size:13px">$399<small>/mo</small></span></div>
+              </div>
+            </div>
+            <div class="tt-scene" id="tt-s4">
+              <div class="tt-ey">Caribbean &amp; Global</div>
+              <div class="tt-h">Book your free audit. Slots are limited.</div>
+              <div class="cta-btn" style="font-size:9.5px;padding:10px 16px;margin-top:12px;display:inline-block">Book Free Audit →</div>
+            </div>
+            <div class="tt-scene" id="tt-s5">
+              <div class="tt-ey">J Supreme Tech</div>
+              <div class="tt-h" style="font-size:34px;line-height:1">JST</div>
+              <div class="tt-b" style="margin-top:8px;color:#1455FF;font-weight:600">jsupremetech.online<br><span style="color:#4A4A4A;font-weight:400">(658) 218-2282</span></div>
+            </div>
+
+            <div class="tt-sidebar">
+              <div class="tt-act"><div class="tt-icon">♡</div><div class="tt-cnt">4.2K</div></div>
+              <div class="tt-act"><div class="tt-icon">✦</div><div class="tt-cnt">Share</div></div>
+              <div class="tt-act"><div class="tt-icon">↗</div><div class="tt-cnt">Save</div></div>
+            </div>
+            <div class="tt-bot">
+              <div class="tt-bot-brand">J Supreme Tech · Caribbean &amp; Global</div>
+              <div class="tt-bot-url">jsupremetech.online</div>
+              <div class="tt-prog"><div class="tt-pf" id="tt-pf"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TT VO -->
+      <div class="vo">
+        <div class="vo-title">TikTok Script — Faster Pacing</div>
+        <div class="vo-note-box"><strong>Hook rule:</strong> first 2 s must stop the scroll. Stat on screen mirrors VO. Add trending audio under VO at −12 dB. Text overlay uses white background chip (see design).</div>
+        <div class="voe"><div class="vt">[0:00]</div><div><div class="vx">"Wait — most businesses lose seventy percent of their leads online."</div><div class="vn">Hard open. Stat appears on screen instantly.</div></div></div>
+        <div class="voe"><div class="vt">[0:03]</div><div><div class="vx">"Not because the product is bad. Because nobody can find you."</div><div class="vn">Pause after "bad." — rhythm break.</div></div></div>
+        <div class="voe"><div class="vt">[0:07]</div><div><div class="vx">"J Supreme Tech handles your entire digital presence — social, SEO, paid ads, email. All of it."</div></div></div>
+        <div class="voe"><div class="vt">[0:13]</div><div><div class="vx">"Plans start at ninety-nine a month. Starter. Growth. Full-Stack."</div><div class="vn">Each tier appears on screen as named.</div></div></div>
+        <div class="voe"><div class="vt">[0:18]</div><div><div class="vx">"Book your free audit — link is in the bio. Slots are limited."</div><div class="vn">Point-to-camera energy. CTA chip animates in.</div></div></div>
+        <div class="voe"><div class="vt">[0:22]</div><div><div class="vx">"J Supreme Tech. Caribbean and global."</div><div class="vn">Logo lock. Duration: ~24 s.</div></div></div>
+        <div class="spec-g">
+          <div class="sg-label">TikTok Caption</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;font-size:11.5px;line-height:1.75;color:var(--fg)">
+            Most businesses lose 70% of their leads because they're invisible online 👀<br><br>
+            We fix that. Full digital management from $99/month.<br><br>
+            Book your FREE audit — link in bio. Slots going fast.<br><br>
+            #DigitalMarketing #BusinessGrowth #MarketingTips #Caribbean #JSupremeTech #SmallBusiness
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════ API CODE ════════════════════════ -->
+  <div class="tab-panel" id="api-code">
+    <div class="api-wrap">
+      <div class="sec-label">Pexels API — Real Footage Integration</div>
+      <div class="api-intro">Replace the CSS mock-video background with licensed stock footage. The module fetches a portrait video, injects it at low opacity over the white background, and degrades silently to the CSS animation if the API call fails or returns no results.</div>
+
+      <div class="cb">
+        <div class="cb-head"><span class="cb-label">pexels-video.js</span><button class="cb-copy" onclick="cp(this)">Copy</button></div>
+        <pre id="c1"><span class="cmt">// Pexels Video API — swap CSS mock-video for real footage
+// Free tier: 200 req/hour · get key at pexels.com/api</span>
+
+<span class="kw">const</span> PEXELS_KEY  = <span class="str">'YOUR_API_KEY'</span>;
+<span class="kw">const</span> PEXELS_BASE = <span class="str">'https://api.pexels.com/videos/search'</span>;
+
+<span class="cmt">/**
+ * Fetch a Pexels portrait video and mount it in a .mvb container.
+ * Falls back silently to CSS animation on any failure.
+ *
+ * @param {string} query       search term
+ * @param {string} containerId id of the .mvb element to inject into
+ * @param {object} opts        { minDuration:20, perPage:5 }
+ */</span>
+<span class="kw">async function</span> <span class="fn">injectPexelsVideo</span>(query, containerId, opts = {}) {
+  <span class="kw">const</span> { minDuration = <span class="num">20</span>, perPage = <span class="num">5</span> } = opts;
+  <span class="kw">const</span> url = <span class="str">`${PEXELS_BASE}?query=${encodeURIComponent(query)}&orientation=portrait&per_page=${perPage}`</span>;
+
+  <span class="kw">try</span> {
+    <span class="kw">const</span> res  = <span class="kw">await</span> fetch(url, { headers: { Authorization: PEXELS_KEY } });
+    <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> Error(<span class="str">`HTTP ${res.status}`</span>);
+
+    <span class="kw">const</span> { videos } = <span class="kw">await</span> res.json();
+    <span class="kw">const</span> pick = videos.find(v => v.duration >= minDuration);
+    <span class="kw">if</span> (!pick) <span class="kw">throw new</span> Error(<span class="str">'No video met minimum duration'</span>);
+
+    <span class="kw">const</span> file = <span class="fn">bestFile</span>(pick.video_files, <span class="num">720</span>);
+    <span class="fn">mountVideo</span>(file.link, containerId);
+
+    <span class="kw">return</span> { ok: <span class="kw">true</span>, id: pick.id, by: pick.user.name };
+  } <span class="kw">catch</span> (err) {
+    <span class="cmt">// CSS animation already visible — no visible fallback needed</span>
+    console.warn(<span class="str">'[JST Pexels] CSS fallback:'</span>, err.message);
+    <span class="kw">return</span> { ok: <span class="kw">false</span> };
+  }
+}
+
+<span class="cmt">// Pick the mp4 file closest to targetWidth</span>
+<span class="kw">function</span> <span class="fn">bestFile</span>(files, targetWidth) {
+  <span class="kw">return</span> [...files]
+    .filter(f => f.file_type === <span class="str">'video/mp4'</span> && f.width)
+    .sort((a, b) => Math.abs(a.width - targetWidth) - Math.abs(b.width - targetWidth))[<span class="num">0</span>]
+    ?? files[<span class="num">0</span>];
+}
+
+<span class="cmt">// Inject a muted looping &lt;video&gt; into the container at low opacity
+// so the white editorial feel is preserved — footage reads as texture</span>
+<span class="kw">function</span> <span class="fn">mountVideo</span>(src, containerId) {
+  <span class="kw">const</span> el = document.getElementById(containerId);
+  <span class="kw">if</span> (!el) <span class="kw">return</span>;
+
+  <span class="kw">const</span> vid = Object.assign(document.createElement(<span class="str">'video'</span>), {
+    src, autoplay: <span class="kw">true</span>, loop: <span class="kw">true</span>, muted: <span class="kw">true</span>, playsInline: <span class="kw">true</span>,
+  });
+  vid.style.cssText = <span class="str">`
+    position:absolute; inset:0;
+    width:100%; height:100%; object-fit:cover;
+    opacity:0; transition:opacity 1s ease;
+  `</span>;
+  vid.addEventListener(<span class="str">'canplay'</span>, () => { vid.style.opacity = <span class="str">'0.14'</span>; });
+  el.prepend(vid);
+}
+
+<span class="cmt">// ── Usage ─────────────────────────────────────────────────────</span>
+<span class="kw">const</span> QUERIES = {
+  igReel: <span class="str">'modern office professional minimal bright'</span>,
+  tiktok: <span class="str">'Caribbean city aerial cinematic'</span>,
+};
+
+<span class="fn">injectPexelsVideo</span>(QUERIES.igReel, <span class="str">'ig-mvb'</span>, { minDuration: <span class="num">25</span> });
+<span class="fn">injectPexelsVideo</span>(QUERIES.tiktok, <span class="str">'tt-mvb'</span>, { minDuration: <span class="num">20</span> });</pre>
+      </div>
+
+      <div class="cb">
+        <div class="cb-head"><span class="cb-label">Curated search queries — JST aesthetic</span><button class="cb-copy" onclick="cp(this)">Copy</button></div>
+        <pre id="c2"><span class="cmt">// Tested Pexels queries that return bright, editorial-suitable footage</span>
+
+<span class="kw">const</span> JST_QUERIES = [
+  <span class="cmt">// Clean professional — IG Reel</span>
+  <span class="str">'modern office minimal white'</span>,
+  <span class="str">'entrepreneur laptop bright daylight'</span>,
+  <span class="str">'business meeting professional clean'</span>,
+
+  <span class="cmt">// Caribbean energy — TikTok</span>
+  <span class="str">'Caribbean beach aerial sunny'</span>,
+  <span class="str">'tropical city skyline modern'</span>,
+  <span class="str">'startup team creative office bright'</span>,
+
+  <span class="cmt">// Cinematic light / pairs with CSS beams</span>
+  <span class="str">'light rays window bokeh bright'</span>,
+  <span class="str">'abstract light motion white minimal'</span>,
+];
+
+<span class="cmt">// Orientation:
+//  9:16 reel  → orientation: 'portrait'   (good library on Pexels)
+//  1:1 feed   → fetch 'landscape', crop client-side with object-fit:cover</span></pre>
+      </div>
+
+      <div class="cb">
+        <div class="cb-head"><span class="cb-label">Attribution (Pexels ToS)</span><button class="cb-copy" onclick="cp(this)">Copy</button></div>
+        <pre id="c3"><span class="cmt">// Pexels requires credit in the caption or video description.
+// Use the return value from injectPexelsVideo():</span>
+
+<span class="fn">injectPexelsVideo</span>(QUERIES.igReel, <span class="str">'ig-mvb'</span>).then(result => {
+  <span class="kw">if</span> (result.ok) {
+    <span class="cmt">// Append to IG/TikTok caption:</span>
+    console.log(<span class="str">`Video: ${result.by} via Pexels (pexels.com/video/${result.id})`</span>);
+  }
+});
+
+<span class="cmt">// Minimum credit string for captions:
+// "Stock footage: Pexels.com"</span></pre>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── TAB SWITCHING ──────────────────────────────────────────────
+document.querySelectorAll('.tb').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tb').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.tab-panel').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById(b.dataset.tab).classList.add('on');
+  });
+});
+
+// ── IG REEL ANIMATION ─────────────────────────────────────────
+(function() {
+  const scenes = [
+    { id:'ig-s1', dur:4500 },
+    { id:'ig-s2', dur:5000 },
+    { id:'ig-s3', dur:6000, enter() {
+      document.querySelectorAll('#ig-svcs .svc-item').forEach((el,i) => {
+        const d = parseInt(el.dataset.d)||i*160;
+        setTimeout(() => el.classList.add('vis'), d+200);
+      });
+    }},
+    { id:'ig-s4', dur:5500 },
+    { id:'ig-s5', dur:5500 },
+    { id:'ig-s6', dur:3000 },
+  ];
+  const total = scenes.reduce((a,s)=>a+s.dur,0);
+  let cur = -1, t0 = null;
+
+  function goTo(i) {
+    document.querySelectorAll('#ig-rc .rs').forEach(e=>e.classList.remove('on'));
+    document.getElementById(scenes[i].id).classList.add('on');
+    document.getElementById('ig-ct').textContent = `${i+1} / ${scenes.length}`;
+    if(i!==2) document.querySelectorAll('#ig-svcs .svc-item').forEach(e=>e.classList.remove('vis'));
+    if(scenes[i].enter) scenes[i].enter();
+  }
+
+  function tick(ts) {
+    if(!t0) t0=ts;
+    const e = (ts-t0)%total;
+    let acc=0;
+    for(let i=0;i<scenes.length;i++){
+      acc+=scenes[i].dur;
+      if(e<acc){ if(i!==cur){cur=i;goTo(i);} break; }
+    }
+    document.getElementById('ig-pf').style.width = (e/total*100)+'%';
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+// ── TIKTOK ANIMATION ──────────────────────────────────────────
+(function() {
+  const scenes = [
+    {id:'tt-s1',dur:4000},{id:'tt-s2',dur:4000},{id:'tt-s3',dur:5000},
+    {id:'tt-s4',dur:4000},{id:'tt-s5',dur:3000},
+  ];
+  const total = scenes.reduce((a,s)=>a+s.dur,0);
+  let cur=-1, t0=null;
+
+  function goTo(i) {
+    document.querySelectorAll('#tt-rc .tt-scene').forEach(e=>e.classList.remove('on'));
+    document.getElementById(scenes[i].id).classList.add('on');
+    document.getElementById('tt-ct').textContent=`${i+1} / ${scenes.length}`;
+  }
+
+  function tick(ts) {
+    if(!t0) t0=ts;
+    const e=(ts-t0)%total;
+    let acc=0;
+    for(let i=0;i<scenes.length;i++){
+      acc+=scenes[i].dur;
+      if(e<acc){if(i!==cur){cur=i;goTo(i);}break;}
+    }
+    document.getElementById('tt-pf').style.width=(e/total*100)+'%';
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+// ── COPY CODE ─────────────────────────────────────────────────
+function cp(btn) {
+  const pre = btn.closest('.cb').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+</script>
