@@ -4,6 +4,9 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'JST Academy',
   description: 'Daily learning in tech, marketing & trading — J Supreme Tech',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
