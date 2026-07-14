@@ -32,15 +32,17 @@ export default function LanguageHub() {
                   className="group bg-[#111] border border-neutral-800 rounded-xl p-5 hover:border-[#c9a84c] hover:bg-[#141408] transition-all"
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <span className="text-4xl">{lang.flag}</span>
-                    <span className="text-[10px] text-neutral-600 bg-neutral-900 px-2 py-1 rounded tracking-wider uppercase">
+                    <div>
+                      <span className="text-3xl leading-none">{lang.flag}</span>
+                      <h2 className="text-white font-semibold text-base mt-2 group-hover:text-[#c9a84c] transition-colors">
+                        {lang.name}
+                      </h2>
+                      <p className="text-neutral-500 text-sm mt-0.5">{lang.nativeName}</p>
+                    </div>
+                    <span className="text-[10px] text-neutral-600 bg-neutral-900 px-2 py-1 rounded tracking-wider uppercase flex-shrink-0">
                       {lang.script.split(' ')[0]}
                     </span>
                   </div>
-                  <h2 className="text-white font-semibold text-base mb-0.5 group-hover:text-[#c9a84c] transition-colors">
-                    {lang.name}
-                  </h2>
-                  <p className="text-neutral-500 text-sm mb-3">{lang.nativeName}</p>
                   <p className="text-neutral-400 text-xs leading-relaxed mb-4">{lang.tagline}</p>
                   <div className="flex items-center gap-2">
                     <div className="flex gap-1">

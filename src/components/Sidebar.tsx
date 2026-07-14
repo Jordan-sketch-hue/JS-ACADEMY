@@ -71,9 +71,9 @@ export default function Sidebar({ xp = 0, level = 1, rank = 'Observer', progress
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = path === href || (href !== '/' && path.startsWith(href))
           return (
-            <Link key={href} href={href} className="flex-1 flex flex-col items-center py-3 gap-1">
+            <Link key={href} href={href} className="flex-1 flex flex-col items-center py-2.5 gap-1 min-w-0">
               <Icon size={18} className={active ? 'text-[#c9a84c]' : 'text-neutral-600'} />
-              <span className={`text-[10px] tracking-wide ${active ? 'text-[#c9a84c]' : 'text-neutral-600'}`}>
+              <span className={`text-[9px] tracking-wide truncate w-full text-center px-1 ${active ? 'text-[#c9a84c]' : 'text-neutral-600'}`}>
                 {label}
               </span>
             </Link>

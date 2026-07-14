@@ -24,24 +24,24 @@ export default function Home() {
             </div>
 
             {/* Language Studies — Last Course Each Day */}
-            <div className="mb-8 rounded-xl border-2 border-[#c9a84c] bg-gradient-to-r from-[#0a0a0a] to-[#1a1a0a] p-6 relative overflow-hidden">
+            <div className="mb-8 rounded-xl border-2 border-[#c9a84c] bg-[#0a0a0a] p-5 md:p-6 relative overflow-hidden">
               <div className="absolute top-3 right-3 bg-[#c9a84c] text-[#0a0a0a] text-[10px] font-bold px-2 py-1 rounded tracking-widest uppercase">
                 Last Course Daily
               </div>
-              <div className="text-3xl mb-3">🌍</div>
+              <div className="text-2xl mb-2">🌍</div>
               <h2 className="text-white font-semibold text-lg mb-1">Language Studies</h2>
               <p className="text-neutral-400 text-sm mb-4">
                 {LANGUAGES.length} languages · Basic to PhD · Azure Neural Voices · Interactive drills
               </p>
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className="flex flex-wrap gap-2 mb-5">
                 {LANGUAGES.map(l => (
                   <Link
                     key={l.code}
                     href={`/language/${l.code}`}
-                    className="text-lg hover:scale-110 transition-transform"
+                    className="bg-neutral-800 hover:bg-[#c9a84c] hover:text-[#0a0a0a] text-neutral-300 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-all"
                     title={l.name}
                   >
-                    {l.flag}
+                    {l.name}
                   </Link>
                 ))}
               </div>
