@@ -2,10 +2,10 @@
 import { use, useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
-import { getLanguage, LEVEL_ORDER, VOICES, type LangCode, type ProfLevel, type VocabItem } from '@/lib/language-data'
-import { ChevronLeft, Volume2, Loader2, Check, X, ChevronDown, ChevronUp, BookOpen, GraduationCap, Dumbbell, Keyboard, Mic } from 'lucide-react'
+import { getLanguage, LEVEL_ORDER, VOICES, type LangCode, type ProfLevel, type VocabItem, type DialogueLine } from '@/lib/language-data'
+import { ChevronLeft, Volume2, Loader2, Check, X, ChevronDown, ChevronUp, BookOpen, GraduationCap, Dumbbell, Keyboard, Mic, MessageSquare, ChevronRight } from 'lucide-react'
 
-type Tab = 'vocab' | 'grammar' | 'drill' | 'chars' | 'quiz'
+type Tab = 'vocab' | 'grammar' | 'dialogue' | 'drill' | 'chars' | 'quiz'
 
 function speak(text: string, voice: string, onStart: () => void, onEnd: () => void) {
   onStart()
@@ -125,7 +125,89 @@ function DrillCard({ sentence, english, voice }: { sentence: string; english: st
   )
 }
 
-function QuizSection({ vocab, voice }: { vocab: VocabItem[]; voice: string }) {
+function DialogueSection({
+  lines, voice, title, context,
+}: { lines: DialogueLine[]; voice: string; title?: string; context?: string }) {
+  const [loadingIdx, setLoadingIdx] = useState<number | null>(null)
+  const [playingAll, setPlayingAll] = useState(false)
+
+  const speakLine = (idx: number) => new Promise<void>(resolve => {
+    const line = lines[idx]
+    setLoadingIdx(idx)
+    fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: line.native, voice }),
+    })
+      .then(r => r.blob())
+      .then(blob => {
+        setLoadingIdx(null)
+        const url = URL.createObjectURL(blob)
+        const audio = new Audio(url)
+        audio.onended = () => { URL.revokeObjectURL(url); resolve() }
+        audio.onerror = () => resolve()
+        audio.play()
+      })
+      .catch(() => { setLoadingIdx(null); resolve() })
+  })
+
+  const playAll = async () => {
+    setPlayingAll(true)
+    for (let i = 0; i < lines.length; i++) {
+      await speakLine(i)
+    }
+    setPlayingAll(false)
+  }
+
+  return (
+    <div>
+      {title && (
+        <div className="mb-4">
+          <div className="text-[13px] font-bold text-[#0a0a0a]">{title}</div>
+          {context && <p className="text-[11px] text-neutral-500 mt-0.5 leading-snug">{context}</p>}
+        </div>
+      )}
+
+      <div className="space-y-2 mb-5">
+        {lines.map((line, i) => {
+          const isYou = line.role === 'you'
+          return (
+            <div key={i} className={`rounded-xl border p-3.5 ${isYou ? 'bg-[#fdf5f0] border-[#f0c090] ml-4' : 'bg-white border-neutral-200 mr-4'}`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className={`text-[9px] font-bold tracking-[0.18em] uppercase ${isYou ? 'text-[#b85c00]' : 'text-neutral-400'}`}>
+                  {isYou ? 'You' : 'Executive'}
+                </span>
+                <button
+                  onClick={() => speakLine(i)}
+                  disabled={loadingIdx !== null || playingAll}
+                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors disabled:opacity-40 ${isYou ? 'bg-[#f0c090] hover:bg-[#e8a860]' : 'bg-[#fde8ef] hover:bg-[#f9c6d8]'}`}
+                >
+                  {loadingIdx === i
+                    ? <Loader2 size={10} className={`animate-spin ${isYou ? 'text-[#b85c00]' : 'text-[#d4376e]'}`} />
+                    : <Volume2 size={10} className={isYou ? 'text-[#b85c00]' : 'text-[#d4376e]'} />}
+                </button>
+              </div>
+              <p className="text-[14px] font-medium text-[#0a0a0a] leading-snug mb-1">{line.native}</p>
+              <p className="text-[11px] text-neutral-400 italic leading-snug">{line.english}</p>
+            </div>
+          )
+        })}
+      </div>
+
+      <button
+        onClick={playAll}
+        disabled={playingAll || loadingIdx !== null}
+        className="w-full flex items-center justify-center gap-2 bg-[#0a0a0a] text-white py-3 rounded-xl text-[12px] font-semibold hover:bg-neutral-800 transition-colors disabled:opacity-50"
+      >
+        {playingAll
+          ? <><Loader2 size={13} className="animate-spin" /> Playing…</>
+          : <><Volume2 size={13} /> Play Full Dialogue</>}
+      </button>
+    </div>
+  )
+}
+
+function QuizSection({ vocab, voice, onAdvance }: { vocab: VocabItem[]; voice: string; onAdvance?: () => void }) {
   const pool = vocab.slice(0, Math.min(vocab.length, 8))
   const [questions] = useState(() => pool.map((item, i) => {
     const wrong = pool.filter((_, j) => j !== i).sort(() => Math.random() - 0.5).slice(0, 3)
@@ -151,19 +233,31 @@ function QuizSection({ vocab, voice }: { vocab: VocabItem[]; voice: string }) {
     }, 1000)
   }
 
+  const passed = score >= questions.length * 0.8
+
   if (done) return (
     <div className="text-center py-8">
-      <div className="text-5xl mb-3">{score >= questions.length * 0.8 ? '🔥' : score >= questions.length * 0.5 ? '💪' : '📚'}</div>
-      <div className="text-[22px] font-bold text-[#0a0a0a]">{score}/{questions.length}</div>
-      <p className="text-[12px] text-neutral-500 mt-1 mb-4">
-        {score >= questions.length * 0.8 ? 'Excellent — advance to the next level.' : 'Keep drilling. Repetition is mastery.'}
+      <div className="text-5xl mb-3">{passed ? '🔥' : score >= questions.length * 0.5 ? '💪' : '📚'}</div>
+      <div className="text-[26px] font-bold text-[#0a0a0a]">{score}/{questions.length}</div>
+      <p className="text-[12px] text-neutral-500 mt-1 mb-5">
+        {passed ? 'Excellent — you are ready for the next level.' : 'Keep drilling. Repetition is mastery.'}
       </p>
-      <button
-        onClick={() => { setIdx(0); setChosen(null); setScore(0); setDone(false) }}
-        className="text-[12px] bg-[#d4376e] text-white px-5 py-2.5 rounded-lg hover:bg-[#b82e5a] font-medium"
-      >
-        Retry Quiz
-      </button>
+      <div className="flex flex-col gap-2 max-w-[240px] mx-auto">
+        {passed && onAdvance && (
+          <button
+            onClick={onAdvance}
+            className="flex items-center justify-center gap-2 text-[13px] bg-[#d4376e] text-white px-5 py-3 rounded-xl hover:bg-[#b82e5a] font-semibold"
+          >
+            Next Level <ChevronRight size={14} />
+          </button>
+        )}
+        <button
+          onClick={() => { setIdx(0); setChosen(null); setScore(0); setDone(false) }}
+          className="text-[12px] bg-neutral-100 text-neutral-600 px-5 py-2.5 rounded-xl hover:bg-neutral-200 font-medium"
+        >
+          Retry Quiz
+        </button>
+      </div>
     </div>
   )
 
@@ -235,13 +329,28 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
     charRef.current?.focus()
   }, [])
 
+  const hasDialogue = !!(lvl.dialogue && lvl.dialogue.length > 0)
+
   const tabs: { id: Tab; label: string; icon: typeof BookOpen }[] = [
     { id: 'vocab', label: 'Vocabulary', icon: BookOpen },
     { id: 'grammar', label: 'Grammar', icon: GraduationCap },
-    { id: 'drill', label: 'Drills', icon: Dumbbell },
-    { id: 'chars', label: 'Characters', icon: Keyboard },
+    { id: 'dialogue', label: 'Dialogue', icon: MessageSquare },
+    { id: 'drill', label: 'Challenge', icon: Dumbbell },
+    { id: 'chars', label: 'Special Chars', icon: Keyboard },
     { id: 'quiz', label: 'Quiz', icon: Mic },
   ]
+
+  const advanceLevel = () => {
+    const nextIdx = levelIdx + 1
+    if (nextIdx < availLevels.length) {
+      setLevelIdx(nextIdx)
+      setTab('vocab')
+      // persist to localStorage
+      const levels = JSON.parse(localStorage.getItem('lang_levels') || '{}')
+      levels[lang] = availLevels[nextIdx]
+      localStorage.setItem('lang_levels', JSON.stringify(levels))
+    }
+  }
 
   return (
     <Shell>
@@ -340,9 +449,24 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
           </div>
         )}
 
+        {tab === 'dialogue' && (
+          <div>
+            {hasDialogue
+              ? <DialogueSection lines={lvl.dialogue!} voice={voice} title={lvl.dialogueTitle} context={lvl.dialogueContext} />
+              : (
+                <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-6 text-center">
+                  <MessageSquare size={28} className="text-neutral-300 mx-auto mb-2" />
+                  <p className="text-[12px] text-neutral-500">Dialogue coming soon for this level.</p>
+                  <p className="text-[11px] text-neutral-400 mt-1">Try Vocabulary or Grammar in the meantime.</p>
+                </div>
+              )
+            }
+          </div>
+        )}
+
         {tab === 'drill' && (
           <div className="space-y-3">
-            <p className="text-[11px] text-neutral-400 mb-1">Type the native sentence exactly. Press Enter to check. Click 🔊 to hear it.</p>
+            <p className="text-[11px] text-neutral-400 mb-2">Type the sentence exactly as shown. Press Enter to check, or tap the speaker to hear it first.</p>
             {lvl.drillSentences.map((s, i) => (
               <DrillCard key={i} sentence={s.native} english={s.english} voice={voice} />
             ))}
@@ -389,7 +513,13 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
           </div>
         )}
 
-        {tab === 'quiz' && <QuizSection vocab={lvl.vocab} voice={voice} />}
+        {tab === 'quiz' && (
+          <QuizSection
+            vocab={lvl.vocab}
+            voice={voice}
+            onAdvance={levelIdx < availLevels.length - 1 ? advanceLevel : undefined}
+          />
+        )}
       </div>
     </Shell>
   )

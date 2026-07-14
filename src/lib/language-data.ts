@@ -11,6 +11,12 @@ export interface VocabItem {
   exampleEnglish: string
 }
 
+export interface DialogueLine {
+  role: 'exec' | 'you'
+  native: string
+  english: string
+}
+
 export interface LangLevel {
   level: ProfLevel
   label: string
@@ -20,6 +26,9 @@ export interface LangLevel {
   vocab: VocabItem[]
   grammar: string[]
   drillSentences: { native: string; english: string }[]
+  dialogueTitle?: string
+  dialogueContext?: string
+  dialogue?: DialogueLine[]
 }
 
 export interface Language {
@@ -89,6 +98,16 @@ export const LANGUAGES: Language[] = [
           { native: '我很好，谢谢。', english: 'I am very well, thank you.' },
           { native: '这是什么？', english: 'What is this?' },
         ],
+        dialogueTitle: 'First Meeting at a Beijing Office',
+        dialogueContext: 'You arrive at a business partner\'s office in Beijing for the first time. Their receptionist greets you.',
+        dialogue: [
+          { role: 'exec', native: '你好！欢迎来到我们公司。', english: 'Hello! Welcome to our company.' },
+          { role: 'you', native: '你好！谢谢。我叫Jordan。', english: 'Hello! Thank you. My name is Jordan.' },
+          { role: 'exec', native: '请坐。你喝茶还是喝咖啡？', english: 'Please sit down. Would you like tea or coffee?' },
+          { role: 'you', native: '谢谢，我喝茶。', english: 'Thank you, I will have tea.' },
+          { role: 'exec', native: '好的。王总马上来。', english: 'Alright. Director Wang will be right here.' },
+          { role: 'you', native: '好的，谢谢你。', english: 'Great, thank you.' },
+        ],
       },
       {
         level: 'A2', label: 'Elementary', cefr: 'A2',
@@ -118,6 +137,16 @@ export const LANGUAGES: Language[] = [
           { native: '你们有英文菜单吗？', english: 'Do you have an English menu?' },
           { native: '我需要收据。', english: 'I need a receipt.' },
         ],
+        dialogueTitle: 'Scheduling a Follow-Up Meeting',
+        dialogueContext: 'You are calling a Chinese supplier to schedule a meeting after an initial introduction.',
+        dialogue: [
+          { role: 'exec', native: '喂，你好，这里是明达公司。', english: 'Hello, this is Mingda Company.' },
+          { role: 'you', native: '你好，我是Jordan。我上周见过李经理。', english: 'Hello, I am Jordan. I met Manager Li last week.' },
+          { role: 'exec', native: '哦，是的！李经理提到过你。你打电话有什么事吗？', english: 'Oh yes! Manager Li mentioned you. What are you calling about?' },
+          { role: 'you', native: '我想安排一个会议，讨论我们的合作。', english: 'I would like to schedule a meeting to discuss our cooperation.' },
+          { role: 'exec', native: '好的。下周三下午两点可以吗？', english: 'Certainly. Is Wednesday next week at 2 PM alright?' },
+          { role: 'you', native: '可以，没问题。请告诉我你们的地址。', english: 'Yes, that works. Please tell me your address.' },
+        ],
       },
       {
         level: 'B1', label: 'Intermediate', cefr: 'B1',
@@ -144,6 +173,16 @@ export const LANGUAGES: Language[] = [
           { native: '我们的产品在亚洲市场很受欢迎。', english: 'Our products are very popular in the Asian market.' },
           { native: '我已经和他们谈过了。', english: 'I have already talked with them.' },
         ],
+        dialogueTitle: 'Negotiating Terms in a Boardroom',
+        dialogueContext: 'You are in a negotiation meeting with a senior partner at a Chinese investment firm in Shanghai.',
+        dialogue: [
+          { role: 'exec', native: '我们对你们的方案很感兴趣，但价格还有商量的余地吗？', english: 'We are very interested in your proposal, but is there room to negotiate on price?' },
+          { role: 'you', native: '我理解您的顾虑。如果订单量超过一千件，我们可以给您优惠十个百分点。', english: 'I understand your concern. If the order volume exceeds one thousand units, we can offer a 10% discount.' },
+          { role: 'exec', native: '十个百分点有点低。我们的竞争对手能给十五个百分点。', english: 'Ten percent is a bit low. Our competitors can offer fifteen percent.' },
+          { role: 'you', native: '我们的质量保证和售后服务是行业内最好的。这是综合价值，不只是价格。', english: 'Our quality guarantee and after-sales service are the best in the industry. This is total value, not just price.' },
+          { role: 'exec', native: '说得有道理。我需要跟我们的团队商量一下，明天给您答复。', english: 'That is a fair point. I need to discuss with my team and will give you an answer tomorrow.' },
+          { role: 'you', native: '好的，期待您的好消息。今天的会面非常愉快。', english: 'Understood. I look forward to good news. Today\'s meeting has been very productive.' },
+        ],
       },
       {
         level: 'B2', label: 'Upper Intermediate', cefr: 'B2',
@@ -165,6 +204,14 @@ export const LANGUAGES: Language[] = [
           { native: '这份报告需要在周五之前提交。', english: 'This report needs to be submitted before Friday.' },
           { native: '请问您对我们的方案有什么意见？', english: 'May I ask what opinions you have on our proposal?' },
         ],
+        dialogueTitle: 'Boardroom: Supply Chain Discussion',
+        dialogueContext: 'A high-stakes operations meeting with a Chinese logistics director about recent supply disruptions.',
+        dialogue: [
+          { role: 'exec', native: '鉴于近期全球供应链的压力，您认为我们应该如何调整采购策略？', english: 'Given the recent pressure on global supply chains, how do you think we should adjust our procurement strategy?' },
+          { role: 'you', native: '我建议我们分散供应来源，同时加大对本地供应商的扶持力度，以降低系统性风险。', english: 'I recommend we diversify our supply sources while increasing support for local suppliers to reduce systemic risk.' },
+          { role: 'exec', native: '这个思路值得肯定。不过，本地化采购的成本是否会大幅上升？', english: 'That thinking is commendable. However, will localised procurement costs increase significantly?' },
+          { role: 'you', native: '短期内成本确实会有所增加，但从长远来看，稳定性带来的价值远超额外支出。', english: 'Costs will indeed increase in the short term, but the long-term value of stability far outweighs the additional expenditure.' },
+        ],
       },
       {
         level: 'C1', label: 'Advanced', cefr: 'C1',
@@ -183,6 +230,15 @@ export const LANGUAGES: Language[] = [
           { native: '只有深刻理解文化背景，才能真正掌握一门语言。', english: 'Only by deeply understanding cultural context can you truly master a language.' },
           { native: '这个问题需要从多角度进行全面分析。', english: 'This issue requires comprehensive multi-angle analysis.' },
         ],
+        dialogueTitle: 'Precision & Power: Writing and Speaking Formally',
+        dialogueContext: 'A senior executive interview about long-term strategic cooperation — formal Mandarin register.',
+        dialogue: [
+          { role: 'exec', native: '请问您对这次合作的长期规划有什么看法？', english: 'What is your view on the long-term plans for this cooperation?' },
+          { role: 'you', native: '鉴于双方的互补优势，我认为深化战略合作不仅必要，而且时机成熟。', english: 'Given both parties\' complementary strengths, I believe deepening strategic cooperation is not only necessary but that the timing is right.' },
+          { role: 'exec', native: '您如何看待潜在的文化差异对合作效率的影响？', english: 'How do you view the potential impact of cultural differences on cooperation efficiency?' },
+          { role: 'you', native: '文化差异固然存在，但正是这种多元性赋予了我们跨越市场边界的独特竞争优势。', english: 'Cultural differences certainly exist, but it is precisely this diversity that gives us a unique competitive advantage in crossing market boundaries.' },
+          { role: 'exec', native: '说得非常精辟。我对合作前景充满信心。', english: 'Very incisively put. I am full of confidence in the prospects for cooperation.' },
+        ],
       },
       {
         level: 'C2', label: 'Mastery', cefr: 'C2',
@@ -200,6 +256,13 @@ export const LANGUAGES: Language[] = [
         drillSentences: [
           { native: '纵观历史，凡成大事者，皆能忍人所不能忍。', english: 'Throughout history, those who accomplish great things can endure what others cannot.' },
         ],
+        dialogueTitle: 'Diplomatic Address: State-Level Discourse',
+        dialogueContext: 'A high-level diplomatic reception — formal classical-influenced Mandarin at mastery level.',
+        dialogue: [
+          { role: 'exec', native: '贵方在此次峰会上提出的倡议令人印象深刻，不知您对多边合作机制的未来走向有何高见？', english: 'The initiative your side proposed at this summit was impressive. What is your view on the future direction of multilateral cooperation mechanisms?' },
+          { role: 'you', native: '多边主义的核心在于共识的凝聚与利益的协调。唯有摒弃零和博弈思维，方能实现互利共赢的长远目标。', english: 'The core of multilateralism lies in building consensus and coordinating interests. Only by abandoning zero-sum thinking can we achieve the long-term goal of mutual benefit.' },
+          { role: 'exec', native: '您的观点颇具远见。在当前国际格局下，这种立场尤为可贵。', english: 'Your perspective is quite far-sighted. This stance is particularly valuable in the current international landscape.' },
+        ],
       },
       {
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
@@ -215,6 +278,12 @@ export const LANGUAGES: Language[] = [
         ],
         drillSentences: [
           { native: '本文旨在探讨后殖民视角下的语言权力与文化身份认同。', english: 'This paper aims to explore linguistic power and cultural identity from a postcolonial perspective.' },
+        ],
+        dialogueTitle: 'Academic Conference: Geopolitical Discourse Theory',
+        dialogueContext: 'A post-panel Q&A at an international sinology conference — PhD-level academic Chinese.',
+        dialogue: [
+          { role: 'exec', native: '您在论文中援引了福柯的话语权理论来分析中国的国际传播战略，这一框架是否足以涵盖其独特的文化逻辑？', english: 'In your paper you invoke Foucault\'s theory of discursive power to analyse China\'s international communication strategy — does this framework suffice to encompass its unique cultural logic?' },
+          { role: 'you', native: '诚如您所言，福柯的框架源于西方知识谱系，存在一定的认识论局限。因此，本研究尝试将其与中国传统的天下观进行创造性融合，以期形成更具解释力的分析范式。', english: 'As you rightly note, Foucault\'s framework originates within a Western epistemic lineage and carries certain epistemological limitations. This study therefore attempts a creative synthesis with the Chinese traditional concept of Tianxia, aiming to produce a more explanatory analytical paradigm.' },
         ],
       },
     ],
@@ -268,6 +337,16 @@ export const LANGUAGES: Language[] = [
           { native: 'Un poco. Estoy aprendiendo español.', english: 'A little. I am learning Spanish.' },
           { native: '¿Dónde está el baño?', english: 'Where is the bathroom?' },
         ],
+        dialogueTitle: 'Networking at a Bogotá Conference',
+        dialogueContext: 'You meet a potential business partner at a tech conference in Colombia.',
+        dialogue: [
+          { role: 'exec', native: '¡Buenas tardes! ¿Es usted el señor Jordan?', english: 'Good afternoon! Are you Mr. Jordan?' },
+          { role: 'you', native: '¡Sí, soy yo! Mucho gusto en conocerle.', english: 'Yes, that\'s me! Very pleased to meet you.' },
+          { role: 'exec', native: 'El gusto es mío. ¿De dónde es usted?', english: 'The pleasure is mine. Where are you from?' },
+          { role: 'you', native: 'Soy de Jamaica. Tengo una empresa de tecnología allí.', english: 'I am from Jamaica. I have a technology company there.' },
+          { role: 'exec', native: '¡Qué interesante! ¿Podemos hablar de una posible colaboración?', english: 'How interesting! Could we speak about a possible collaboration?' },
+          { role: 'you', native: 'Por supuesto. ¿Tomamos un café y hablamos?', english: 'Of course. Shall we have a coffee and talk?' },
+        ],
       },
       {
         level: 'A2', label: 'Elementary', cefr: 'A2',
@@ -309,6 +388,14 @@ export const LANGUAGES: Language[] = [
         drillSentences: [
           { native: 'Es importante que lleguemos a un acuerdo esta semana.', english: 'It is important that we reach an agreement this week.' },
           { native: 'Si tuviéramos más tiempo, haríamos una presentación más completa.', english: 'If we had more time, we would make a more complete presentation.' },
+        ],
+        dialogueTitle: 'Investment Pitch in Mexico City',
+        dialogueContext: 'Presenting your business case to a Mexican venture capital partner.',
+        dialogue: [
+          { role: 'exec', native: '¿Cuál es la propuesta de valor diferencial de su empresa en el mercado latinoamericano?', english: 'What is the differential value proposition of your company in the Latin American market?' },
+          { role: 'you', native: 'Nuestra plataforma combina inteligencia artificial con un profundo conocimiento del mercado caribeño, lo que nos permite ofrecer soluciones que los competidores globales no pueden replicar localmente.', english: 'Our platform combines artificial intelligence with deep knowledge of the Caribbean market, allowing us to offer solutions that global competitors cannot replicate locally.' },
+          { role: 'exec', native: '¿Cuánto capital están buscando y en qué etapa se encuentran actualmente?', english: 'How much capital are you seeking and what stage are you currently at?' },
+          { role: 'you', native: 'Buscamos una inversión de medio millón de dólares para nuestra Serie A. Ya generamos ingresos y tenemos doce clientes recurrentes.', english: 'We are seeking a half-million dollar investment for our Series A. We are already generating revenue and have twelve recurring clients.' },
         ],
       },
       {
@@ -414,6 +501,16 @@ export const LANGUAGES: Language[] = [
           { native: 'Je viens de la Jamaïque.', english: 'I come from Jamaica.' },
           { native: 'Parlez-vous anglais ?', english: 'Do you speak English?' },
         ],
+        dialogueTitle: 'Arrivée à Paris — Hôtel Check-In',
+        dialogueContext: 'You arrive at a Parisian boutique hotel after a long flight. The receptionist greets you formally.',
+        dialogue: [
+          { role: 'exec', native: 'Bonsoir ! Bienvenue à l\'Hôtel Lumière. Vous avez une réservation ?', english: 'Good evening! Welcome to Hôtel Lumière. Do you have a reservation?' },
+          { role: 'you', native: 'Bonsoir. Oui, j\'ai une réservation au nom de Jordan.', english: 'Good evening. Yes, I have a reservation in the name of Jordan.' },
+          { role: 'exec', native: 'Très bien. Une chambre double pour trois nuits, c\'est ça ?', english: 'Very good. A double room for three nights, is that right?' },
+          { role: 'you', native: 'Oui, c\'est exact. À quelle heure est le petit-déjeuner ?', english: 'Yes, that is correct. What time is breakfast?' },
+          { role: 'exec', native: 'Le petit-déjeuner est servi de sept heures à dix heures. Voilà votre clé.', english: 'Breakfast is served from seven to ten o\'clock. Here is your key.' },
+          { role: 'you', native: 'Merci beaucoup. Bonne soirée !', english: 'Thank you very much. Have a good evening!' },
+        ],
       },
       {
         level: 'B1', label: 'Intermediate', cefr: 'B1',
@@ -487,6 +584,16 @@ export const LANGUAGES: Language[] = [
           { native: 'Sprechen Sie Englisch?', english: 'Do you speak English?' },
           { native: 'Ich verstehe das nicht.', english: "I don't understand that." },
           { native: 'Können Sie das bitte wiederholen?', english: 'Can you please repeat that?' },
+        ],
+        dialogueTitle: 'Erstes Geschäftstreffen in Berlin',
+        dialogueContext: 'You meet a German business contact for the first time at their Berlin office.',
+        dialogue: [
+          { role: 'exec', native: 'Guten Tag! Herzlich willkommen bei uns. Haben Sie die Reise gut gehabt?', english: 'Good day! A warm welcome to us. Did you have a good journey?' },
+          { role: 'you', native: 'Guten Tag! Ja, danke. Der Flug war angenehm. Ich freue mich, hier zu sein.', english: 'Good day! Yes, thank you. The flight was pleasant. I am glad to be here.' },
+          { role: 'exec', native: 'Schön. Darf ich Ihnen etwas anbieten? Kaffee oder Wasser?', english: 'Wonderful. May I offer you something? Coffee or water?' },
+          { role: 'you', native: 'Einen Kaffee, bitte. Schwarz, danke.', english: 'A coffee, please. Black, thank you.' },
+          { role: 'exec', native: 'Natürlich. Wir beginnen in zehn Minuten mit der Besprechung.', english: 'Of course. We will begin the meeting in ten minutes.' },
+          { role: 'you', native: 'Sehr gut. Ich bin bereit.', english: 'Very good. I am ready.' },
         ],
       },
       {
