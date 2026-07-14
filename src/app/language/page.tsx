@@ -4,7 +4,7 @@ import { LANGUAGES } from '@/lib/language-data'
 
 export default function LanguageHub() {
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0a0a0a]">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-[#0a0a0a]">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-y-auto pb-16 md:pb-0">

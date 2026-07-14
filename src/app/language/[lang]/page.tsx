@@ -93,7 +93,7 @@ export default function LanguagePage() {
   ]
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0a0a0a]">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-[#0a0a0a]">
       <audio ref={audioRef} />
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
