@@ -5,7 +5,10 @@ export async function POST(req: NextRequest) {
   const key = process.env.AZURE_SPEECH_KEY!
   const region = process.env.AZURE_SPEECH_REGION || 'eastus'
 
-  const ssml = `<speak version='1.0' xml:lang='en-US'>
+  // derive lang from voice name e.g. zh-CN-XiaoxiaoNeural → zh-CN
+  const xmlLang = voice.split('-').slice(0, 2).join('-') || 'en-US'
+
+  const ssml = `<speak version='1.0' xml:lang='${xmlLang}'>
     <voice name='${voice}'>
       <prosody rate='${rate}' pitch='${pitch}'>${text}</prosody>
     </voice>

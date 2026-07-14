@@ -2,7 +2,7 @@
 import { use, useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
-import { getLanguage, LEVEL_ORDER, VOICES, type LangCode, type VocabItem } from '@/lib/language-data'
+import { getLanguage, LEVEL_ORDER, VOICES, type LangCode, type ProfLevel, type VocabItem } from '@/lib/language-data'
 import { ChevronLeft, Volume2, Loader2, Check, X, ChevronDown, ChevronUp, BookOpen, GraduationCap, Dumbbell, Keyboard, Mic } from 'lucide-react'
 
 type Tab = 'vocab' | 'grammar' | 'drill' | 'chars' | 'quiz'
@@ -204,10 +204,12 @@ function QuizSection({ vocab, voice }: { vocab: VocabItem[]; voice: string }) {
   )
 }
 
-export default function LessonPage({ params }: { params: Promise<{ lang: string }> }) {
+export default function LessonPage({ params, searchParams }: { params: Promise<{ lang: string }>; searchParams: Promise<{ level?: string }> }) {
   const { lang } = use(params)
+  const { level: startLevel } = use(searchParams)
   const language = getLanguage(lang as LangCode)
-  const [levelIdx, setLevelIdx] = useState(0)
+  const initIdx = Math.max(0, LEVEL_ORDER.indexOf((startLevel as ProfLevel) || 'A1'))
+  const [levelIdx, setLevelIdx] = useState(initIdx)
   const [tab, setTab] = useState<Tab>('vocab')
   const [charText, setCharText] = useState('')
   const [voiceIdx, setVoiceIdx] = useState(0)
