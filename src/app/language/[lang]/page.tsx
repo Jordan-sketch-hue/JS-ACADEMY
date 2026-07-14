@@ -172,23 +172,23 @@ function DialogueSection({
         {lines.map((line, i) => {
           const isYou = line.role === 'you'
           return (
-            <div key={i} className={`rounded-xl border p-3.5 ${isYou ? 'bg-[#fdf5f0] border-[#f0c090] ml-4' : 'bg-white border-neutral-200 mr-4'}`}>
+            <div key={i} className={`rounded-xl border p-3.5 ${isYou ? 'bg-[#fde8ef] border-[#f9c6d8] ml-6' : 'bg-white border-neutral-200 mr-6'}`}>
               <div className="flex items-center justify-between mb-2">
-                <span className={`text-[9px] font-bold tracking-[0.18em] uppercase ${isYou ? 'text-[#b85c00]' : 'text-neutral-400'}`}>
+                <span className={`text-[9px] font-bold tracking-[0.18em] uppercase ${isYou ? 'text-[#d4376e]' : 'text-neutral-400'}`}>
                   {isYou ? 'You' : 'Executive'}
                 </span>
                 <button
                   onClick={() => speakLine(i)}
                   disabled={loadingIdx !== null || playingAll}
-                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors disabled:opacity-40 ${isYou ? 'bg-[#f0c090] hover:bg-[#e8a860]' : 'bg-[#fde8ef] hover:bg-[#f9c6d8]'}`}
+                  className="w-6 h-6 rounded-full bg-[#fde8ef] hover:bg-[#f9c6d8] flex items-center justify-center transition-colors disabled:opacity-40"
                 >
                   {loadingIdx === i
-                    ? <Loader2 size={10} className={`animate-spin ${isYou ? 'text-[#b85c00]' : 'text-[#d4376e]'}`} />
-                    : <Volume2 size={10} className={isYou ? 'text-[#b85c00]' : 'text-[#d4376e]'} />}
+                    ? <Loader2 size={10} className="animate-spin text-[#d4376e]" />
+                    : <Volume2 size={10} className="text-[#d4376e]" />}
                 </button>
               </div>
-              <p className="text-[14px] font-medium text-[#0a0a0a] leading-snug mb-1">{line.native}</p>
-              <p className="text-[11px] text-neutral-400 italic leading-snug">{line.english}</p>
+              <p className={`text-[14px] font-medium leading-snug mb-1 ${isYou ? 'text-[#0a0a0a]' : 'text-[#0a0a0a]'}`}>{line.native}</p>
+              <p className="text-[11px] text-neutral-500 italic leading-snug">{line.english}</p>
             </div>
           )
         })}
@@ -363,9 +363,9 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
         {/* Header */}
         <div className="flex items-center gap-3 mb-5">
           <span className="text-4xl">{language.flag}</span>
-          <div>
+          <div className="min-w-0">
             <h1 className="text-[20px] font-bold text-[#0a0a0a] leading-tight">{language.name}</h1>
-            <p className="text-[12px] text-neutral-500">{language.nativeName} · {language.family} · {language.speakers} speakers</p>
+            <p className="text-[11px] text-neutral-500 truncate">{language.nativeName} · {language.speakers} speakers</p>
           </div>
         </div>
 
@@ -390,40 +390,42 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
         </div>
 
         {/* Voice selector */}
-        <div className="flex items-center gap-2 mb-5 flex-wrap">
-          <span className="text-[10px] text-neutral-400 font-medium">Voice:</span>
-          {voices.map((v, i) => (
+        <div className="mb-5">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[10px] text-neutral-400 font-medium">Voice:</span>
+            {voices.map((v, i) => (
+              <button
+                key={v}
+                onClick={() => setVoiceIdx(i)}
+                className={`px-2.5 py-1.5 rounded-lg text-[10px] font-mono transition-colors ${
+                  i === voiceIdx ? 'bg-[#0a0a0a] text-white' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'
+                }`}
+              >
+                {v.replace('Neural', '').split('-').slice(2).join('-')}
+              </button>
+            ))}
             <button
-              key={v}
-              onClick={() => setVoiceIdx(i)}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-mono transition-colors ${
-                i === voiceIdx ? 'bg-[#0a0a0a] text-white' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'
-              }`}
+              onClick={() => speak(lvl.vocab[0]?.word || language.name, voice, () => setGlobalLoading(true), () => setGlobalLoading(false))}
+              className="flex items-center gap-1.5 text-[10px] text-[#d4376e] hover:underline font-medium"
             >
-              {v.replace('Neural', '').split('-').slice(2).join('-')}
+              {globalLoading ? <Loader2 size={11} className="animate-spin" /> : <Volume2 size={11} />}
+              Preview
             </button>
-          ))}
-          <button
-            onClick={() => speak(lvl.vocab[0]?.word || language.name, voice, () => setGlobalLoading(true), () => setGlobalLoading(false))}
-            className="ml-auto flex items-center gap-1.5 text-[10px] text-[#d4376e] hover:underline font-medium"
-          >
-            {globalLoading ? <Loader2 size={11} className="animate-spin" /> : <Volume2 size={11} />}
-            Preview voice
-          </button>
+          </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-1 bg-neutral-100 rounded-xl p-1 mb-5">
+        {/* Tabs — horizontally scrollable on mobile */}
+        <div className="flex gap-1 bg-neutral-100 rounded-xl p-1 mb-5 overflow-x-auto scrollbar-none">
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => setTab(id)}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11px] font-semibold transition-colors ${
+              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-[11px] font-semibold transition-colors whitespace-nowrap min-h-[40px] ${
                 tab === id ? 'bg-white text-[#d4376e] shadow-sm' : 'text-neutral-500 hover:text-neutral-700'
               }`}
             >
-              <Icon size={12} />
-              <span className="hidden sm:inline">{label}</span>
+              <Icon size={13} />
+              {label}
             </button>
           ))}
         </div>

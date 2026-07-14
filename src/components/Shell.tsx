@@ -2,12 +2,13 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Layers, Trophy, Award, Flame } from 'lucide-react'
+import { LayoutDashboard, Layers, Trophy, Award, Flame, Languages } from 'lucide-react'
 import { getProgress, levelName, xpToNextLevel } from '@/lib/progress'
 
 const nav = [
   { href: '/', label: 'Home', icon: LayoutDashboard },
   { href: '/tracks', label: 'Tracks', icon: Layers },
+  { href: '/language', label: 'Languages', icon: Languages },
   { href: '/rewards', label: 'Rewards', icon: Trophy },
   { href: '/certifications', label: 'Certs', icon: Award },
 ]

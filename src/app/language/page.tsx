@@ -37,8 +37,8 @@ const DAY_FOCUS: Record<number, { label: string; langs: LangCode[] }> = {
 }
 
 const LEVEL_COLORS: Record<ProfLevel, string> = {
-  A1: '#6b7280', A2: '#3b82f6', B1: '#8b5cf6',
-  B2: '#d97706', C1: '#dc2626', C2: '#059669', PhD: '#d4376e',
+  A1: '#d4376e', A2: '#d4376e', B1: '#d4376e',
+  B2: '#d4376e', C1: '#d4376e', C2: '#d4376e', PhD: '#d4376e',
 }
 
 function getLevels(): Record<string, ProfLevel> {

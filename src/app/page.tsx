@@ -52,8 +52,13 @@ export default function Dashboard() {
   const availableDays = [...new Set(COURSES.filter(c => c.weekNumber === 1).map(c => c.dayOfWeek))].sort()
   const todayDay = availableDays.includes(rawDay) ? rawDay : availableDays[0] ?? 1
   const [selectedDay, setSelectedDay] = useState<number>(todayDay)
-  const sortTradingLast = (a: Course, b: Course) => (a.track === 'trading' ? 1 : 0) - (b.track === 'trading' ? 1 : 0)
-  const todayCourses = COURSES.filter(c => c.weekNumber === 1 && c.dayOfWeek === selectedDay).sort(sortTradingLast)
+  const TRACK_ORDER: Record<string, number> = {
+    marketing: 1, tech: 2, business: 3, design: 4, mindset: 5,
+    creative: 6, culture: 7, knowledge: 8, future: 9, psychology: 10,
+    higher: 11, language: 12, trading: 13,
+  }
+  const sortCourses = (a: Course, b: Course) => (TRACK_ORDER[a.track] ?? 99) - (TRACK_ORDER[b.track] ?? 99)
+  const todayCourses = COURSES.filter(c => c.weekNumber === 1 && c.dayOfWeek === selectedDay).sort(sortCourses)
   const allFirstWeek = COURSES.filter(c => c.weekNumber === 1)
 
   useEffect(() => {
