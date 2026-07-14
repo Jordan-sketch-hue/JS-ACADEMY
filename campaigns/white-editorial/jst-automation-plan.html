@@ -1,0 +1,540 @@
+<title>JST Automation — Business & Marketing Plan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --bg:#FFFFFF;--fg:#0C0C0C;--fg2:#5A5A5A;--fg3:#9A9A9A;
+  --accent:#1455FF;--accent-sub:rgba(20,85,255,.07);
+  --surface:#F6F6F4;--border:#E4E4E0;
+  --green:#1A8038;--green-sub:rgba(26,128,56,.08);
+  --font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code',Consolas,monospace;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0C0C0C;--fg:#F2F2F0;--fg2:#9A9A9A;--fg3:#5A5A5A;
+  --surface:#181818;--border:#2A2A2A;--accent-sub:rgba(20,85,255,.13);
+  --green-sub:rgba(26,128,56,.13);
+}}
+:root[data-theme="light"]{--bg:#FFFFFF;--fg:#0C0C0C;--fg2:#5A5A5A;--fg3:#9A9A9A;--surface:#F6F6F4;--border:#E4E4E0;--accent-sub:rgba(20,85,255,.07);--green-sub:rgba(26,128,56,.08);}
+:root[data-theme="dark"]{--bg:#0C0C0C;--fg:#F2F2F0;--fg2:#9A9A9A;--fg3:#5A5A5A;--surface:#181818;--border:#2A2A2A;--accent-sub:rgba(20,85,255,.13);--green-sub:rgba(26,128,56,.13);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--bg);color:var(--fg);line-height:1.6;-webkit-font-smoothing:antialiased;}
+/* ── TOP BAR ── */
+.topbar{height:3px;background:var(--accent);}
+/* ── HEADER ── */
+header{padding:36px 24px 32px;border-bottom:1px solid var(--border);max-width:760px;margin:0 auto;}
+.hd-brand{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.hd-title{font-size:clamp(26px,5vw,38px);font-weight:700;line-height:1.15;color:var(--fg);text-wrap:balance;margin-bottom:12px;}
+.hd-sub{font-size:14px;color:var(--fg2);max-width:520px;line-height:1.7;}
+.stat-rail{display:flex;flex-wrap:wrap;gap:0;margin-top:28px;border:1px solid var(--border);}
+.stat{flex:1 1 120px;padding:14px 18px;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-n{font-size:22px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1;}
+.stat-l{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--fg3);margin-top:4px;}
+/* ── LAYOUT ── */
+.page{max-width:760px;margin:0 auto;padding:0 24px 80px;}
+/* ── SECTION ── */
+.sec{padding:44px 0;border-bottom:1px solid var(--border);}
+.sec:last-of-type{border-bottom:none;}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.sec-title{font-size:clamp(18px,3vw,24px);font-weight:700;line-height:1.2;color:var(--fg);margin-bottom:6px;text-wrap:balance;}
+.sec-body{font-size:14px;color:var(--fg2);line-height:1.75;max-width:620px;margin-bottom:24px;}
+/* ── INSET RAIL ── */
+.rail{border-left:2px solid var(--accent);padding-left:16px;margin-bottom:20px;}
+.rail p{font-size:13px;color:var(--fg);line-height:1.7;}
+.rail strong{color:var(--fg);font-weight:700;}
+/* ── AUDIENCE GRID ── */
+.aud-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:8px;}
+.aud-card{border:1px solid var(--border);padding:18px;background:var(--bg);}
+.aud-name{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--fg);margin-bottom:6px;}
+.aud-pain{font-size:12px;color:var(--fg2);line-height:1.6;margin-bottom:10px;}
+.aud-auto{font-size:11px;color:var(--fg2);line-height:1.6;}
+.aud-auto strong{color:var(--accent);font-weight:700;}
+.aud-price{display:inline-block;margin-top:10px;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-sub);padding:3px 8px;letter-spacing:.04em;}
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;margin-top:8px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums;}
+th{text-align:left;padding:10px 14px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);background:var(--surface);border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--fg);line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+tr:nth-child(even) td{background:var(--surface);}
+td.acc{color:var(--accent);font-weight:700;}
+td.grn{color:var(--green);font-weight:700;}
+td.muted{color:var(--fg3);}
+/* ── PRICING TIERS ── */
+.tier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:8px;}
+.tier{border:1px solid var(--border);padding:20px;}
+.tier.best{border-color:var(--accent);}
+.tier-name{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--fg3);margin-bottom:8px;}
+.tier-price{font-size:28px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums;}
+.tier-price small{font-size:13px;color:var(--fg3);font-weight:400;}
+.tier-tag{font-size:11px;color:var(--fg2);margin-bottom:16px;}
+.tier-items{display:flex;flex-direction:column;gap:7px;}
+.tier-item{font-size:12px;color:var(--fg);display:flex;align-items:flex-start;gap:8px;line-height:1.4;}
+.tier-item::before{content:'—';color:var(--accent);flex-shrink:0;font-weight:700;}
+.tier-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:#fff;padding:2px 7px;margin-bottom:12px;}
+/* ── FLOW STEPS ── */
+.flow{display:flex;flex-direction:column;gap:0;margin-top:8px;}
+.flow-step{display:grid;grid-template-columns:40px 1fr;gap:0 16px;padding:16px 0;border-bottom:1px solid var(--border);}
+.flow-step:last-child{border-bottom:none;}
+.flow-n{font-size:18px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;padding-top:2px;}
+.flow-title{font-size:13px;font-weight:700;color:var(--fg);margin-bottom:4px;}
+.flow-body{font-size:12px;color:var(--fg2);line-height:1.65;}
+.flow-body em{color:var(--fg);font-style:normal;font-weight:600;}
+/* ── REVENUE TABLE ── */
+.rev-bar{height:6px;background:var(--accent-sub);border-radius:0;margin-top:4px;overflow:hidden;}
+.rev-fill{height:100%;background:var(--accent);border-radius:0;}
+/* ── OUTREACH SCRIPT ── */
+.script{background:var(--surface);border-left:2px solid var(--accent);padding:16px;margin-bottom:12px;}
+.script-label{font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.script-text{font-size:12.5px;color:var(--fg);line-height:1.75;font-family:var(--font);}
+.script-text em{color:var(--fg3);font-style:italic;}
+/* ── CHANNEL GRID ── */
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:8px;}
+.ch{border:1px solid var(--border);padding:14px;}
+.ch-name{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fg);margin-bottom:5px;}
+.ch-desc{font-size:11.5px;color:var(--fg2);line-height:1.6;margin-bottom:8px;}
+.ch-pct{font-size:11px;color:var(--accent);font-weight:700;}
+/* ── SPRINT ── */
+.phase{margin-bottom:28px;}
+.phase-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--fg3);padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.sprint-item{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12.5px;}
+.sprint-item:last-child{border-bottom:none;}
+.sprint-day{font-size:10px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap;padding-top:2px;min-width:44px;}
+.sprint-task{color:var(--fg);line-height:1.55;}
+/* ── FOOTER ── */
+.foot{background:var(--fg);color:var(--bg);padding:32px 24px;margin-top:0;}
+.foot-inner{max-width:760px;margin:0 auto;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:center;}
+.foot-brand{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
+.foot-links{display:flex;flex-direction:column;gap:4px;font-size:12px;opacity:.7;}
+/* ── UTILS ── */
+.mt8{margin-top:8px;} .mt16{margin-top:16px;} .mt24{margin-top:24px;} .mt32{margin-top:32px;}
+.label-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.chip{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);color:var(--fg2);}
+.chip.blue{border-color:var(--accent);color:var(--accent);background:var(--accent-sub);}
+@media(max-width:480px){
+  .stat-rail{flex-direction:column;}
+  .stat{border-right:none;border-bottom:1px solid var(--border);}
+  .stat:last-child{border-bottom:none;}
+  header{padding:28px 20px 24px;}
+  .page{padding:0 20px 60px;}
+  .tier-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<div class="topbar"></div>
+
+<header>
+  <div class="hd-brand">J Supreme Tech · Automation Division</div>
+  <h1 class="hd-title">Business &amp; Marketing Plan:<br>Selling Automation Services</h1>
+  <p class="hd-sub">A complete roadmap for JST to acquire, close, and retain business automation clients across the Caribbean and globally — with pricing, target audiences, API integrations, sales scripts, and a 90-day launch plan.</p>
+  <div class="stat-rail">
+    <div class="stat"><div class="stat-n">$199</div><div class="stat-l">Entry price/mo</div></div>
+    <div class="stat"><div class="stat-n">14</div><div class="stat-l">Day delivery</div></div>
+    <div class="stat"><div class="stat-n">8</div><div class="stat-l">Target sectors</div></div>
+    <div class="stat"><div class="stat-n">$12K</div><div class="stat-l">MRR target mo. 6</div></div>
+    <div class="stat"><div class="stat-n">$0</div><div class="stat-l">Launch budget needed</div></div>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- ═══ WHAT JST SELLS ═══ -->
+  <section class="sec">
+    <div class="sec-label">The Product</div>
+    <h2 class="sec-title">What JST Automation Actually Is</h2>
+    <p class="sec-body">Most Caribbean businesses are running on WhatsApp messages, paper notebooks, and manual spreadsheets. They already use tools like Square, Shopify, Google Forms, or Calendly — they just don't know those tools can talk to each other. JST connects them, builds the automations, and maintains them monthly. The client touches nothing technical.</p>
+    <div class="rail">
+      <p><strong>The pitch in one sentence:</strong> "You already have the tools. We connect them so your orders, bookings, emails, invoices, and follow-ups run automatically — without you lifting a finger."</p>
+    </div>
+    <div class="rail">
+      <p><strong>Example for a restaurant:</strong> Customer fills out a Google Form order → WhatsApp confirmation fires instantly → order goes to a Google Sheet → Square invoice is created → follow-up message sent 3 days later asking for a review. JST builds all of this. Client pays $199/month to keep it running and updated.</p>
+    </div>
+    <div class="rail">
+      <p><strong>Example for a real estate agent:</strong> Facebook Lead Ad fires → lead is added to Google Sheets CRM → WhatsApp message sent within 60 seconds → DocuSign agreement triggered when they respond → reminder sent if no reply in 48 hours.</p>
+    </div>
+  </section>
+
+  <!-- ═══ TARGET AUDIENCES ═══ -->
+  <section class="sec">
+    <div class="sec-label">Who to Sell To</div>
+    <h2 class="sec-title">8 Target Audiences — Pain, Automation Match &amp; Price</h2>
+    <p class="sec-body">Each segment has a specific pain point JST solves. Lead with the pain, not the technology.</p>
+    <div class="aud-grid">
+      <div class="aud-card">
+        <div class="aud-name">Restaurants &amp; Food Service</div>
+        <div class="aud-pain">Losing orders via DM, no-shows on tables, manually posting menus, zero follow-up with repeat customers.</div>
+        <div class="aud-auto"><strong>Automate:</strong> Online order → WhatsApp confirmation → Google Sheet log → review request 48h later. Menu updates pushed to GMB automatically.</div>
+        <span class="aud-price">From $199/mo</span>
+      </div>
+      <div class="aud-card">
+        <div class="aud-name">Real Estate Agents</div>
+        <div class="aud-pain">Leads from Facebook go cold within hours. Manual follow-up is inconsistent. Contracts still sent by hand.</div>
+        <div class="aud-auto"><strong>Automate:</strong> FB Lead Ad → WhatsApp within 60 s → CRM entry → DocuSign trigger → 48-hour follow-up if no response.</div>
+        <span class="aud-price">From $449/mo</span>
+      </div>
+      <div class="aud-card">
+        <div class="aud-name">Schools &amp; Tutors</div>
+        <div class="aud-pain">Registration by WhatsApp, fee collection is manual, no automated reminders or report delivery.</div>
+        <div class="aud-auto"><strong>Automate:</strong> Google Form enrollment → Stripe/WiPay invoice → WhatsApp receipt → weekly progress report sent automatically.</div>
+        <span class="aud-price">From $199/mo</span>
+      </div>
+      <div class="aud-card">
+        <div class="aud-name">Law Firms &amp; Accountants</div>
+        <div class="aud-pain">New client intake is slow, document chasing is constant, invoices sent late or forgotten.</div>
+        <div class="aud-auto"><strong>Automate:</strong> Intake form → DocuSign NDA → Xero invoice → Gmail follow-up sequence → calendar reminder for deadlines.</div>
+        <span class="aud-price">From $449/mo</span>
+      </div>
+      <div class="aud-card">
+        <div class="aud-name">E-Commerce Stores</div>
+        <div class="aud-pain">No email sequences after purchase, cart abandonment ignored, Instagram DMs not connected to orders.</div>
+        <div class="aud-auto"><strong>Automate:</strong> Shopify order → Klaviyo email sequence → Instagram DM reply → abandoned cart recovery → review request at day 7.</div>
+        <span class="aud-price">From $449/mo</span>
+      </div>
+      <div class="aud-card">
+        <div class="aud-name">Medical Clinics</div>
+        <div class="aud-pain">Appointment no-shows, manual reminders, patient follow-up gaps, payments chased by phone.</div>
+        <div class="aud-auto"><strong>Automate:</strong> Acuity booking → WhatsApp reminder (24h + 2h before) → Stripe payment link → post-visit follow-up form → rebooking prompt.</div>
+        <span class="aud-price">From $449/mo</span>
+      </div>
+      <div class="aud-card">
+        <div class="aud-name">Logistics &amp; Couriers</div>
+        <div class="aud-pain">Dispatch tracked in notebooks, customers calling for updates, invoicing delayed, driver coordination manual.</div>
+        <div class="aud-auto"><strong>Automate:</strong> Airtable order entry → driver WhatsApp assignment → customer status update → Google Sheet invoice → payment confirmation.</div>
+        <span class="aud-price">From $199/mo</span>
+      </div>
+      <div class="aud-card">
+        <div class="aud-name">Mid-Size Companies (20–200 staff)</div>
+        <div class="aud-pain">Internal processes not connected — HR, sales, ops run on separate systems with no data flow between them.</div>
+        <div class="aud-auto"><strong>Automate:</strong> HubSpot CRM → Slack alerts → Google Workspace sync → onboarding workflows → weekly performance digest to management.</div>
+        <span class="aud-price">From $799/mo</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ API MATRIX ═══ -->
+  <section class="sec">
+    <div class="sec-label">API Integration Matrix</div>
+    <h2 class="sec-title">Tools Clients Already Use — What JST Connects</h2>
+    <p class="sec-body">You don't sell software. You connect what they already pay for. Every row below is a sales conversation starter: "Do you use [tool]? We can make it do 10× more."</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Business Type</th><th>Tools They Use</th><th>JST Connects Via</th><th>What Gets Automated</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Restaurant</td><td>Square, WhatsApp, Google Forms, Google My Business</td><td>Make.com / Zapier + Square API + WABA</td><td>Orders → confirmation → log → review request</td><td class="acc">$199/mo</td></tr>
+          <tr><td>Real Estate</td><td>Facebook Ads, Google Sheets, DocuSign, WhatsApp</td><td>Facebook Lead API + Zapier + DocuSign API</td><td>Lead → 60-sec WhatsApp → CRM → contract → follow-up</td><td class="acc">$449/mo</td></tr>
+          <tr><td>School / Tutor</td><td>Google Forms, Stripe, WiPay, WhatsApp, Gmail</td><td>Google API + Stripe API + WABA</td><td>Enroll → invoice → receipt → reminders → reports</td><td class="acc">$199/mo</td></tr>
+          <tr><td>Law / Accounting</td><td>Gmail, Xero, DocuSign, Calendly, Google Drive</td><td>Xero API + DocuSign API + Gmail API</td><td>Intake → NDA → invoice → follow-up → deadline alert</td><td class="acc">$449/mo</td></tr>
+          <tr><td>E-Commerce</td><td>Shopify, Klaviyo, Instagram, Google Analytics</td><td>Shopify API + Klaviyo + Meta Graph API</td><td>Order → email seq → DM reply → cart recovery → review</td><td class="acc">$449/mo</td></tr>
+          <tr><td>Clinic / Medical</td><td>Acuity, Google Calendar, Stripe, WhatsApp</td><td>Acuity API + Stripe API + WABA</td><td>Book → remind → payment → post-visit → rebook</td><td class="acc">$449/mo</td></tr>
+          <tr><td>Logistics</td><td>Airtable, Google Sheets, WhatsApp, Gmail</td><td>Airtable API + WABA + Sheets API</td><td>Order entry → driver assign → customer update → invoice</td><td class="acc">$199/mo</td></tr>
+          <tr><td>Mid-Size Co.</td><td>HubSpot, Slack, Google Workspace, Monday.com</td><td>HubSpot API + Slack API + Workspace API</td><td>CRM alerts → team notify → onboarding → reporting</td><td class="acc">$799/mo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rail mt24">
+      <p><strong>Key tools JST uses to build these:</strong> Make.com (no-code automation), Zapier, n8n (self-hosted), WhatsApp Business API, Google APIs, Stripe API, Shopify API, Airtable API, HubSpot API, DocuSign API, Klaviyo API, Meta Graph API, Xero API. All are accessible without building custom software.</p>
+    </div>
+  </section>
+
+  <!-- ═══ PRICING ═══ -->
+  <section class="sec">
+    <div class="sec-label">Service Packages</div>
+    <h2 class="sec-title">JST Automation Pricing — Monthly Retainer</h2>
+    <p class="sec-body">Three tiers. All include setup, maintenance, and monthly reporting. 14-day delivery guarantee on all packages. No long-term contract — cancel anytime after month 3.</p>
+    <div class="tier-grid">
+      <div class="tier">
+        <div class="tier-name">Starter</div>
+        <div class="tier-price">$199<small>/mo</small></div>
+        <div class="tier-tag">For solopreneurs &amp; micro-businesses</div>
+        <div class="tier-items">
+          <div class="tier-item">3 automated workflows</div>
+          <div class="tier-item">1 tool integration (e.g. Square + WhatsApp)</div>
+          <div class="tier-item">Monthly performance report</div>
+          <div class="tier-item">Email support (48h response)</div>
+          <div class="tier-item">14-day setup &amp; go-live</div>
+        </div>
+      </div>
+      <div class="tier best">
+        <div class="tier-badge">Most Popular</div>
+        <div class="tier-name">Growth</div>
+        <div class="tier-price">$449<small>/mo</small></div>
+        <div class="tier-tag">For growing SMEs — 5–50 staff</div>
+        <div class="tier-items">
+          <div class="tier-item">8 automated workflows</div>
+          <div class="tier-item">3 tool integrations</div>
+          <div class="tier-item">WhatsApp Business API setup</div>
+          <div class="tier-item">Weekly report + dashboard</div>
+          <div class="tier-item">WhatsApp direct support</div>
+          <div class="tier-item">14-day setup &amp; go-live</div>
+          <div class="tier-item">1 free workflow update/month</div>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="tier-name">Full-Stack</div>
+        <div class="tier-price">$799<small>/mo</small></div>
+        <div class="tier-tag">For mid-size companies, 20–200 staff</div>
+        <div class="tier-items">
+          <div class="tier-item">Unlimited workflows</div>
+          <div class="tier-item">All integrations included</div>
+          <div class="tier-item">Custom reporting dashboard</div>
+          <div class="tier-item">Priority support (4h response)</div>
+          <div class="tier-item">Monthly strategy call</div>
+          <div class="tier-item">Dedicated account manager</div>
+          <div class="tier-item">Staff training session/quarter</div>
+        </div>
+      </div>
+    </div>
+    <div class="mt24">
+      <p style="font-size:12px;color:var(--fg2)"><strong style="color:var(--fg)">Add-ons available:</strong> WhatsApp broadcast setup +$99 · Extra workflow +$75 each · Custom API integration +$150 · Audit &amp; recommendations (one-time) $299 · Annual prepay = 2 months free.</p>
+    </div>
+  </section>
+
+  <!-- ═══ JSM DIVISION ═══ -->
+  <section class="sec">
+    <div class="sec-label">JSM — J Supreme Marketing</div>
+    <h2 class="sec-title">The Marketing Arm: Bundle JST + JSM to Close Bigger Contracts</h2>
+    <p class="sec-body">JSM handles brand, content, ads, and social. JST handles automation. Together they are the full outsourced digital department. Bundling both wins contracts at $799–$1,199/mo that neither arm could close alone.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>JSM Service</th><th>What It Covers</th><th>Price</th><th>Pairs With JST...</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Brand Identity Build</td><td>Logo, colors, fonts, brand guide</td><td class="acc">$499 one-time</td><td>Automation onboarding package</td></tr>
+          <tr><td>Social Media Retainer</td><td>12 posts/mo, captions, scheduling</td><td class="acc">$199/mo</td><td>Starter automation ($199) → $398 bundle</td></tr>
+          <tr><td>Reels / TikTok Content</td><td>4 reels/mo, scripted + edited</td><td class="acc">$299/mo</td><td>Lead ad automation (Growth tier)</td></tr>
+          <tr><td>Paid Ad Management</td><td>Facebook/Instagram/Google ads</td><td class="acc">$350/mo + ad spend</td><td>Lead → CRM → WhatsApp automation</td></tr>
+          <tr><td>Email Campaign</td><td>Monthly newsletter + automation setup</td><td class="acc">$249/mo</td><td>Klaviyo / Mailchimp integration</td></tr>
+          <tr><td>Full Marketing Campaign</td><td>Strategy + content + ads + reporting</td><td class="acc">$799/mo</td><td>Full-Stack automation → $1,598 bundle</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rail mt16">
+      <p><strong>Bundle pitch:</strong> "For $799/month, we handle everything — your content goes out on schedule, your leads get followed up automatically within 60 seconds, and you get a weekly report showing exactly what's working. No hiring, no training, no headaches."</p>
+    </div>
+  </section>
+
+  <!-- ═══ MARKETING PLAN ═══ -->
+  <section class="sec">
+    <div class="sec-label">Marketing Plan</div>
+    <h2 class="sec-title">How to Get Clients — Channels, Tactics &amp; Expected Results</h2>
+    <p class="sec-body">Zero paid budget required in month 1. All channels below can be started immediately with existing accounts.</p>
+    <div class="ch-grid">
+      <div class="ch">
+        <div class="ch-name">WhatsApp Outreach</div>
+        <div class="ch-desc">Direct message to business owners in Caribbean WhatsApp groups. Lead with a specific observation about their business — not a generic pitch. 20 messages/day.</div>
+        <div class="ch-pct">Expected: 40% of early leads</div>
+      </div>
+      <div class="ch">
+        <div class="ch-name">Instagram Reels</div>
+        <div class="ch-desc">Post 3×/week showing "before/after" automation examples. "This restaurant was losing $2,000/month to no-shows. Here's what we built." Real numbers, real results.</div>
+        <div class="ch-pct">Expected: 25% of leads</div>
+      </div>
+      <div class="ch">
+        <div class="ch-name">LinkedIn</div>
+        <div class="ch-desc">Target Founder/CEO/Operations Manager titles in JA, TT, BB, GY, and Florida. Connect → share a relevant case study → offer free audit. 10 connections/day.</div>
+        <div class="ch-pct">Expected: 20% of leads</div>
+      </div>
+      <div class="ch">
+        <div class="ch-name">TikTok</div>
+        <div class="ch-desc">"I automated this [business type]'s entire order process in 2 hours" — screen recordings of the automations running. Hook-first, show the result, drop the CTA.</div>
+        <div class="ch-pct">Expected: 10% of leads</div>
+      </div>
+      <div class="ch">
+        <div class="ch-name">Referral Program</div>
+        <div class="ch-desc">Every active client gets a referral link. $100 cash or 1 free month for every paying client they send. Mention it on every monthly report.</div>
+        <div class="ch-pct">Expected: 5% of leads, 0 cost</div>
+      </div>
+      <div class="ch">
+        <div class="ch-name">Cold Email</div>
+        <div class="ch-desc">Scrape business emails from Google Maps listings (JA, TT, BB). Send 30/day with a 3-email sequence. Subject: "Quick question about [Business Name]."</div>
+        <div class="ch-pct">Expected: 10–15% open rate</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SALES SCRIPTS ═══ -->
+  <section class="sec">
+    <div class="sec-label">Sales Process</div>
+    <h2 class="sec-title">The 3-Move Close — From Stranger to Signed Client</h2>
+    <p class="sec-body">Every sale follows the same sequence. Do not skip steps. The free audit is the door.</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-n">1</div>
+        <div>
+          <div class="flow-title">The Observation Message</div>
+          <div class="flow-body">Open with something specific about THEIR business — not a generic pitch. Shows you did the work.</div>
+        </div>
+      </div>
+    </div>
+    <div class="script">
+      <div class="script-label">WhatsApp / DM — Message 1</div>
+      <div class="script-text">"Hey [Name], I came across [Business Name] on Instagram. Love what you're doing with [specific thing]. Quick question — are you still taking orders through DM? I noticed you might be losing a few because of the back-and-forth. We just set up an automated order system for a similar business here in [location] and they cut their response time to under 2 minutes. Would it be worth a 20-minute call to see if we could do the same for you? No pitch — just a walkthrough of what's possible."</div>
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-n">2</div>
+        <div>
+          <div class="flow-title">The Free Audit Call</div>
+          <div class="flow-body">On the call, ask 5 questions. Don't pitch — diagnose. Then show 3 specific automations you could build for them.</div>
+        </div>
+      </div>
+    </div>
+    <div class="script">
+      <div class="script-label">Audit Call — 5 Questions to Ask</div>
+      <div class="script-text">
+        1. "Walk me through what happens when a new customer contacts you — step by step."<br>
+        2. "Which part of that takes you the most time?"<br>
+        3. "What tools do you currently use — WhatsApp, Square, Google Forms, anything like that?"<br>
+        4. "How many leads or orders would you say you lose because of delayed follow-up?"<br>
+        5. "If we could automate one thing starting Monday, what would hurt the least to lose from your plate?"<br><br>
+        <em>Then show them a live demo of a relevant automation (pre-built in Make.com). Let them see it running. That's the close.</em>
+      </div>
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-n">3</div>
+        <div>
+          <div class="flow-title">The Scoped Proposal (same day)</div>
+          <div class="flow-body">Send within 2 hours of the call. One page. Three things you'll build. Fixed price. 14-day delivery.</div>
+        </div>
+      </div>
+    </div>
+    <div class="script">
+      <div class="script-label">Proposal Message</div>
+      <div class="script-text">
+        "Hey [Name], great speaking with you. Based on our call, here's exactly what we'd build for [Business Name]:<br><br>
+        ✦ [Automation 1 — specific to their business]<br>
+        ✦ [Automation 2]<br>
+        ✦ [Automation 3]<br><br>
+        Price: $[X]/month. Setup delivered in 14 days. No contract — cancel anytime after month 3.<br><br>
+        To get started I need a 50% deposit ($[X/2]) and 30 minutes with you this week to connect your tools. Ready to go?"
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ REVENUE MODEL ═══ -->
+  <section class="sec">
+    <div class="sec-label">Revenue Projections</div>
+    <h2 class="sec-title">Path to $12,000 MRR by Month 6</h2>
+    <p class="sec-body">Conservative model. Based on closing 4 new clients per month at an average of $350/month. Churn assumed at 10%.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Month</th><th>New Clients</th><th>Total Active</th><th>Avg Monthly Price</th><th>MRR</th><th>Cumulative Revenue</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Month 1</td><td>3</td><td>3</td><td class="acc">$250</td><td class="acc">$750</td><td>$750</td>
+          </tr>
+          <tr>
+            <td>Month 2</td><td>4</td><td>7</td><td class="acc">$299</td><td class="acc">$2,093</td><td>$2,843</td>
+          </tr>
+          <tr>
+            <td>Month 3</td><td>4</td><td>10</td><td class="acc">$349</td><td class="acc">$3,490</td><td>$6,333</td>
+          </tr>
+          <tr>
+            <td>Month 4</td><td>4</td><td>14</td><td class="acc">$399</td><td class="acc">$5,586</td><td>$11,919</td>
+          </tr>
+          <tr>
+            <td>Month 5</td><td>5</td><td>18</td><td class="acc">$449</td><td class="acc">$8,082</td><td>$20,001</td>
+          </tr>
+          <tr>
+            <td><strong>Month 6</strong></td><td><strong>6</strong></td><td><strong>24</strong></td><td class="acc"><strong>$499</strong></td><td class="grn"><strong>$11,976</strong></td><td class="grn"><strong>$31,977</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rail mt16">
+      <p><strong>Year-1 target (JST + JSM combined):</strong> JST automation $18K MRR + JSM marketing retainers $9K MRR = <strong>$27K MRR → $324K ARR</strong>. Achievable with 40–50 combined clients at blended $540/mo average.</p>
+    </div>
+    <div class="tbl-wrap mt16">
+      <table>
+        <thead><tr><th>Tier</th><th>Clients Needed for $12K MRR</th><th>Price</th><th>Ratio</th></tr></thead>
+        <tbody>
+          <tr><td>Starter only ($199)</td><td>61 clients</td><td class="acc">$199/mo</td><td class="muted">Hard at scale</td></tr>
+          <tr><td>Growth only ($449)</td><td>27 clients</td><td class="acc">$449/mo</td><td class="muted">Realistic</td></tr>
+          <tr><td>Full-Stack only ($799)</td><td>15 clients</td><td class="acc">$799/mo</td><td class="grn">Best ROI</td></tr>
+          <tr><td><strong>Blended mix (target)</strong></td><td><strong>24 clients</strong></td><td class="acc"><strong>~$499 avg</strong></td><td class="grn"><strong>Optimal</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ 90-DAY SPRINT ═══ -->
+  <section class="sec">
+    <div class="sec-label">Execution Plan</div>
+    <h2 class="sec-title">90-Day Sprint — From Zero to First $3K MRR</h2>
+    <div class="phase">
+      <div class="phase-label">Phase 1 — Days 1–30: Build the Foundation</div>
+      <div class="sprint-item"><div class="sprint-day">Day 1–3</div><div class="sprint-task">Set up Make.com account (free tier). Build 3 demo automations: restaurant order, real estate lead, clinic booking. These are your sales demos — have them running and ready to screen-share.</div></div>
+      <div class="sprint-item"><div class="sprint-day">Day 4–7</div><div class="sprint-task">Create jsupremetech.online service page for automation. One page. Headline, 3 tiers with prices, 3 case studies (use the demos), contact form or WhatsApp link. No fluff.</div></div>
+      <div class="sprint-item"><div class="sprint-day">Day 8–14</div><div class="sprint-task">Post 6 Instagram Reels showing each demo automation running. "We automated this restaurant's order system in 2 hours" format. Pin the first one to your profile. Run 3 WhatsApp outreach campaigns to local business groups.</div></div>
+      <div class="sprint-item"><div class="sprint-day">Day 15–21</div><div class="sprint-task">Send 150 cold WhatsApp messages (10/day) to businesses in target sectors. Log every response in a Google Sheet. Goal: 10 audit calls booked.</div></div>
+      <div class="sprint-item"><div class="sprint-day">Day 22–30</div><div class="sprint-task">Run 10 free audit calls. Close 3 at Starter tier ($199). Collect 50% deposit. Build and deliver by day 30. First MRR: $597.</div></div>
+    </div>
+    <div class="phase">
+      <div class="phase-label">Phase 2 — Days 31–60: Build the Pipeline</div>
+      <div class="sprint-item"><div class="sprint-day">Day 31–40</div><div class="sprint-task">Ask all 3 active clients for a testimonial video or WhatsApp voice note. Post as Reels. Real client results are your best content. Start LinkedIn outreach — 10 connects/day to JA/TT/BB founders.</div></div>
+      <div class="sprint-item"><div class="sprint-day">Day 41–50</div><div class="sprint-task">Pitch the Growth tier ($449) to all 3 existing Starter clients. Show them 5 additional automations you could add. Upsell goal: 2 of 3 upgrade. MRR jumps from $597 to ~$1,445.</div></div>
+      <div class="sprint-item"><div class="sprint-day">Day 51–60</div><div class="sprint-task">Close 4 new clients (mix of Starter and Growth). Set up referral program. Total clients: 7. MRR target: ~$2,000.</div></div>
+    </div>
+    <div class="phase">
+      <div class="phase-label">Phase 3 — Days 61–90: Scale to First $3K</div>
+      <div class="sprint-item"><div class="sprint-day">Day 61–75</div><div class="sprint-task">Pitch a mid-size company (logistics co., accounting firm, or school chain) on the Full-Stack package ($799). One signed Full-Stack client adds more MRR than 4 Starters. Target 2 this phase.</div></div>
+      <div class="sprint-item"><div class="sprint-day">Day 76–90</div><div class="sprint-task">Close 3 more clients via referrals and inbound. By day 90: 10 active clients, ~$3,500 MRR. Build case study document. Start running $50/week Facebook ad to accelerate month 4+.</div></div>
+    </div>
+  </section>
+
+  <!-- ═══ COMPETITIVE POSITIONING ═══ -->
+  <section class="sec">
+    <div class="sec-label">Positioning</div>
+    <h2 class="sec-title">Why JST Wins — vs. Fiverr, DIY, &amp; Local Agencies</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Factor</th><th>JST</th><th>Fiverr Freelancer</th><th>DIY (Zapier/Make)</th><th>Local Agency</th></tr></thead>
+        <tbody>
+          <tr><td>Ongoing maintenance</td><td class="grn">Yes — included</td><td class="muted">No</td><td class="muted">Owner does it</td><td class="muted">Usually extra cost</td></tr>
+          <tr><td>Caribbean context</td><td class="grn">Native understanding</td><td class="muted">No</td><td class="muted">No</td><td class="muted">Varies</td></tr>
+          <tr><td>WhatsApp Business API</td><td class="grn">Included in Growth+</td><td class="muted">Rarely offered</td><td class="muted">Complex DIY</td><td class="muted">Extra cost</td></tr>
+          <tr><td>Delivery time</td><td class="grn">14 days guaranteed</td><td class="muted">Variable</td><td class="muted">Weeks of learning</td><td class="muted">4–8 weeks</td></tr>
+          <tr><td>Price transparency</td><td class="grn">Fixed monthly</td><td class="muted">Per project, variable</td><td class="acc">Low ($49–$99/mo tools only)</td><td class="muted">Hidden fees common</td></tr>
+          <tr><td>JSM marketing bundle</td><td class="grn">Available same vendor</td><td class="muted">Different person</td><td class="muted">Not available</td><td class="muted">Usually yes but costly</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rail mt16">
+      <p><strong>The JST pitch against DIY tools:</strong> "You could learn Make.com and Zapier yourself — it takes about 40 hours to get proficient. Or you pay us $199/month and it's running in 14 days, maintained forever, and if something breaks at 11pm, we fix it, not you."</p>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT ═══ -->
+  <section class="sec" style="border-bottom:none">
+    <div class="sec-label">Get Started</div>
+    <h2 class="sec-title">Ready to Close Your First Automation Client?</h2>
+    <div class="label-row mt16">
+      <span class="chip blue">jsupremetech.online</span>
+      <span class="chip blue">(658) 218-2282</span>
+      <span class="chip blue">global.jsuprememarketing@gmail.com</span>
+      <span class="chip">Caribbean &amp; Global</span>
+    </div>
+    <div class="rail">
+      <p>Use this plan as your reference doc. Start with the 90-day sprint. Book the first audit call this week. The only thing that changes MRR is signed clients — everything else is preparation.</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="foot">
+  <div class="foot-inner">
+    <div class="foot-brand">J Supreme Tech · J Supreme Marketing</div>
+    <div class="foot-links">
+      <span>jsupremetech.online</span>
+      <span>(658) 218-2282</span>
+      <span>Caribbean &amp; Global</span>
+    </div>
+  </div>
+</div>
