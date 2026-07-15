@@ -7,7 +7,7 @@
 
 ## Brand
 - Colors: Void Black `#0A0A0A` · Supreme Gold `#C9A84C` · Off White `#F5F5F0`
-- Fonts: Bebas Neue (display) · Futura PT Bold (labels) · Sinter (body)
+- Fonts: Bebas Neue (display) · Space Grotesk (labels + body)
 - Adobe Fonts kit: `xvb1nwt` → `<link rel="stylesheet" href="https://use.typekit.net/xvb1nwt.css">`
 
 ## Tool Stack
@@ -41,8 +41,8 @@
 |---|---|---|---|---|---|
 | Pixabay | Photos + Videos | `pixabay.com/api/` | `?key=` param | 25k req/hr | `PIXABAY_API_KEY` in `.env` |
 | Pixabay Music | Royalty-free music | `pixabay.com/api/?type=music` | `?key=` param | 25k req/hr | Same key |
-| Pexels | Photos + Videos | `api.pexels.com/v1/` | `Authorization:` header | 200 req/hr · 20k/month | `PEXELS_API_KEY` in `.env` — **get at pexels.com/api** |
-| Unsplash | Editorial photos | `api.unsplash.com/` | `Authorization: Client-ID` header | 50 req/hr (demo) · 1k/hr (prod) | `UNSPLASH_ACCESS_KEY` in `.env` — **get at unsplash.com/developers** |
+| Pexels | Photos + Videos | `api.pexels.com/v1/` | `Authorization:` header | 200 req/hr · 20k/month | `PEXELS_API_KEY` in `.env` |
+| Unsplash | Editorial photos | `api.unsplash.com/` | `Authorization: Client-ID` header | 50 req/hr (demo) · 1k/hr (prod) | `UNSPLASH_ACCESS_KEY` in `.env` |
 | Coverr | Cinematic b-roll video loops | `coverr.co` | None — direct download | Unlimited | No key |
 | YouTube Audio Library | Copyright-safe music | Manual download | None | Unlimited | No key |
 
