@@ -36,6 +36,16 @@
 | Adobe MCP (this session) | Adobe Stock photo licensing, image edits, Express templates | Adobe account (OAuth) |
 | Runway (Gen-4) | AI image/video gen — `_creative-toolkit/ai-media/` | `RUNWAYML_API_SECRET` — not yet entered |
 
+### Stock Media (A-Roll / B-Roll / Music)
+| Source | Type | Endpoint | Auth | Limit | Key |
+|---|---|---|---|---|---|
+| Pixabay | Photos + Videos | `pixabay.com/api/` | `?key=` param | 25k req/hr | `PIXABAY_API_KEY` in `.env` |
+| Pixabay Music | Royalty-free music | `pixabay.com/api/?type=music` | `?key=` param | 25k req/hr | Same key |
+| Pexels | Photos + Videos | `api.pexels.com/v1/` | `Authorization:` header | 200 req/hr · 20k/month | `PEXELS_API_KEY` in `.env` — **get at pexels.com/api** |
+| Unsplash | Editorial photos | `api.unsplash.com/` | `Authorization: Client-ID` header | 50 req/hr (demo) · 1k/hr (prod) | `UNSPLASH_ACCESS_KEY` in `.env` — **get at unsplash.com/developers** |
+| Coverr | Cinematic b-roll video loops | `coverr.co` | None — direct download | Unlimited | No key |
+| YouTube Audio Library | Copyright-safe music | Manual download | None | Unlimited | No key |
+
 ### AI / LLM APIs
 | Tool | Endpoint | Free Tier |
 |---|---|---|
