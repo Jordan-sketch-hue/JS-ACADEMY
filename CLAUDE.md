@@ -11,6 +11,12 @@
 - Fonts: Bebas Neue (display) · Space Grotesk (labels + body)
 - Adobe Fonts kit: `xvb1nwt` → `<link rel="stylesheet" href="https://use.typekit.net/xvb1nwt.css">`
 
+### Creative Direction Rules (NON-NEGOTIABLE)
+- **Reel/Story backgrounds: pure Void Black `#0A0A0A` only.** No gold fills, no gold gradients, no gold washes in the background. Gold is accent-only — text, borders, highlights, small UI elements. A gold-tinted background looks cheap and off-brand.
+- Every creative must feel **premium** — think high-end agency, not template builder.
+- Reels: dark, cinematic, minimal. Text pops on black. Gold is used surgically.
+- Feed posts: same rule — black ground, gold accents. Never fill large areas with gold.
+
 ## JST Services + Pricing
 | Service | Price (USD) |
 |---|---|
