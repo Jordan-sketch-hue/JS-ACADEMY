@@ -47,7 +47,7 @@ export const COURSES: Course[] = [
   ...CROSS_CULTURES_COURSES,
   ...NEED_TO_KNOW_COURSES,
   ...HIGHER_SELF_COURSES,
-]
+] as Course[]
 
 export const TRACK_META: Record<Track, { subtitle: string; icon: string }> = {
   'Marketing': { subtitle: 'Brand strategy, paid growth, content & positioning', icon: '📈' },
