@@ -1,3 +1,14 @@
+import { MARKETING_COURSES } from './tracks/marketing'
+import { TECHNOLOGY_COURSES } from './tracks/technology'
+import { TRADING_COURSES } from './tracks/trading'
+import { BUSINESS_COURSES } from './tracks/business'
+import { DESIGN_COURSES } from './tracks/design'
+import { MINDSET_COURSES } from './tracks/mindset'
+import { CREATIVE_COURSES } from './tracks/creative'
+import { CROSS_CULTURES_COURSES } from './tracks/cross-cultures'
+import { NEED_TO_KNOW_COURSES } from './tracks/need-to-know'
+import { HIGHER_SELF_COURSES } from './tracks/higher-self'
+
 export type Level = 'Beginner' | 'Masters' | 'PhD' | 'Next-Gen AI'
 export type Track = 'Marketing' | 'Technology' | 'Trading' | 'Business' | 'Design' | 'Mindset' | 'Creative' | 'Cross Cultures' | 'Need to Know' | 'Higher Self'
 
@@ -26,27 +37,16 @@ export interface TrackGroup {
 }
 
 export const COURSES: Course[] = [
-  // ── MARKETING ──────────────────────────────────────────────────────────
-  {
-    id: 'marketing-1',
-    track: 'Marketing',
-    title: 'Paid media attribution: knowing what actually works',
-    subtitle: 'Multi-touch models, UTM architecture & Meta Ads audit',
-    duration: '15 m',
-    level: 'PhD',
-    xp: 180,
-    sections: [
-      {
-        title: 'Why attribution is broken by default',
-        content: 'Most ad platforms claim 100% of conversions. Meta says it drove the sale. Google says it drove the sale. Your email tool says it drove the sale. They\'re all lying — not maliciously, but by design. Each platform uses last-click within its own window and ignores every touchpoint that happened outside its walls. You need a model that\'s platform-agnostic.',
-        keyPoints: [
-          'Last-click attribution ignores the journey',
-          'Platform-native attribution is always self-serving',
-          'The truth lives in your own data warehouse',
-        ],
-      },
-    ],
-  },
+  ...MARKETING_COURSES,
+  ...TECHNOLOGY_COURSES,
+  ...TRADING_COURSES,
+  ...BUSINESS_COURSES,
+  ...DESIGN_COURSES,
+  ...MINDSET_COURSES,
+  ...CREATIVE_COURSES,
+  ...CROSS_CULTURES_COURSES,
+  ...NEED_TO_KNOW_COURSES,
+  ...HIGHER_SELF_COURSES,
 ]
 
 export const TRACK_META: Record<Track, { subtitle: string; icon: string }> = {
