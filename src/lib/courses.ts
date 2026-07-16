@@ -15,7 +15,7 @@ export type Track = 'Marketing' | 'Technology' | 'Trading' | 'Business' | 'Desig
 export interface Section {
   title: string
   content: string
-  keyPoints?: string[]
+  keyPoints?: readonly string[]
 }
 
 export interface Course {
@@ -26,7 +26,7 @@ export interface Course {
   duration: string
   level: Level
   xp: number
-  sections: Section[]
+  sections: readonly Section[]
 }
 
 export interface TrackGroup {
@@ -47,7 +47,7 @@ export const COURSES: Course[] = [
   ...CROSS_CULTURES_COURSES,
   ...NEED_TO_KNOW_COURSES,
   ...HIGHER_SELF_COURSES,
-] as Course[]
+] as unknown as Course[]
 
 export const TRACK_META: Record<Track, { subtitle: string; icon: string }> = {
   'Marketing': { subtitle: 'Brand strategy, paid growth, content & positioning', icon: '📈' },
