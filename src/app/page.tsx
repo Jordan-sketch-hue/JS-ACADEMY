@@ -2,9 +2,16 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
-import { COURSES, TRACKS, LEVEL_COLORS, type Course } from '@/lib/courses'
+import { COURSES, TRACKS, LEVEL_COLORS, type Course, type Track } from '@/lib/courses'
 import { getProgress, isCourseCompleted, levelName, xpToNextLevel, type UserProgress } from '@/lib/progress'
-import { Clock, Play, CheckCircle, Flame, Trophy, BookOpen, Star } from 'lucide-react'
+import { Clock, Play, CheckCircle, Flame, Trophy, BookOpen, Star, ChevronRight } from 'lucide-react'
+
+function getTimeOfDay() {
+  const h = new Date().getHours()
+  if (h < 12) return 'morning'
+  if (h < 17) return 'afternoon'
+  return 'evening'
+}
 
 function LevelBadge({ level }: { level: string }) {
   const c = LEVEL_COLORS[level as keyof typeof LEVEL_COLORS] ?? { text: '#555', bg: '#f0f0ee' }
@@ -14,52 +21,73 @@ function LevelBadge({ level }: { level: string }) {
   )
 }
 
-function CourseRow({ course }: { course: Course }) {
-  const done = isCourseCompleted(course.id)
-  const track = TRACKS[course.track]
+function TrackCard({ track, courses }: { track: Track; courses: Course[] }) {
+  const meta = TRACKS[track]
+  const completed = courses.filter(c => isCourseCompleted(c.id)).length
+  const total = courses.length
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+  const nextCourse = courses.find(c => !isCourseCompleted(c.id))
+
   return (
-    <Link href={`/courses/${course.id}`}
-      className="flex items-center gap-3 px-4 py-3.5 hover:bg-neutral-50 active:bg-neutral-100 transition-colors border-b border-neutral-50 last:border-0 group">
-      <div className="w-1 h-10 rounded-full flex-shrink-0" style={{ background: track?.color }} />
-      <div className="flex-1 min-w-0">
-        <div className="text-[13px] font-medium text-[#0a0a0a] leading-snug">{course.title}</div>
-        <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-[10px] font-medium tracking-[0.12em] uppercase" style={{ color: track?.color }}>{track?.label}</span>
-          <span className="text-neutral-200 text-[10px]">·</span>
-          <span className="text-[10px] text-neutral-400 flex items-center gap-0.5"><Clock size={9} />{course.duration}m</span>
+    <div className="bg-white border border-neutral-100 rounded-xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-neutral-50 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full" style={{ background: meta.color }} />
+          <span className="text-[11px] font-medium tracking-[0.1em] uppercase" style={{ color: meta.color }}>{meta.label}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-neutral-400">{completed}/{total}</span>
+          <Link href={`/tracks/${track}`} className="text-[10px] text-neutral-400 hover:text-neutral-600 flex items-center gap-0.5">
+            View all <ChevronRight size={10} />
+          </Link>
         </div>
       </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
-        <LevelBadge level={course.level} />
-        <span className="text-[11px] text-[#c9a84c] font-medium">+{course.xp}</span>
-        {done
-          ? <CheckCircle size={15} className="text-green-500" />
-          : <div className="w-7 h-7 bg-[#0a0a0a] rounded-full flex items-center justify-center flex-shrink-0">
-              <Play size={9} className="text-white ml-0.5" />
-            </div>
-        }
+
+      {/* progress bar */}
+      <div className="px-4 pt-2.5 pb-1">
+        <div className="w-full bg-neutral-100 rounded h-1 overflow-hidden">
+          <div className="h-full rounded transition-all duration-700" style={{ width: `${pct}%`, background: meta.color }} />
+        </div>
+        {pct === 100 && (
+          <div className="text-[10px] mt-1.5 font-medium" style={{ color: meta.color }}>
+            ✓ Track complete
+          </div>
+        )}
       </div>
-    </Link>
+
+      {/* completion outcome — shown when track is done */}
+      {pct === 100 && (
+        <div className="px-4 pb-3">
+          <div className="text-[11px] text-neutral-500 leading-relaxed mt-1">{meta.completionOutcome}</div>
+        </div>
+      )}
+
+      {/* next course to take */}
+      {nextCourse && (
+        <Link href={`/courses/${nextCourse.id}`}
+          className="flex items-center gap-3 px-4 py-3 hover:bg-neutral-50 transition-colors border-t border-neutral-50">
+          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: meta.color }}>
+            <Play size={9} className="text-white ml-0.5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[12px] font-medium text-[#0a0a0a] truncate">
+              M{nextCourse.module} · {nextCourse.title}
+            </div>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-[10px] text-neutral-400 flex items-center gap-0.5"><Clock size={9} />{nextCourse.duration}m</span>
+              <LevelBadge level={nextCourse.level} />
+              <span className="text-[10px] font-medium" style={{ color: '#c9a84c' }}>+{nextCourse.xp} XP</span>
+            </div>
+          </div>
+          <ChevronRight size={14} className="text-neutral-300 flex-shrink-0" />
+        </Link>
+      )}
+    </div>
   )
 }
 
 export default function Dashboard() {
   const [progress, setProgress] = useState<UserProgress | null>(null)
-
-  const today = new Date()
-  const dayOfWeek = today.getDay() || 7
-  const rawDay = dayOfWeek <= 5 ? dayOfWeek : 1
-  const availableDays = [...new Set(COURSES.filter(c => c.weekNumber === 1).map(c => c.dayOfWeek))].sort()
-  const todayDay = availableDays.includes(rawDay) ? rawDay : availableDays[0] ?? 1
-  const [selectedDay, setSelectedDay] = useState<number>(todayDay)
-  const TRACK_ORDER: Record<string, number> = {
-    marketing: 1, tech: 2, business: 3, design: 4, mindset: 5,
-    creative: 6, culture: 7, knowledge: 8, future: 9, psychology: 10,
-    higher: 11, language: 12, trading: 13,
-  }
-  const sortCourses = (a: Course, b: Course) => (TRACK_ORDER[a.track] ?? 99) - (TRACK_ORDER[b.track] ?? 99)
-  const todayCourses = COURSES.filter(c => c.weekNumber === 1 && c.dayOfWeek === selectedDay).sort(sortCourses)
-  const allFirstWeek = COURSES.filter(c => c.weekNumber === 1)
 
   useEffect(() => {
     setProgress(getProgress())
@@ -72,13 +100,19 @@ export default function Dashboard() {
   const streak = progress?.streak ?? 0
   const level = progress?.level ?? 1
   const { pct } = xpToNextLevel(xp)
-  const totalXpAvailable = todayCourses.reduce((s, c) => s + c.xp, 0)
-  const totalMin = todayCourses.reduce((s, c) => s + c.duration, 0)
 
-  const days = [
-    { label: 'Mon', n: 1 }, { label: 'Tue', n: 2 }, { label: 'Wed', n: 3 },
-    { label: 'Thu', n: 4 }, { label: 'Fri', n: 5 },
+  const trackOrder: Track[] = [
+    'marketing', 'tech', 'business', 'design', 'mindset',
+    'creative', 'trading', 'culture', 'knowledge', 'future', 'psychology', 'higher',
   ]
+
+  const trackCourses = trackOrder.map(track => ({
+    track,
+    courses: COURSES.filter(c => c.track === track).sort((a, b) => a.module - b.module),
+  })).filter(t => t.courses.length > 0)
+
+  const totalCourses = COURSES.filter(c => c.track !== 'language').length
+  const totalXP = COURSES.filter(c => c.track !== 'language').reduce((s, c) => s + c.xp, 0)
 
   return (
     <Shell>
@@ -88,12 +122,12 @@ export default function Dashboard() {
         <div className="bg-[#0a0a0a] rounded-xl px-5 py-4 flex items-center justify-between">
           <div>
             <div className="text-white text-[15px] font-medium">Good {getTimeOfDay()}, Jordan.</div>
-            <div className="text-[11px] text-neutral-500 mt-0.5">{todayCourses.length} courses · {totalMin} min</div>
+            <div className="text-[11px] text-neutral-500 mt-0.5">{totalCourses} modules across {trackOrder.length} tracks</div>
           </div>
           <div className="flex gap-4">
             {[
-              { val: todayCourses.length, label: 'Today' },
-              { val: `+${totalXpAvailable}`, label: 'XP' },
+              { val: `${totalCourses}`, label: 'Modules' },
+              { val: `+${(totalXP / 1000).toFixed(0)}k`, label: 'XP avail.' },
             ].map(({ val, label }) => (
               <div key={label} className="text-right">
                 <div className="text-[#c9a84c] text-xl font-medium leading-none">{val}</div>
@@ -128,83 +162,28 @@ export default function Dashboard() {
           <span className="text-[10px] text-neutral-400 flex-shrink-0">{pct}% → L{level + 1}</span>
         </div>
 
-        {/* Day switcher tabs */}
-        <div className="flex gap-1.5">
-          {days.map(({ label, n }) => {
-            const isToday = n === todayDay
-            const isSelected = n === selectedDay
-            const hasCourses = allFirstWeek.some(c => c.dayOfWeek === n)
-            return (
-              <button key={n} onClick={() => setSelectedDay(n)}
-                className={`flex-1 py-2 rounded-lg text-[10px] font-medium tracking-[0.1em] uppercase transition-colors ${
-                  isSelected
-                    ? 'bg-[#0a0a0a] text-white'
-                    : 'bg-white border border-neutral-100 text-neutral-400 hover:border-neutral-300'
-                } ${!hasCourses ? 'opacity-40' : ''}`}>
-                {label}
-                {isToday && <span className="block text-[8px] mt-0.5 opacity-60">today</span>}
-              </button>
-            )
-          })}
+        {/* Track cards */}
+        <div className="space-y-3">
+          <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-400 px-0.5">Your tracks</div>
+          {trackCourses.map(({ track, courses }) => (
+            <TrackCard key={track} track={track} courses={courses} />
+          ))}
         </div>
 
-        {/* Selected day courses */}
-        <div className="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-neutral-50 flex items-center justify-between">
-            <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-400">
-              {selectedDay === todayDay ? "Today's courses" : days.find(d => d.n === selectedDay)?.label + "'s courses"}
-            </div>
-            <div className="text-[10px] text-neutral-300">{todayCourses.length} courses · {todayCourses.reduce((s,c)=>s+c.duration,0)}m</div>
+        {/* Language Lab CTA */}
+        <Link href="/language"
+          className="flex items-center gap-4 bg-white border border-neutral-100 rounded-xl px-4 py-3.5 hover:border-neutral-300 transition-colors">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: TRACKS.language.bg }}>
+            <span className="text-base">🌐</span>
           </div>
-          {todayCourses.length > 0
-            ? todayCourses.map(c => <CourseRow key={c.id} course={c} />)
-            : <div className="px-4 py-6 text-center text-[12px] text-neutral-300">No courses scheduled</div>
-          }
-        </div>
-
-        {/* Week overview */}
-        <div className="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-neutral-50">
-            <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-400">This week</div>
+          <div className="flex-1">
+            <div className="text-[13px] font-medium text-[#0a0a0a]">Language Lab</div>
+            <div className="text-[11px] text-neutral-400 mt-0.5">14 languages · Azure Neural voice coaching</div>
           </div>
-          {days.map(({ label, n }) => {
-            const dayCourses = allFirstWeek.filter(c => c.dayOfWeek === n)
-            const isToday = n === todayDay
-            const isSelected = n === selectedDay
-            const doneCount = dayCourses.filter(c => isCourseCompleted(c.id)).length
-            return (
-              <button key={n} onClick={() => setSelectedDay(n)}
-                className={`w-full text-left px-4 py-3 border-b border-neutral-50 last:border-0 transition-colors ${isSelected ? 'bg-neutral-50' : 'hover:bg-neutral-50/50'}`}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className={`text-[11px] font-medium tracking-[0.08em] uppercase ${isSelected ? 'text-[#0a0a0a]' : 'text-neutral-400'}`}>
-                    {label}
-                    {isToday && <span className="text-[#c9a84c] ml-1.5">← today</span>}
-                  </span>
-                  <span className="text-[10px] text-neutral-300">{doneCount}/{dayCourses.length} · {dayCourses.reduce((s, c) => s + c.duration, 0)}m</span>
-                </div>
-                <div className="space-y-1">
-                  {dayCourses.map(c => (
-                    <Link key={c.id} href={`/courses/${c.id}`} onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 active:opacity-60">
-                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: TRACKS[c.track]?.color }} />
-                      <span className="text-[11px] text-neutral-500 leading-snug truncate">{c.title}</span>
-                      {isCourseCompleted(c.id) && <CheckCircle size={10} className="text-green-400 flex-shrink-0" />}
-                    </Link>
-                  ))}
-                  {dayCourses.length === 0 && <span className="text-[11px] text-neutral-300">No courses yet</span>}
-                </div>
-              </button>
-            )
-          })}
-        </div>
+          <ChevronRight size={14} className="text-neutral-300" />
+        </Link>
 
       </div>
     </Shell>
   )
-}
-
-function getTimeOfDay() {
-  const h = new Date().getHours()
-  if (h < 12) return 'morning'
-  if (h < 17) return 'afternoon'
-  return 'evening'
 }

@@ -11,13 +11,13 @@ const BADGES = [
   { id: 'streak7', label: 'Week warrior', desc: '7-day learning streak', icon: Flame, req: (p: UserProgress) => p.streak >= 7 },
   { id: 'xp500', label: '500 XP', desc: 'Earn your first 500 XP', icon: Zap, req: (p: UserProgress) => p.xp >= 500 },
   { id: 'xp1000', label: '1K XP', desc: 'Reach 1,000 XP', icon: Zap, req: (p: UserProgress) => p.xp >= 1000 },
-  { id: 'allday', label: 'Full day', desc: 'Complete all courses in a day', icon: Target, req: (p: UserProgress) => {
-    const dayGroups: Record<string, number> = {}
-    COURSES.filter(c => c.weekNumber === 1).forEach(c => { dayGroups[c.dayOfWeek] = (dayGroups[c.dayOfWeek] ?? 0) + 1 })
-    return Object.values(dayGroups).some(count => {
-      const doneForDay = p.completedCourses.filter(cp => cp.completedAt && COURSES.find(c => c.id === cp.courseId)?.dayOfWeek !== undefined).length
-      return doneForDay >= count
+  { id: 'allday', label: 'Track starter', desc: 'Complete 3 courses in any track', icon: Target, req: (p: UserProgress) => {
+    const trackGroups: Record<string, number> = {}
+    p.completedCourses.filter(cp => cp.completedAt).forEach(cp => {
+      const c = COURSES.find(x => x.id === cp.courseId)
+      if (c) trackGroups[c.track] = (trackGroups[c.track] ?? 0) + 1
     })
+    return Object.values(trackGroups).some(count => count >= 3)
   }},
   { id: 'mkt', label: 'Marketer', desc: 'Complete 2 marketing courses', icon: BookOpen, req: (p: UserProgress) => p.completedCourses.filter(cp => cp.completedAt && COURSES.find(c => c.id === cp.courseId)?.track === 'marketing').length >= 2 },
   { id: 'trd', label: 'Trader', desc: 'Complete 2 trading courses', icon: BookOpen, req: (p: UserProgress) => p.completedCourses.filter(cp => cp.completedAt && COURSES.find(c => c.id === cp.courseId)?.track === 'trading').length >= 2 },
