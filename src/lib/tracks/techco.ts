@@ -649,7 +649,7 @@ The practical guidance: do not promise uptime in contracts beyond what your infr
 
 **4. Data exposure:** Every API endpoint in your application is a potential attack surface. Ensure that authenticated endpoints verify the requesting user has permission to access the specific data they are requesting — not just that they are logged in, but that they are authorized for that specific resource.
 
-**5. Dependency vulnerabilities:** Libraries you depend on have bugs and security vulnerabilities. Run `npm audit` regularly and maintain a process for upgrading critical dependencies. Outdated dependencies are one of the most common sources of security breaches.
+**5. Dependency vulnerabilities:** Libraries you depend on have bugs and security vulnerabilities. Run \`npm audit\` regularly and maintain a process for upgrading critical dependencies. Outdated dependencies are one of the most common sources of security breaches.
 
 ### Monitoring: Knowing Before Your Clients Do
 
@@ -886,7 +886,7 @@ A security standard operating procedure is the set of practices your team follow
 
 Your Supreme Suite platform serves multiple tenants on shared infrastructure. The most critical security requirement for multi-tenant SaaS is that tenant A cannot ever see tenant B's data. In Supabase, this requires:
 
-1. Every table that contains tenant-specific data has a `tenant_id` column
+1. Every table that contains tenant-specific data has a \`tenant_id\` column
 2. Row Level Security policies are enabled on every such table
 3. The RLS policy verifies the requesting user's tenant ID matches the row's tenant ID before allowing access
 4. This is tested explicitly — not assumed to work because the policy looks correct
@@ -1103,7 +1103,7 @@ The bias should be toward iteration. Rewrites that founders initiate are often m
 
 Your Supreme Suite platform is multi-tenant. Here is how to think about scaling it:
 
-**Current architecture (appropriate for current scale):** Single Supabase instance, shared tables with `tenant_id` columns, RLS for isolation. This works until you have performance issues caused by large tenants dominating shared database resources.
+**Current architecture (appropriate for current scale):** Single Supabase instance, shared tables with \`tenant_id\` columns, RLS for isolation. This works until you have performance issues caused by large tenants dominating shared database resources.
 
 **Next scale (50-200 tenants):** Add database read replicas to separate read traffic from write traffic. Heavy reporting queries run against the replica; user-facing writes go to the primary. This typically doubles the effective capacity of the same database.
 
@@ -1121,7 +1121,7 @@ When your platform starts feeling slow, investigate in this order:
 
 **3. Frontend bundle size.** Large JavaScript bundles cause slow initial page loads. Use Next.js bundle analysis to identify what is contributing to bundle size and lazy-load components that are not needed immediately.
 
-**4. Image optimization.** Unoptimized images are a common cause of slow performance on media-heavy sites. Next.js's `<Image>` component and Cloudinary for transformation handle this — ensure they are being used correctly.
+**4. Image optimization.** Unoptimized images are a common cause of slow performance on media-heavy sites. Next.js's \`<Image>\` component and Cloudinary for transformation handle this — ensure they are being used correctly.
 
 **5. Caching for repeated reads.** Identify data that is read frequently but changes rarely (configuration data, pricing tables, public content). Cache this at the edge (Vercel Edge Cache or Cloudflare) to eliminate database round trips for the most common requests.
 

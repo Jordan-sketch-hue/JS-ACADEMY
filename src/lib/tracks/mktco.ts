@@ -807,15 +807,15 @@ The investment in building this library at onboarding pays dividends for every m
 
 Naming convention for creative assets (enforced across all client accounts):
 
-`[ClientCode]_[ContentType]_[Platform]_[YYYYMMDD]_[VersionNumber]`
+\`[ClientCode]_[ContentType]_[Platform]_[YYYYMMDD]_[VersionNumber]\`
 
-Example: `JSM_QuoteCard_IG_20260715_v1.png`
+Example: \`JSM_QuoteCard_IG_20260715_v1.png\`
 
 Folder structure per client:
-- `/[ClientName]/Brand Assets/` — logos, fonts, brand colors reference
-- `/[ClientName]/Content/[YYYY-MM]/` — monthly content organized by date
-- `/[ClientName]/Reports/` — monthly reports by date
-- `/[ClientName]/Contracts/` — agreements and briefs
+- \`/[ClientName]/Brand Assets/\` — logos, fonts, brand colors reference
+- \`/[ClientName]/Content/[YYYY-MM]/\` — monthly content organized by date
+- \`/[ClientName]/Reports/\` — monthly reports by date
+- \`/[ClientName]/Contracts/\` — agreements and briefs
 
 This structure means anyone on your team can find any asset for any client without asking you. The time saved per week across 14 client accounts is significant.`,
     quiz: [

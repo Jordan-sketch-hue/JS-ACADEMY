@@ -1196,7 +1196,7 @@ Animations shorter than 100ms are difficult to perceive as intentional motion. A
 
 ### Accessibility: The Motion Sensitivity Reality
 
-Vestibular disorders affect approximately 35% of adults over 40 in the US. Large-scale motion — parallax scrolling, full-screen transitions, constant animation — can trigger dizziness, nausea, and headaches in affected users. The `prefers-reduced-motion` CSS media query allows designers to provide static or minimal-motion alternatives for users who have enabled the system-level reduced-motion preference. Implementing this is a professional standard, not optional accessibility consideration.
+Vestibular disorders affect approximately 35% of adults over 40 in the US. Large-scale motion — parallax scrolling, full-screen transitions, constant animation — can trigger dizziness, nausea, and headaches in affected users. The \`prefers-reduced-motion\` CSS media query allows designers to provide static or minimal-motion alternatives for users who have enabled the system-level reduced-motion preference. Implementing this is a professional standard, not optional accessibility consideration.
 `,
     quiz: [
       {
@@ -1464,7 +1464,7 @@ The technical implementation of design tokens involves defining values in a form
 
 A token set might look like:
 
-```
+\`\``
 color-brand-primary: #E05C2A
 color-brand-primary-hover: #C14F24
 color-text-primary: #1A1A1A

@@ -182,7 +182,7 @@ The result: brands gut their prospecting budgets because they "don't perform" an
 2. Create a holdout group of 10-20% of your audience, excluded from the campaign
 3. Run the campaign for at least one full purchase cycle (minimum 2 weeks for most e-commerce)
 4. Compare conversion rates: holdout vs. exposed
-5. Calculate lift: `(Exposed CVR - Holdout CVR) / Holdout CVR × 100`
+5. Calculate lift: \`(Exposed CVR - Holdout CVR) / Holdout CVR × 100\`
 
 A channel showing 8× ROAS in platform but 1.2× incremental lift is mostly claiming credit for organic demand — not creating it.
 
@@ -1415,12 +1415,12 @@ The average SMB marketing stack needs 6-10 tools. Most have 15-25. The excess cr
 
 UTM naming chaos is a silent analytics killer. Implement a taxonomy document that every person who touches marketing links follows:
 
-- `utm_source`: The platform (google, meta, linkedin, email, partner)
-- `utm_medium`: The type (cpc, organic, email, social, referral)
-- `utm_campaign`: The campaign name in a consistent format (q1-2026-brand-awareness)
-- `utm_content`: The specific ad or piece of content (headline-a, carousel-1)
+- \`utm_source\`: The platform (google, meta, linkedin, email, partner)
+- \`utm_medium\`: The type (cpc, organic, email, social, referral)
+- \`utm_campaign\`: The campaign name in a consistent format (q1-2026-brand-awareness)
+- \`utm_content\`: The specific ad or piece of content (headline-a, carousel-1)
 
-One team member using `utm_source=Facebook` when the convention is `facebook` creates a split in analytics that silently inflates one row and shrinks another. Enforce the taxonomy with a link builder tool, not trust.
+One team member using \`utm_source=Facebook\` when the convention is \`facebook\` creates a split in analytics that silently inflates one row and shrinks another. Enforce the taxonomy with a link builder tool, not trust.
 
 ### Scaling Marketing Headcount
 

@@ -881,7 +881,7 @@ The confident operator is not the one who doubts nothing and needs no input. The
       {
         term: 'Cognitive Restructuring',
         definition:
-          'The CBT technique of identifying a distorted automatic thought, examining the evidence for and against it, and generating a more accurate and balanced alternative thought. Cognitive restructuring does not replace negative thoughts with positive ones — it replaces distorted thoughts with accurate ones. The evidence-based reframe is not "everything will be fine" but "here is what the actual evidence shows, which is more nuanced than my automatic response.'",
+          'The CBT technique of identifying a distorted automatic thought, examining the evidence for and against it, and generating a more accurate and balanced alternative thought. Cognitive restructuring does not replace negative thoughts with positive ones — it replaces distorted thoughts with accurate ones. The evidence-based reframe is not "everything will be fine" but "here is what the actual evidence shows, which is more nuanced than my automatic response.',
       },
       {
         term: 'Defusion',

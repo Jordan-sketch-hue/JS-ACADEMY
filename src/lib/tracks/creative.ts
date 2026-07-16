@@ -960,7 +960,7 @@ Building export presets in your software — Lightroom, Photoshop, Final Cut —
 
 Creative file naming is a running joke in the industry because it is universally poorly managed. "Final", "Final_v2", "Final_REAL", "Final_client_approved_ACTUAL" is not a versioning system. It is chaos that eventually causes someone to deliver the wrong file.
 
-A functional naming convention: [ProjectCode]_[AssetType]_[VersionNumber]_[Status]. For example: `JST-SS26_HeroBanner_v03_APPROVED.psd`. With this convention, every file has a home, every version is recoverable, and the delivery file is unambiguous.
+A functional naming convention: [ProjectCode]_[AssetType]_[VersionNumber]_[Status]. For example: \`JST-SS26_HeroBanner_v03_APPROVED.psd\`. With this convention, every file has a home, every version is recoverable, and the delivery file is unambiguous.
 `,
     quiz: [
       {

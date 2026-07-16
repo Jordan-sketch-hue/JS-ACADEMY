@@ -81,7 +81,7 @@ Understanding how laws are made changes how you engage with them:
           'It cannot be valid — all law must pass through Parliament',
           'It is valid as subordinate legislation, made under authority delegated to the minister by a parent act of Parliament',
           'It is valid only if the Governor-General provides assent within 30 days',
-          'It is valid as executive order, a power the Prime Minister's cabinet holds independently',
+          'It is valid as executive order, a power the Prime Minister\'s cabinet holds independently',
         ],
         correct: 1,
         explanation:
