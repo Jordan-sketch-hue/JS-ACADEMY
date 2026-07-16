@@ -56,69 +56,52 @@ const logo = (brand = 'JST', size = 22) =>
 
 // ─── FEED POSTS ──────────────────────────────────────────────────────────────
 
-function jstFeedPricingSlide(slide) {
+function jstFeedPricing() {
   const W = 1080, H = 1080;
   const tiers = [
     { name: 'BASIC',      price: 'US$175', label: 'Landing Page / 5-Page Site', highlight: false },
     { name: 'PRO',        price: 'US$350', label: '10-Page Site + Full SEO',     highlight: true  },
     { name: 'ENTERPRISE', price: 'US$950', label: 'Mobile App — Full Build',     highlight: false },
   ];
-
-  if (slide === 0) {
-    return head(W, H) + `
-    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(201,168,76,.08) 0%,transparent 70%)"></div>
-    ${chip('J Supreme Technology', 80, 60)}
-    <div style="position:absolute;top:160px;left:60px;right:60px;font-size:96px;font-weight:700;line-height:1;letter-spacing:-.03em">
-      What does a real website cost?
-    </div>
-    ${divider(500)}
-    <div style="position:absolute;top:530px;left:60px;right:60px;font-size:28px;color:${B.whiteDim};line-height:1.5">
-      Swipe to see exactly what J Supreme Technology charges — no hidden fees, no surprises.
-    </div>
-    <div style="position:absolute;bottom:60px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:center">
-      ${logo('JST', 24)}
-      <div style="font-size:16px;color:${B.whiteFaint}">Swipe →</div>
-    </div>
-    </body></html>`;
-  }
-
-  if (slide === 1) {
-    return head(W, H) + `
-    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.06) 0%,transparent 60%)"></div>
-    ${chip('Pricing', 60, 60)}
-    <div style="position:absolute;top:140px;left:60px;right:60px;font-size:52px;font-weight:700;line-height:1.1">3 tiers. One studio.</div>
-    <div style="position:absolute;top:320px;left:60px;right:60px;display:flex;flex-direction:column;gap:24px">
-    ${tiers.map(t => `
-      <div style="border:1px solid ${t.highlight ? B.gold : 'rgba(245,245,240,0.1)'};
-        background:${t.highlight ? 'rgba(201,168,76,.08)' : 'rgba(245,245,240,0.03)'};
-        border-radius:12px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div style="font-size:13px;font-weight:600;letter-spacing:.12em;color:${t.highlight ? B.gold : B.whiteDim};margin-bottom:6px">${t.name}</div>
-          <div style="font-size:20px;color:${B.white}">${t.label}</div>
-        </div>
-        <div style="font-size:36px;font-weight:700;color:${t.highlight ? B.gold : B.white}">${t.price}</div>
-      </div>`).join('')}
-    </div>
-    <div style="position:absolute;bottom:60px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:center">
-      ${logo('JST', 22)}
-      <div style="font-size:15px;color:${B.whiteFaint}">jsupremetech.online</div>
-    </div>
-    </body></html>`;
-  }
-
   return head(W, H) + `
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%,rgba(201,168,76,.1) 0%,transparent 60%)"></div>
-  ${chip('Limited Spots', 80, 60)}
-  <div style="position:absolute;top:170px;left:60px;right:60px;font-size:90px;font-weight:700;line-height:1;letter-spacing:-.03em">
-    We take<br><span style="color:${B.gold}">3 clients</span><br>per month.
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 20%,rgba(201,168,76,.08) 0%,transparent 65%)"></div>
+  ${chip('J Supreme Technology', 52, 60)}
+  <div style="position:absolute;top:130px;left:60px;right:60px;font-size:62px;font-weight:700;line-height:1.0;letter-spacing:-.025em">
+    What does a real<br>website cost?
   </div>
-  ${divider(530)}
-  <div style="position:absolute;top:560px;left:60px;right:60px;font-size:26px;color:${B.whiteDim};line-height:1.5">
-    1 spot left this month.<br>DM us or visit jsupremetech.online
+  <div style="position:absolute;top:290px;left:60px;right:60px;font-size:18px;color:${B.whiteDim};line-height:1.4">
+    Real prices. No hidden fees. No surprise invoices.
   </div>
-  <div style="position:absolute;bottom:60px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:center">
-    ${logo('JST', 24)}
-    <div style="font-size:16px;color:${B.whiteFaint}">Jamaica · Caribbean</div>
+  <div style="position:absolute;top:355px;left:60px;right:60px;display:flex;flex-direction:column;gap:16px">
+  ${tiers.map(t => `
+    <div style="border:1px solid ${t.highlight ? B.gold : 'rgba(245,245,240,0.1)'};
+      background:${t.highlight ? 'rgba(201,168,76,.09)' : 'rgba(245,245,240,0.03)'};
+      border-radius:10px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.14em;color:${t.highlight ? B.gold : B.whiteDim};margin-bottom:4px">${t.name}</div>
+        <div style="font-size:18px;color:${B.white}">${t.label}</div>
+      </div>
+      <div style="font-size:32px;font-weight:700;color:${t.highlight ? B.gold : B.white};font-variant-numeric:tabular-nums">${t.price}</div>
+    </div>`).join('')}
+  </div>
+  ${divider(750)}
+  <div style="position:absolute;top:778px;left:60px;right:60px;display:flex;gap:40px">
+    <div>
+      <div style="font-size:11px;font-weight:600;color:${B.gold};letter-spacing:.12em;margin-bottom:4px">TIMELINE</div>
+      <div style="font-size:18px;color:${B.whiteDim}">Ready in 3–5 days</div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:${B.gold};letter-spacing:.12em;margin-bottom:4px">COVERAGE</div>
+      <div style="font-size:18px;color:${B.whiteDim}">Jamaica · Caribbean</div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:${B.gold};letter-spacing:.12em;margin-bottom:4px">CLIENTS</div>
+      <div style="font-size:18px;color:${B.whiteDim}">100+ served</div>
+    </div>
+  </div>
+  <div style="position:absolute;bottom:52px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:center">
+    ${logo('JST', 22)}
+    <div style="font-size:15px;color:${B.whiteFaint}">jsupremetech.online</div>
   </div>
   </body></html>`;
 }
@@ -152,7 +135,7 @@ function jstFeedClientResult() {
   </body></html>`;
 }
 
-function jsmFeedServicesSlide(slide) {
+function jsmFeedServices() {
   const W = 1080, H = 1080;
   const services = [
     { name: 'Brand Identity Build',        price: 'US$325', freq: 'once', highlight: false },
@@ -161,61 +144,52 @@ function jsmFeedServicesSlide(slide) {
     { name: 'Reels Package (4/mo)',         price: 'US$210', freq: '/mo',  highlight: false },
     { name: 'Full Marketing Retainer',      price: 'US$450', freq: '/mo',  highlight: true  },
   ];
-
-  if (slide === 0) {
-    return head(W, H) + `
-    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(201,168,76,.08) 0%,transparent 70%)"></div>
-    ${chip('J Supreme Marketing', 80, 60)}
-    <div style="position:absolute;top:170px;left:60px;right:60px;font-size:90px;font-weight:700;line-height:1;letter-spacing:-.03em">
+  return head(W, H) + `
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 65% 20%,rgba(201,168,76,.08) 0%,transparent 65%)"></div>
+  ${chip('J Supreme Marketing', 52, 60)}
+  <div style="position:absolute;top:130px;left:60px;right:60px">
+    <div style="font-size:46px;font-weight:700;line-height:1.05;letter-spacing:-.02em">
       You're posting every day.<br><span style="color:${B.gold}">Getting nothing back.</span>
     </div>
-    ${divider(530)}
-    <div style="position:absolute;top:560px;left:60px;right:60px;font-size:26px;color:${B.whiteDim};line-height:1.5">
-      That's not a content problem. It's a strategy problem.<br>Swipe to see what we fix.
-    </div>
-    <div style="position:absolute;bottom:60px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:center">
-      ${logo('JSM', 24)}
-      <div style="font-size:16px;color:${B.whiteFaint}">Swipe →</div>
-    </div>
-    </body></html>`;
-  }
+    <div style="font-size:17px;color:${B.whiteDim};margin-top:10px">That's a strategy problem. Here's what changes it:</div>
+  </div>
+  <div style="position:absolute;top:300px;left:60px;right:60px;display:flex;flex-direction:column;gap:10px">
+  ${services.map(s => `
+    <div style="border:1px solid ${s.highlight ? B.gold : 'rgba(245,245,240,0.1)'};
+      background:${s.highlight ? 'rgba(201,168,76,.09)' : 'rgba(245,245,240,0.03)'};
+      border-radius:9px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:16px;font-weight:${s.highlight?'600':'400'};color:${s.highlight?B.white:B.whiteDim}">${s.name}</div>
+      <div style="font-size:20px;font-weight:700;color:${s.highlight?B.gold:B.white};font-variant-numeric:tabular-nums">
+        ${s.price}<span style="font-size:13px;font-weight:400;color:${B.whiteFaint}">${s.freq}</span>
+      </div>
+    </div>`).join('')}
+  </div>
+  ${divider(770)}
+  <div style="position:absolute;top:796px;left:60px;right:60px">
+    <div style="font-size:20px;font-weight:700;color:${B.white}">Our clients generate <span style="color:${B.gold}">J$300K+/mo</span> from content we manage for J$55K.</div>
+    <div style="font-size:14px;color:${B.whiteDim};margin-top:6px">Full Marketing Retainer pays for itself in week one.</div>
+  </div>
+  <div style="position:absolute;bottom:52px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:center">
+    ${logo('JSM', 22)}
+    <div style="font-size:15px;color:${B.whiteFaint}">DM to start</div>
+  </div>
+  </body></html>`;
+}
 
-  if (slide === 1) {
-    return head(W, H) + `
-    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.06) 0%,transparent 60%)"></div>
-    ${chip('Services', 60, 60)}
-    <div style="position:absolute;top:140px;left:60px;right:60px;font-size:52px;font-weight:700;line-height:1.1">Everything you need.<br>One studio.</div>
-    <div style="position:absolute;top:310px;left:60px;right:60px;display:flex;flex-direction:column;gap:18px">
-    ${services.map(s => `
-      <div style="border:1px solid ${s.highlight ? B.gold : 'rgba(245,245,240,0.1)'};
-        background:${s.highlight ? 'rgba(201,168,76,.08)' : 'rgba(245,245,240,0.03)'};
-        border-radius:10px;padding:22px 28px;display:flex;align-items:center;justify-content:space-between">
-        <div style="font-size:19px;font-weight:${s.highlight?'600':'400'};color:${s.highlight?B.white:B.whiteDim}">${s.name}</div>
-        <div>
-          <span style="font-size:26px;font-weight:700;color:${s.highlight?B.gold:B.white}">${s.price}</span>
-          <span style="font-size:14px;color:${B.whiteFaint}">${s.freq}</span>
-        </div>
-      </div>`).join('')}
-    </div>
-    <div style="position:absolute;bottom:55px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:center">
-      ${logo('JSM', 22)}
-      <div style="font-size:15px;color:${B.whiteFaint}">jsuprememarketing.com</div>
-    </div>
-    </body></html>`;
-  }
-
+function jsmFeedRevenueReframe() {
+  const W = 1080, H = 1080;
   return head(W, H) + `
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 90%,rgba(201,168,76,.1) 0%,transparent 60%)"></div>
-  ${chip('Value Reframe', 80, 60)}
-  <div style="position:absolute;top:170px;left:60px;right:60px;font-size:80px;font-weight:700;line-height:1;letter-spacing:-.02em">
-    Our clients generate<br><span style="color:${B.gold}">J$300K+/mo</span><br>from content we manage<br>for J$55K.
+  ${chip('Value Reframe', 52, 60)}
+  <div style="position:absolute;top:130px;left:60px;right:60px;font-size:72px;font-weight:700;line-height:1;letter-spacing:-.02em">
+    Our clients generate<br><span style="color:${B.gold}">J$300K+/mo</span><br>from content we<br>manage for J$55K.
   </div>
   ${divider(610)}
-  <div style="position:absolute;top:640px;left:60px;right:60px;font-size:24px;color:${B.whiteDim};line-height:1.5">
+  <div style="position:absolute;top:636px;left:60px;right:60px;font-size:22px;color:${B.whiteDim};line-height:1.5">
     The Full Marketing Retainer pays for itself in week one.
   </div>
-  <div style="position:absolute;bottom:60px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:center">
-    ${logo('JSM', 24)}
+  <div style="position:absolute;bottom:52px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:center">
+    ${logo('JSM', 22)}
     <div style="font-size:15px;color:${B.whiteFaint}">DM to start</div>
   </div>
   </body></html>`;
@@ -226,21 +200,28 @@ function jsmFeedServicesSlide(slide) {
 function jstStoryScarcity() {
   const W = 1080, H = 1920;
   return head(W, H) + `
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(201,168,76,.12) 0%,transparent 60%)"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,rgba(201,168,76,.11) 0%,transparent 65%)"></div>
   <div style="position:absolute;top:120px;left:60px">${logo('JST', 28)}</div>
-  ${chip('This Month Only', 260, 60)}
-  <div style="position:absolute;top:360px;left:60px;right:60px;font-size:110px;font-weight:700;line-height:.95;letter-spacing:-.03em">
-    3 client<br>spots.<br><span style="color:${B.gold}">1 left.</span>
+  ${chip('J Supreme Technology', 220, 60)}
+  <div style="position:absolute;top:320px;left:60px;right:60px;font-size:100px;font-weight:700;line-height:.93;letter-spacing:-.03em">
+    Every week<br>you're offline,<br>someone gets<br><span style="color:${B.gold}">your client.</span>
   </div>
-  ${divider(830)}
-  <div style="position:absolute;top:870px;left:60px;right:60px;font-size:32px;color:${B.whiteDim};line-height:1.5">
-    We limit intake to 3 builds per month so every client gets our full attention.<br><br>July is almost full.
+  ${divider(820)}
+  <div style="position:absolute;top:860px;left:60px;right:60px;font-size:28px;color:${B.whiteDim};line-height:1.5">
+    Your competitor is already online. Taking bookings. Ranking on Google. Getting the DMs you should be getting.
   </div>
-  <div style="position:absolute;top:1200px;left:60px;right:60px;background:${B.gold};border-radius:12px;padding:32px;text-align:center">
-    <div style="font-size:28px;font-weight:700;color:${B.black}">DM us now</div>
-    <div style="font-size:18px;color:rgba(10,10,10,.7);margin-top:8px">or visit jsupremetech.online</div>
+  <div style="position:absolute;top:1120px;left:60px;right:60px;display:flex;flex-direction:column;gap:16px">
+    ${[['Website','From US$175'],['Mobile App','From US$950'],['Automation','From US$99/mo']].map(([s,p]) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid rgba(245,245,240,0.08)">
+      <div style="font-size:24px;color:${B.whiteDim}">${s}</div>
+      <div style="font-size:26px;font-weight:600;color:${B.white}">${p}</div>
+    </div>`).join('')}
   </div>
-  <div style="position:absolute;bottom:80px;left:0;right:0;text-align:center;font-size:18px;color:${B.whiteFaint}">
+  <div style="position:absolute;top:1470px;left:60px;right:60px;background:${B.gold};border-radius:12px;padding:32px;text-align:center">
+    <div style="font-size:26px;font-weight:700;color:${B.black}">Start today</div>
+    <div style="font-size:17px;color:rgba(10,10,10,.7);margin-top:8px">jsupremetech.online · DM us</div>
+  </div>
+  <div style="position:absolute;bottom:80px;left:0;right:0;text-align:center;font-size:17px;color:${B.whiteFaint}">
     J Supreme Technology · Jamaica · Caribbean
   </div>
   </body></html>`;
@@ -685,13 +666,10 @@ async function renderReel(htmlFn, outPath, durationSec = 9) {
   console.log('\n=== JST + JSM Creative Builder ===\n');
 
   console.log('── Feed Posts (1080×1080) ──');
-  await renderStill(jstFeedPricingSlide(0), path.join(FEED_DIR, 'jst-feed-pricing-1-hook.jpg'));
-  await renderStill(jstFeedPricingSlide(1), path.join(FEED_DIR, 'jst-feed-pricing-2-tiers.jpg'));
-  await renderStill(jstFeedPricingSlide(2), path.join(FEED_DIR, 'jst-feed-pricing-3-cta.jpg'));
+  await renderStill(jstFeedPricing(),        path.join(FEED_DIR, 'jst-feed-pricing.jpg'));
   await renderStill(jstFeedClientResult(),   path.join(FEED_DIR, 'jst-feed-client-result.jpg'));
-  await renderStill(jsmFeedServicesSlide(0), path.join(FEED_DIR, 'jsm-feed-services-1-hook.jpg'));
-  await renderStill(jsmFeedServicesSlide(1), path.join(FEED_DIR, 'jsm-feed-services-2-menu.jpg'));
-  await renderStill(jsmFeedServicesSlide(2), path.join(FEED_DIR, 'jsm-feed-revenue-reframe.jpg'));
+  await renderStill(jsmFeedServices(),       path.join(FEED_DIR, 'jsm-feed-services.jpg'));
+  await renderStill(jsmFeedRevenueReframe(), path.join(FEED_DIR, 'jsm-feed-revenue-reframe.jpg'));
 
   console.log('\n── Story Posts (1080×1920) ──');
   await renderStill(jstStoryScarcity(),  path.join(STORY_DIR, 'jst-story-scarcity.jpg'));
