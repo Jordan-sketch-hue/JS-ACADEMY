@@ -1002,8 +1002,7 @@ Social design is the rare design discipline where you can directly measure how d
       },
       {
         term: 'Print Resolution',
-        description: 'The density of rasterized image data in a print document, measured in dots per inch (DPI). 300 DPI at final print size is the standard minimum for photographic images in commercial print. Images sourced from the web at 72 DPI and placed into print documents at 100% scale will produce visibly pixelated output. Resolution is calculated at the intended print size — an image at 600 DPI at 50% of its intended size is effectively 300 DPI at that size.',
-        definition: 'The density of rasterized image data in a print document, measured in dots per inch (DPI). 300 DPI at final print size is the standard minimum for photographic images in commercial print. Images sourced from the web at 72 DPI placed into print at 100% will pixelate.',
+        definition: 'The density of rasterized image data in a print document, measured in dots per inch (DPI). 300 DPI at final print size is the standard minimum for photographic images in commercial print. Images sourced from the web at 72 DPI and placed into print documents at 100% scale will produce visibly pixelated output. Resolution is calculated at the intended print size — an image at 600 DPI at 50% of its intended size is effectively 300 DPI at that size.',
       },
     ],
     content: `## Print Design: What Designers Send to Press
