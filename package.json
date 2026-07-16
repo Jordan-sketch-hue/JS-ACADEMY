@@ -1,0 +1,13 @@
+{
+  "name": "js-academy",
+  "version": "1.0.0",
+  "description": "JST/JSM creative production pipeline",
+  "scripts": {
+    "build:showcases": "node portfolio-showcases/build-showcases.js",
+    "build:creatives": "node creatives/build-creatives.js"
+  },
+  "dependencies": {
+    "puppeteer-core": "^25.3.0",
+    "sharp": "^0.35.3"
+  }
+}

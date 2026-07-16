@@ -6,3 +6,7 @@ videos/
 *.mov
 *.wav
 .DS_Store
+portfolio-showcases/videos/
+creatives/reels/output/
+creatives/feed/output/
+creatives/stories/output/
