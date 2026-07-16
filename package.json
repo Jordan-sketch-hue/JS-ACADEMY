@@ -4,9 +4,11 @@
   "description": "JST/JSM creative production pipeline",
   "scripts": {
     "build:showcases": "node portfolio-showcases/build-showcases.js",
-    "build:creatives": "node creatives/build-creatives.js"
+    "build:creatives": "node creatives/build-creatives.js",
+    "post:reels": "node creatives/post-reels.js"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "puppeteer-core": "^25.3.0",
     "sharp": "^0.35.3"
   }
