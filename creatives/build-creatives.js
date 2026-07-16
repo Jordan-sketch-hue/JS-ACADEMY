@@ -129,9 +129,9 @@ function jstFeedClientResult() {
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(201,168,76,.07) 0%,transparent 60%)"></div>
   ${chip('Client Result', 60, 60)}
   <div style="position:absolute;top:155px;left:60px;right:60px">
-    <div style="font-size:24px;color:${B.whiteDim};margin-bottom:16px">Ferguson Law — Kingston, JA</div>
+    <div style="font-size:24px;color:${B.whiteDim};margin-bottom:16px">Your Business — Kingston, JA</div>
     <div style="font-size:80px;font-weight:700;line-height:1;letter-spacing:-.02em">
-      Zero to<br><span style="color:${B.gold}">booked online</span><br>in 4 weeks.
+      Your business,<br><span style="color:${B.gold}">ready to sell</span><br>in 3–5 days.
     </div>
   </div>
   ${divider(540)}
@@ -428,7 +428,7 @@ function jsmReelContentHook(frame, totalFrames) {
   </body></html>`;
 }
 
-// ─── REEL: JST SOCIAL PROOF (Ferguson Law) ─────────────────────────────────────────
+// ─── REEL: JST SOCIAL PROOF ─────────────────────────────────────────
 
 function jstReelSocialProof(frame, totalFrames) {
   const W = 1080, H = 1920;
@@ -451,7 +451,7 @@ function jstReelSocialProof(frame, totalFrames) {
   <div style="position:absolute;top:240px;left:60px;right:60px;${slideUp(s0)}">
     <div style="font-size:24px;color:${B.gold};letter-spacing:.12em;font-weight:600;text-transform:uppercase;margin-bottom:16px">Client Result</div>
     <div style="font-size:96px;font-weight:700;line-height:.92;letter-spacing:-.03em">
-      Ferguson Law<br><span style="color:${B.gold}">went live.</span><br>In 4 weeks.
+      Your Business<br><span style="color:${B.gold}">went live.</span><br>In 3–5 days.
     </div>
   </div>
 
@@ -461,7 +461,7 @@ function jstReelSocialProof(frame, totalFrames) {
 
   <div style="position:absolute;top:730px;left:60px;right:60px;${slideUp(s1)}">
     <div style="font-size:26px;color:${B.whiteDim};line-height:1.5">
-      A Kingston law firm. No website. No online bookings.<br>Clients had to call or walk in.
+      No website. No online presence. No leads.<br>We had them live and taking bookings in 3–5 days.
     </div>
   </div>
 
@@ -549,7 +549,7 @@ function jstReelServicesOverview(frame, totalFrames) {
 
   <div style="position:absolute;top:1390px;left:60px;right:60px;${slideUp(s3)}">
     <div style="font-size:48px;font-weight:700;line-height:1.05;letter-spacing:-.02em">
-      13 live products.<br><span style="color:${B.gold}">12 client builds.</span><br>All in Jamaica.
+      <span style='color:${B.gold}'>100+ clients</span><br>served across<br>Jamaica & the Caribbean.
     </div>
   </div>
 
