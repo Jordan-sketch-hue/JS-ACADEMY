@@ -1464,7 +1464,7 @@ The technical implementation of design tokens involves defining values in a form
 
 A token set might look like:
 
-\`\``
+\`\`\`
 color-brand-primary: #E05C2A
 color-brand-primary-hover: #C14F24
 color-text-primary: #1A1A1A
@@ -1473,9 +1473,9 @@ space-1: 4px
 space-2: 8px
 space-4: 16px
 space-8: 32px
-```
+\`\`\`
 
-When a brand rebrand changes the primary color, updating the single `color-brand-primary` token propagates the change to every component, every screen, and every asset that uses that token — in design and code simultaneously. Without tokens, a rebrand requires manually hunting down every instance of the old color value across thousands of files.
+When a brand rebrand changes the primary color, updating the single \`color-brand-primary\` token propagates the change to every component, every screen, and every asset that uses that token — in design and code simultaneously. Without tokens, a rebrand requires manually hunting down every instance of the old color value across thousands of files.
 
 ### The Governance Problem
 
