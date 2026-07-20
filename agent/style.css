@@ -126,6 +126,12 @@ button:hover{background:var(--ink);color:var(--bg)}
 .s-name{color:var(--ink);white-space:nowrap}
 .s-role{color:var(--dim);font-size:10px}
 
+/* vision */
+.vision-body{padding:12px 14px;display:flex;flex-direction:column;gap:10px;flex:1}
+.dropzone{border:1px dashed var(--faint);color:var(--dim);padding:22px;text-align:center;cursor:pointer;font-size:11px;letter-spacing:1px;transition:.2s}
+.dropzone:hover,.dropzone.hot{border-color:var(--ink);color:var(--ink)}
+.vis-report{color:var(--dim);font-size:11px;white-space:pre-wrap;overflow-y:auto;max-height:220px}
+
 /* footer */
 .foot{display:flex;justify-content:space-between;padding:14px 22px;border-top:1px solid var(--line);color:var(--dim);font-size:10px;letter-spacing:1px}
 

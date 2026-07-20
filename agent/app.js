@@ -476,6 +476,22 @@ function clarifyQuestions(cls, text) {
   });
   qs.push({ key: "payments", text: "taking payments? [y/n]", parse: (a) => { if (/^y/i.test(a.trim())) cls.raw += " payments store"; } });
   qs.push({ key: "notifications", text: "send notifications — whatsapp or email? [w/e/n]", parse: (a) => { const c = (a.trim()[0] || "").toLowerCase(); if (c === "w") cls.raw += " whatsapp notify"; else if (c === "e") cls.raw += " email notify"; } });
+  qs.push({
+    key: "must-haves",
+    text: 'must-have features? plain words (e.g. "login, whatsapp alerts, video upload, live updates") — or "none"',
+    parse: (a) => {
+      if (/^(none|no|nah|n)\.?$/i.test(a.trim())) return;
+      cls.raw += " " + a;
+      if (window.AXIOM_GOALS) {
+        const found = window.AXIOM_GOALS.detect(a);
+        cls.extra = found;
+        // words it does NOT recognize become custom objectives instead of being dropped
+        const known = new Set(["none","with","need","want","also","must","have","like","that","then","them","when","user","users"]);
+        cls.customFeatures = [...new Set(a.toLowerCase().replace(/[^a-z\s]/g, " ").split(/\s+/)
+          .filter((w) => w.length > 3 && !known.has(w) && !Object.values(window.AXIOM_GOALS.FEATURES).some((f) => f.kw.test(w))))].slice(0, 4);
+      }
+    },
+  });
   return qs;
 }
 
@@ -582,6 +598,32 @@ async function runBuild(cls) {
   ]);
   for (const step of plan(cls, risks)) { say("think", `plan: ${step}`); await sleep(260); }
 
+  // 4.5 objectives — start from the finished future, walk backwards
+  if (window.AXIOM_GOALS) {
+    fire("reason", 1); fire("plan", 0.8);
+    stateEngine.set("BACKWARD CHAINING — goal → requirements → confirms", [
+      { p: 0.9, s: "STYLE MEMORY" }, { p: 0.1, s: "ASK (unknown objective)" },
+    ]);
+    const bp = window.AXIOM_GOALS.decompose(cls, cls.extra || []);
+    say("act", `objective: DONE means → ${bp.goal}`);
+    const lines = [`GOAL: ${bp.goal}`];
+    for (const { k, depth } of [...bp.order].reverse()) {
+      const f = bp.features[k];
+      const row = `${"  ".repeat(depth)}← needs ${k.toUpperCase()} · do: ${f.steps.join("; ")} · confirm: ${f.test}`;
+      say("think", row); lines.push(row);
+      await sleep(180);
+    }
+    for (const c of cls.customFeatures || []) {
+      const row = `← needs ${c.toUpperCase()} (custom objective) · do: build → connect → wire into UI · confirm: exercise it end-to-end`;
+      say("think", row); lines.push(row);
+    }
+    const doneCount = bp.order.length + (cls.customFeatures || []).length;
+    say("ok", `definition of done: ${doneCount} confirmations must pass — a finish line, not an endless loop.`);
+    lines.push(`DEFINITION OF DONE: all ${doneCount} confirms pass`);
+    const gm = $("#goal-map"); if (gm) gm.textContent = lines.join("\n");
+    cls.blueprint = bp.order.map((o) => o.k);
+  }
+
   // 5 style memory
   fire("memory", 0.8);
   const style = learnStyle(cls);
@@ -642,6 +684,67 @@ $("#dl-code").onclick = () => {
   a.href = URL.createObjectURL(blob); a.download = isReact ? "App.jsx" : "index.html"; a.click();
   audit("export", "generated code downloaded");
 };
+
+/* ============================================================
+   11 · VISION — screenshot in, pixel read out: mono-brand
+   compliance, offending colors, and which zones need updating.
+   (Semantic "what is this button" understanding arrives when the
+   operator's own brain gains a vision head.)
+   ============================================================ */
+const dz = $("#dropzone"), visFile = $("#vis-file");
+if (dz) {
+  dz.addEventListener("dragover", (e) => { e.preventDefault(); dz.classList.add("hot"); });
+  dz.addEventListener("dragleave", () => dz.classList.remove("hot"));
+  dz.addEventListener("drop", (e) => { e.preventDefault(); dz.classList.remove("hot"); if (e.dataTransfer.files[0]) analyzeImage(e.dataTransfer.files[0]); });
+  visFile.addEventListener("change", () => visFile.files[0] && analyzeImage(visFile.files[0]));
+}
+function analyzeImage(file) {
+  fire("perceive", 1); fire("reason", 0.7);
+  const img = new Image();
+  img.onload = () => {
+    const c = $("#vis-canvas"), g = c.getContext("2d");
+    const w = Math.min(img.width, 600), h = Math.max(1, Math.round(img.height * (w / img.width)));
+    c.width = w; c.height = h; g.drawImage(img, 0, 0, w, h);
+    let data;
+    try { data = g.getImageData(0, 0, w, h).data; }
+    catch { $("#vis-report").textContent = "could not read image data"; return; }
+    const zones = Array.from({ length: 9 }, () => ({ color: 0, activity: 0, n: 0 }));
+    const offenders = {};
+    let mono = 0, total = 0, prevLum = 0;
+    for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) {
+      const i = (y * w + x) * 4, r = data[i], gr = data[i + 1], b = data[i + 2];
+      const z = zones[Math.min(2, (y / h * 3) | 0) * 3 + Math.min(2, (x / w * 3) | 0)];
+      const lum = (r + gr + b) / 3;
+      total++; z.n++;
+      if (Math.abs(r - gr) < 16 && Math.abs(gr - b) < 16 && Math.abs(r - b) < 16) mono++;
+      else {
+        z.color++;
+        const key = "#" + ((1 << 24) + (r << 16) + (gr << 8) + b).toString(16).slice(1);
+        offenders[key] = (offenders[key] || 0) + 1;
+      }
+      z.activity += Math.abs(lum - prevLum); prevLum = lum;
+    }
+    const names = ["top-left", "top-center", "top-right", "mid-left", "center", "mid-right", "bottom-left", "bottom-center", "bottom-right"];
+    const colorZones = zones.map((z, i) => ({ n: names[i], pct: z.n ? z.color / z.n : 0 }))
+      .sort((a, b) => b.pct - a.pct).filter((z) => z.pct > 0.02).slice(0, 3);
+    const busy = zones.map((z, i) => ({ n: names[i], a: z.n ? z.activity / z.n : 0 }))
+      .sort((a, b) => b.a - a.a).slice(0, 2);
+    const topOff = Object.entries(offenders).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([k]) => k);
+    const monoPct = ((mono / total) * 100).toFixed(1);
+    $("#vis-report").textContent = [
+      `image: ${img.width}×${img.height}px · ${total} px sampled`,
+      `mono-brand compliance: ${monoPct}% ${+monoPct > 97 ? "✓ on-brand" : "✗ off-brand color found"}`,
+      topOff.length ? `offending colors: ${topOff.join(" ")}` : "palette: clean",
+      colorZones.length ? `zones to update (most off-brand): ${colorZones.map((z) => `${z.n} (${(z.pct * 100).toFixed(0)}%)`).join(" · ")}` : "zones: all compliant",
+      `busiest zones (most detail): ${busy.map((z) => z.n).join(" · ")}`,
+      `note: pixel-level read — semantic understanding activates with a vision-capable brain.`,
+    ].join("\n");
+    KB.add("vision", `screenshot read — ${monoPct}% mono · ${file.name.slice(0, 30)}`, { monoPct: +monoPct, zones: colorZones });
+    audit("vision", `screenshot analyzed: ${monoPct}% mono compliance`);
+  };
+  img.onerror = () => { $("#vis-report").textContent = "could not load that file as an image"; };
+  img.src = URL.createObjectURL(file);
+}
 
 /* ============================================================
    status bits

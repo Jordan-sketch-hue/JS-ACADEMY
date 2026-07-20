@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AXIOM — JS Supreme Coding Agent</title>
 <meta name="description" content="AXIOM: a monochrome, self-learning coding agent console. Node network, reasoning engine, knowledge base, Supabase sync.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Crect x='6' y='6' width='52' height='52' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Crect x='16' y='22' width='9' height='9' fill='%23fff'/%3E%3Crect x='39' y='22' width='9' height='9' fill='%23fff'/%3E%3Cpath d='M32 38l10 9H22z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -127,6 +128,22 @@
     </div>
   </section>
 
+  <!-- VISION -->
+  <section class="panel" id="panel-vision">
+    <div class="panel-head"><h2>11 · VISION</h2><span class="hint">drop a screenshot — pixel read: mono compliance + zones to update</span></div>
+    <div class="vision-body">
+      <label class="dropzone" id="dropzone">drop image here or click to upload<input id="vis-file" type="file" accept="image/*" hidden></label>
+      <canvas id="vis-canvas" hidden></canvas>
+      <pre id="vis-report" class="vis-report">no image analyzed yet</pre>
+    </div>
+  </section>
+
+  <!-- OBJECTIVE MAP -->
+  <section class="panel" id="panel-goals">
+    <div class="panel-head"><h2>12 · OBJECTIVE MAP</h2><span class="hint">from the finished future, backwards — goal ← needs ← confirms</span></div>
+    <pre id="goal-map" class="vis-report" style="padding:12px 14px">run a directive — the backward chain renders here with its definition of done</pre>
+  </section>
+
   <!-- AUDIT LOG -->
   <section class="panel span2" id="panel-audit">
     <div class="panel-head"><h2>10 · AUDIT TRAIL</h2><span class="hint">every decision, timestamped and inspectable</span></div>
@@ -141,6 +158,7 @@
 </footer>
 
 <script src="stack.js"></script>
+<script src="goals.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
