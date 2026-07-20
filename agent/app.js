@@ -239,7 +239,30 @@ function plan(cls, risks) {
 
 /* ============================================================
    6 · CODEGEN — react & html scaffolds in the house (mono) style
+   If the operator's own trained model is online (brain/serve.py),
+   it generates; templates are the offline fallback.
+   Set once: localStorage.setItem("axiom_brain_url", "https://…")
    ============================================================ */
+async function brainGenerate(cls) {
+  const url = localStorage.getItem("axiom_brain_url");
+  if (!url) return null;
+  try {
+    const res = await fetch(`${url.replace(/\/$/, "")}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: `You are AXIOM, the operator's own coding model. House style: strict monochrome (#000/#fff), mono font, 1px borders. Stack: ${cls.stack}. Build type: ${cls.type}, size ${cls.size}.\nDirective: ${cls.raw}\nRespond with complete ${cls.stack === "react" ? "React component" : "HTML document"} code only.\n`,
+      }),
+    });
+    if (!res.ok) throw new Error(`brain ${res.status}`);
+    const out = (await res.json()).code;
+    return out && out.trim().length > 40 ? out.trim() : null;
+  } catch (e) {
+    audit("brain", `own-model unreachable (${e.message}) — template fallback`);
+    return null;
+  }
+}
+
 function generate(cls) {
   const title = cls.type.toUpperCase().replace("-", " ");
   if (cls.stack === "react") return reactTemplate(title, cls);
@@ -496,8 +519,11 @@ async function runDirective(text) {
   stateEngine.set("GENERATING — emitting scaffold", [
     { p: 0.92, s: "AUDIT" }, { p: 0.08, s: "REGENERATE (self-check failed)" },
   ]);
-  say("act", `codegen: emitting ${cls.stack} scaffold in house mono style…`);
-  const code = generate(cls);
+  const brainUrl = localStorage.getItem("axiom_brain_url");
+  say("act", brainUrl
+    ? `codegen: querying operator's own model at ${brainUrl}…`
+    : `codegen: emitting ${cls.stack} scaffold in house mono style…`);
+  const code = (await brainGenerate(cls)) || generate(cls);
   $("#code-out").textContent = code;
   await sleep(420);
 
