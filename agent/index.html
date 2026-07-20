@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXIOM — JS Supreme Coding Agent</title>
+<meta name="description" content="AXIOM: a monochrome, self-learning coding agent console. Node network, reasoning engine, knowledge base, Supabase sync.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Crect x='6' y='6' width='52' height='52' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Crect x='16' y='22' width='9' height='9' fill='%23fff'/%3E%3Crect x='39' y='22' width='9' height='9' fill='%23fff'/%3E%3Cpath d='M32 38l10 9H22z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <span class="logo">◆</span>
+    <h1>AXIOM</h1>
+    <span class="tag">JS SUPREME · CODING AGENT · v1.0</span>
+  </div>
+  <div class="status-row">
+    <span class="pill" id="net-status">NET: —</span>
+    <span class="pill" id="kb-status">KB: 0 ENTRIES</span>
+    <span class="pill" id="db-status">DB: LOCAL</span>
+    <span class="pill blink" id="agent-status">AGENT: IDLE</span>
+  </div>
+</header>
+
+<main class="grid">
+
+  <!-- STACK REGISTRY -->
+  <section class="panel span2" id="panel-stack">
+    <div class="panel-head"><h2>00 · STACK REGISTRY</h2><span class="hint">the operator's real toolchain — every build routes through these</span></div>
+    <input id="stack-search" class="search" type="text" placeholder="search your stack… e.g. payments, whatsapp, video">
+    <div id="stack-list" class="stack-list"></div>
+  </section>
+
+  <!-- NODE NETWORK -->
+  <section class="panel span2" id="panel-network">
+    <div class="panel-head"><h2>01 · NODE NETWORK</h2><span class="hint">agent faculties — edges pulse with activity</span></div>
+    <canvas id="net" height="360"></canvas>
+    <div class="node-legend" id="node-legend"></div>
+  </section>
+
+  <!-- CONSOLE -->
+  <section class="panel span2" id="panel-console">
+    <div class="panel-head"><h2>02 · AGENT CONSOLE</h2><span class="hint">describe a project — the agent reasons, plans, builds, audits</span></div>
+    <div class="console-input">
+      <span class="prompt-char">&gt;</span>
+      <input id="cmd" type="text" autocomplete="off" spellcheck="false"
+             placeholder="e.g. build a react landing page for a marketing agency, medium size">
+      <button id="run">RUN</button>
+    </div>
+    <div class="quick">
+      <button class="chip" data-q="build a react dashboard app, large">react dashboard</button>
+      <button class="chip" data-q="build a simple html portfolio site, small">html portfolio</button>
+      <button class="chip" data-q="build a react video editing tool ui, large">video tool ui</button>
+      <button class="chip" data-q="audit my last project">audit last</button>
+    </div>
+    <div id="stream" class="stream"></div>
+  </section>
+
+  <!-- STATE -->
+  <section class="panel" id="panel-state">
+    <div class="panel-head"><h2>03 · STATE ENGINE</h2><span class="hint">previous · current · possible futures</span></div>
+    <div class="state-col">
+      <div class="state-block"><h3>PREVIOUS</h3><pre id="state-prev">∅</pre></div>
+      <div class="state-block current"><h3>CURRENT</h3><pre id="state-curr">IDLE — awaiting directive</pre></div>
+      <div class="state-block"><h3>FUTURE (ranked by probability)</h3><pre id="state-next">∅</pre></div>
+    </div>
+  </section>
+
+  <!-- RISK / ROADBLOCKS -->
+  <section class="panel" id="panel-risk">
+    <div class="panel-head"><h2>04 · RISK &amp; ROADBLOCKS</h2><span class="hint">probability dynamics per project type / size</span></div>
+    <div id="risk-body" class="risk-body"><p class="dim">Run a directive to compute risk probabilities.</p></div>
+  </section>
+
+  <!-- OUTPUT -->
+  <section class="panel span2" id="panel-output">
+    <div class="panel-head">
+      <h2>05 · GENERATED BUILD</h2>
+      <div>
+        <button class="mini" id="copy-code">COPY</button>
+        <button class="mini" id="dl-code">DOWNLOAD</button>
+      </div>
+    </div>
+    <pre id="code-out" class="code">// generated code appears here — react or html scaffold, matched to your build style</pre>
+  </section>
+
+  <!-- KNOWLEDGE BASE -->
+  <section class="panel" id="panel-kb">
+    <div class="panel-head">
+      <h2>06 · KNOWLEDGE BASE</h2>
+      <div>
+        <button class="mini" id="kb-export">EXPORT</button>
+        <button class="mini" id="kb-clear">CLEAR</button>
+      </div>
+    </div>
+    <p class="hint pad">Everything the agent does is saved. It learns your build style from every run.</p>
+    <div id="kb-list" class="kb-list"></div>
+  </section>
+
+  <!-- ERROR ORACLE -->
+  <section class="panel" id="panel-errors">
+    <div class="panel-head"><h2>07 · ERROR ORACLE</h2><span class="hint">known bug classes across JS / React / HTML</span></div>
+    <input id="err-search" class="search" type="text" placeholder="search errors… e.g. undefined, hook, cors">
+    <div id="err-list" class="err-list"></div>
+  </section>
+
+  <!-- LEARN -->
+  <section class="panel" id="panel-learn">
+    <div class="panel-head"><h2>08 · LEARN FEED</h2><span class="hint">free sources only — w3schools · MDN · apis</span></div>
+    <div id="learn-list" class="learn-list"></div>
+  </section>
+
+  <!-- SUPABASE -->
+  <section class="panel" id="panel-db">
+    <div class="panel-head"><h2>09 · SUPABASE LINK</h2><span class="hint">your database, your keys — nothing paid, nothing hidden</span></div>
+    <div class="db-form">
+      <input id="sb-url" type="text" placeholder="https://YOUR-PROJECT.supabase.co">
+      <input id="sb-key" type="password" placeholder="anon public key">
+      <div class="db-actions">
+        <button class="mini" id="sb-save">SAVE</button>
+        <button class="mini" id="sb-sync">SYNC KB ⇡</button>
+        <button class="mini" id="sb-pull">PULL KB ⇣</button>
+      </div>
+      <p class="hint">Create table <code>axiom_kb</code> (id uuid pk default gen_random_uuid(), created_at timestamptz default now(), kind text, title text, body jsonb). Keys stay in your browser only.</p>
+      <pre id="sb-log" class="sb-log">db: local mode</pre>
+    </div>
+  </section>
+
+  <!-- VISION -->
+  <section class="panel" id="panel-vision">
+    <div class="panel-head"><h2>11 · VISION</h2><span class="hint">drop a screenshot — pixel read: mono compliance + zones to update</span></div>
+    <div class="vision-body">
+      <label class="dropzone" id="dropzone">drop image here or click to upload<input id="vis-file" type="file" accept="image/*" hidden></label>
+      <canvas id="vis-canvas" hidden></canvas>
+      <pre id="vis-report" class="vis-report">no image analyzed yet</pre>
+    </div>
+  </section>
+
+  <!-- OBJECTIVE MAP -->
+  <section class="panel" id="panel-goals">
+    <div class="panel-head"><h2>12 · OBJECTIVE MAP</h2><span class="hint">from the finished future, backwards — goal ← needs ← confirms</span></div>
+    <pre id="goal-map" class="vis-report" style="padding:12px 14px">run a directive — the backward chain renders here with its definition of done</pre>
+  </section>
+
+  <!-- AUDIT LOG -->
+  <section class="panel span2" id="panel-audit">
+    <div class="panel-head"><h2>10 · AUDIT TRAIL</h2><span class="hint">every decision, timestamped and inspectable</span></div>
+    <div id="audit-list" class="audit-list"></div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span>AXIOM · monochrome intelligence · built for global.jsuprememarketing</span>
+  <span id="clock"></span>
+</footer>
+
+<script src="stack.js"></script>
+<script src="goals.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
