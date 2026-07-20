@@ -230,6 +230,10 @@ function plan(cls, risks) {
   steps.push(`IF P(${topRisk.name}) > 0.5 THEN add mitigation up-front ELSE monitor during audit  →  ${topRisk.p > 0.5 ? "MITIGATE NOW" : "MONITOR"}`);
   steps.push(`IF navigator.onLine THEN attach learn-feed references ELSE run from local knowledge base  →  ${navigator.onLine ? "ONLINE PATH" : "OFFLINE PATH"}`);
   steps.push(`IF style-profile exists THEN apply learned build style ELSE bootstrap default mono style`);
+  if (window.AXIOM_STACK) {
+    const picks = window.AXIOM_STACK.recommend(cls).map((s) => s.name).join(" · ");
+    steps.push(`IF stack registry loaded THEN route build through operator stack  →  ${picks}`);
+  }
   return steps;
 }
 
@@ -341,6 +345,13 @@ function renderErrors(q = "") {
 }
 $("#err-search").oninput = (e) => { renderErrors(e.target.value); fire("reason", 0.3); };
 renderErrors();
+
+/* stack registry panel (data + renderer live in stack.js) */
+if (window.AXIOM_STACK) {
+  window.AXIOM_STACK.render("#stack-list");
+  const ss = $("#stack-search");
+  if (ss) ss.oninput = (e) => { window.AXIOM_STACK.render("#stack-list", e.target.value); fire("memory", 0.3); };
+}
 
 /* ============================================================
    8 · LEARN FEED — free sources, matched to what you build

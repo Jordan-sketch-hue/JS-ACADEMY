@@ -25,6 +25,13 @@
 
 <main class="grid">
 
+  <!-- STACK REGISTRY -->
+  <section class="panel span2" id="panel-stack">
+    <div class="panel-head"><h2>00 · STACK REGISTRY</h2><span class="hint">the operator's real toolchain — every build routes through these</span></div>
+    <input id="stack-search" class="search" type="text" placeholder="search your stack… e.g. payments, whatsapp, video">
+    <div id="stack-list" class="stack-list"></div>
+  </section>
+
   <!-- NODE NETWORK -->
   <section class="panel span2" id="panel-network">
     <div class="panel-head"><h2>01 · NODE NETWORK</h2><span class="hint">agent faculties — edges pulse with activity</span></div>
@@ -133,6 +140,7 @@
   <span id="clock"></span>
 </footer>
 
+<script src="stack.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
