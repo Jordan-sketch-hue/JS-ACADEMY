@@ -450,13 +450,65 @@ function say(cls, text) {
 }
 let lastBuild = null;
 let running = false;
+let pendingClarify = null;
+
+/* low-context intake — the agent never assumes; it asks.
+   Skip the questionnaire by ending a directive with "!" */
+function clarifyQuestions(cls, text) {
+  const t = text.toLowerCase();
+  const pick = (a, map, fallback) => map[a.trim()[0] || ""] || fallback(a);
+  const qs = [];
+  if (!/react|html|jsx|component/.test(t)) qs.push({
+    key: "stack", text: "stack? [1] react · [2] plain html",
+    parse: (a) => { cls.stack = /2|html/i.test(a) ? "html" : "react"; },
+  });
+  if (cls.type === "app") qs.push({
+    key: "type", text: "building what? [1] landing page · [2] dashboard · [3] store · [4] media tool · [5] general app",
+    parse: (a) => {
+      cls.type = pick(a, { 1: "landing", 2: "dashboard", 3: "commerce", 4: "media-tool" },
+        (x) => /land|site|page/i.test(x) ? "landing" : /dash|admin/i.test(x) ? "dashboard"
+          : /store|shop|commerce/i.test(x) ? "commerce" : /media|video|edit/i.test(x) ? "media-tool" : "app");
+    },
+  });
+  if (!/small|simple|tiny|quick|medium|large|big|full|complex/.test(t)) qs.push({
+    key: "size", text: "size? [1] small · [2] medium · [3] large",
+    parse: (a) => { cls.size = pick(a, { 1: "small", 2: "medium", 3: "large" }, (x) => /small/i.test(x) ? "small" : /large|big/i.test(x) ? "large" : "medium"); },
+  });
+  qs.push({ key: "payments", text: "taking payments? [y/n]", parse: (a) => { if (/^y/i.test(a.trim())) cls.raw += " payments store"; } });
+  qs.push({ key: "notifications", text: "send notifications — whatsapp or email? [w/e/n]", parse: (a) => { const c = (a.trim()[0] || "").toLowerCase(); if (c === "w") cls.raw += " whatsapp notify"; else if (c === "e") cls.raw += " email notify"; } });
+  return qs;
+}
+
+function askClarify() {
+  const pc = pendingClarify;
+  say("warn", `Q${pc.idx + 1}/${pc.questions.length}: ${pc.questions[pc.idx].text}`);
+}
+
+async function handleClarifyAnswer(text) {
+  const pc = pendingClarify;
+  say("sys", `> ${text}`);
+  pc.questions[pc.idx].parse(text);
+  audit("clarify", `${pc.questions[pc.idx].key} → ${text.slice(0, 40)}`);
+  fire("reason", 0.6);
+  pc.idx++;
+  if (pc.idx < pc.questions.length) { askClarify(); return; }
+  pendingClarify = null;
+  say("ok", `clarify: context locked — ${pc.cls.stack}/${pc.cls.type}/${pc.cls.size}. building.`);
+  await runBuild(pc.cls);
+}
+
+function setIdle() {
+  running = false;
+  $("#agent-status").textContent = "AGENT: IDLE"; $("#agent-status").classList.remove("on");
+}
 
 async function runDirective(text) {
-  if (running || !text.trim()) return;
+  if (!text.trim()) return;
+  if (pendingClarify) { $("#cmd").value = ""; await handleClarifyAnswer(text); return; }
+  if (running) return;
   running = true;
   $("#agent-status").textContent = "AGENT: ACTIVE"; $("#agent-status").classList.add("on");
   stream.innerHTML = "";
-  const t0 = performance.now();
 
   say("sys", `> ${text}`);
   audit("directive", text);
@@ -474,7 +526,7 @@ async function runDirective(text) {
       audit("audit", "session build re-audited: clean");
     }
     stateEngine.set("IDLE — awaiting directive");
-    done(); return;
+    setIdle(); return;
   }
 
   // 1 perceive
@@ -493,6 +545,28 @@ async function runDirective(text) {
     { p: 0.9, s: "RISK ANALYSIS" }, { p: 0.1, s: "RECLASSIFY (operator correction)" },
   ]);
   await sleep(420);
+
+  // low-context intake — confirm anything unclear instead of assuming
+  const qs = /!\s*$/.test(text) ? [] : clarifyQuestions(cls, text);
+  if (qs.length) {
+    pendingClarify = { cls, questions: qs, idx: 0 };
+    running = false;
+    $("#agent-status").textContent = "AGENT: ASKING";
+    stateEngine.set("CLARIFYING — low-context intake, zero assumptions", [
+      { p: 0.95, s: "BUILD (answers locked)" }, { p: 0.05, s: "RESET (new directive)" },
+    ]);
+    say("act", `clarify: ${qs.length} question(s) before building — answer in the same box. (end a directive with ! to skip questions)`);
+    fire("reason", 1);
+    askClarify();
+    return;
+  }
+  await runBuild(cls);
+}
+
+async function runBuild(cls) {
+  running = true;
+  $("#agent-status").textContent = "AGENT: ACTIVE"; $("#agent-status").classList.add("on");
+  const t0 = performance.now();
 
   // 3 risk
   fire("risk", 1); fire("reason", 0.8);
@@ -541,7 +615,7 @@ async function runDirective(text) {
   // 8 learn / persist
   fire("learn", 1); fire("memory", 1);
   lastBuild = { cls, risks, code };
-  KB.add("build", `${cls.stack}/${cls.type}/${cls.size} — "${text.slice(0, 60)}"`, { risks, lines, style });
+  KB.add("build", `${cls.stack}/${cls.type}/${cls.size} — "${cls.raw.slice(0, 60)}"`, { risks, lines, style });
   say("ok", `learn: run persisted to knowledge base (${lines} lines, ${(performance.now() - t0 | 0)}ms).`);
   audit("build", `generated ${cls.stack}/${cls.type}/${cls.size} scaffold, ${lines} lines`);
 
@@ -549,12 +623,7 @@ async function runDirective(text) {
     { p: 0.5, s: "NEW DIRECTIVE" }, { p: 0.3, s: "AUDIT PASS" }, { p: 0.2, s: "SUPABASE SYNC" },
   ]);
   say("sys", "ready. copy/download the build in panel 05, or say: audit my last project");
-  done();
-
-  function done() {
-    running = false;
-    $("#agent-status").textContent = "AGENT: IDLE"; $("#agent-status").classList.remove("on");
-  }
+  setIdle();
 }
 
 $("#run").onclick = () => runDirective($("#cmd").value);
