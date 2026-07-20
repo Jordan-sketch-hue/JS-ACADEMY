@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="6" fill="#0A0906"/>
+  <!-- stemless glass silhouette -->
+  <path d="M10 6 C10 6 8 12 9 17 C10 21 13 23 16 23 C19 23 22 21 23 17 C24 12 22 6 22 6 Z" fill="#C8A84A" opacity="0.9"/>
+  <!-- wine fill -->
+  <path d="M10.5 13 C10.2 15 10.5 17 11.5 19 C12.5 21 14 22.5 16 22.5 C18 22.5 19.5 21 20.5 19 C21.5 17 21.8 15 21.5 13 Z" fill="#8B1A2A" opacity="0.85"/>
+  <!-- glass rim highlight -->
+  <path d="M10 6 L22 6" stroke="#EDE4CC" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+  <!-- WIAG text hint -->
+  <text x="16" y="30" text-anchor="middle" font-family="Georgia,serif" font-size="5" fill="#C8A84A" letter-spacing="0.5" opacity="0.8">BIT</text>
+</svg>
