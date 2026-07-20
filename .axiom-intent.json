@@ -1,0 +1,50 @@
+{
+  "tiktok/token.mjs": [
+    {
+      "prompt": "Manage TikTok OAuth access tokens — load from .env, refresh when expired",
+      "expectedResult": "exports getAccessToken() → resolves to valid Bearer token string used by all other tiktok scripts",
+      "codedBy": "user",
+      "ts": 1784513235339
+    }
+  ],
+  "tiktok/post-video.mjs": [
+    {
+      "prompt": "CLI tool to post a single TikTok video via FILE_UPLOAD or PULL_FROM_URL for @jsuprememarketing",
+      "expectedResult": "reads CLI args (--file/--url/--title/--privacy), calls TikTok v2 API, polls until PUBLISH_COMPLETE",
+      "codedBy": "user",
+      "ts": 1784513235339
+    }
+  ],
+  "tiktok/schedule-reels.mjs": [
+    {
+      "prompt": "Batch post multiple reels from a hardcoded queue with 60s gap between posts",
+      "expectedResult": "iterates REELS array, uploads each file, waits between posts, supports --dry-run flag",
+      "codedBy": "user",
+      "ts": 1784513235339
+    }
+  ],
+  "tiktok/auth.mjs": [
+    {
+      "prompt": "TikTok OAuth authorization flow — get initial access + refresh tokens",
+      "expectedResult": "starts local server, opens OAuth URL, receives callback, saves tokens to .env",
+      "codedBy": "user",
+      "ts": 1784513235340
+    }
+  ],
+  "campaigns/jst-jsm-ad-carousels.html": [
+    {
+      "prompt": "JST + JSM psychology-led ad carousel campaigns for @jsuprememarketing",
+      "expectedResult": "standalone HTML ad deck — swipeable carousel slides with brand identity, no external deps",
+      "codedBy": "user",
+      "ts": 1784513235340
+    }
+  ],
+  "campaigns/jst-jsm-content-hub.html": [
+    {
+      "prompt": "JST + JSM content hub with TikTok reel scripts and API integration guide",
+      "expectedResult": "standalone HTML reference page — content calendar, reel scripts, API setup walkthrough",
+      "codedBy": "user",
+      "ts": 1784513235341
+    }
+  ]
+}
