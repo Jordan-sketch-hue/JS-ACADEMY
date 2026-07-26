@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Promo — Install Solace on your phone</title>
+  <meta name="description" content="Instagram story-format promo showing how to install Solace Auto Imports as a phone app." />
+  <meta name="theme-color" content="#0F1B2C" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="apple-touch-icon" href="images/logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --orange: #ED7B2D;
+      --navy: #0F1B2C;
+      --blue: #1E3A8A;
+      --gold: #F2B340;
+      --cream: #FFF7EC;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      min-height: 100vh;
+    }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .toolbar h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+    .toolbar p { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 0;
+      cursor: pointer;
+      transition: transform 0.1s ease, background 0.1s ease;
+    }
+    .btn-primary { background: var(--orange); color: #fff; }
+    .btn-primary:hover { background: #d96a1f; }
+    .btn-ghost { background: rgba(255,255,255,0.1); color: #fff; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.18); }
+    .btn:disabled { opacity: 0.5; cursor: progress; }
+
+    .stage {
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px 80px;
+    }
+
+    /* Wrapper provides the scaled-down preview frame */
+    .frame-wrap {
+      width: min(100%, 440px);
+      aspect-ratio: 9 / 16;
+      position: relative;
+      overflow: visible;
+    }
+
+    /* Exact 1080×1920 canvas, scaled to fit wrapper */
+    #poster {
+      width: 1080px;
+      height: 1920px;
+      transform-origin: top left;
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      color: #fff;
+      background: var(--navy);
+      background-image:
+        radial-gradient(circle at 18% 14%, rgba(237,123,45,0.55) 0%, transparent 48%),
+        radial-gradient(circle at 82% 88%, rgba(30,58,138,0.55) 0%, transparent 50%),
+        linear-gradient(180deg, #0F1B2C 0%, #1a2b4a 100%);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      padding: 96px 80px;
+    }
+
+    /* Logo block */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .brand img {
+      width: 140px;
+      height: 140px;
+      border-radius: 30px;
+      background: #fff;
+      padding: 8px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    }
+    .brand .name {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 56px;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .brand .tag {
+      font-family: 'Dancing Script', cursive;
+      font-size: 32px;
+      color: var(--gold);
+      margin-top: 4px;
+    }
+
+    /* Headline */
+    .eyebrow {
+      margin-top: 80px;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: 8px;
+      text-transform: uppercase;
+    }
+    .headline {
+      margin-top: 28px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 180px;
+      line-height: 0.92;
+      letter-spacing: -4px;
+      background: linear-gradient(180deg, #fff 0%, #c8d0dc 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subhead {
+      margin-top: 36px;
+      font-size: 40px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.35;
+      max-width: 800px;
+    }
+
+    /* Steps card */
+    .steps {
+      margin-top: 72px;
+      padding: 44px 48px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 36px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(6px);
+    }
+    .steps .title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 36px;
+      margin-bottom: 28px;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 34px;
+      color: rgba(255,255,255,0.92);
+      padding: 14px 0;
+    }
+    .step + .step { border-top: 1px solid rgba(255,255,255,0.08); }
+    .step .num {
+      flex-shrink: 0;
+      width: 64px;
+      height: 64px;
+      border-radius: 999px;
+      background: var(--orange);
+      display: grid;
+      place-items: center;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+    }
+
+    /* Bottom URL+QR row */
+    .footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    .footer img.qr {
+      width: 220px; height: 220px;
+      border-radius: 20px;
+      background: #fff;
+      padding: 10px;
+    }
+    .footer .urlblock {
+      display: flex;
+      flex-direction: column;
+    }
+    .footer .urllabel {
+      font-size: 22px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      font-weight: 700;
+    }
+    .footer .url {
+      margin-top: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 56px;
+      color: var(--orange);
+      letter-spacing: -1px;
+    }
+    .footer .ig {
+      margin-top: 10px;
+      font-size: 26px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    @media (min-width: 720px) {
+      .frame-wrap { width: 480px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <div>
+      <h1>Promo — Install Solace on phone</h1>
+      <p>Instagram story · 1080 × 1920 · ready to download</p>
+    </div>
+    <div class="toolbar-actions">
+      <a href="index.html" class="btn btn-ghost">← Site</a>
+      <a id="downloadLink" href="#" download="solace-install-story.png" class="btn btn-primary" onclick="downloadPoster(event)">↓ Download PNG</a>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="frame-wrap" id="frameWrap">
+      <div id="poster">
+
+        <div class="brand">
+          <img src="images/logo.png" alt="Solace" crossorigin="anonymous" />
+          <div>
+            <div class="name">Solace<br/>Auto Imports</div>
+            <div class="tag">We Import · We Sell · We Source</div>
+          </div>
+        </div>
+
+        <div class="eyebrow">Now on your phone</div>
+        <div class="headline">Install<br/>our gallery.</div>
+        <div class="subhead">
+          Browse our full Jamaican inventory anytime — no app store, no download. Tap to install, opens like a real app.
+        </div>
+
+        <div class="steps">
+          <div class="title">3 steps · iPhone (Safari)</div>
+          <div class="step"><div class="num">1</div><div>Open <strong>solace-auto-imports.vercel.app</strong></div></div>
+          <div class="step"><div class="num">2</div><div>Tap the <strong>Share</strong> button</div></div>
+          <div class="step"><div class="num">3</div><div>Tap <strong>“Add to Home Screen”</strong></div></div>
+        </div>
+
+        <div class="footer">
+          <img class="qr" alt="QR" src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&amp;data=https%3A%2F%2Fsolace-auto-imports.vercel.app%2F&amp;color=0F1B2C&amp;bgcolor=ffffff&amp;qzone=1" crossorigin="anonymous" />
+          <div class="urlblock">
+            <div class="urllabel">Scan to install</div>
+            <div class="url">solace-auto-imports.vercel.app</div>
+            <div class="ig">@solaceautoimports · (876) 456-6976</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Scale the 1080×1920 poster to fit its wrapper for preview
+    function scalePoster() {
+      const wrap = document.getElementById('frameWrap');
+      const poster = document.getElementById('poster');
+      const w = wrap.clientWidth;
+      const scale = w / 1080;
+      poster.style.transform = `scale(${scale})`;
+      wrap.style.height = (1920 * scale) + 'px';
+    }
+    window.addEventListener('load', scalePoster);
+    window.addEventListener('resize', scalePoster);
+
+    // Download as a real 1080×1920 PNG using html2canvas
+    async function downloadPoster(e) {
+      e.preventDefault();
+      const btn = document.getElementById('downloadLink');
+      btn.style.pointerEvents = 'none';
+      btn.textContent = '… rendering …';
+
+      const poster = document.getElementById('poster');
+      // Temporarily reset scale so html2canvas captures at 1080×1920
+      const prevTransform = poster.style.transform;
+      poster.style.transform = 'scale(1)';
+
+      try {
+        const canvas = await html2canvas(poster, {
+          width: 1080,
+          height: 1920,
+          windowWidth: 1080,
+          windowHeight: 1920,
+          scale: 1,
+          backgroundColor: null,
+          useCORS: true,
+          allowTaint: false,
+        });
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'solace-install-story.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('Download failed: ' + err.message);
+        console.error(err);
+      } finally {
+        poster.style.transform = prevTransform;
+        btn.style.pointerEvents = '';
+        btn.textContent = '↓ Download PNG';
+      }
+    }
+  </script>
+
+</body>
+</html>

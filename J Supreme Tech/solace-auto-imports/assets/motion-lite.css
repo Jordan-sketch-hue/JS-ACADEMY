@@ -1,0 +1,68 @@
+/* ============================================================
+   Solace Auto Imports — motion-lite.css
+   Tiny progressive-enhancement motion layer (public pages only).
+   Every reveal rule is gated behind `html.mk-js`, which is added
+   by /assets/motion-lite.js. Without JS, NOTHING here hides any
+   content — the page renders fully visible.
+   ============================================================ */
+
+/* ---- Reveal on scroll -------------------------------------
+   Usage: <el data-mk-reveal style="--mk-delay:.1s"> …
+   JS adds .mk-in when the element enters the viewport. */
+html.mk-js [data-mk-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s cubic-bezier(0.21, 0.47, 0.32, 0.98),
+    transform 0.6s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+  transition-delay: var(--mk-delay, 0s);
+}
+
+html.mk-js [data-mk-reveal].mk-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- CSS marquee ------------------------------------------
+   Usage (only if a static strip exists — pure CSS, no JS):
+   <div class="mk-marquee">
+     <div class="mk-marquee-track"> …items… …items duplicated… </div>
+   </div>
+   Duplicate the track content once for a seamless -50% loop. */
+.mk-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.mk-marquee-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+  will-change: transform;
+  animation: mk-marquee-scroll 28s linear infinite;
+}
+
+.mk-marquee:hover .mk-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes mk-marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ---- Reduced motion: disable everything, show everything -- */
+@media (prefers-reduced-motion: reduce) {
+  html.mk-js [data-mk-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .mk-marquee-track {
+    animation: none;
+    white-space: normal;
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "solace-auto-imports",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Solace Auto Imports Limited — certified used car dealer in Jamaica. We Import | We Sell | We Source.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "vercel dev --listen 3000",
+    "static": "npx serve . -l 3000",
+    "start": "vercel dev --listen 3000"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
+    "@vercel/analytics": "^2.0.1",
+    "sharp": "^0.34.5"
+  },
+  "keywords": [
+    "jamaica",
+    "car-dealer",
+    "auto-imports",
+    "solace"
+  ],
+  "author": "Solace Auto Imports Limited",
+  "license": "UNLICENSED"
+}

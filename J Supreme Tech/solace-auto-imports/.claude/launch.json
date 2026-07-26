@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "solace",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", ".", "-l", "3000"],
+      "port": 3000
+    },
+    {
+      "name": "solacepy",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3002", "--directory", "C:\\Users\\jader\\J Supreme Tech\\solace-auto-imports"],
+      "port": 3002
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "website": "https://solace-auto-imports.vercel.app",
+  "backofficeLogin": "https://solace-auto-imports.vercel.app/admin",
+  "backofficeLoginAfterRedeploy": "https://solace-auto-imports.vercel.app/admin/login",
+  "architectEmail": "jordanmorrisr@gmail.com",
+  "architectPassword": "Solace-Jader-2026!7K",
+  "businessAdminEmail": "solaceimports@gmail.com",
+  "supabaseProject": "https://ibtadbwtrxglujkzqofs.supabase.co",
+  "signInTest": "ok (verified in prior run; re-run node scripts/write-setup-result.mjs to refresh recovery link)",
+  "recoveryLink": null,
+  "siteUrlFix": "Supabase Dashboard → Authentication → URL Configuration: Site URL = https://solace-auto-imports.vercel.app; Redirect URLs add https://solace-auto-imports.vercel.app/admin and https://solace-auto-imports.vercel.app/admin/login",
+  "jSupremeMigrations": "C:\\Users\\jader\\J Supreme Tech\\j-supreme-conglomerate\\supabase\\migrations\\",
+  "vercelEnvRequired": [
+    "NEXT_PUBLIC_SUPABASE_URL=https://ibtadbwtrxglujkzqofs.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY=(anon key, no \\r\\n)",
+    "SUPABASE_SERVICE_ROLE_KEY=(service role, no \\r\\n)",
+    "SOLACE_ADMIN_EMAILS=solaceimports@gmail.com",
+    "SOLACE_ARCHITECT_EMAILS=jordanmorrisr@gmail.com"
+  ],
+  "sqlManual": [
+    "20260519170000_solace_auto_imports.sql",
+    "20260519180000_backoffice_v2.sql",
+    "20260519180100_solace_storage_bucket.sql"
+  ],
+  "deployNote": "Run: cd solace-auto-imports && powershell -File scripts\\invoke-setup.ps1 (env + auth + npx vercel --prod)"
+}

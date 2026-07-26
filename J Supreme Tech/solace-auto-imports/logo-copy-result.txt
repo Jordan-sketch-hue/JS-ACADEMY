@@ -1,0 +1,14 @@
+PENDING_LOCAL_COPY
+
+Client logo source (when available on this machine):
+  C:\Users\jader\.cursor\projects\empty-window\assets\logo.png
+
+To install the exact client PNG before deploy:
+  New-Item -ItemType Directory -Force images | Out-Null
+  Copy-Item -Force "C:\Users\jader\.cursor\projects\empty-window\assets\logo.png" "images\logo.png"
+  Copy-Item -Force "images\logo.png" "favicon.ico"
+  npm run build
+  npx vercel --prod --yes
+
+Production fallback: Vercel build runs `npm run build` (copy or rasterize from images/logo.svg).
+API fallback: /images/logo.png rewrites to /api/logo-image when static file is missing.

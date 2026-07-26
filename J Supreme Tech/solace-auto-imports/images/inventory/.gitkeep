@@ -1,0 +1,3 @@
+# Drop car photos in this folder.
+# Naming: <model>-<year>-<view>.jpg  e.g. axio-2018-front.jpg
+# Then add the file path to data/cars.json under the matching car's "images" array.

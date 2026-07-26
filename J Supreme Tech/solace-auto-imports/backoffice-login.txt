@@ -1,0 +1,8 @@
+Solace Auto Imports — backoffice login (verified)
+
+Email:    jordanmorrisr@gmail.com
+Password: Solace-Jader-2026!7K
+
+Admin URL: https://solace-auto-imports.vercel.app/admin
+
+Sign-in test against Supabase: OK

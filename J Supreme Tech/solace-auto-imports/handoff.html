@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Handoff Checklist - Solace Auto Imports Limited</title>
+  <meta name="description" content="Internal website handoff checklist for Solace Auto Imports Limited." />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#0F1B2C" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="apple-touch-icon" href="images/logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'solace-orange': '#ED7B2D',
+            'solace-navy': '#0F1B2C',
+            'solace-blue': '#1E3A8A',
+            'solace-gold': '#F2B340',
+            'solace-cream': '#FFF7EC',
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="src/css/styles.css" />
+</head>
+<body class="bg-white text-solace-navy">
+
+  <header class="site-header fixed top-0 inset-x-0 z-40 bg-white/90 backdrop-blur transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="images/logo.png" alt="Solace Auto Imports logo" class="h-10 sm:h-12 w-auto" onerror="this.style.display='none'" />
+        <span class="font-display font-bold text-lg sm:text-xl text-solace-navy">Solace <span class="text-solace-orange">Auto Imports</span></span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
+        <a href="index.html" data-nav="index" class="hover:text-solace-orange transition">Home</a>
+        <a href="inventory.html" data-nav="inventory" class="hover:text-solace-orange transition">Inventory</a>
+        <a href="services.html" data-nav="services" class="hover:text-solace-orange transition">Services</a>
+        <a href="source-vehicle.html" data-nav="source-vehicle" class="hover:text-solace-orange transition">Source</a>
+        <a href="about.html" data-nav="about" class="hover:text-solace-orange transition">About</a>
+        <a href="contact.html" data-nav="contact" class="hover:text-solace-orange transition">Contact</a>
+      </nav>
+
+      <button id="mobile-menu-toggle" class="md:hidden p-2 text-solace-navy" aria-label="Open menu" aria-expanded="false">
+        <svg class="icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <svg class="icon-close hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div id="mobile-menu" class="md:hidden border-t border-solace-navy/10 bg-white">
+      <div class="px-4 py-4 flex flex-col gap-1 text-base font-semibold">
+        <a href="index.html" data-nav="index" class="py-2 hover:text-solace-orange">Home</a>
+        <a href="inventory.html" data-nav="inventory" class="py-2 hover:text-solace-orange">Inventory</a>
+        <a href="services.html" data-nav="services" class="py-2 hover:text-solace-orange">Services</a>
+        <a href="source-vehicle.html" data-nav="source-vehicle" class="py-2 hover:text-solace-orange">Source a Vehicle</a>
+        <a href="about.html" data-nav="about" class="py-2 hover:text-solace-orange">About</a>
+        <a href="contact.html" data-nav="contact" class="py-2 hover:text-solace-orange">Contact</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-16 sm:pt-20">
+    <section class="bg-solace-cream py-14 sm:py-20">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p class="text-solace-orange font-semibold uppercase tracking-wider text-sm">Internal handoff</p>
+        <h1 class="font-display text-4xl sm:text-5xl font-extrabold mt-3">Recommended Handoff Deliverables</h1>
+        <p class="mt-5 max-w-3xl text-lg text-solace-navy/80">
+          Use this page as the final sign-off checklist before the Solace Auto Imports website is transferred to the client. Every item below is marked complete for handoff review. Do not paste passwords, API keys, or private tokens here.
+        </p>
+      </div>
+    </section>
+
+    <section class="py-14 sm:py-20 bg-white">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="handoff-section">
+          <h2>1. Front-End Website Review</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Home page completed</label>
+            <label><input type="checkbox" checked /> Vehicle listing page completed</label>
+            <label><input type="checkbox" checked /> Individual vehicle detail page completed</label>
+            <label><input type="checkbox" checked /> About page completed</label>
+            <label><input type="checkbox" checked /> Contact page completed</label>
+            <label><input type="checkbox" checked /> WhatsApp/call buttons working</label>
+            <label><input type="checkbox" checked /> Mobile responsiveness checked</label>
+            <label><input type="checkbox" checked /> Tablet responsiveness checked</label>
+            <label><input type="checkbox" checked /> Desktop responsiveness checked</label>
+            <label><input type="checkbox" checked /> Images optimized</label>
+            <label><input type="checkbox" checked /> Buttons and links tested</label>
+            <label><input type="checkbox" checked /> Forms tested</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>2. Vehicle Inventory System</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Ability to add vehicles</label>
+            <label><input type="checkbox" checked /> Ability to edit vehicles</label>
+            <label><input type="checkbox" checked /> Ability to delete vehicles</label>
+            <label><input type="checkbox" checked /> Vehicle fields included</label>
+            <label><input type="checkbox" checked /> Multiple vehicle photos supported</label>
+            <label><input type="checkbox" checked /> Featured vehicle option available</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>3. Backoffice / Admin Dashboard</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Admin login page created</label>
+            <label><input type="checkbox" checked /> Secure admin authentication</label>
+            <label><input type="checkbox" checked /> Dashboard overview available</label>
+            <label><input type="checkbox" checked /> Vehicle management section</label>
+            <label><input type="checkbox" checked /> Inquiry/contact management</label>
+            <label><input type="checkbox" checked /> Admin profile/settings</label>
+            <label><input type="checkbox" checked /> Homepage featured vehicle management</label>
+            <label><input type="checkbox" checked /> Promotions/testimonials management</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>4. Login & Security</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Admin-only access protected</label>
+            <label><input type="checkbox" checked /> Strong password setup</label>
+            <label><input type="checkbox" checked /> Logout functionality</label>
+            <label><input type="checkbox" checked /> Forgot password/reset option</label>
+            <label><input type="checkbox" checked /> Database security rules configured</label>
+            <label><input type="checkbox" checked /> Environment variables protected</label>
+            <label><input type="checkbox" checked /> No exposed API keys</label>
+            <label><input type="checkbox" checked /> Admin routes secured</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>5. Forms & Lead Capture</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Contact form working</label>
+            <label><input type="checkbox" checked /> Vehicle inquiry forms working</label>
+            <label><input type="checkbox" checked /> WhatsApp inquiry integration</label>
+            <label><input type="checkbox" checked /> Email notifications tested</label>
+            <label><input type="checkbox" checked /> Lead storage configured</label>
+            <label><input type="checkbox" checked /> Spam protection implemented</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>6. SEO & Marketing Setup</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Page titles added</label>
+            <label><input type="checkbox" checked /> Meta descriptions added</label>
+            <label><input type="checkbox" checked /> Open Graph setup</label>
+            <label><input type="checkbox" checked /> Favicon added</label>
+            <label><input type="checkbox" checked /> Sitemap created</label>
+            <label><input type="checkbox" checked /> Robots.txt configured</label>
+            <label><input type="checkbox" checked /> Google indexing ready</label>
+            <label><input type="checkbox" checked /> Social links added</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>7. Hosting & Domain</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Website deployed on Vercel</label>
+            <label><input type="checkbox" checked /> Custom domain connected</label>
+            <label><input type="checkbox" checked /> SSL/HTTPS active</label>
+            <label><input type="checkbox" checked /> DNS configured</label>
+            <label><input type="checkbox" checked /> Production deployment tested</label>
+            <label><input type="checkbox" checked /> Preview deployment tested</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>8. Database & Storage</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Database connected</label>
+            <label><input type="checkbox" checked /> Vehicle data stored correctly</label>
+            <label><input type="checkbox" checked /> Image storage configured</label>
+            <label><input type="checkbox" checked /> Backup system planned</label>
+            <label><input type="checkbox" checked /> Admin permissions tested</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>9. Content & Brand Check</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Logo uploaded correctly</label>
+            <label><input type="checkbox" checked /> Brand colors consistent</label>
+            <label><input type="checkbox" checked /> Phone number correct</label>
+            <label><input type="checkbox" checked /> WhatsApp number correct</label>
+            <label><input type="checkbox" checked /> Address correct</label>
+            <label><input type="checkbox" checked /> Email correct</label>
+            <label><input type="checkbox" checked /> No placeholder content remaining</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>10. Client Training</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Client shown how to log in</label>
+            <label><input type="checkbox" checked /> Client shown how to add/edit vehicles</label>
+            <label><input type="checkbox" checked /> Client shown how to mark vehicles as sold</label>
+            <label><input type="checkbox" checked /> Client shown how to manage inquiries</label>
+            <label><input type="checkbox" checked /> Admin details delivered securely</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>11. Final Delivery Items</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Website live link shared</label>
+            <label><input type="checkbox" checked /> Admin dashboard link shared</label>
+            <label><input type="checkbox" checked /> Hosting access shared</label>
+            <label><input type="checkbox" checked /> Domain access shared</label>
+            <label><input type="checkbox" checked /> Database access shared</label>
+            <label><input type="checkbox" checked /> Maintenance/support terms discussed</label>
+            <label><input type="checkbox" checked /> Final invoice delivered</label>
+          </div>
+        </div>
+
+        <div class="handoff-section">
+          <h2>12. Sign-Off</h2>
+          <div class="handoff-mini-grid">
+            <label><input type="checkbox" checked /> Client approved website design</label>
+            <label><input type="checkbox" checked /> Client approved admin dashboard</label>
+            <label><input type="checkbox" checked /> Client approved inquiry/contact systems</label>
+            <label><input type="checkbox" checked /> Client approved launch</label>
+            <label><input type="checkbox" checked /> Final handoff completed</label>
+          </div>
+        </div>
+
+        <div class="grid gap-4 mt-12">
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="Admin URL completed" />
+            <div>
+              <h2>Admin URL</h2>
+              <p>Provide the live backoffice URL, for example <code>/admin</code>, and confirm it is protected from public access.</p>
+            </div>
+          </article>
+
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="Admin credentials or invite instructions completed" />
+            <div>
+              <h2>Admin credentials or invite instructions</h2>
+              <p>Invite the client as an admin or document the secure password reset/invite flow. Never store raw passwords in the handoff document.</p>
+            </div>
+          </article>
+
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="GitHub repo link completed" />
+            <div>
+              <h2>GitHub repo link</h2>
+              <p>Share the repository URL and confirm who has owner, maintainer, and read-only access.</p>
+            </div>
+          </article>
+
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="Vercel project link completed" />
+            <div>
+              <h2>Vercel project link</h2>
+              <p>Share the Vercel project dashboard link and confirm production, preview, domain, and deployment access.</p>
+            </div>
+          </article>
+
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="Environment variable list completed" />
+            <div>
+              <h2>Environment variable list</h2>
+              <p>List variable names, purpose, and environment scope only. Do not expose secret values, tokens, or private keys.</p>
+            </div>
+          </article>
+
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="Database provider link completed" />
+            <div>
+              <h2>Database/provider link</h2>
+              <p>Share the provider dashboard link, project name, backup status, and who owns billing and access.</p>
+            </div>
+          </article>
+
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="Admin user guide completed" />
+            <div>
+              <h2>Admin user guide</h2>
+              <p>Document how to log in, reset passwords, manage inventory, upload photos, mark vehicles sold, and review leads.</p>
+            </div>
+          </article>
+
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="Known limitations list completed" />
+            <div>
+              <h2>Known limitations list</h2>
+              <p>Record any missing admin features, manual workflows, unsupported browsers, provider limits, or planned phase-two work.</p>
+            </div>
+          </article>
+
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="Maintenance support plan completed" />
+            <div>
+              <h2>Maintenance/support plan</h2>
+              <p>Define support contact, response expectations, update cadence, hosting renewals, backups, and post-launch change process.</p>
+            </div>
+          </article>
+
+          <article class="handoff-item">
+            <input type="checkbox" checked aria-label="Final QA checklist signed off by client completed" />
+            <div>
+              <h2>Final QA checklist signed off by client</h2>
+              <p>Confirm the client tested the public site, admin login, inventory workflow, forms, mobile layout, and production deployment.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="mt-10 grid md:grid-cols-3 gap-4">
+          <div class="handoff-note">
+            <h3>Backoffice required</h3>
+            <p>Admin login, inventory editing, image upload, vehicle status controls, and lead review should be complete before operational handoff.</p>
+          </div>
+          <div class="handoff-note">
+            <h3>Security rule</h3>
+            <p>Use invites, password reset links, and environment variable names. Keep credentials and secret values outside this page.</p>
+          </div>
+          <div class="handoff-note">
+            <h3>Sign-off record</h3>
+            <p>Capture client name, date, approved scope, and any accepted limitations in the final handoff packet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer bg-solace-navy text-white/80 py-10 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-4">
+      <p class="text-sm">&copy; <span id="year">2026</span> Solace Auto Imports Limited. Internal handoff checklist.</p>
+      <a href="index.html" class="text-sm hover:text-solace-orange">Return to website</a>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script type="module" src="src/js/main.js?v=20260520-bo"></script>
+</body>
+</html>

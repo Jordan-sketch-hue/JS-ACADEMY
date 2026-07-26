@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Photo coming soon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF7EC"/>
+      <stop offset="100%" stop-color="#FFE4C2"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <g transform="translate(150 180)" fill="none" stroke="#0F1B2C" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 110 L70 60 Q90 40 130 38 L370 38 Q410 40 430 60 L460 110" fill="#ED7B2D" fill-opacity="0.2"/>
+    <path d="M10 110 L40 110 L460 110 L490 110 L490 150 Q490 160 480 160 L20 160 Q10 160 10 150 Z" fill="#ED7B2D" fill-opacity="0.25"/>
+    <circle cx="110" cy="160" r="28" fill="#0F1B2C"/>
+    <circle cx="110" cy="160" r="10" fill="#FFF7EC"/>
+    <circle cx="390" cy="160" r="28" fill="#0F1B2C"/>
+    <circle cx="390" cy="160" r="10" fill="#FFF7EC"/>
+  </g>
+  <text x="400" y="420" text-anchor="middle" font-family="Poppins, Inter, sans-serif" font-size="24" font-weight="600" fill="#0F1B2C">Photo coming soon</text>
+  <text x="400" y="450" text-anchor="middle" font-family="Poppins, Inter, sans-serif" font-size="16" fill="#0F1B2C" opacity="0.6">Call (876) 456-6976 for details</text>
+</svg>
