@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About — Solace Auto Imports Limited</title>
+  <meta name="description" content="About Solace Auto Imports Limited — certified used car dealer in Jamaica. Importing, selling and sourcing quality vehicles." />
+  <meta name="theme-color" content="#0F1B2C" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" href="images/logo.png?v=mqbi8stn" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Solace" />
+  <link rel="canonical" href="https://solaceautoimportsltd.com/about" />
+
+  <!-- Social share (WhatsApp / Messenger / FB / Twitter) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="About — Solace Auto Imports Limited" />
+  <meta property="og:description" content="Certified used car dealer in Westmoreland, Jamaica — we import, sell and source quality vehicles." />
+  <meta property="og:url" content="https://solaceautoimportsltd.com/about" />
+  <meta property="og:site_name" content="Solace Auto Imports Limited" />
+  <meta property="og:image" content="https://solaceautoimportsltd.com/images/solace-share.jpg?v=20260520" />
+  <meta property="og:image:width" content="800" />
+  <meta property="og:image:height" content="800" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="About — Solace Auto Imports Limited" />
+  <meta name="twitter:description" content="Certified used car dealer in Westmoreland, Jamaica." />
+  <meta name="twitter:image" content="https://solaceautoimportsltd.com/images/solace-share.jpg?v=20260520" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'solace-orange': '#ED7B2D',
+            'solace-navy': '#0F1B2C',
+            'solace-blue': '#1E3A8A',
+            'solace-gold': '#F2B340',
+            'solace-cream': '#FFF7EC',
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="src/css/styles.css?v=mqbi8stn" />
+</head>
+<body class="bg-white text-solace-navy">
+
+  <header class="site-header fixed top-0 inset-x-0 z-40 bg-white/90 backdrop-blur transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="images/logo.png?v=mqbi8stn" alt="Solace Auto Imports Limited logo" class="h-10 sm:h-12 w-auto rounded-full" onerror="this.onerror=null;this.src='images/logo.png?v=mqbi8stn'" />
+        <span class="font-display font-bold text-lg sm:text-xl text-solace-navy brand-name">Solace Auto Imports Limited</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
+        <a href="index.html" data-nav="index" class="hover:text-solace-orange transition">Home</a>
+        <a href="inventory.html" data-nav="inventory" class="hover:text-solace-orange transition">Inventory</a>
+        <a href="services.html" data-nav="services" class="hover:text-solace-orange transition">Services</a>
+        <a href="source-vehicle.html" data-nav="source-vehicle" class="hover:text-solace-orange transition">Source</a>
+        <a href="about.html" data-nav="about" class="hover:text-solace-orange transition">About</a>
+        <a href="contact.html" data-nav="contact" class="hover:text-solace-orange transition">Contact</a>
+        <a href="tel:+18764566976" class="btn-primary px-4 py-2 rounded-lg">(876) 456-6976</a>
+      </nav>
+      <button id="mobile-menu-toggle" class="md:hidden p-2 text-solace-navy" aria-label="Open menu" aria-expanded="false">
+        <svg class="icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <svg class="icon-close hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="md:hidden border-t border-solace-navy/10 bg-white">
+      <div class="px-4 py-4 flex flex-col gap-1 text-base font-semibold">
+        <a href="index.html" data-nav="index" class="py-2 hover:text-solace-orange">Home</a>
+        <a href="inventory.html" data-nav="inventory" class="py-2 hover:text-solace-orange">Inventory</a>
+        <a href="services.html" data-nav="services" class="py-2 hover:text-solace-orange">Services</a>
+        <a href="source-vehicle.html" data-nav="source-vehicle" class="py-2 hover:text-solace-orange">Source a Vehicle</a>
+        <a href="about.html" data-nav="about" class="py-2 hover:text-solace-orange">About</a>
+        <a href="contact.html" data-nav="contact" class="py-2 hover:text-solace-orange">Contact</a>
+        <a href="tel:+18764566976" class="btn-primary text-center px-4 py-3 rounded-lg mt-2">Call (876) 456-6976</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-16 sm:pt-20">
+
+    <section class="bg-gradient-to-br from-solace-cream via-white to-solace-cream py-14 sm:py-20">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="reveal font-script text-solace-blue text-2xl">Experience Quality Services</p>
+        <h1 class="reveal font-display text-4xl sm:text-5xl font-extrabold mt-2">About Solace Auto Imports Limited</h1>
+        <p class="reveal mt-5 text-solace-navy/70 text-lg">Certified used car dealer based in Westmoreland, Jamaica. We import, sell and source quality vehicles for our customers.</p>
+      </div>
+    </section>
+
+    <section class="py-16 sm:py-20">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+        <div class="reveal">
+          <h2 class="font-display text-3xl font-bold">Our Story</h2>
+          <p class="mt-4 text-solace-navy/80 leading-relaxed">
+            Solace Auto Imports Limited was founded with one goal — to make buying a quality used vehicle simple and stress-free for Jamaicans. From trusted overseas partners to local clearance and delivery, we handle the journey from showroom to your driveway.
+          </p>
+          <p class="mt-4 text-solace-navy/80 leading-relaxed">
+            Whether you're a first-time buyer or upgrading your daily ride, our team takes the time to understand what matters to you — budget, body type, fuel preference, and beyond.
+          </p>
+        </div>
+        <div class="reveal aspect-square rounded-2xl bg-solace-cream overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&q=80&auto=format&fit=crop"
+            alt="Quality vehicles ready for the Jamaican market"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 sm:py-20 bg-gradient-to-br from-solace-navy via-solace-blue to-solace-navy text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="reveal text-solace-orange font-semibold uppercase tracking-wider text-sm">Our Mission</p>
+        <h2 class="reveal font-display text-3xl sm:text-4xl font-bold mt-2">Mission Statement</h2>
+        <p class="reveal mt-6 text-lg sm:text-xl text-white/90 leading-relaxed">
+          Our mission is to attain our customers' loyalty by providing the best quality sales and services and leaving them satisfied with an amazing experience. At Solace Auto Imports Limited we will work as efficiently and effectively as a team whilst prioritizing the satisfaction of our customers and striving to exceed their expectations.
+        </p>
+      </div>
+    </section>
+
+    <section class="bg-solace-cream py-16 sm:py-20">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center reveal">
+          <p class="text-solace-orange font-semibold uppercase tracking-wider text-sm">Why Choose Us</p>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold mt-2">What sets us apart</h2>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-6 mt-12">
+          <div class="reveal text-center p-6 bg-white rounded-2xl">
+            <div class="mx-auto w-14 h-14 rounded-full bg-solace-orange/10 text-solace-orange grid place-items-center">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg mt-4">Trusted</h3>
+            <p class="text-solace-navy/70 mt-2 text-sm">Certified dealer with verified overseas suppliers.</p>
+          </div>
+          <div class="reveal text-center p-6 bg-white rounded-2xl">
+            <div class="mx-auto w-14 h-14 rounded-full bg-solace-orange/10 text-solace-orange grid place-items-center">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg mt-4">Transparent</h3>
+            <p class="text-solace-navy/70 mt-2 text-sm">Clear paperwork, honest vehicle history.</p>
+          </div>
+          <div class="reveal text-center p-6 bg-white rounded-2xl">
+            <div class="mx-auto w-14 h-14 rounded-full bg-solace-orange/10 text-solace-orange grid place-items-center">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg mt-4">Responsive</h3>
+            <p class="text-solace-navy/70 mt-2 text-sm">Quick replies on WhatsApp, phone and Instagram.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 sm:py-20">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center reveal">
+          <p class="text-solace-orange font-semibold uppercase tracking-wider text-sm">FAQ</p>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold mt-2">Common questions</h2>
+        </div>
+        <div class="mt-10 space-y-3">
+          <details class="faq-item reveal bg-solace-cream rounded-xl p-5">
+            <summary class="flex items-center justify-between gap-4 font-display font-semibold text-lg">
+              How do I see a car in person?
+              <span class="faq-icon text-solace-orange text-2xl leading-none">+</span>
+            </summary>
+            <p class="mt-3 text-solace-navy/80">Call us at (876) 456-6976 or message us on Instagram to schedule a viewing.</p>
+          </details>
+          <details class="faq-item reveal bg-solace-cream rounded-xl p-5">
+            <summary class="flex items-center justify-between gap-4 font-display font-semibold text-lg">
+              Can you source a specific make and model?
+              <span class="faq-icon text-solace-orange text-2xl leading-none">+</span>
+            </summary>
+            <p class="mt-3 text-solace-navy/80">Yes — that's our "We Source" service. Tell us the make, model, year and budget and we'll come back with options.</p>
+          </details>
+          <details class="faq-item reveal bg-solace-cream rounded-xl p-5">
+            <summary class="flex items-center justify-between gap-4 font-display font-semibold text-lg">
+              Do you handle import duties and clearance?
+              <span class="faq-icon text-solace-orange text-2xl leading-none">+</span>
+            </summary>
+            <p class="mt-3 text-solace-navy/80">Yes. We manage the import process end-to-end so you get a road-ready vehicle.</p>
+          </details>
+          <details class="faq-item reveal bg-solace-cream rounded-xl p-5">
+            <summary class="flex items-center justify-between gap-4 font-display font-semibold text-lg">
+              What payment methods do you accept?
+              <span class="faq-icon text-solace-orange text-2xl leading-none">+</span>
+            </summary>
+            <p class="mt-3 text-solace-navy/80">Bank transfer and other arrangements — please contact us to discuss what works best.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer bg-solace-navy text-white/80 py-12 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-3">
+          <img src="images/logo.png?v=mqbi8stn" alt="Solace Auto Imports Limited" class="h-10 w-auto rounded-full" onerror="this.onerror=null;this.src='images/logo.png?v=mqbi8stn'" />
+          <span class="font-display font-bold text-white">Solace Auto Imports Limited</span>
+        </div>
+        <p class="mt-4 text-sm">Certified used car dealer in Westmoreland, Jamaica.</p>
+      </div>
+      <div>
+        <h4 class="font-display font-semibold text-white mb-3">Explore</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="index.html" class="hover:text-solace-orange">Home</a></li>
+          <li><a href="inventory.html" class="hover:text-solace-orange">Inventory</a></li>
+          <li><a href="about.html" class="hover:text-solace-orange">About</a></li>
+          <li><a href="contact.html" class="hover:text-solace-orange">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-display font-semibold text-white mb-3">Contact</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="tel:+18764566976" class="hover:text-solace-orange">(876) 456-6976</a></li>
+          <li><a href="mailto:solaceimports@gmail.com" class="hover:text-solace-orange break-all">solaceimports@gmail.com</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-display font-semibold text-white mb-3">Follow</h4>
+        <a href="https://www.instagram.com/solaceautoimports" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-solace-orange">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+          @solaceautoimports
+        </a>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-white/60">
+      <p>&copy; <span id="year">2026</span> Solace Auto Imports Limited. All rights reserved.</p>
+      <p class="flex items-center gap-4"><a href="privacy.html" class="hover:text-solace-orange">Privacy</a><a href="terms.html" class="hover:text-solace-orange">Terms</a></p>
+      <p>Made with care in Jamaica 🇯🇲</p>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script type="module" src="src/js/main.js?v=mqbi8stn"></script>
+  <script type="module" src="/src/js/pwa.js"></script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
+

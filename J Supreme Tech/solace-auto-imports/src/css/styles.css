@@ -1,0 +1,363 @@
+/* Solace Auto Imports — custom CSS layered on top of Tailwind CDN */
+
+:root {
+  --solace-orange: #ED7B2D;
+  --solace-navy: #0F1B2C;
+  --solace-blue: #1E3A8A;
+  --solace-gold: #F2B340;
+  --solace-cream: #FFF7EC;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--solace-navy);
+  background: #ffffff;
+  /* prevent any mis-sized child from creating horizontal scroll */
+  overflow-x: hidden;
+}
+
+/* Global image safety */
+img { max-width: 100%; height: auto; }
+
+/* Clamp header brand text on phones so the hamburger never gets pushed off */
+.site-header .brand-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 42vw; }
+@media (min-width: 480px) { .site-header .brand-name { max-width: none; white-space: normal; } }
+
+.font-display { font-family: 'Poppins', sans-serif; }
+.font-script { font-family: 'Dancing Script', cursive; }
+
+/* Hero radial backdrop mimicking the brand flyer */
+.hero-rays {
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(255,255,255,0.55) 0%, transparent 60%),
+    conic-gradient(from 210deg at 50% 50%,
+      #FFD86B 0deg, #F2B340 40deg, #FFD86B 80deg, #F2B340 120deg,
+      #FFD86B 160deg, #F2B340 200deg, #FFD86B 240deg, #F2B340 280deg,
+      #FFD86B 320deg, #F2B340 360deg);
+}
+
+/* Reveal-on-scroll animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Sticky header shadow on scroll */
+.site-header.scrolled {
+  box-shadow: 0 4px 20px rgba(15, 27, 44, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+}
+
+/* Card hover effect */
+.car-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.car-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -10px rgba(15, 27, 44, 0.2);
+}
+
+/* Image fill with aspect ratio */
+.car-card-img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  width: 100%;
+  background: #FFF7EC;
+}
+
+/* Filter pill active state */
+.filter-pill[aria-pressed="true"] {
+  background: var(--solace-orange);
+  color: #ffffff;
+  border-color: var(--solace-orange);
+}
+
+/* FAQ accordion */
+.faq-item[open] summary .faq-icon { transform: rotate(45deg); }
+.faq-icon { transition: transform 0.25s ease; }
+summary { list-style: none; cursor: pointer; }
+summary::-webkit-details-marker { display: none; }
+
+/* Mobile menu */
+#mobile-menu { display: none; }
+#mobile-menu.is-open { display: block; }
+
+/* Service-strip icon hover */
+.service-tile:hover .service-icon-wrap {
+  background: var(--solace-orange);
+  color: #ffffff;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--solace-orange);
+  color: #ffffff;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.btn-primary:hover { background: #d96a1f; transform: translateY(-1px); }
+
+.btn-outline {
+  border: 2px solid var(--solace-orange);
+  color: var(--solace-orange);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.btn-outline:hover { background: var(--solace-orange); color: #ffffff; }
+
+/* Handoff checklist */
+.handoff-section {
+  padding: 1.25rem;
+  border: 1px solid rgba(15, 27, 44, 0.12);
+  border-radius: 0.5rem;
+  background: #ffffff;
+  box-shadow: 0 12px 30px -24px rgba(15, 27, 44, 0.35);
+}
+.handoff-section + .handoff-section {
+  margin-top: 1rem;
+}
+.handoff-section > h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+.handoff-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+.handoff-mini-grid label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  min-height: 2.5rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: #FFF7EC;
+  color: rgba(15, 27, 44, 0.82);
+  line-height: 1.35;
+}
+.handoff-mini-grid input {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.1rem;
+  accent-color: var(--solace-orange);
+  flex: 0 0 auto;
+}
+.handoff-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: 1.25rem;
+  border: 1px solid rgba(15, 27, 44, 0.12);
+  border-radius: 0.5rem;
+  background: #ffffff;
+  box-shadow: 0 12px 30px -24px rgba(15, 27, 44, 0.35);
+}
+.handoff-item input {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.2rem;
+  accent-color: var(--solace-orange);
+}
+.handoff-item h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.handoff-item p {
+  margin-top: 0.35rem;
+  color: rgba(15, 27, 44, 0.72);
+  line-height: 1.6;
+}
+.handoff-item code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.35rem;
+  background: #FFF7EC;
+  color: var(--solace-navy);
+  font-size: 0.9em;
+}
+.handoff-note {
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  background: #FFF7EC;
+  border-left: 4px solid var(--solace-orange);
+}
+.handoff-note h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+.handoff-note p {
+  margin-top: 0.4rem;
+  color: rgba(15, 27, 44, 0.72);
+  line-height: 1.55;
+}
+
+/* Admin dashboard */
+.admin-panel {
+  border: 1px solid rgba(15, 27, 44, 0.12);
+  border-radius: 0.5rem;
+  box-shadow: 0 18px 45px -32px rgba(15, 27, 44, 0.45);
+}
+.admin-metric {
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  border: 1px solid rgba(15, 27, 44, 0.1);
+}
+.admin-metric span {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(15, 27, 44, 0.55);
+}
+.admin-metric strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+.admin-checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--solace-orange);
+}
+.admin-list-row,
+.admin-lead-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #FFF7EC;
+  border: 1px solid rgba(15, 27, 44, 0.08);
+}
+.admin-list-row {
+  cursor: pointer;
+}
+.admin-list-row h3,
+.admin-lead-row h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+.admin-list-row p,
+.admin-lead-row p {
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+  color: rgba(15, 27, 44, 0.65);
+}
+.admin-lead-row h3 span {
+  margin-left: 0.4rem;
+  color: var(--solace-orange);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+@media (max-width: 640px) {
+  .admin-list-row,
+  .admin-lead-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Inventory toolbar inputs */
+.inv-input, .inv-select {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid rgba(15, 27, 44, 0.15);
+  border-radius: 0.625rem;
+  background: #ffffff;
+  color: var(--solace-navy);
+  /* 16px prevents iOS Safari zoom-on-focus */
+  font-size: max(16px, 0.95rem);
+  min-height: 44px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Mobile parity — global form-input zoom-fix + tap target floor */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  input[type="url"],
+  input[type="password"],
+  input[type="date"],
+  input[type="datetime-local"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+  /* Bigger tap targets for primary CTAs */
+  .btn-primary, .btn-outline { min-height: 48px; }
+}
+.inv-input:focus, .inv-select:focus {
+  outline: none;
+  border-color: var(--solace-orange);
+  box-shadow: 0 0 0 3px rgba(237, 123, 45, 0.15);
+}
+
+/* WhatsApp FAB lift on scroll near footer (optional polish) */
+#wa-fab { box-shadow: 0 8px 30px rgba(37, 211, 102, 0.45); }
+
+/* Vehicle page — mobile sticky CTA bar.
+   When this bar is on screen (mobile only) it already exposes WhatsApp/Call,
+   so the floating FAB would just overlap it — hide the FAB instead.
+   Reserve bottom space on the body so neither the last button in main nor
+   the footer get clipped behind the sticky bar. */
+@media (max-width: 1023px) {
+  body:has(#v-mobile-cta:not(.hidden)) #wa-fab { display: none; }
+  body:has(#v-mobile-cta:not(.hidden)) {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Sticky filter bar.
+   Mobile: NOT sticky — it's tall (search + 4 selects + pills) and would eat
+   half the viewport when scrolling, hiding the cars. It scrolls naturally.
+   Desktop: sticky, fully opaque white background so cards never bleed
+   through underneath it. */
+.filter-bar-sticky {
+  background: #ffffff;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(15, 27, 44, 0.08);
+  box-shadow: 0 4px 16px -8px rgba(15, 27, 44, 0.08);
+}
+@media (min-width: 640px) {
+  .filter-bar-sticky {
+    position: sticky;
+    top: 5rem;
+    z-index: 20;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding: 1rem;
+  }
+}
+
+/* Horizontal scroll of type pills on mobile — no scrollbar visible */
+.filter-pills::-webkit-scrollbar { display: none; }
+.filter-pills { scrollbar-width: none; }
+.filter-pills > * { flex-shrink: 0; }
+@media (min-width: 640px) {
+  .filter-pills > * { flex-shrink: 1; }
+}
+
+/* Print-friendly */
+@media print {
+  .site-header, .site-footer, #wa-fab, .no-print { display: none !important; }
+}
