@@ -294,9 +294,9 @@ header p{font-size:12px;color:rgba(255,255,255,.3);max-width:440px;margin:0 auto
 </header>
 
 <div class="tabs">
+  <button class="tab active" onclick="show('stories',this)">Stories <span class="count">12</span></button>
   <button class="tab" onclick="show('feed',this)">Feed Posts <span class="count">43</span></button>
-  <button class="tab" onclick="show('stories',this)">Stories <span class="count">12</span></button>
-  <button class="tab active" onclick="show('reels',this)">Reels <span class="count">10</span></button>
+  <button class="tab" onclick="show('reels',this)">Reels <span class="count">10</span></button>
 </div>
 
 <!-- FEED: full stockpile iframe -->
@@ -305,7 +305,7 @@ header p{font-size:12px;color:rgba(255,255,255,.3);max-width:440px;margin:0 auto
 </div>
 
 <!-- STORIES -->
-<div id="sec-stories" class="section">
+<div id="sec-stories" class="section active">
   <div style="padding:32px">
     <p class="section-desc">9:16 Instagram &amp; Facebook Stories · Full-bleed cinematic · Tap-through messaging</p>
     <div class="story-grid" id="story-grid"></div>
@@ -313,7 +313,7 @@ header p{font-size:12px;color:rgba(255,255,255,.3);max-width:440px;margin:0 auto
 </div>
 
 <!-- REELS -->
-<div id="sec-reels" class="section active">
+<div id="sec-reels" class="section">
   <div class="reels-hd">
     <p class="section-desc">Kinetic typography with cinematic b-roll. Press ▶ to play — full sound with voiceover.</p>
     <div class="gender-toggle">
