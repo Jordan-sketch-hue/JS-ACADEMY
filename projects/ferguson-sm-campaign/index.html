@@ -294,18 +294,13 @@ header p{font-size:12px;color:rgba(255,255,255,.3);max-width:440px;margin:0 auto
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="show('feed',this)">Feed Posts <span class="count">55</span></button>
+  <button class="tab active" onclick="show('feed',this)">Feed Posts <span class="count">48</span></button>
   <button class="tab" onclick="show('stories',this)">Stories <span class="count">12</span></button>
   <button class="tab" onclick="show('reels',this)">Reels <span class="count">10</span></button>
 </div>
 
-<!-- FEED: story cards first, then full stockpile iframe -->
+<!-- FEED: full stockpile iframe -->
 <div id="sec-feed" class="section active">
-  <div style="padding:32px 32px 0">
-    <p class="section-desc" style="margin-bottom:20px">Professional Outreach Stories · 9:16 · Post these first to invite agents, valuators, surveyors &amp; loan officers to join H.O.M.E.</p>
-    <div class="story-grid" id="feed-story-grid"></div>
-    <div style="margin:32px 0 0;border-bottom:1px solid rgba(201,168,106,.14);padding-bottom:24px;font-family:'Courier New',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,168,106,.4)">Feed Post Creatives — All Formats Below</div>
-  </div>
   <iframe src="/creatives" title="Feed Post Creatives — All 10 Formats"></iframe>
 </div>
 
@@ -355,18 +350,18 @@ const REELS=[
 ];
 
 const STORIES=[
-  {name:"HOME Directory Launch",  layout:"herald",   photo:"photos/int01.jpg", pos:"center 30%"},
-  {name:"REALTOR Partner Program",layout:"split",    photo:"photos/p03.jpg",   pos:"center 20%"},
-  {name:"Buyer's Process Guide",  layout:"steps",    photo:"photos/prop01.jpg",pos:"center"},
-  {name:"Ferguson Law Brand",     layout:"portrait", photo:"photos/p01.jpg",   pos:"center 15%"},
-  {name:"Communication Promise",  layout:"quote",    photo:"photos/p07.jpg",   pos:"center 20%"},
-  {name:"Valuator Spotlight",     layout:"dir",      photo:"photos/p06.jpg",   pos:"center top"},
-  {name:"Surveyor Spotlight",     layout:"action",   photo:"photos/prop04.jpg",pos:"center"},
-  {name:"NHT Benefit Guide",      layout:"check",    photo:"photos/p02.jpg",   pos:"center 20%"},
-  {name:"Week 1 Recap",           layout:"mag",      photo:"photos/prop05.jpg",pos:"center 25%"},
-  {name:"Banker Partner",         layout:"banker",   photo:"photos/p04.jpg",   pos:"center 15%"},
-  {name:"Developer Conveyancing", layout:"dev",      photo:"photos/p05.jpg",   pos:"center 20%"},
-  {name:"Attorney Referral",      layout:"refer",    photo:"photos/p01.jpg",   pos:"center 15%"},
+  {name:"H.O.M.E. — Join the Platform", layout:"herald",   photo:"photos/int01.jpg", pos:"center 30%"},
+  {name:"Loan Officers — Sign Up Free",  layout:"banker",   photo:"photos/p04.jpg",   pos:"center 15%"},
+  {name:"REALTORs — Create Your Profile",layout:"split",    photo:"photos/p03.jpg",   pos:"center 20%"},
+  {name:"Developers — List Your Project",layout:"dev",      photo:"photos/p05.jpg",   pos:"center 20%"},
+  {name:"Valuators — Sign Up Free",      layout:"dir",      photo:"photos/p06.jpg",   pos:"center top"},
+  {name:"Surveyors — Sign Up Free",      layout:"action",   photo:"photos/prop04.jpg",pos:"center"},
+  {name:"REALTORs — Partner Program",    layout:"refer",    photo:"photos/p01.jpg",   pos:"center 15%"},
+  {name:"Buyer's Process Guide",         layout:"steps",    photo:"photos/prop01.jpg",pos:"center"},
+  {name:"Communication Promise",         layout:"quote",    photo:"photos/p07.jpg",   pos:"center 20%"},
+  {name:"NHT Benefit Guide",             layout:"check",    photo:"photos/p02.jpg",   pos:"center 20%"},
+  {name:"Ferguson Law Brand",            layout:"portrait", photo:"photos/p01.jpg",   pos:"center 15%"},
+  {name:"Week 1 Recap",                  layout:"mag",      photo:"photos/prop05.jpg",pos:"center 25%"},
 ];
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
