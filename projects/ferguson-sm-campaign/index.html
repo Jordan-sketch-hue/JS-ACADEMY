@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -294,18 +294,23 @@ header p{font-size:12px;color:rgba(255,255,255,.3);max-width:440px;margin:0 auto
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="show('stories',this)">Stories <span class="count">12</span></button>
-  <button class="tab" onclick="show('feed',this)">Feed Posts <span class="count">43</span></button>
+  <button class="tab active" onclick="show('feed',this)">Feed Posts <span class="count">55</span></button>
+  <button class="tab" onclick="show('stories',this)">Stories <span class="count">12</span></button>
   <button class="tab" onclick="show('reels',this)">Reels <span class="count">10</span></button>
 </div>
 
-<!-- FEED: full stockpile iframe -->
-<div id="sec-feed" class="section">
+<!-- FEED: story cards first, then full stockpile iframe -->
+<div id="sec-feed" class="section active">
+  <div style="padding:32px 32px 0">
+    <p class="section-desc" style="margin-bottom:20px">Professional Outreach Stories · 9:16 · Post these first to invite agents, valuators, surveyors &amp; loan officers to join H.O.M.E.</p>
+    <div class="story-grid" id="feed-story-grid"></div>
+    <div style="margin:32px 0 0;border-bottom:1px solid rgba(201,168,106,.14);padding-bottom:24px;font-family:'Courier New',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,168,106,.4)">Feed Post Creatives — All Formats Below</div>
+  </div>
   <iframe src="/creatives" title="Feed Post Creatives — All 10 Formats"></iframe>
 </div>
 
 <!-- STORIES -->
-<div id="sec-stories" class="section active">
+<div id="sec-stories" class="section">
   <div style="padding:32px">
     <p class="section-desc">9:16 Instagram &amp; Facebook Stories · Full-bleed cinematic · Tap-through messaging</p>
     <div class="story-grid" id="story-grid"></div>
@@ -419,10 +424,11 @@ function stHtml(s){
       <div class="sh-eye">REALTORs · Valuators · Surveyors · Loan Officers</div>
       <div class="sh-body">
         <div class="sh-home-mark">H.O.M.E.</div>
-        <div class="sh-sub">Tired of clients who don't understand your role or your timeline?</div>
-        <div class="sh-sub" style="color:rgba(201,168,106,.9);margin-top:-4px;margin-bottom:8px">We educate them before they ever call you.</div>
+        <div class="sh-sub">Clients arrive unprepared, expect the impossible, delay your fees.</div>
+        <div class="sh-sub" style="color:rgba(201,168,106,.9);margin-top:-4px;margin-bottom:8px">Join H.O.M.E. — we fix that before they reach you.</div>
         <div class="sh-rule"></div>
-        <div class="sh-cta">List Free → home.fergusonlawja.com</div>
+        <div class="sh-join">SIGN UP &amp; LIST YOUR SERVICE FREE</div>
+        <div class="sh-cta">home.fergusonlawja.com</div>
       </div>
     </div>`;
   if(s.layout==='split') return `
@@ -430,9 +436,9 @@ function stHtml(s){
       <div class="ss-top">${ph}<div class="ss-top-label">For Real Estate Agents</div></div>
       <div class="ss-bot">
         <div>
-          <div class="ss-hdl">Your<br>Commission<br>Is Stuck<br>On <em>Delays</em><br>You Can't<br>See.</div>
+          <div class="ss-hdl">Commission<br>Stuck.<br>No Updates.<br>No Visibility.<br><em>Join<br>H.O.M.E.</em></div>
         </div>
-        <div class="ss-cta">H.O.M.E. gives you full visibility at every stage — list free →</div>
+        <div class="ss-cta">Sign up free · Create your agent profile · home.fergusonlawja.com</div>
       </div>
     </div>`;
   if(s.layout==='steps') return `
@@ -443,7 +449,7 @@ function stHtml(s){
         <div class="sstep"><div class="sstep-num">1</div><div class="sstep-txt"><strong>Before you sign</strong>Every cost quoted in full — upfront</div></div>
         <div class="sstep"><div class="sstep-num">2</div><div class="sstep-txt"><strong>Every week</strong>Proactive update from your attorney — before you ask</div></div>
         <div class="sstep"><div class="sstep-num">3</div><div class="sstep-txt"><strong>At every step</strong>A clear process outline — from offer to keys</div></div>
-        <div class="ssteps-cta">Book · (876) 320-0235</div>
+        <div class="ssteps-cta">Book Free Consult · (876) 320-0235</div>
       </div>
     </div>`;
   if(s.layout==='stat') return `
@@ -482,8 +488,8 @@ function stHtml(s){
       <div class="sd-inner">
         <div class="sd-badge">For Valuators</div>
         <div class="sd-title">Clients<br>Want Your<br>Report<br><em>Yesterday.</em></div>
-        <div class="sd-sub">H.O.M.E. sets realistic expectations with buyers before they contact you — so your inbox stays sane.</div>
-        <div class="sd-pill"><div class="sd-dot"></div>Join H.O.M.E. Free · home.fergusonlawja.com</div>
+        <div class="sd-sub">Join H.O.M.E. — we pre-educate clients on realistic timelines before they ever contact you.</div>
+        <div class="sd-pill"><div class="sd-dot"></div>SIGN UP &amp; LIST FREE · home.fergusonlawja.com</div>
       </div>
     </div>`;
   if(s.layout==='action') return `
@@ -491,11 +497,11 @@ function stHtml(s){
       <div class="sa-inner">
         <div class="sa-top">
           <div class="sa-eye">For Land Surveyors</div>
-          <div class="sa-hdl">Clients<br>Don't Know<br>What You<br>Do —<br>Until<br><em>H.O.M.E.</em><br>Tells Them.</div>
+          <div class="sa-hdl">Clients<br>Don't Know<br>What You<br>Do Or<br>How Long<br>It Takes.<br><em>Join H.O.M.E.</em></div>
         </div>
         <div class="sa-bot">
           <div class="sa-line"></div>
-          <div class="sa-cta">List Free → home.fergusonlawja.com</div>
+          <div class="sa-cta">SIGN UP &amp; LIST YOUR SERVICE FREE · home.fergusonlawja.com</div>
         </div>
       </div>
     </div>`;
@@ -517,10 +523,10 @@ function stHtml(s){
       <div class="sb-body">
         <div>
           <div class="sb-tag">For Loan Officers &amp; Mortgage Officers</div>
-          <div class="sb-hdl">Stop<br>Teaching<br>The Basics<br>In Every<br><em>Meeting.</em></div>
-          <div class="sb-sub">H.O.M.E. pre-educates every buyer on mortgage steps — before they walk in your door.</div>
+          <div class="sb-hdl">Every<br>Client<br>Arrives<br>Unprepared.<br><em>Join<br>H.O.M.E.</em></div>
+          <div class="sb-sub">We pre-educate buyers on mortgage &amp; financing steps before they walk in your door.</div>
         </div>
-        <div class="sb-cta">List Free → home.fergusonlawja.com</div>
+        <div class="sb-cta">SIGN UP &amp; LIST FREE · home.fergusonlawja.com</div>
       </div>
     </div>`;
   if(s.layout==='dev') return `
@@ -528,7 +534,7 @@ function stHtml(s){
       <div class="sd2-inner">
         <div class="sd2-top">
           <div class="sd2-eye">For Property Developers</div>
-          <div class="sd2-hdl">Clients<br>Expect<br>Keys<br>Before<br>The <em>Slab</em><br>Is Poured.</div>
+          <div class="sd2-hdl">Clients<br>Expect<br>Keys<br>Before<br>The Slab<br>Is Poured.<br><em>Join H.O.M.E.</em></div>
         </div>
         <div class="sd2-bot">
           <ul class="sd2-list">
@@ -536,7 +542,7 @@ function stHtml(s){
             <li>Your fees protected from day one</li>
             <li>Ferguson Law handles all filings</li>
           </ul>
-          <div class="sd2-cta">List on H.O.M.E. → home.fergusonlawja.com</div>
+          <div class="sd2-cta">SIGN UP &amp; LIST YOUR PROJECT FREE · home.fergusonlawja.com</div>
         </div>
       </div>
     </div>`;
@@ -544,11 +550,11 @@ function stHtml(s){
     <div class="sl-refer"><img class="sm-bg" src="${s.photo}" style="object-position:${p}">
       <div class="sr-inner">
         <div class="sr-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
-        <div class="sr-eye">For Attorneys · Referral Program</div>
-        <div class="sr-hdl">Stop<br>Referring<br>Blind.<br><em>Partner.</em></div>
+        <div class="sr-eye">For REALTORs — Join H.O.M.E.</div>
+        <div class="sr-hdl">No<br>Updates.<br>No Visibility.<br><em>No More.</em></div>
         <div class="sr-rule"></div>
-        <div class="sr-copy">Ferguson Law handles every property transaction your clients bring — and keeps you in the loop at every stage.</div>
-        <div class="sr-cta">Partner with Ferguson Law →</div>
+        <div class="sr-copy">Sign up on H.O.M.E. — get full visibility on every deal. Stop chasing. Start closing.</div>
+        <div class="sr-cta">CREATE YOUR FREE PROFILE NOW →</div>
       </div>
     </div>`;
   // mag
@@ -570,18 +576,21 @@ function stHtml(s){
     </div>`;
 }
 
+function storyCardHtml(s,i){return `
+  <div class="story-card">
+    <div class="story-mock">
+      ${stHtml(s)}
+      ${STBAR}
+    </div>
+    <div class="story-info">
+      <div class="story-name">S${i+1} — ${s.name}</div>
+      <div class="story-type">9:16 · Story · Gold-Black · Ferguson Law</div>
+    </div>
+  </div>`;}
 function renderStories(){
-  document.getElementById('story-grid').innerHTML=STORIES.map((s,i)=>`
-    <div class="story-card">
-      <div class="story-mock">
-        ${stHtml(s)}
-        ${STBAR}
-      </div>
-      <div class="story-info">
-        <div class="story-name">S${i+1} — ${s.name}</div>
-        <div class="story-type">9:16 · Story · Gold-Black · Ferguson Law</div>
-      </div>
-    </div>`).join('');
+  const html=STORIES.map((s,i)=>storyCardHtml(s,i)).join('');
+  document.getElementById('story-grid').innerHTML=html;
+  document.getElementById('feed-story-grid').innerHTML=html;
 }
 
 // ── KINETIC CAPTION ANIMATION ─────────────────────────────────────────────────
