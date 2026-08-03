@@ -451,6 +451,8 @@ function say(cls, text) {
 let lastBuild = null;
 let running = false;
 let pendingClarify = null;
+let pendingImpact = null;   // active edit+protect session
+let currentImpactMap = null; // map of the last generated build
 
 /* low-context intake — the agent never assumes; it asks.
    Skip the questionnaire by ending a directive with "!" */
@@ -513,6 +515,58 @@ async function handleClarifyAnswer(text) {
   await runBuild(pc.cls);
 }
 
+/* ============================================================
+   IMPACT EDIT + PROTECT — safe change flow
+   Usage: edit [partName] > [what changes]
+   Agent shows impacted dependents → operator picks which to PROTECT.
+   A frozen copy of the original is spliced in; protected parts rewire
+   to it so their behavior stays byte-identical while the edit proceeds.
+   ============================================================ */
+function startImpactEdit(text) {
+  // parse: "edit fetchData > add retry logic"
+  const m = text.match(/^edit\s+(\S+)\s*[>:]\s*(.+)$/i);
+  if (!m) { say("warn", "impact: format is — edit [partName] > [description of change]"); return; }
+  const [, targetName, desc] = m;
+  if (!currentImpactMap) { say("warn", "impact: no build mapped yet — run a directive first"); return; }
+  const target = currentImpactMap.parts.find((p) => p.name.toLowerCase() === targetName.toLowerCase());
+  if (!target) {
+    const names = currentImpactMap.parts.map((p) => p.name).join(", ");
+    say("warn", `impact: part "${targetName}" not found. known parts: ${names || "none"}`); return;
+  }
+  fire("reason", 1); fire("plan", 0.7);
+  pendingImpact = { target, desc, map: currentImpactMap };
+  const affected = target.usedBy.length ? target.usedBy : [];
+  say("act", `impact: editing ${target.name} (L${target.start + 1}–${target.end + 1}) · description: "${desc}"`);
+  if (affected.length) {
+    say("warn", `impact: ${affected.length} dependent${affected.length > 1 ? "s" : ""} will be affected → ${affected.join(", ")}`);
+    say("warn", `impact: which should be PROTECTED? type their names (comma-separated), or "none" to let all change`);
+    $("#agent-status").textContent = "AGENT: ASKING";
+  } else {
+    say("ok", "impact: no dependents detected — edit is isolated. type \"confirm\" to apply, or \"cancel\" to abort.");
+  }
+}
+
+function applyImpactEdit(protectInput) {
+  const { target, desc, map } = pendingImpact;
+  pendingImpact = null;
+  const protectNames = protectInput.toLowerCase() === "none" || protectInput.toLowerCase() === "confirm"
+    ? []
+    : protectInput.split(/[,\s]+/).map((n) => n.trim()).filter(Boolean);
+  const valid = protectNames.filter((n) => map.parts.some((p) => p.name === n));
+  const invalid = protectNames.filter((n) => !map.parts.some((p) => p.name === n));
+  if (invalid.length) say("warn", `impact: unknown parts ignored — ${invalid.join(", ")}`);
+  const result = window.AXIOM_IMPACT.applyEdit(map, target, desc, valid);
+  $("#code-out").textContent = result.code;
+  // re-map the modified code
+  currentImpactMap = window.AXIOM_IMPACT.renderMap(result.code, "#impact-map");
+  for (const c of result.changed) say("ok", `impact: ${c}`);
+  say("ok", `impact: done — edit marker placed, ${valid.length} part${valid.length !== 1 ? "s" : ""} protected. copy or download the modified build from panel 05.`);
+  audit("impact", `edit applied: ${target.name} → "${desc}" · protected: ${valid.join(", ") || "none"}`);
+  fire("codegen", 0.8); fire("audit", 0.6);
+  KB.add("impact", `edit: ${target.name} → ${desc}`, { target: target.name, protected: valid, desc });
+  $("#agent-status").textContent = "AGENT: IDLE";
+}
+
 function setIdle() {
   running = false;
   $("#agent-status").textContent = "AGENT: IDLE"; $("#agent-status").classList.remove("on");
@@ -520,7 +574,24 @@ function setIdle() {
 
 async function runDirective(text) {
   if (!text.trim()) return;
-  if (pendingClarify) { $("#cmd").value = ""; await handleClarifyAnswer(text); return; }
+  $("#cmd").value = "";
+
+  // impact protect answer in progress
+  if (pendingImpact) {
+    pendingImpact && applyImpactEdit(text);
+    return;
+  }
+
+  // clarify answer in progress
+  if (pendingClarify) { await handleClarifyAnswer(text); return; }
+
+  // impact edit command — "edit [partName] > [description]"
+  if (/^edit\s+\S+\s*[>:]/i.test(text.trim())) {
+    say("sys", `> ${text}`); audit("impact", `edit request: ${text}`);
+    startImpactEdit(text.trim());
+    return;
+  }
+
   if (running) return;
   running = true;
   $("#agent-status").textContent = "AGENT: ACTIVE"; $("#agent-status").classList.add("on");
@@ -641,6 +712,16 @@ async function runBuild(cls) {
     : `codegen: emitting ${cls.stack} scaffold in house mono style…`);
   const code = (await brainGenerate(cls)) || generate(cls);
   $("#code-out").textContent = code;
+
+  // impact map — render dependency graph of the generated code (panel 13)
+  if (window.AXIOM_IMPACT) {
+    currentImpactMap = window.AXIOM_IMPACT.renderMap(code, "#impact-map");
+    if (currentImpactMap) {
+      const partCount = currentImpactMap.parts.length;
+      say("act", `impact: mapped ${partCount} named part${partCount !== 1 ? "s" : ""} — type "edit [name] > [description]" to make a safe change`);
+    }
+    fire("reason", 0.5);
+  }
   await sleep(420);
 
   // 7 audit

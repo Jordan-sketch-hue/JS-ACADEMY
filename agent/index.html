@@ -144,6 +144,16 @@
     <pre id="goal-map" class="vis-report" style="padding:12px 14px">run a directive — the backward chain renders here with its definition of done</pre>
   </section>
 
+  <!-- IMPACT MAP -->
+  <section class="panel span2" id="panel-impact">
+    <div class="panel-head">
+      <h2>13 · IMPACT MAP</h2>
+      <span class="hint">every named part, its line range, and what it depends on — edit X, know what breaks</span>
+    </div>
+    <p class="hint pad">To edit safely: type <code>edit [partName] &gt; [what changes]</code> in the console. Agent flags dependents and lets you protect them.</p>
+    <pre id="impact-map" class="code" style="max-height:260px">build something — the map renders here</pre>
+  </section>
+
   <!-- AUDIT LOG -->
   <section class="panel span2" id="panel-audit">
     <div class="panel-head"><h2>10 · AUDIT TRAIL</h2><span class="hint">every decision, timestamped and inspectable</span></div>
@@ -159,6 +169,7 @@
 
 <script src="stack.js"></script>
 <script src="goals.js"></script>
+<script src="impact.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
