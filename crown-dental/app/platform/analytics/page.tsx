@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import * as Icons from "lucide-react";
-import { clinics } from "@/lib/data";
+import { clinics as allClinics } from "@/lib/data";
+import { useGuideActive } from "@/components/GuideContext";
 
 const providers: { name: string; prod: number; goal: number; apts: number; accept: number }[] = [];
 
@@ -12,6 +13,8 @@ const PERIOD_MULTIPLIER: Record<string, number> = {
 };
 
 export default function AnalyticsPage() {
+  const guideActive = useGuideActive();
+  const clinics = guideActive ? allClinics : [];
   const [toast, setToast] = useState<string | null>(null);
   const [period, setPeriod] = useState("This month");
   const mult = PERIOD_MULTIPLIER[period] ?? 1;
@@ -152,12 +155,12 @@ export default function AnalyticsPage() {
         <div className="card bg-white p-5 shadow-card">
           <h3 className="text-sm font-semibold text-ink mb-4">Recall Effectiveness</h3>
           <div className="space-y-3">
-            {[
-              { l: "Recall rate",           v: "68%", b: 68, c: "bg-gold" },
-              { l: "Patients contacted",    v: "312",  b: 80, c: "bg-teal/60" },
-              { l: "Booked from recall",    v: "212",  b: 68, c: "bg-gold-deep" },
+            {(guideActive ? [
+              { l: "Recall rate",           v: "68%",     b: 68, c: "bg-gold" },
+              { l: "Patients contacted",    v: "312",     b: 80, c: "bg-teal/60" },
+              { l: "Booked from recall",    v: "212",     b: 68, c: "bg-gold-deep" },
               { l: "Revenue from recall",   v: "$38,400", b: 85, c: "bg-teal" },
-            ].map((r) => (
+            ] : []).map((r) => (
               <div key={r.l}>
                 <div className="flex justify-between text-xs mb-1">
                   <span className="text-slate">{r.l}</span>
@@ -173,25 +176,32 @@ export default function AnalyticsPage() {
 
         <div className="card bg-white p-5 shadow-card">
           <h3 className="text-sm font-semibold text-ink mb-4">New Patient Sources</h3>
-          <div className="space-y-3">
-            {[
-              { l: "AI Agent (voice/chat)", v: 42, c: "bg-gold" },
-              { l: "Referral",              v: 28, c: "bg-ink-3/40" },
-              { l: "Google / organic",      v: 18, c: "bg-teal/60" },
-              { l: "Walk-in",               v:  8, c: "bg-gold-light" },
-              { l: "Social media",          v:  4, c: "bg-mist/50" },
-            ].map((s) => (
-              <div key={s.l}>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate">{s.l}</span>
-                  <span className="font-semibold text-ink">{s.v}%</span>
+          {guideActive ? (
+            <div className="space-y-3">
+              {[
+                { l: "AI Agent (voice/chat)", v: 42, c: "bg-gold" },
+                { l: "Referral",              v: 28, c: "bg-ink-3/40" },
+                { l: "Google / organic",      v: 18, c: "bg-teal/60" },
+                { l: "Walk-in",               v:  8, c: "bg-gold-light" },
+                { l: "Social media",          v:  4, c: "bg-mist/50" },
+              ].map((s) => (
+                <div key={s.l}>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate">{s.l}</span>
+                    <span className="font-semibold text-ink">{s.v}%</span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-surface">
+                    <div className={`h-full rounded-full ${s.c}`} style={{ width: `${s.v}%` }} />
+                  </div>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-surface">
-                  <div className={`h-full rounded-full ${s.c}`} style={{ width: `${s.v}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <p className="font-semibold text-ink">No data yet</p>
+              <p className="mt-1 text-xs text-slate">Source breakdown appears once your practice is connected.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

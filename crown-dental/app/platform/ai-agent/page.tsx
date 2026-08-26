@@ -89,13 +89,13 @@ export default function AIAgentPage() {
       {/* Today's impact */}
       <div className="grid gap-4 sm:grid-cols-4">
         {[
-          { l: "Calls handled",     v: "23",     s: "by AI voice agent" },
-          { l: "Revenue recovered", v: "$5,240",  s: "waitlist + recalls" },
-          { l: "Claims corrected",  v: "4",      s: "before submission" },
-          { l: "Staff hours saved", v: "11.4 h", s: "today" },
+          { l: "Calls handled",     s: "by AI voice agent" },
+          { l: "Revenue recovered", s: "waitlist + recalls" },
+          { l: "Claims corrected",  s: "before submission" },
+          { l: "Staff hours saved", s: "today" },
         ].map((s) => (
           <div key={s.l} className="card bg-white rounded-xl p-5 shadow-card text-center">
-            <p className="text-3xl font-semibold text-ink">{s.v}</p>
+            <p className="text-3xl font-semibold text-mist">—</p>
             <p className="mt-1 text-xs font-semibold text-gold-deep">{s.l}</p>
             <p className="text-[11px] text-slate">{s.s}</p>
           </div>

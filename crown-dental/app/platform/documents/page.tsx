@@ -115,10 +115,10 @@ export default function DocumentsPage() {
 
       <div className="grid gap-4 sm:grid-cols-4">
         {[
-          { l: "Total documents",    v: "312",  i: "Files" },
-          { l: "Awaiting signature", v: "4",    i: "PenLine" },
-          { l: "Practice policies",  v: "9",    i: "BookOpen" },
-          { l: "HIPAA compliant",    v: "100%", i: "ShieldCheck" },
+          { l: "Total documents",    v: "0",  i: "Files" },
+          { l: "Awaiting signature", v: "0",  i: "PenLine" },
+          { l: "Practice policies",  v: "0",  i: "BookOpen" },
+          { l: "HIPAA compliant",    v: "—",  i: "ShieldCheck" },
         ].map((s) => {
           const I = (Icons as any)[s.i] ?? Icons.Circle;
           return (

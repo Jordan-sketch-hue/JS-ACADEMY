@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import * as Icons from "lucide-react";
+import { useGuideActive } from "@/components/GuideContext";
 
 const CHANNELS = ["SMS","Email","SMS + Email","Email + SMS","Social","SMS + Social"];
 
@@ -19,7 +20,9 @@ const statusStyle: Record<string, string> = {
 };
 
 export default function MarketingPage() {
+  const guideActive = useGuideActive();
   const [campaigns, setCampaigns] = useState(initialCampaigns);
+  const displayedCampaigns = guideActive ? campaigns : [];
   const [toast, setToast] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState({ name: "", channel: "SMS" });
@@ -126,7 +129,7 @@ export default function MarketingPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-xl font-semibold text-ink">Marketing</h1>
-          <p className="mt-1 text-sm text-slate">{campaigns.filter(c => c.status === "active").length} active campaigns · ${totalRevenue.toLocaleString()} attributed revenue</p>
+          <p className="mt-1 text-sm text-slate">{guideActive ? `${displayedCampaigns.filter(c => c.status === "active").length} active campaigns · $${totalRevenue.toLocaleString()} attributed revenue` : "No campaigns yet · connect your practice to get started"}</p>
         </div>
         <button onClick={() => setShowNew(true)} className="gold-btn flex items-center gap-2 rounded-lg px-4 py-2 text-sm">
           <Icons.Plus className="h-4 w-4" /> New Campaign
@@ -134,12 +137,12 @@ export default function MarketingPage() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
+        {(guideActive ? [
           { label: "Total Sent",  value: "4,655", icon: "Send",       color: "text-ink" },
           { label: "Open Rate",   value: "72%",   icon: "MailOpen",   color: "text-teal" },
           { label: "Bookings",    value: "400",   icon: "Calendar",   color: "text-gold-deep" },
           { label: "Avg ROI",     value: "9.4×",  icon: "TrendingUp", color: "text-teal" },
-        ].map(s => {
+        ] : []).map(s => {
           const I = (Icons as any)[s.icon];
           return (
             <div key={s.label} className="card bg-white p-4 shadow-card">
@@ -174,7 +177,7 @@ export default function MarketingPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
-              {campaigns.map(c => (
+              {displayedCampaigns.map(c => (
                 <tr key={c.id} className="hover:bg-surface transition-colors">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-2.5">
@@ -217,8 +220,8 @@ export default function MarketingPage() {
 
       <div className="grid sm:grid-cols-3 gap-4">
         {[
-          { icon: "MessageSquare", label: "SMS",    sent: 3195, rate: "89% delivery" },
-          { icon: "Mail",          label: "Email",  sent: 1460, rate: "72% open rate" },
+          { icon: "MessageSquare", label: "SMS",    sent: guideActive ? 3195 : 0, rate: guideActive ? "89% delivery"  : "No data yet" },
+          { icon: "Mail",          label: "Email",  sent: guideActive ? 1460 : 0, rate: guideActive ? "72% open rate" : "No data yet" },
           { icon: "Share2",        label: "Social", sent: 0,    rate: "Connect account" },
         ].map(ch => {
           const I = (Icons as any)[ch.icon];

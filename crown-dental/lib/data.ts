@@ -59,18 +59,20 @@ export const procedureMix: { name: string; value: number; color: string }[] = [
   { name: "Cosmetic",     value: 9,  color: "bg-gold-deep" },
 ];
 
-export const appointments: Appointment[] = [
-  { id: "a1", patient: "Patient #1041", provider: "Provider A", chair: "Chair 1", procedure: "Crown delivery",       start: "8:00",  duration: 60, status: "completed",  value: 1400, channel: "app"      },
-  { id: "a2", patient: "Patient #1042", provider: "Provider B", chair: "Chair 3", procedure: "Prophylaxis & exam",   start: "9:00",  duration: 45, status: "checked-in", value: 280,  channel: "web"      },
-  { id: "a3", patient: "Patient #1043", provider: "Provider A", chair: "Chair 2", procedure: "Root canal — #14",     start: "9:30",  duration: 90, status: "in-chair",   value: 1850, channel: "ai-agent" },
-  { id: "a4", patient: "Patient #1044", provider: "Provider C", chair: "Chair 4", procedure: "Composite resin ×3",   start: "10:30", duration: 60, status: "confirmed",  value: 640,  channel: "phone"    },
-  { id: "a5", patient: "Patient #1045", provider: "Provider B", chair: "Chair 5", procedure: "Implant consult",      start: "11:00", duration: 30, status: "confirmed",  value: 200,  channel: "web"      },
-  { id: "a6", patient: "Patient #1046", provider: "Provider A", chair: "Chair 1", procedure: "Extraction — #18",     start: "1:00",  duration: 45, status: "confirmed",  value: 520,  channel: "app"      },
-  { id: "a7", patient: "Patient #1047", provider: "Provider C", chair: "Chair 3", procedure: "Veneers consult",      start: "1:30",  duration: 30, status: "confirmed",  value: 180,  channel: "ai-agent" },
-  { id: "a8", patient: "Patient #1048", provider: "Provider B", chair: "Chair 2", procedure: "Teeth whitening",      start: "2:30",  duration: 90, status: "confirmed",  value: 650,  channel: "web"      },
-];
+export const appointments: Appointment[] = [];
 
 export const patients: Patient[] = [];
+
+export const demoPatients: Patient[] = [
+  { id: "p1", name: "Patient #1041", age: 34, lastVisit: "Jun 12", nextDue: "Dec 12",  risk: "low",      balance: 0,    ltv: 6800, plan: "Crown Care+",  tags: ["VIP", "Implant"] },
+  { id: "p2", name: "Patient #1042", age: 52, lastVisit: "Jul 5",  nextDue: "Overdue", risk: "moderate", balance: 320,  ltv: 4200, plan: "PPO — Delta",  tags: ["Recall Due"] },
+  { id: "p3", name: "Patient #1043", age: 28, lastVisit: "Aug 1",  nextDue: "Feb 1",   risk: "low",      balance: 0,    ltv: 2100, plan: "PPO — Cigna",  tags: ["New Patient"] },
+  { id: "p4", name: "Patient #1044", age: 45, lastVisit: "Apr 20", nextDue: "Overdue", risk: "high",     balance: 1240, ltv: 3900, plan: "Self-pay",     tags: ["High Balance", "Perio"] },
+  { id: "p5", name: "Patient #1045", age: 61, lastVisit: "Mar 10", nextDue: "Overdue", risk: "high",     balance: 0,    ltv: 9600, plan: "HMO",          tags: ["Implant", "Perio"] },
+  { id: "p6", name: "Patient #1046", age: 39, lastVisit: "Jul 28", nextDue: "Jan 28",  risk: "low",      balance: 180,  ltv: 5400, plan: "Crown Care+",  tags: ["Cosmetic"] },
+  { id: "p7", name: "Patient #1047", age: 22, lastVisit: "Jun 30", nextDue: "Dec 30",  risk: "moderate", balance: 0,    ltv: 1200, plan: "PPO — Delta",  tags: ["No-Show Risk"] },
+  { id: "p8", name: "Patient #1048", age: 48, lastVisit: "May 15", nextDue: "Nov 15",  risk: "low",      balance: 0,    ltv: 7200, plan: "PPO — Cigna",  tags: ["VIP"] },
+];
 
 export const aiActions: { id: string; title: string; detail: string; time: string; tag: string; tone: string }[] = [
   { id: "ai1", title: "3 recall gaps backfilled",        detail: "AI agent moved 3 waitlist patients into tomorrow's open chairs. Est. value: $840.",           time: "2 min ago",  tag: "Scheduling", tone: "teal"   },
