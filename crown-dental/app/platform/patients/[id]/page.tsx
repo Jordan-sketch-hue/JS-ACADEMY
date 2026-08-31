@@ -45,10 +45,19 @@ export default function PatientDetailPage() {
           age,
           dob: dob ? dob.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—",
           perio: [1, 2, 1, 2, 1, 2],
-          treatments: [],
+          tx: [],
           appointments: [],
+          conditions: [],
+          meds: [],
+          allergies: [],
+          notes: "No provider notes on file.",
           plan: data.insurance_plan ?? "Self-pay",
+          provider: "—",
+          lastVisit: "—",
+          nextDue: "—",
           tags: data.tags ?? [],
+          ltv: data.ltv ?? 0,
+          balance: data.balance ?? 0,
         });
       }
       setLoading(false);
