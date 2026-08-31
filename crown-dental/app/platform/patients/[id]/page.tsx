@@ -1,11 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import * as Icons from "lucide-react";
 import { BookingModal } from "@/components/BookingModal";
-
-const patients: Record<string, any> = {};
+import { supabase } from "@/lib/supabase";
 
 const riskStyle: Record<string, string> = {
   low:      "bg-teal/10 text-teal",
@@ -29,12 +28,40 @@ const apptStatus: Record<string, string> = {
 
 export default function PatientDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const p = patients[id];
+  const [p, setP] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
   const [showBooking, setShowBooking] = useState(false);
+
+  useEffect(() => {
+    if (!supabase || !id) { setLoading(false); return; }
+    supabase.from("crown_patients").select("*").eq("id", id).single().then(({ data }) => {
+      if (data) {
+        const dob = data.date_of_birth ? new Date(data.date_of_birth) : null;
+        const age = dob ? new Date().getFullYear() - dob.getFullYear() : "—";
+        setP({
+          ...data,
+          initials: data.name.split(" ").map((n: string) => n[0]).join(""),
+          age,
+          dob: dob ? dob.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—",
+          perio: [1, 2, 1, 2, 1, 2],
+          treatments: [],
+          appointments: [],
+          plan: data.insurance_plan ?? "Self-pay",
+          tags: data.tags ?? [],
+        });
+      }
+      setLoading(false);
+    });
+  }, [id]);
+
   function flash(msg: string) { setToast(msg); setTimeout(() => setToast(null), 2500); }
   function handleBooked(appt: { patient: string; time: string; chair: string; procedure: string }) {
     flash(`Booked: ${appt.patient} · ${appt.procedure} · ${appt.time} · ${appt.chair}`);
+  }
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-full py-24 text-slate text-sm">Loading patient…</div>;
   }
 
   if (!p) {
@@ -42,7 +69,7 @@ export default function PatientDetailPage() {
       <div className="flex flex-col items-center justify-center h-full py-24 text-slate">
         <Icons.UserX className="h-10 w-10 mb-3 text-mist" />
         <p className="font-semibold text-ink">Patient not found</p>
-        <p className="mt-1 text-sm text-slate">Connect your PMS to load patient records.</p>
+        <p className="mt-1 text-sm text-slate">This patient ID does not exist in the database.</p>
         <Link href="/platform/patients" className="mt-3 text-xs text-gold-deep hover:underline">← Back to patients</Link>
       </div>
     );
