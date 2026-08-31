@@ -27,6 +27,11 @@ export const me = {
   memberSince: "Mar 2026",
   suite: "S2D-10472",
   usAddress: {
+    name: "Keisha Campbell",
+    street: "8400 NW 25th St",
+    airLine2: "Suite S2D-10472-AIR, Doral, FL 33122",
+    seaLine2: "Suite S2D-10472-SEA, Doral, FL 33122",
+    cityStateZip: "Doral, FL 33122, USA",
     line1: "8400 NW 25th St, Suite S2D-10472",
     line2: "Doral, FL 33122, USA",
     phone: "(305) 555-0142",

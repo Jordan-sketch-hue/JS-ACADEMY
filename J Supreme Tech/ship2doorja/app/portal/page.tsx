@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { me, myPackages, statusMeta } from "@/lib/demo-data";
 import { StatusBadge } from "@/components/status";
 import { CopyButton } from "@/components/copy-button";
@@ -6,9 +9,15 @@ import { Icon } from "@/components/brand";
 import { ArrowRight, Warehouse, Package, Home as HomeIcon } from "lucide-react";
 
 export default function PortalOverview() {
+  const [addrMode, setAddrMode] = useState<"air" | "sea">("air");
+
   const active = myPackages.filter((p) => p.status !== "Delivered");
   const ready = myPackages.filter((p) => p.status === "Ready for pickup").length;
   const fullAddress = `${me.usAddress.line1}, ${me.usAddress.line2}`;
+
+  // Address strings for copy button
+  const airAddress = `${me.usAddress.name}\n${me.usAddress.street}\n${me.usAddress.airLine2}\n${me.usAddress.cityStateZip}\nUSA`;
+  const seaAddress = `${me.usAddress.name}\n${me.usAddress.street}\n${me.usAddress.seaLine2}\n${me.usAddress.cityStateZip}\nUSA`;
 
   const stats = [
     { label: "Active shipments", value: active.length, Icon: Package },

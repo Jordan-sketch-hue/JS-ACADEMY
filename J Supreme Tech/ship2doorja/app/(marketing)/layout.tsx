@@ -4,7 +4,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  description: site.hook,
+  description:
+    "Free U.S. shipping address, shop any American store, we forward it to your door in Jamaica. Customs handled, tracked door-to-door. Economical · Reliable · Accountable.",
 };
 
 export default function MarketingLayout({
