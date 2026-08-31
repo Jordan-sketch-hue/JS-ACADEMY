@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import * as Icons from "lucide-react";
-import { patients } from "@/lib/data";
+import { useGuideActive } from "@/components/GuideContext";
+import { supabase } from "@/lib/supabase";
 
 const crownScore: Record<string, number> = {
-  p1: 87, p2: 72, p3: 91, p4: 58, p5: 64, p6: 80, p7: 74, p8: 61,
+  "P-001": 87, "P-002": 72, "P-003": 91, "P-004": 58, "P-005": 95,
 };
 const scoreColor = (s: number) =>
   s >= 80 ? "text-teal" : s >= 65 ? "text-gold-deep" : "text-alert";
@@ -20,21 +21,57 @@ const PLANS = ["Crown Care+", "PPO — Delta", "PPO — Cigna", "Self-pay", "HMO
 const PROVIDERS: string[] = [];
 
 export default function PatientsPage() {
+  const guideActive = useGuideActive();
   const [query, setQuery] = useState("");
   const [toast, setToast] = useState<string | null>(null);
-  const [patientList, setPatientList] = useState<any[]>(patients);
+  const [patientList, setPatientList] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.from("crown_patients").select("*").order("name").then(({ data }) => {
+      if (!data || data.length === 0) return;
+      setPatientList(data.map((r) => ({
+        id: r.id,
+        name: r.name,
+        age: r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth).getFullYear() : "—",
+        lastVisit: "Aug 15",
+        nextDue: (r.tags ?? []).includes("recall") ? "Feb 2027" : "On request",
+        risk: r.risk ?? "low",
+        balance: r.balance ?? 0,
+        ltv: r.ltv ?? 0,
+        plan: r.insurance_plan ?? "Self-pay",
+        tags: r.tags ?? [],
+      })));
+    });
+  }, []);
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState({ name: "", dob: "", phone: "", email: "", plan: "Crown Care+", provider: "" });
 
   function flash(msg: string) { setToast(msg); setTimeout(() => setToast(null), 2500); }
 
-  function addPatient() {
+  async function addPatient() {
     if (!form.name.trim()) return;
-    const id = `p${patientList.length + 1}`;
+    const payload = {
+      name: form.name.trim(),
+      email: form.email || null,
+      phone: form.phone || null,
+      date_of_birth: form.dob || null,
+      insurance_plan: form.plan || "Self-pay",
+      risk: "low",
+      balance: 0,
+      ltv: 0,
+      tags: ["New Patient"],
+    };
+    let newId = `local-${Date.now()}`;
+    try {
+      const res = await fetch("/api/patients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (data?.id) newId = data.id;
+    } catch {}
     setPatientList(prev => [...prev, {
-      id, name: form.name.trim(), age: "—", dob: form.dob, phone: form.phone,
-      email: form.email, plan: form.plan, provider: form.provider,
-      lastVisit: "New", nextDue: "TBD", risk: "low", balance: 0, ltv: 0, tags: ["New Patient"],
+      id: newId, name: form.name.trim(), age: "—",
+      lastVisit: "New", nextDue: "TBD", risk: "low", balance: 0, ltv: 0,
+      plan: form.plan, tags: ["New Patient"],
     }]);
     setForm({ name: "", dob: "", phone: "", email: "", plan: "Crown Care+", provider: "" });
     setShowNew(false);
@@ -83,10 +120,10 @@ export default function PatientsPage() {
 
       <div className="grid gap-4 sm:grid-cols-4">
         {[
-          { l: "Active patients",      v: patientList.length > 0 ? String(patientList.length) : "—", i: "Users",         c: "text-ink" },
-          { l: "High-risk",            v: "—",      i: "AlertTriangle", c: "text-alert" },
-          { l: "Overdue recall",       v: "—",      i: "CalendarX",     c: "text-gold-deep" },
-          { l: "Outstanding balance",  v: "—",      i: "Banknote",      c: "text-ink" },
+          { l: "Active patients",     v: patientList.length > 0 ? String(patientList.length) : "—", i: "Users",         c: "text-ink" },
+          { l: "High-risk",           v: patientList.length > 0 ? String(patientList.filter(p => p.risk === "high").length) : "—",         i: "AlertTriangle", c: "text-alert" },
+          { l: "Overdue recall",      v: patientList.length > 0 ? String(patientList.filter(p => p.nextDue === "Overdue").length) : "—",   i: "CalendarX",     c: "text-gold-deep" },
+          { l: "Outstanding balance", v: patientList.length > 0 ? `$${patientList.reduce((s, p) => s + (p.balance || 0), 0).toLocaleString()}` : "—", i: "Banknote", c: "text-ink" },
         ].map((s) => {
           const I = (Icons as any)[s.i] ?? Icons.Circle;
           return (
