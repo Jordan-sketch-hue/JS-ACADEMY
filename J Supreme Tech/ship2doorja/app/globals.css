@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+/* ===================================================================
+   Ship 2 Door JA — brand tokens (Tailwind v4 @theme)
+   sky #27B9FF · navy #0C2750 / #06163A · blue #1F6FD0 · gold #F5C04A
+   =================================================================== */
+@theme {
+  --color-sky: #27b9ff;
+  --color-sky-light: #6fd3ff;
+  --color-blue: #1f6fd0;
+  --color-navy: #0c2750;
+  --color-navy-deep: #06163a;
+  --color-navy-mid: #16407f;
+  --color-gold: #f5c04a;
+  --color-gold-deep: #e0a12a;
+  --color-ink: #0b1727;
+  --color-mist: #eaf4fe;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
+
+  --radius-xl2: 1.5rem;
+}
+
+/* Base resets MUST live in @layer base or they override Tailwind utilities. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: #ffffff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-sky);
+    color: var(--color-navy-deep);
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+}
+
+/* --------------------------- brand helpers --------------------------- */
+@layer utilities {
+  .bg-navy-gradient {
+    background-image: linear-gradient(125deg, #06163a 0%, #0c2750 46%, #16407f 100%);
+  }
+  .bg-sky-gradient {
+    background-image: linear-gradient(120deg, #1f6fd0 0%, #27b9ff 100%);
+  }
+  .bg-gold-gradient {
+    background-image: linear-gradient(135deg, #fbd36b 0%, #e0a12a 100%);
+  }
+  .text-sky-gradient {
+    background-image: linear-gradient(120deg, #27b9ff 0%, #6fd3ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* subtle dotted "flight path" texture for dark sections */
+  .grid-faint {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+}
+
+/* =========================== creative motifs =========================== */
+@layer utilities {
+  /* Classic air-mail envelope stripe, in brand colors. */
+  .airmail-stripe {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      #0c2750 0 14px,
+      #ffffff 14px 28px,
+      #27b9ff 28px 42px,
+      #ffffff 42px 56px,
+      #f5c04a 56px 70px,
+      #ffffff 70px 84px
+    );
+  }
+  /* Colorful soft mesh for light hero/section backgrounds. */
+  .bg-mesh {
+    background-color: #f4f9ff;
+    background-image:
+      radial-gradient(38rem 38rem at 12% -8%, rgba(39, 185, 255, 0.18), transparent 60%),
+      radial-gradient(34rem 34rem at 96% 8%, rgba(245, 192, 74, 0.16), transparent 60%),
+      radial-gradient(40rem 40rem at 80% 100%, rgba(31, 111, 208, 0.14), transparent 60%);
+  }
+  /* Subtle film grain overlay (data-uri, no request). */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+  .perf-top { mask-image: radial-gradient(10px at 10px -2px, transparent 9px, #000 10px); }
+  .text-stroke {
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.25);
+    color: transparent;
+  }
+}
+
+/* hero plane drifting along the flight arc */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.animate-floaty { animation: floaty 6s ease-in-out infinite; }
+
+/* infinite marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 28s linear infinite; }
+.animate-marquee-slow { animation: marquee 44s linear infinite; }
+
+/* plane travelling the SVG arc via offset-path */
+@keyframes fly-arc {
+  to { offset-distance: 100%; }
+}
+.plane-fly {
+  offset-path: path("M40 170 Q300 -10 560 120");
+  offset-rotate: auto;
+  animation: fly-arc 7s ease-in-out infinite;
+}
+
+/* dashed path draw-in */
+@keyframes draw {
+  from { stroke-dashoffset: var(--len, 1000); }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.animate-spin-slow { animation: spin-slow 26s linear infinite; }
+
+@keyframes shimmer {
+  to { background-position: 200% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-slow,
+  .animate-floaty,
+  .plane-fly,
+  .animate-spin-slow {
+    animation: none !important;
+  }
+}
