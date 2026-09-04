@@ -95,10 +95,11 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
     return { blobUrl: url, total }
   }
 
-  function playBlobUrl(url: string, idx: number, signal: AbortSignal) {
-    const audio = new Audio(url)
+  // audio is created synchronously in the gesture context (see startPlayback),
+  // so iOS allows .play() even after the async fetch completes.
+  function playBlobUrl(audio: HTMLAudioElement, url: string, idx: number, signal: AbortSignal) {
+    audio.src = url
     audio.playbackRate = speed
-    audioRef.current = audio
 
     audio.addEventListener('timeupdate', () => {
       if (!audio.duration) return
@@ -119,7 +120,7 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
       chunkRef.current = next
       try {
         const { blobUrl } = await fetchChunk(next, signal)
-        if (!signal.aborted) playBlobUrl(blobUrl, next, signal)
+        if (!signal.aborted) playBlobUrl(audio, blobUrl, next, signal)
       } catch {
         if (!signal.aborted) { setStatus('error'); setErrorMsg('Playback interrupted') }
       }
@@ -142,11 +143,16 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
     const ctrl = new AbortController()
     abortRef.current = ctrl
 
+    // Create Audio element HERE — synchronously within the tap gesture —
+    // so iOS Safari grants playback permission when .play() fires later.
+    const audio = new Audio()
+    audioRef.current = audio
+
     try {
       const { blobUrl, total } = await fetchChunk(0, ctrl.signal)
       if (ctrl.signal.aborted) return
       totalRef.current = total
-      playBlobUrl(blobUrl, 0, ctrl.signal)
+      playBlobUrl(audio, blobUrl, 0, ctrl.signal)
     } catch (e: unknown) {
       if ((e as { name?: string }).name === 'AbortError') return
       setStatus('error')
