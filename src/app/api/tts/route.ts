@@ -2,14 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const maxDuration = 60
 
-// Friendly voice list — IDs are Cartesia voice UUIDs from their public library
 export const VOICES = [
-  { id: 'Dan',      name: 'Dan',      desc: 'Deep · Male',      cartesiaId: 'a0e99841-438c-4a64-b679-ae501e7d6091' },
-  { id: 'Will',     name: 'Will',     desc: 'Warm · Male',      cartesiaId: 'bf991597-6135-4bfd-babb-78934514df88' },
-  { id: 'Scarlett', name: 'Scarlett', desc: 'Clear · Female',   cartesiaId: '694f9389-aac1-45b6-b726-9d9369183238' },
-  { id: 'Liv',      name: 'Liv',      desc: 'Natural · Female', cartesiaId: 'b7d50908-b17c-442d-ad8d-810c63997ed9' },
-  { id: 'Amy',      name: 'Amy',      desc: 'Bright · Female',  cartesiaId: '79a125e8-cd45-4c13-8a67-188112f4dd22' },
+  { id: 'Dan',      name: 'Dan',      desc: 'Deep · Male',      azureVoice: 'en-US-GuyNeural' },
+  { id: 'Will',     name: 'Will',     desc: 'Warm · Male',      azureVoice: 'en-US-ChristopherNeural' },
+  { id: 'Scarlett', name: 'Scarlett', desc: 'Clear · Female',   azureVoice: 'en-US-AriaNeural' },
+  { id: 'Liv',      name: 'Liv',      desc: 'Natural · Female', azureVoice: 'en-US-JennyNeural' },
+  { id: 'Amy',      name: 'Amy',      desc: 'Bright · Female',  azureVoice: 'en-US-SaraNeural' },
 ]
+
+function getAzureKeys(): string[] {
+  const multi = process.env.AZURE_SPEECH_KEYS
+  if (multi) return multi.split(',').map(k => k.trim()).filter(Boolean)
+  const single = process.env.AZURE_SPEECH_KEY
+  return single ? [single] : []
+}
 
 function cleanInline(text: string): string {
   return text
@@ -81,36 +87,39 @@ function chunkScript(script: string): string[] {
   return chunks
 }
 
-function getCartesiaKeys(): string[] {
-  const multi = process.env.CARTESIA_API_KEYS
-  if (multi) return multi.split(',').map(k => k.trim()).filter(Boolean)
-  const single = process.env.CARTESIA_API_KEY
-  return single ? [single] : []
+function escapeXml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
 }
 
-async function cartesiaTTS(text: string, cartesiaVoiceId: string): Promise<ArrayBuffer> {
-  const keys = getCartesiaKeys()
+async function azureTTS(text: string, azureVoice: string): Promise<ArrayBuffer> {
+  const keys = getAzureKeys()
   if (!keys.length) throw new Error('TTS not configured')
+  const region = process.env.AZURE_SPEECH_REGION ?? 'eastus'
+
+  const ssml = `<speak version='1.0' xml:lang='en-US'><voice name='${azureVoice}'>${escapeXml(text)}</voice></speak>`
 
   let lastError = ''
   for (const key of keys) {
-    const res = await fetch('https://api.cartesia.ai/tts/bytes', {
-      method: 'POST',
-      headers: {
-        'X-API-Key': key,
-        'Cartesia-Version': '2024-06-10',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model_id: 'sonic-2',
-        transcript: text,
-        voice: { mode: 'id', id: cartesiaVoiceId },
-        output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 },
-      }),
-    })
+    const res = await fetch(
+      `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`,
+      {
+        method: 'POST',
+        headers: {
+          'Ocp-Apim-Subscription-Key': key,
+          'Content-Type': 'application/ssml+xml',
+          'X-Microsoft-OutputFormat': 'audio-24khz-160kbitrate-mono-mp3',
+        },
+        body: ssml,
+      }
+    )
 
-    if (res.status === 401 || res.status === 402) {
-      lastError = `Cartesia error ${res.status}`
+    if (res.status === 401 || res.status === 403) {
+      lastError = `Azure auth error ${res.status}`
       continue
     }
 
@@ -122,7 +131,7 @@ async function cartesiaTTS(text: string, cartesiaVoiceId: string): Promise<Array
     return res.arrayBuffer()
   }
 
-  throw new Error(lastError || 'All Cartesia keys exhausted')
+  throw new Error(lastError || 'All Azure TTS keys exhausted')
 }
 
 export async function POST(req: NextRequest) {
@@ -145,7 +154,7 @@ export async function POST(req: NextRequest) {
     const target = chunks[targetIdx]
     if (!target) return NextResponse.json({ error: 'Chunk out of range' }, { status: 400 })
 
-    const audioBytes = await cartesiaTTS(target, voice.cartesiaId)
+    const audioBytes = await azureTTS(target, voice.azureVoice)
 
     return new NextResponse(audioBytes, {
       status: 200,
