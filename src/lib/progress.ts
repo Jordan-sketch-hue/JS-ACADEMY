@@ -80,11 +80,27 @@ export function markDailyActive(): UserProgress {
   return p
 }
 
-export function saveWatchProgress(courseId: string, pct: number) {
+export function saveWatchProgress(courseId: string, pct: number, xp = 0) {
   const p = getProgress()
   const existing = p.completedCourses.find(c => c.courseId === courseId)
-  if (existing) { existing.watchProgress = Math.max(existing.watchProgress, pct) }
-  else { p.completedCourses.push({ courseId, completedAt: '', quizScore: 0, xpEarned: 0, watchProgress: pct }) }
+  const newPct = Math.max(existing?.watchProgress ?? 0, pct)
+  if (existing) {
+    existing.watchProgress = newPct
+  } else {
+    p.completedCourses.push({ courseId, completedAt: '', quizScore: 0, xpEarned: 0, watchProgress: newPct })
+  }
+  // Auto-complete when the learner has scrolled through all content.
+  // Quiz submission still awards the 50 XP bonus on top of this.
+  if (newPct >= 100) {
+    const entry = p.completedCourses.find(c => c.courseId === courseId)!
+    if (!entry.completedAt) {
+      entry.completedAt = new Date().toISOString()
+      entry.xpEarned = xp
+      p.xp += xp
+      p.level = computeLevel(p.xp)
+      bumpStreak(p, new Date().toDateString())
+    }
+  }
   saveProgress(p)
 }
 

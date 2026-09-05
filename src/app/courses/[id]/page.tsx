@@ -85,7 +85,7 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
       const pct = Math.round((el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100)
       setReadPct(p => {
         const next = Math.max(p, pct)
-        if (course && next > p) saveWatchProgress(course.id, next)
+        if (course && next > p) saveWatchProgress(course.id, next, course.xp)
         return next
       })
     }
