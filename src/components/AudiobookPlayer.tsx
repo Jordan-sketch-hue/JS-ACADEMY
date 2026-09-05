@@ -80,7 +80,6 @@ function AudiobookPlayer(
   const chunkRef    = useRef(0)
   const runBaseRef  = useRef(0)      // absolute offset into `text` where the current playback run started
   const lastSaveRef = useRef(0)
-  const lastRangeSaveRef = useRef(0)
   // Tracks the timeupdate handler for the currently-playing chunk so we can
   // remove it before attaching the next chunk's handler. Without this, each
   // chunk adds a new listener that is never removed: by chunk N there are N
@@ -195,10 +194,13 @@ function AudiobookPlayer(
 
     // Azure's REST TTS returns one audio blob per chunk with no word-level
     // timestamps, so we interpolate a position through the chunk's character
-    // range based on playback fraction — close enough to track the current
-    // paragraph without pretending to karaoke-level precision.
+    // range based on playback fraction. Range is updated on EVERY timeupdate
+    // tick (~4Hz) — no throttle. The previous 700ms gate caused short sections
+    // (narrated in < 700ms) to be spoken and scroll past without ever being
+    // highlighted. React's reconciliation is cheap here: only the two className
+    // attributes that gain/lose .reading-now are touched in the DOM each tick.
     function onTimeUpdate() {
-      if (!audio.duration) return
+      if (!audio.duration || !isFinite(audio.duration)) return
       const base     = idx / totalRef.current
       const chunkPct = (audio.currentTime / audio.duration) / totalRef.current
       setProgress(Math.round((base + chunkPct) * 100))
@@ -215,13 +217,9 @@ function AudiobookPlayer(
         return next
       })
 
-      const now = Date.now()
-      if (now - lastRangeSaveRef.current > 700) {
-        lastRangeSaveRef.current = now
-        const frac = Math.min(1, audio.currentTime / audio.duration)
-        const est = chunkStart + Math.round(frac * Math.max(1, chunkEnd - chunkStart))
-        onRangeChange?.({ start: runBaseRef.current + est, end: runBaseRef.current + est + 1 })
-      }
+      const frac = Math.min(1, audio.currentTime / audio.duration)
+      const est  = chunkStart + Math.round(frac * Math.max(1, chunkEnd - chunkStart))
+      onRangeChange?.({ start: runBaseRef.current + est, end: runBaseRef.current + est + 1 })
     }
 
     timeUpdateHandlerRef.current = onTimeUpdate
@@ -245,7 +243,16 @@ function AudiobookPlayer(
         const { blobUrl, chunkStart: cs, chunkEnd: ce } = await fetchChunk(next, sourceText, signal)
         if (!signal.aborted) playBlobUrl(audio, blobUrl, next, sourceText, signal, cs, ce)
       } catch {
-        if (!signal.aborted) { setStatus('error'); setErrorMsg('Playback interrupted') }
+        if (signal.aborted) return
+        // One automatic retry after a short delay before surfacing the error.
+        try {
+          await new Promise<void>(r => setTimeout(r, 900))
+          if (signal.aborted) return
+          const { blobUrl, chunkStart: cs, chunkEnd: ce } = await fetchChunk(next, sourceText, signal)
+          if (!signal.aborted) playBlobUrl(audio, blobUrl, next, sourceText, signal, cs, ce)
+        } catch {
+          if (!signal.aborted) { setStatus('error'); setErrorMsg('Playback interrupted — tap play to retry') }
+        }
       }
     }, { once: true })
 
@@ -283,9 +290,20 @@ function AudiobookPlayer(
       totalRef.current = total
       playBlobUrl(audio, blobUrl, startChunk, sourceText, ctrl.signal, chunkStart, chunkEnd, opts?.atTime)
     } catch (e: unknown) {
-      if ((e as { name?: string }).name === 'AbortError') return
-      setStatus('error')
-      setErrorMsg(e instanceof Error ? e.message : 'Could not load audio')
+      if (ctrl.signal.aborted || (e as { name?: string }).name === 'AbortError') return
+      // One automatic retry before surfacing the error to the user.
+      try {
+        await new Promise<void>(r => setTimeout(r, 900))
+        if (ctrl.signal.aborted) return
+        const { blobUrl, total, chunkStart, chunkEnd } = await fetchChunk(startChunk, sourceText, ctrl.signal)
+        if (ctrl.signal.aborted) return
+        totalRef.current = total
+        playBlobUrl(audio, blobUrl, startChunk, sourceText, ctrl.signal, chunkStart, chunkEnd, opts?.atTime)
+      } catch (e2: unknown) {
+        if (ctrl.signal.aborted || (e2 as { name?: string }).name === 'AbortError') return
+        setStatus('error')
+        setErrorMsg(e2 instanceof Error ? e2.message : 'Could not load audio')
+      }
     }
   }
 
