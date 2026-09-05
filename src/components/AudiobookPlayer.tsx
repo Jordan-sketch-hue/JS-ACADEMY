@@ -132,10 +132,24 @@ function AudiobookPlayer(
   }, [voiceId, text, courseId])
 
   async function fetchChunk(idx: number, sourceText: string, signal: AbortSignal) {
+    // Only inject the "Welcome to / objective" intro on the genuine first chunk
+    // of a full play-from-start session. When the user seeks to a mid-point,
+    // runBaseRef.current > 0, so we omit courseTitle/objective — the API's
+    // existing `if (isFirstChunk && courseTitle)` guard then skips the intro,
+    // preventing TTS from sounding like it has "restarted from the beginning"
+    // every time a word is clicked.
+    const isGenuineStart = runBaseRef.current === 0 && idx === 0
     const res = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: sourceText, voiceId, courseTitle, objective, chunk: idx, keyTerms: keyTerms ?? [] }),
+      body: JSON.stringify({
+        text: sourceText,
+        voiceId,
+        courseTitle: isGenuineStart ? courseTitle : undefined,
+        objective:   isGenuineStart ? objective   : undefined,
+        chunk: idx,
+        keyTerms: keyTerms ?? [],
+      }),
       signal,
     })
 
