@@ -81,6 +81,13 @@ function AudiobookPlayer(
   const runBaseRef  = useRef(0)      // absolute offset into `text` where the current playback run started
   const lastSaveRef = useRef(0)
   const lastRangeSaveRef = useRef(0)
+  // Tracks the timeupdate handler for the currently-playing chunk so we can
+  // remove it before attaching the next chunk's handler. Without this, each
+  // chunk adds a new listener that is never removed: by chunk N there are N
+  // stale listeners all firing simultaneously, and the chunk-0 handler (which
+  // closed over chunkStart=0) keeps emitting onRangeChange({ start:0 }),
+  // causing the scroll to jump back to the beginning of the page.
+  const timeUpdateHandlerRef = useRef<(() => void) | null>(null)
 
   // Pick up any saved position for this course whenever we land on a new module.
   useEffect(() => {
@@ -97,6 +104,10 @@ function AudiobookPlayer(
     abortRef.current?.abort()
     abortRef.current = null
     if (audioRef.current) {
+      if (timeUpdateHandlerRef.current) {
+        audioRef.current.removeEventListener('timeupdate', timeUpdateHandlerRef.current)
+        timeUpdateHandlerRef.current = null
+      }
       audioRef.current.pause()
       audioRef.current.src = ''
       audioRef.current = null
@@ -158,7 +169,21 @@ function AudiobookPlayer(
 
     onRangeChange?.({ start: runBaseRef.current + chunkStart, end: runBaseRef.current + chunkStart + 1 })
 
-    audio.addEventListener('timeupdate', () => {
+    // Remove the previous chunk's timeupdate listener before attaching the new
+    // one. Without this, every chunk adds a persistent listener that is never
+    // removed. By chunk N there would be N stale listeners all firing on the
+    // same audio element; the chunk-0 closure (chunkStart=0) would keep
+    // emitting onRangeChange({ start:0 }), making the scroll jump back to the
+    // top of the page as if narration had reset.
+    if (timeUpdateHandlerRef.current) {
+      audio.removeEventListener('timeupdate', timeUpdateHandlerRef.current)
+    }
+
+    // Azure's REST TTS returns one audio blob per chunk with no word-level
+    // timestamps, so we interpolate a position through the chunk's character
+    // range based on playback fraction — close enough to track the current
+    // paragraph without pretending to karaoke-level precision.
+    function onTimeUpdate() {
       if (!audio.duration) return
       const base     = idx / totalRef.current
       const chunkPct = (audio.currentTime / audio.duration) / totalRef.current
@@ -176,11 +201,6 @@ function AudiobookPlayer(
         return next
       })
 
-      // Azure's REST TTS returns one audio blob per chunk with no word-level
-      // timestamps, so we can't know exactly which word is being spoken. We
-      // interpolate a single point through the chunk's character range based
-      // on playback fraction — close enough to visually track the current
-      // paragraph without pretending to karaoke-level word precision.
       const now = Date.now()
       if (now - lastRangeSaveRef.current > 700) {
         lastRangeSaveRef.current = now
@@ -188,9 +208,16 @@ function AudiobookPlayer(
         const est = chunkStart + Math.round(frac * Math.max(1, chunkEnd - chunkStart))
         onRangeChange?.({ start: runBaseRef.current + est, end: runBaseRef.current + est + 1 })
       }
-    })
+    }
 
+    timeUpdateHandlerRef.current = onTimeUpdate
+    audio.addEventListener('timeupdate', onTimeUpdate)
+
+    // { once: true } ensures this handler removes itself after firing, so the
+    // next chunk's ended listener doesn't stack on top of this one.
     audio.addEventListener('ended', async () => {
+      audio.removeEventListener('timeupdate', onTimeUpdate)
+      if (timeUpdateHandlerRef.current === onTimeUpdate) timeUpdateHandlerRef.current = null
       const next = idx + 1
       if (next >= totalRef.current || signal.aborted) {
         setStatus('idle'); setProgress(100)
@@ -206,7 +233,7 @@ function AudiobookPlayer(
       } catch {
         if (!signal.aborted) { setStatus('error'); setErrorMsg('Playback interrupted') }
       }
-    })
+    }, { once: true })
 
     audio.play()
       .then(() => setStatus('playing'))

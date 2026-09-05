@@ -59,8 +59,9 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
 
   // Keep the narrated paragraph in view while listening — but only nudge the
   // scroll when the highlight moves to a genuinely new block that's actually
-  // out of view. playingRange ticks every ~400ms during playback; re-running
-  // scrollIntoView on every tick would fight anyone trying to scroll manually.
+  // below the visible area. We intentionally do NOT scroll upward: if a stale
+  // range fires (or the user seeks backward), forcing upward scroll is jarring.
+  // Forward-only scrolling means the reader stays oriented as the audio advances.
   const lastScrolledElRef = useRef<Element | null>(null)
   useEffect(() => {
     if (!playingRange) { lastScrolledElRef.current = null; return }
@@ -70,8 +71,11 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
     lastScrolledElRef.current = el
     const elRect = el.getBoundingClientRect()
     const containerRect = container.getBoundingClientRect()
-    const visible = elRect.top >= containerRect.top && elRect.bottom <= containerRect.bottom
-    if (!visible) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    // Only scroll if the highlighted element has scrolled past the bottom edge.
+    // Ignore elements above the viewport — those represent backward movement
+    // (seek or stale data) and forcing an upward jump is disorienting.
+    const belowFold = elRect.top > containerRect.bottom - 40
+    if (belowFold) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [playingRange])
 
   useEffect(() => {
