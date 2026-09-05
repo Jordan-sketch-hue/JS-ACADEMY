@@ -2,13 +2,37 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Layers, Trophy, Award, Flame, Languages } from 'lucide-react'
-import { getProgress, levelName, xpToNextLevel } from '@/lib/progress'
+import { LayoutDashboard, Layers, Trophy, Award, Flame, Languages, NotebookPen } from 'lucide-react'
+import { getProgress, saveProgress, levelName, xpToNextLevel } from '@/lib/progress'
+import { getAllAudioPositions, setAudioPositionLocal } from '@/lib/audio-progress'
+import { pullProgress, pullAudioPositions, mergeProgress, mergeAudioPosition } from '@/lib/sync'
+
+// Runs once per full page load (not per client-side navigation — Shell
+// remounts on every route change since it's instantiated inside each page,
+// and re-syncing on every nav would be needless chatter for zero benefit).
+let hasSyncedThisLoad = false
+
+async function reconcileFromServer() {
+  const [remoteProgress, remoteAudio] = await Promise.all([pullProgress(), pullAudioPositions()])
+
+  if (remoteProgress) {
+    saveProgress(mergeProgress(getProgress(), remoteProgress))
+  }
+  if (remoteAudio) {
+    const localAll = getAllAudioPositions()
+    const ids = new Set([...Object.keys(localAll), ...Object.keys(remoteAudio)])
+    for (const id of ids) {
+      const merged = mergeAudioPosition(localAll[id], remoteAudio[id])
+      if (merged) setAudioPositionLocal(merged)
+    }
+  }
+}
 
 const nav = [
   { href: '/', label: 'Home', icon: LayoutDashboard },
   { href: '/tracks', label: 'Tracks', icon: Layers },
   { href: '/language', label: 'Languages', icon: Languages },
+  { href: '/notes', label: 'Notes', icon: NotebookPen },
   { href: '/rewards', label: 'Rewards', icon: Trophy },
   { href: '/certifications', label: 'Certs', icon: Award },
 ]
@@ -26,6 +50,15 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       const p2 = getProgress()
       setXp(p2.xp); setStreak(p2.streak); setLevel(p2.level)
     }, 2000)
+
+    if (!hasSyncedThisLoad) {
+      hasSyncedThisLoad = true
+      reconcileFromServer().then(() => {
+        const merged = getProgress()
+        setXp(merged.xp); setStreak(merged.streak); setLevel(merged.level)
+      })
+    }
+
     return () => clearInterval(i)
   }, [])
 

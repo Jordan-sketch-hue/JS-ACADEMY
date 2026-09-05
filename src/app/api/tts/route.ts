@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from 'next/server'
 export const maxDuration = 60
 
 export const VOICES = [
-  { id: 'Dan',      name: 'Dan',      desc: 'Deep · Male',      azureVoice: 'en-US-GuyNeural' },
-  { id: 'Will',     name: 'Will',     desc: 'Warm · Male',      azureVoice: 'en-US-ChristopherNeural' },
-  { id: 'Scarlett', name: 'Scarlett', desc: 'Clear · Female',   azureVoice: 'en-US-AriaNeural' },
-  { id: 'Liv',      name: 'Liv',      desc: 'Natural · Female', azureVoice: 'en-US-JennyNeural' },
-  { id: 'Amy',      name: 'Amy',      desc: 'Bright · Female',  azureVoice: 'en-US-SaraNeural' },
+  { id: 'Marcus', name: 'Marcus', desc: 'Deep · Commanding', azureVoice: 'en-US-DavisNeural' },
+  { id: 'Tony',   name: 'Tony',   desc: 'Smooth · Male',     azureVoice: 'en-US-TonyNeural' },
+  { id: 'Aria',   name: 'Aria',   desc: 'Expressive · Female', azureVoice: 'en-US-AriaNeural' },
+  { id: 'Nova',   name: 'Nova',   desc: 'Warm · Female',     azureVoice: 'en-US-JennyNeural' },
+  { id: 'Jason',  name: 'Jason',  desc: 'Rich · Male',       azureVoice: 'en-US-JasonNeural' },
 ]
 
 function getAzureKeys(): string[] {
@@ -15,6 +15,30 @@ function getAzureKeys(): string[] {
   if (multi) return multi.split(',').map(k => k.trim()).filter(Boolean)
   const single = process.env.AZURE_SPEECH_KEY
   return single ? [single] : []
+}
+
+function escapeXml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
+interface KeyTerm { term: string; definition: string }
+
+// Split text on key terms, escape each fragment, wrap matches in <emphasis>
+function buildEmphasisText(text: string, keyTerms: KeyTerm[]): string {
+  if (!keyTerms.length) return escapeXml(text)
+  const sorted = [...keyTerms].sort((a, b) => b.term.length - a.term.length)
+  const patterns = sorted.map(k => k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  const re = new RegExp(`(${patterns.join('|')})`, 'gi')
+  return text.split(re).map((part, i) =>
+    i % 2 === 1
+      ? `<emphasis level="moderate">${escapeXml(part)}</emphasis>`
+      : escapeXml(part)
+  ).join('')
 }
 
 function cleanInline(text: string): string {
@@ -28,12 +52,23 @@ function cleanInline(text: string): string {
     .replace(/#+\s*/g, '')
 }
 
-function toNarrationScript(md: string, courseTitle?: string): string {
-  if (typeof md !== 'string') return ''
+// Converts a markdown chunk into SSML with structural prosody + key-term emphasis
+function toNarrationSSML(
+  md: string,
+  azureVoice: string,
+  courseTitle: string | undefined,
+  keyTerms: KeyTerm[],
+  isFirstChunk: boolean
+): string {
   const lines = md.split('\n')
-  const out: string[] = []
+  const parts: string[] = []
 
-  if (courseTitle) { out.push(`Welcome to ${courseTitle}.`); out.push('') }
+  if (isFirstChunk && courseTitle) {
+    parts.push(
+      `<prosody rate="-15%" pitch="+5%">Welcome to ${escapeXml(courseTitle)}.</prosody>`,
+      `<break time="800ms"/>`
+    )
+  }
 
   let inCode = false
   let inTable = false
@@ -43,65 +78,114 @@ function toNarrationScript(md: string, courseTitle?: string): string {
 
     if (line.startsWith('```')) { inCode = !inCode; continue }
     if (inCode) continue
-
     if (line.startsWith('|')) { inTable = true; continue }
     if (inTable && !line.startsWith('|')) inTable = false
     if (inTable) continue
-
-    if (line.startsWith('## ')) {
-      out.push(''); out.push(`Now, ${line.slice(3).replace(/[*_`]/g, '')}.`); out.push(''); continue
-    }
-    if (line.startsWith('### ')) {
-      out.push(''); out.push(`${line.slice(4).replace(/[*_`]/g, '')}:`); out.push(''); continue
-    }
     if (/^-{3,}$/.test(line) || /^={3,}$/.test(line)) continue
 
-    if (line.startsWith('- ') || line.startsWith('* ') || /^\d+\.\s/.test(line)) {
-      out.push(cleanInline(line.replace(/^[-*]\s+/, '').replace(/^\d+\.\s+/, '')) + '.'); continue
+    if (line.startsWith('# ')) {
+      const heading = cleanInline(line.slice(2))
+      parts.push(
+        `<break time="700ms"/>`,
+        `<prosody rate="-20%" pitch="+15%"><emphasis level="strong">${escapeXml(heading)}</emphasis></prosody>`,
+        `<break time="500ms"/>`
+      )
+      continue
     }
 
-    if (line) out.push(cleanInline(line))
-    else out.push('')
+    if (line.startsWith('## ')) {
+      const heading = cleanInline(line.slice(3))
+      parts.push(
+        `<break time="600ms"/>`,
+        `<prosody rate="-12%" pitch="+10%">Now — ${escapeXml(heading)}.</prosody>`,
+        `<break time="400ms"/>`
+      )
+      continue
+    }
+
+    if (line.startsWith('### ')) {
+      const heading = cleanInline(line.slice(4))
+      parts.push(
+        `<break time="350ms"/>`,
+        `<prosody pitch="+6%">${escapeXml(heading)}:</prosody>`,
+        `<break time="200ms"/>`
+      )
+      continue
+    }
+
+    if (line.startsWith('- ') || line.startsWith('* ') || /^\d+\.\s/.test(line)) {
+      const text = cleanInline(line.replace(/^[-*]\s+/, '').replace(/^\d+\.\s+/, ''))
+      parts.push(
+        `<break time="120ms"/>`,
+        buildEmphasisText(text, keyTerms) + '.'
+      )
+      continue
+    }
+
+    if (line) {
+      parts.push(buildEmphasisText(cleanInline(line), keyTerms))
+    } else {
+      parts.push(`<break time="300ms"/>`)
+    }
   }
 
-  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim()
+  const inner = parts.join('\n      ')
+
+  return (
+    `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' ` +
+    `xmlns:mstts='http://www.w3.org/2001/mstts' xml:lang='en-US'>` +
+    `<voice name='${azureVoice}'>` +
+    `<mstts:express-as style='narration-professional'>` +
+    inner +
+    `</mstts:express-as></voice></speak>`
+  )
 }
 
-const CHUNK_SIZE = 2800
+const CHUNK_SIZE = 1500
 
-function chunkScript(script: string): string[] {
-  if (script.length <= CHUNK_SIZE) return [script]
-  const chunks: string[] = []
-  const paragraphs = script.split(/\n\n+/)
+interface TextChunk { text: string; start: number; end: number }
+
+// Chunks by paragraph, same size logic as before, but also tracks each
+// chunk's [start, end) character offsets within the source string so the
+// client can map a playing chunk back to a highlightable range on screen.
+function chunkMarkdown(md: string): TextChunk[] {
+  if (md.length <= CHUNK_SIZE) return [{ text: md, start: 0, end: md.length }]
+
+  const paragraphs = md.split(/\n\n+/).filter(Boolean)
+  const chunks: TextChunk[] = []
   let current = ''
+  let currentStart = 0
+  let currentEnd = 0
+  let cursor = 0
+
   for (const para of paragraphs) {
-    const joined = current ? current + '\n\n' + para : para
-    if (joined.length > CHUNK_SIZE && current) {
-      chunks.push(current.trim())
+    const found = md.indexOf(para, cursor)
+    const start = found === -1 ? cursor : found
+    const end = start + para.length
+    cursor = end
+
+    if (!current) {
       current = para
+      currentStart = start
+      currentEnd = end
+    } else if (current.length + 2 + para.length > CHUNK_SIZE) {
+      chunks.push({ text: current, start: currentStart, end: currentEnd })
+      current = para
+      currentStart = start
+      currentEnd = end
     } else {
-      current = joined
+      current = current + '\n\n' + para
+      currentEnd = end
     }
   }
-  if (current.trim()) chunks.push(current.trim())
+  if (current) chunks.push({ text: current, start: currentStart, end: currentEnd })
   return chunks
 }
 
-function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;')
-}
-
-async function azureTTS(text: string, azureVoice: string): Promise<ArrayBuffer> {
+async function azureTTS(ssml: string): Promise<ArrayBuffer> {
   const keys = getAzureKeys()
   if (!keys.length) throw new Error('TTS not configured')
   const region = process.env.AZURE_SPEECH_REGION ?? 'eastus'
-
-  const ssml = `<speak version='1.0' xml:lang='en-US'><voice name='${azureVoice}'>${escapeXml(text)}</voice></speak>`
 
   let lastError = ''
   for (const key of keys) {
@@ -118,16 +202,8 @@ async function azureTTS(text: string, azureVoice: string): Promise<ArrayBuffer> 
       }
     )
 
-    if (res.status === 401 || res.status === 403) {
-      lastError = `Azure auth error ${res.status}`
-      continue
-    }
-
-    if (!res.ok) {
-      lastError = await res.text().catch(() => res.statusText)
-      continue
-    }
-
+    if (res.status === 401 || res.status === 403) { lastError = `Azure auth ${res.status}`; continue }
+    if (!res.ok) { lastError = await res.text().catch(() => res.statusText); continue }
     return res.arrayBuffer()
   }
 
@@ -137,24 +213,23 @@ async function azureTTS(text: string, azureVoice: string): Promise<ArrayBuffer> 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { text, voiceId, courseTitle, chunk } = body
+    const { text, voiceId, courseTitle, chunk, keyTerms } = body
 
     if (typeof text !== 'string' || !text) {
       return NextResponse.json({ error: 'text is required' }, { status: 400 })
     }
 
     const voice = VOICES.find(v => v.id === voiceId) ?? VOICES[0]
-    const script = toNarrationScript(text, courseTitle)
-    if (!script) return NextResponse.json({ error: 'No content to narrate' }, { status: 400 })
-
-    const chunks = chunkScript(script)
+    const chunks = chunkMarkdown(text)
     const total = chunks.length
 
     const targetIdx = typeof chunk === 'number' ? chunk : 0
     const target = chunks[targetIdx]
     if (!target) return NextResponse.json({ error: 'Chunk out of range' }, { status: 400 })
 
-    const audioBytes = await azureTTS(target, voice.azureVoice)
+    const terms: KeyTerm[] = Array.isArray(keyTerms) ? keyTerms : []
+    const ssml = toNarrationSSML(target.text, voice.azureVoice, courseTitle, terms, targetIdx === 0)
+    const audioBytes = await azureTTS(ssml)
 
     return new NextResponse(audioBytes, {
       status: 200,
@@ -162,6 +237,8 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'audio/mpeg',
         'X-Chunk': String(targetIdx),
         'X-Total': String(total),
+        'X-Chunk-Start': String(target.start),
+        'X-Chunk-End': String(target.end),
       },
     })
   } catch (e: unknown) {
@@ -172,6 +249,6 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const text = req.nextUrl.searchParams.get('text') ?? ''
-  const title = req.nextUrl.searchParams.get('title') ?? undefined
-  return NextResponse.json({ script: toNarrationScript(text, title) })
+  const chunks = chunkMarkdown(text)
+  return NextResponse.json({ chunks: chunks.length, preview: chunks[0]?.text.slice(0, 200) })
 }

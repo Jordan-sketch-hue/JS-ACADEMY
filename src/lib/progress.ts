@@ -1,4 +1,5 @@
 'use client'
+import { pushProgress } from './sync'
 
 export interface CourseProgress {
   courseId: string
@@ -35,6 +36,19 @@ function defaultProgress(): UserProgress {
 export function saveProgress(p: UserProgress) {
   if (typeof window === 'undefined') return
   localStorage.setItem(KEY, JSON.stringify(p))
+  pushProgress(p)
+}
+
+// Bumps the streak counter at most once per calendar day, extending it if
+// yesterday was the last active day or resetting to 1 otherwise. Shared by
+// completeCourse and markDailyActive so "opened a lesson today" and "passed
+// a quiz today" both count toward the habit the same way.
+function bumpStreak(p: UserProgress, today: string) {
+  if (p.lastActiveDate === today) return
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  p.streak = p.lastActiveDate === yesterday.toDateString() ? p.streak + 1 : 1
+  p.lastActiveDate = today
 }
 
 export function completeCourse(courseId: string, quizScore: number, xp: number) {
@@ -48,13 +62,19 @@ export function completeCourse(courseId: string, quizScore: number, xp: number) 
     p.level = computeLevel(p.xp)
   }
 
-  if (p.lastActiveDate !== today) {
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 1)
-    p.streak = p.lastActiveDate === yesterday.toDateString() ? p.streak + 1 : 1
-    p.lastActiveDate = today
-  }
+  bumpStreak(p, today)
+  saveProgress(p)
+  return p
+}
 
+// Counts today toward the streak just for showing up and engaging with a
+// lesson — listening or reading, not only finishing the quiz. Previously the
+// streak only moved on quiz completion, so a commute spent listening to a
+// module (without opening the app again later to finish the quiz) didn't
+// count, which undersells the actual daily habit.
+export function markDailyActive(): UserProgress {
+  const p = getProgress()
+  bumpStreak(p, new Date().toDateString())
   saveProgress(p)
   return p
 }

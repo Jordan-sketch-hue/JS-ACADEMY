@@ -1,18 +1,19 @@
 'use client'
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react'
 import { Play, Pause, Headphones, ChevronDown, Loader2, RotateCcw, Volume2 } from 'lucide-react'
+import { getAudioPosition, saveAudioPosition, clearAudioPosition } from '@/lib/audio-progress'
 
 const VOICES = [
-  { id: 'Dan',      name: 'Dan',      desc: 'Deep · Male' },
-  { id: 'Will',     name: 'Will',     desc: 'Warm · Male' },
-  { id: 'Scarlett', name: 'Scarlett', desc: 'Clear · Female' },
-  { id: 'Liv',      name: 'Liv',      desc: 'Natural · Female' },
-  { id: 'Amy',      name: 'Amy',      desc: 'Bright · Female' },
+  { id: 'Marcus', name: 'Marcus', desc: 'Deep · Commanding' },
+  { id: 'Tony',   name: 'Tony',   desc: 'Smooth · Male' },
+  { id: 'Aria',   name: 'Aria',   desc: 'Expressive · Female' },
+  { id: 'Nova',   name: 'Nova',   desc: 'Warm · Female' },
+  { id: 'Jason',  name: 'Jason',  desc: 'Rich · Male' },
 ]
 
 const SPEEDS = [0.75, 1, 1.25, 1.5] as const
 const VOICE_KEY = 'academy_audiobook_voice'
-const DEFAULT_VOICE = 'Dan'
+const DEFAULT_VOICE = 'Marcus'
 
 function fmt(secs: number) {
   if (!isFinite(secs) || secs < 0) return '0:00'
@@ -21,13 +22,30 @@ function fmt(secs: number) {
   return `${m}:${s.toString().padStart(2, '0')}`
 }
 
+interface KeyTerm { term: string; definition: string }
+
+export interface PlayingRange { start: number; end: number }
+
+export interface AudiobookPlayerHandle {
+  /** Restart narration from a specific character offset in `text` — used for click-to-read-from-here. */
+  seekToOffset: (offset: number) => void
+}
+
 interface Props {
   text: string
   courseTitle?: string
   courseId?: string
+  keyTerms?: KeyTerm[]
+  /** Fires with the [start,end) character range of the chunk currently narrating (absolute offsets into `text`), or null when idle. */
+  onRangeChange?: (range: PlayingRange | null) => void
 }
 
-export default function AudiobookPlayer({ text, courseTitle }: Props) {
+interface StartOpts { atOffset?: number; atChunk?: number; atTime?: number }
+
+function AudiobookPlayer(
+  { text, courseTitle, courseId, keyTerms, onRangeChange }: Props,
+  ref: React.Ref<AudiobookPlayerHandle>
+) {
   const [voiceId, setVoiceId] = useState<string>(() => {
     if (typeof window === 'undefined') return DEFAULT_VOICE
     const saved = localStorage.getItem(VOICE_KEY)
@@ -39,14 +57,24 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
   const [elapsed, setElapsed]   = useState(0)
   const [showVoices, setShowVoices] = useState(false)
   const [errorMsg, setErrorMsg]     = useState('')
+  const [resumeAt, setResumeAt]     = useState<number | null>(null)
 
   const audioRef    = useRef<HTMLAudioElement | null>(null)
   const blobUrlsRef = useRef<string[]>([])
   const abortRef    = useRef<AbortController | null>(null)
   const totalRef    = useRef(1)
   const chunkRef    = useRef(0)
+  const runBaseRef  = useRef(0)      // absolute offset into `text` where the current playback run started
+  const lastSaveRef = useRef(0)
+  const lastRangeSaveRef = useRef(0)
 
   useEffect(() => { localStorage.setItem(VOICE_KEY, voiceId) }, [voiceId])
+
+  // Pick up any saved position for this course whenever we land on a new module.
+  useEffect(() => {
+    const saved = courseId ? getAudioPosition(courseId) : null
+    setResumeAt(saved && saved.elapsed > 3 ? saved.elapsed : null)
+  }, [courseId, text])
 
   const revokeBlobUrls = useCallback(() => {
     blobUrlsRef.current.forEach(u => URL.revokeObjectURL(u))
@@ -64,21 +92,27 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
     revokeBlobUrls()
     setProgress(0)
     setElapsed(0)
-  }, [revokeBlobUrls])
+    onRangeChange?.(null)
+  }, [revokeBlobUrls, onRangeChange])
 
   useEffect(() => () => { cleanup() }, [cleanup])
 
-  // Reset when voice changes
+  // Reset whenever the voice changes, or — critically — whenever the module itself
+  // changes. Without this, navigating to a new course mid-playback kept the old
+  // fetch/playback chain alive, which kept requesting chunks against the NEW text
+  // using chunk boundaries computed for the OLD text: narration would jump to an
+  // unrelated point instead of stopping. Content identity (text + courseId) is the
+  // single source of truth for "is this still the same listening session."
   useEffect(() => {
     if (status !== 'idle') { cleanup(); setStatus('idle'); setErrorMsg('') }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [voiceId])
+  }, [voiceId, text, courseId])
 
-  async function fetchChunk(idx: number, signal: AbortSignal): Promise<{ blobUrl: string; total: number }> {
+  async function fetchChunk(idx: number, sourceText: string, signal: AbortSignal) {
     const res = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, voiceId, courseTitle, chunk: idx }),
+      body: JSON.stringify({ text: sourceText, voiceId, courseTitle, chunk: idx, keyTerms: keyTerms ?? [] }),
       signal,
     })
 
@@ -87,40 +121,76 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
       throw new Error(err.error ?? 'Audio generation failed')
     }
 
-    const total = parseInt(res.headers.get('X-Total') ?? '1', 10)
+    const total      = parseInt(res.headers.get('X-Total') ?? '1', 10)
+    const chunkStart = parseInt(res.headers.get('X-Chunk-Start') ?? '0', 10)
+    const chunkEnd   = parseInt(res.headers.get('X-Chunk-End') ?? String(sourceText.length), 10)
     const bytes = await res.arrayBuffer()
     const blob  = new Blob([bytes], { type: 'audio/mpeg' })
     const url   = URL.createObjectURL(blob)
     blobUrlsRef.current.push(url)
-    return { blobUrl: url, total }
+    return { blobUrl: url, total, chunkStart, chunkEnd }
   }
 
   // audio is created synchronously in the gesture context (see startPlayback),
   // so iOS allows .play() even after the async fetch completes.
-  function playBlobUrl(audio: HTMLAudioElement, url: string, idx: number, signal: AbortSignal) {
+  function playBlobUrl(
+    audio: HTMLAudioElement, url: string, idx: number, sourceText: string, signal: AbortSignal,
+    chunkStart: number, chunkEnd: number, seekTime?: number
+  ) {
     audio.src = url
     audio.playbackRate = speed
+
+    if (seekTime) {
+      audio.addEventListener('loadedmetadata', () => { audio.currentTime = seekTime }, { once: true })
+    }
+
+    onRangeChange?.({ start: runBaseRef.current + chunkStart, end: runBaseRef.current + chunkStart + 1 })
 
     audio.addEventListener('timeupdate', () => {
       if (!audio.duration) return
       const base     = idx / totalRef.current
       const chunkPct = (audio.currentTime / audio.duration) / totalRef.current
       setProgress(Math.round((base + chunkPct) * 100))
+      const secs = audio.currentTime + (idx / totalRef.current) * audio.duration
       setElapsed(prev => {
-        const secs = audio.currentTime + (idx / totalRef.current) * audio.duration
-        return isFinite(secs) ? secs : prev
+        const next = isFinite(secs) ? secs : prev
+        const now = Date.now()
+        if (courseId && now - lastSaveRef.current > 2000) {
+          lastSaveRef.current = now
+          saveAudioPosition(courseId, {
+            baseOffset: runBaseRef.current, chunkIdx: idx, chunkTime: audio.currentTime, elapsed: next, voiceId,
+          })
+        }
+        return next
       })
+
+      // Azure's REST TTS returns one audio blob per chunk with no word-level
+      // timestamps, so we can't know exactly which word is being spoken. We
+      // interpolate a single point through the chunk's character range based
+      // on playback fraction — close enough to visually track the current
+      // paragraph without pretending to karaoke-level word precision.
+      const now = Date.now()
+      if (now - lastRangeSaveRef.current > 700) {
+        lastRangeSaveRef.current = now
+        const frac = Math.min(1, audio.currentTime / audio.duration)
+        const est = chunkStart + Math.round(frac * Math.max(1, chunkEnd - chunkStart))
+        onRangeChange?.({ start: runBaseRef.current + est, end: runBaseRef.current + est + 1 })
+      }
     })
 
     audio.addEventListener('ended', async () => {
       const next = idx + 1
       if (next >= totalRef.current || signal.aborted) {
-        setStatus('idle'); setProgress(100); return
+        setStatus('idle'); setProgress(100)
+        onRangeChange?.(null)
+        if (courseId) clearAudioPosition(courseId)
+        setResumeAt(null)
+        return
       }
       chunkRef.current = next
       try {
-        const { blobUrl } = await fetchChunk(next, signal)
-        if (!signal.aborted) playBlobUrl(audio, blobUrl, next, signal)
+        const { blobUrl, chunkStart: cs, chunkEnd: ce } = await fetchChunk(next, sourceText, signal)
+        if (!signal.aborted) playBlobUrl(audio, blobUrl, next, sourceText, signal, cs, ce)
       } catch {
         if (!signal.aborted) { setStatus('error'); setErrorMsg('Playback interrupted') }
       }
@@ -133,12 +203,18 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
       })
   }
 
-  async function startPlayback() {
+  async function startPlayback(opts?: StartOpts) {
     cleanup()
     setStatus('loading')
     setErrorMsg('')
+    setResumeAt(null)
+
+    const baseOffset = opts?.atOffset ?? 0
+    const sourceText = baseOffset > 0 ? text.slice(baseOffset) : text
+    runBaseRef.current = baseOffset
     totalRef.current = 1
-    chunkRef.current = 0
+    const startChunk = opts?.atChunk ?? 0
+    chunkRef.current = startChunk
 
     const ctrl = new AbortController()
     abortRef.current = ctrl
@@ -149,16 +225,22 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
     audioRef.current = audio
 
     try {
-      const { blobUrl, total } = await fetchChunk(0, ctrl.signal)
+      const { blobUrl, total, chunkStart, chunkEnd } = await fetchChunk(startChunk, sourceText, ctrl.signal)
       if (ctrl.signal.aborted) return
       totalRef.current = total
-      playBlobUrl(audio, blobUrl, 0, ctrl.signal)
+      playBlobUrl(audio, blobUrl, startChunk, sourceText, ctrl.signal, chunkStart, chunkEnd, opts?.atTime)
     } catch (e: unknown) {
       if ((e as { name?: string }).name === 'AbortError') return
       setStatus('error')
       setErrorMsg(e instanceof Error ? e.message : 'Could not load audio')
     }
   }
+
+  useImperativeHandle(ref, () => ({
+    seekToOffset(offset: number) {
+      startPlayback({ atOffset: Math.max(0, Math.min(offset, text.length - 1)) })
+    },
+  }))
 
   async function handlePlay() {
     if (status === 'playing') {
@@ -174,7 +256,20 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
     await startPlayback()
   }
 
-  function handleReset() { cleanup(); setStatus('idle'); setErrorMsg('') }
+  function handleResume() {
+    if (!courseId) return
+    const saved = getAudioPosition(courseId)
+    if (!saved) return
+    startPlayback({ atOffset: saved.baseOffset, atChunk: saved.chunkIdx, atTime: saved.chunkTime })
+  }
+
+  function handleReset() {
+    cleanup()
+    setStatus('idle')
+    setErrorMsg('')
+    if (courseId) clearAudioPosition(courseId)
+    setResumeAt(null)
+  }
 
   function handleSeek(e: React.MouseEvent<HTMLDivElement>) {
     const audio = audioRef.current
@@ -327,6 +422,19 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
             <button onClick={handleReset} className="underline ml-2 flex-shrink-0">Reset</button>
           </div>
         )}
+
+        {status === 'idle' && resumeAt !== null && (
+          <div className="mt-2 flex items-center gap-1.5 text-[10px] text-neutral-400">
+            <span>Left off at {fmt(resumeAt)}.</span>
+            <button onClick={handleResume} className="text-gold hover:underline font-medium">Resume listening</button>
+          </div>
+        )}
+
+        {status === 'idle' && resumeAt === null && (
+          <div className="mt-2 text-[10px] text-neutral-300">
+            Tap any word in the text below to start reading from there.
+          </div>
+        )}
       </div>
 
       <style jsx global>{`
@@ -338,3 +446,5 @@ export default function AudiobookPlayer({ text, courseTitle }: Props) {
     </>
   )
 }
+
+export default forwardRef(AudiobookPlayer)

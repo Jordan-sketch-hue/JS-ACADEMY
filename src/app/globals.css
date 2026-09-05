@@ -38,3 +38,14 @@ body {
 .course-prose th { background: #0a0a0a; color: #fff; padding: 8px 12px; text-align: left; font-weight: 500; }
 .course-prose td { border-bottom: 1px solid #e8e6e1; padding: 8px 12px; color: #333; }
 .course-prose blockquote { border-left: 3px solid #c9a84c; padding-left: 1rem; margin: 1rem 0; color: #555; font-style: italic; }
+
+/* click-to-read: every word is a target for jumping narration to that point */
+.course-prose .word-span { cursor: pointer; border-radius: 2px; transition: background-color 0.1s ease; }
+.course-prose .word-span:hover { background: #fdf3dc; }
+
+/* the paragraph/heading/list-item currently being narrated */
+.course-prose .reading-now { position: relative; background: #fdf3dc; border-radius: 4px; box-shadow: -6px 0 0 -3px #c9a84c inset; }
+.course-prose p.reading-now,
+.course-prose li.reading-now { padding: 0.15rem 0.5rem; margin-left: -0.5rem; margin-right: -0.5rem; }
+.course-prose h2.reading-now,
+.course-prose h3.reading-now { padding: 0.1rem 0.5rem; margin-left: -0.5rem; }

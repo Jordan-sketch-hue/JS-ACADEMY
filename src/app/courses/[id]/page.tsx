@@ -1,11 +1,12 @@
 'use client'
-import { use, useEffect, useState, useRef } from 'react'
+import { use, useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
 import { getCourse, COURSES, TRACKS, LEVEL_COLORS } from '@/lib/courses'
-import { completeCourse, isCourseCompleted, getWatchProgress, saveWatchProgress } from '@/lib/progress'
+import { completeCourse, isCourseCompleted, getWatchProgress, saveWatchProgress, markDailyActive } from '@/lib/progress'
 import { ArrowLeft, ArrowRight, Clock, CheckCircle, ChevronRight, BookOpen, Zap } from 'lucide-react'
+import AudiobookPlayer, { type AudiobookPlayerHandle, type PlayingRange } from '@/components/AudiobookPlayer'
 
 type Phase = 'reading' | 'terms' | 'quiz' | 'done'
 
@@ -21,15 +22,51 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
   const [quizAnswers, setQuizAnswers] = useState<(number | null)[]>([])
   const [submitted, setSubmitted] = useState(false)
   const [xpEarned, setXpEarned] = useState(0)
+  const [playingRange, setPlayingRange] = useState<PlayingRange | null>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+  const playerRef = useRef<AudiobookPlayerHandle>(null)
   const alreadyDone = course ? isCourseCompleted(course.id) : false
+
+  const handleWordClick = useCallback((offset: number) => {
+    playerRef.current?.seekToOffset(offset)
+  }, [])
 
   useEffect(() => {
     if (course) {
       const saved = getWatchProgress(course.id)
       setReadPct(saved)
+      markDailyActive()
     }
   }, [course])
+
+  // Deep link support: /courses/[id]?phase=terms jumps straight to the key-terms
+  // review (used by the Notes tab's "Study terms" shortcut).
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const sp = new URLSearchParams(window.location.search)
+    if (sp.get('phase') === 'terms') setPhase('terms')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
+
+  // Reset the "currently reading" highlight whenever we land on a different module.
+  useEffect(() => { setPlayingRange(null) }, [id])
+
+  // Keep the narrated paragraph in view while listening — but only nudge the
+  // scroll when the highlight moves to a genuinely new block that's actually
+  // out of view. playingRange ticks every ~400ms during playback; re-running
+  // scrollIntoView on every tick would fight anyone trying to scroll manually.
+  const lastScrolledElRef = useRef<Element | null>(null)
+  useEffect(() => {
+    if (!playingRange) { lastScrolledElRef.current = null; return }
+    const container = contentRef.current
+    const el = container?.querySelector('.reading-now')
+    if (!container || !el || el === lastScrolledElRef.current) return
+    lastScrolledElRef.current = el
+    const elRect = el.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+    const visible = elRect.top >= containerRect.top && elRect.bottom <= containerRect.bottom
+    if (!visible) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [playingRange])
 
   useEffect(() => {
     const el = contentRef.current
@@ -256,8 +293,20 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
                     {course.certArea && <span>Cert: {course.certArea}</span>}
                   </div>
                 </div>
-                <div className="border-t border-neutral-100 pt-5 course-prose">
-                  {renderMarkdown(course.content)}
+                {course.content && course.content !== 'LANGUAGE_LAB_REDIRECT' && (
+                  <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm pt-1 -mx-5 md:-mx-8 px-5 md:px-8">
+                    <AudiobookPlayer
+                      ref={playerRef}
+                      text={course.content}
+                      courseTitle={course.title}
+                      courseId={course.id}
+                      keyTerms={course.keyTerms}
+                      onRangeChange={setPlayingRange}
+                    />
+                  </div>
+                )}
+                <div className="border-t border-neutral-100 pt-5">
+                  <CourseProse content={course.content} playingRange={playingRange} onWordClick={handleWordClick} />
                 </div>
               </div>
             </div>
@@ -314,8 +363,100 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
   )
 }
 
-function renderMarkdown(md: string) {
+interface ProseCtx {
+  playingRange: PlayingRange | null
+  onWordClick: (offset: number) => void
+}
+
+// Renders course markdown as interactive prose: every word is a clickable span
+// carrying its absolute character offset into the raw content, so a click can
+// tell AudiobookPlayer exactly where to restart narration. Block elements that
+// fall inside the currently-narrating range get a `reading-now` highlight.
+function CourseProse({ content, playingRange, onWordClick }: { content: string; playingRange: PlayingRange | null; onWordClick: (offset: number) => void }) {
+  const body = useMemo(
+    () => renderMarkdown(content, { playingRange, onWordClick }),
+    // playingRange changes rapidly in identity but only needs to trigger a
+    // rebuild when the actual span moves — comparing the tuple keeps this cheap.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [content, playingRange?.start, playingRange?.end, onWordClick]
+  )
+  return <div className="course-prose">{body}</div>
+}
+
+function computeLineOffsets(md: string): number[] {
   const lines = md.split('\n')
+  const offsets: number[] = []
+  let acc = 0
+  for (const l of lines) { offsets.push(acc); acc += l.length + 1 }
+  return offsets
+}
+
+function overlapsPlaying(ctx: ProseCtx, start: number, end: number): boolean {
+  const r = ctx.playingRange
+  return !!r && start < r.end && end > r.start
+}
+
+function renderWords(segment: string, absStart: number, keyPrefix: string, onWordClick: (offset: number) => void): React.ReactNode[] {
+  const out: React.ReactNode[] = []
+  const re = /\S+|\s+/g
+  let m: RegExpExecArray | null
+  let idx = 0
+  while ((m = re.exec(segment))) {
+    const token = m[0]
+    if (/\S/.test(token)) {
+      const abs = absStart + m.index
+      out.push(
+        <span key={`${keyPrefix}-${idx++}`} className="word-span" onClick={() => onWordClick(abs)}>{token}</span>
+      )
+    } else {
+      out.push(token)
+    }
+  }
+  return out
+}
+
+// Walks a line of inline markdown (**bold**, `code`, *italic*) tracking the
+// absolute offset of every character so each resulting word span knows exactly
+// where it sits in the original content string.
+function renderInline(text: string, absBase: number, keyPrefix: string, ctx: ProseCtx): React.ReactNode[] {
+  const nodes: React.ReactNode[] = []
+  let i = 0
+  let seg = 0
+  while (i < text.length) {
+    if (text.slice(i, i + 2) === '**') {
+      const end = text.indexOf('**', i + 2)
+      if (end !== -1) {
+        nodes.push(<strong key={`${keyPrefix}-b${seg}`}>{renderWords(text.slice(i + 2, end), absBase + i + 2, `${keyPrefix}-b${seg++}`, ctx.onWordClick)}</strong>)
+        i = end + 2; continue
+      }
+    }
+    if (text[i] === '`') {
+      const end = text.indexOf('`', i + 1)
+      if (end !== -1) {
+        nodes.push(<code key={`${keyPrefix}-c${seg}`}>{renderWords(text.slice(i + 1, end), absBase + i + 1, `${keyPrefix}-c${seg++}`, ctx.onWordClick)}</code>)
+        i = end + 1; continue
+      }
+    }
+    if (text[i] === '*') {
+      const end = text.indexOf('*', i + 1)
+      if (end !== -1) {
+        nodes.push(<em key={`${keyPrefix}-i${seg}`}>{renderWords(text.slice(i + 1, end), absBase + i + 1, `${keyPrefix}-i${seg++}`, ctx.onWordClick)}</em>)
+        i = end + 1; continue
+      }
+    }
+    let next = text.length
+    for (let j = i + 1; j < text.length; j++) {
+      if (text[j] === '*' || text[j] === '`') { next = j; break }
+    }
+    nodes.push(...renderWords(text.slice(i, next), absBase + i, `${keyPrefix}-p${seg++}`, ctx.onWordClick))
+    i = next
+  }
+  return nodes
+}
+
+function renderMarkdown(md: string, ctx: ProseCtx) {
+  const lines = md.split('\n')
+  const lineOffsets = computeLineOffsets(md)
   const elements: React.ReactNode[] = []
   let i = 0
   let inCode = false
@@ -345,6 +486,7 @@ function renderMarkdown(md: string) {
 
   while (i < lines.length) {
     const line = lines[i]
+    const lineStart = lineOffsets[i]
 
     if (line.startsWith('```')) {
       if (inCode) {
@@ -363,38 +505,49 @@ function renderMarkdown(md: string) {
     }
     if (inTable) { flushTable() }
 
-    if (line.startsWith('## ')) { elements.push(<h2 key={i}>{line.slice(3)}</h2>) }
-    else if (line.startsWith('### ')) { elements.push(<h3 key={i}>{line.slice(4)}</h3>) }
-    else if (line.startsWith('- ') || line.startsWith('* ')) {
-      const items: string[] = []
+    if (line.startsWith('## ')) {
+      const playing = overlapsPlaying(ctx, lineStart, lineStart + line.length)
+      elements.push(<h2 key={i} className={playing ? 'reading-now' : undefined}>{renderInline(line.slice(3), lineStart + 3, `h${i}`, ctx)}</h2>)
+    } else if (line.startsWith('### ')) {
+      const playing = overlapsPlaying(ctx, lineStart, lineStart + line.length)
+      elements.push(<h3 key={i} className={playing ? 'reading-now' : undefined}>{renderInline(line.slice(4), lineStart + 4, `h${i}`, ctx)}</h3>)
+    } else if (line.startsWith('- ') || line.startsWith('* ')) {
+      const items: { text: string; start: number; lineStart: number; lineLen: number }[] = []
       while (i < lines.length && (lines[i].startsWith('- ') || lines[i].startsWith('* '))) {
-        items.push(lines[i].slice(2))
+        items.push({ text: lines[i].slice(2), start: lineOffsets[i] + 2, lineStart: lineOffsets[i], lineLen: lines[i].length })
         i++
       }
-      elements.push(<ul key={`ul-${i}`}>{items.map((it, ii) => <li key={ii} dangerouslySetInnerHTML={{ __html: formatInline(it) }} />)}</ul>)
+      elements.push(
+        <ul key={`ul-${i}`}>
+          {items.map((it, ii) => {
+            const playing = overlapsPlaying(ctx, it.lineStart, it.lineStart + it.lineLen)
+            return <li key={ii} className={playing ? 'reading-now' : undefined}>{renderInline(it.text, it.start, `li${i}-${ii}`, ctx)}</li>
+          })}
+        </ul>
+      )
       continue
-    }
-    else if (/^\d+\. /.test(line)) {
-      const items: string[] = []
+    } else if (/^\d+\. /.test(line)) {
+      const items: { text: string; start: number; lineStart: number; lineLen: number }[] = []
       while (i < lines.length && /^\d+\. /.test(lines[i])) {
-        items.push(lines[i].replace(/^\d+\. /, ''))
+        const markerLen = lines[i].match(/^\d+\.\s+/)?.[0].length ?? 3
+        items.push({ text: lines[i].slice(markerLen), start: lineOffsets[i] + markerLen, lineStart: lineOffsets[i], lineLen: lines[i].length })
         i++
       }
-      elements.push(<ol key={`ol-${i}`}>{items.map((it, ii) => <li key={ii} dangerouslySetInnerHTML={{ __html: formatInline(it) }} />)}</ol>)
+      elements.push(
+        <ol key={`ol-${i}`}>
+          {items.map((it, ii) => {
+            const playing = overlapsPlaying(ctx, it.lineStart, it.lineStart + it.lineLen)
+            return <li key={ii} className={playing ? 'reading-now' : undefined}>{renderInline(it.text, it.start, `oli${i}-${ii}`, ctx)}</li>
+          })}
+        </ol>
+      )
       continue
-    }
-    else if (line.trim()) {
-      elements.push(<p key={i} dangerouslySetInnerHTML={{ __html: formatInline(line) }} />)
+    } else if (line.trim()) {
+      const playing = overlapsPlaying(ctx, lineStart, lineStart + line.length)
+      elements.push(<p key={i} className={playing ? 'reading-now' : undefined}>{renderInline(line, lineStart, `p${i}`, ctx)}</p>)
     }
     i++
   }
   if (inTable) flushTable()
-  return <div className="course-prose">{elements}</div>
-}
-
-function formatInline(text: string): string {
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`(.+?)`/g, '<code>$1</code>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+  return elements
 }
