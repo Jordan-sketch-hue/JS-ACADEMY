@@ -2,11 +2,12 @@
 import Shell from '@/components/Shell'
 import Link from 'next/link'
 import { COURSES, TRACKS, LEVEL_COLORS, type Track } from '@/lib/courses'
-import { isCourseCompleted } from '@/lib/progress'
+import { useCompletedCourseIds } from '@/lib/progress'
 import { Clock, CheckCircle, Play } from 'lucide-react'
 
 export default function TracksPage() {
   const tracks = Object.entries(TRACKS) as [Track, typeof TRACKS[Track]][]
+  const completedIds = useCompletedCourseIds()
 
   return (
     <Shell>
@@ -28,7 +29,7 @@ export default function TracksPage() {
               <div className="text-[11px] text-neutral-300 italic mb-3">On completion: {meta.completionOutcome}</div>
               <div className="space-y-2">
                 {courses.map(course => {
-                  const done = isCourseCompleted(course.id)
+                  const done = completedIds.has(course.id)
                   const lc = LEVEL_COLORS[course.level]
                   return (
                     <Link

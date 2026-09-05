@@ -25,7 +25,12 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
   const [playingRange, setPlayingRange] = useState<PlayingRange | null>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<AudiobookPlayerHandle>(null)
-  const alreadyDone = course ? isCourseCompleted(course.id) : false
+  // Starts false (matching what the server always renders, since it has no
+  // localStorage) and is filled in client-side after mount — computing this
+  // synchronously from localStorage during render caused a hydration
+  // mismatch on the "Already completed" badge for anyone who'd actually
+  // completed the course.
+  const [alreadyDone, setAlreadyDone] = useState(false)
 
   const handleWordClick = useCallback((offset: number) => {
     playerRef.current?.seekToOffset(offset)
@@ -35,6 +40,7 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
     if (course) {
       const saved = getWatchProgress(course.id)
       setReadPct(saved)
+      setAlreadyDone(isCourseCompleted(course.id))
       markDailyActive()
     }
   }, [course])
@@ -299,6 +305,7 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
                       ref={playerRef}
                       text={course.content}
                       courseTitle={course.title}
+                      objective={course.subtitle}
                       courseId={course.id}
                       keyTerms={course.keyTerms}
                       onRangeChange={setPlayingRange}

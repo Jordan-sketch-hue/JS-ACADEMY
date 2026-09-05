@@ -34,6 +34,8 @@ export interface AudiobookPlayerHandle {
 interface Props {
   text: string
   courseTitle?: string
+  /** Spoken right after the welcome line on the first chunk — what the listener should walk away able to do. */
+  objective?: string
   courseId?: string
   keyTerms?: KeyTerm[]
   /** Fires with the [start,end) character range of the chunk currently narrating (absolute offsets into `text`), or null when idle. */
@@ -43,14 +45,26 @@ interface Props {
 interface StartOpts { atOffset?: number; atChunk?: number; atTime?: number }
 
 function AudiobookPlayer(
-  { text, courseTitle, courseId, keyTerms, onRangeChange }: Props,
+  { text, courseTitle, objective, courseId, keyTerms, onRangeChange }: Props,
   ref: React.Ref<AudiobookPlayerHandle>
 ) {
-  const [voiceId, setVoiceId] = useState<string>(() => {
-    if (typeof window === 'undefined') return DEFAULT_VOICE
+  // Always start at DEFAULT_VOICE so server and client render identical markup
+  // on first paint; the saved preference (if any) is applied after mount,
+  // client-only. Reading localStorage synchronously in the initializer here
+  // previously caused a hydration mismatch for anyone whose saved voice
+  // wasn't the default — the picker button's label text differed between
+  // the server-rendered HTML and the client's first render.
+  const [voiceId, setVoiceIdState] = useState<string>(DEFAULT_VOICE)
+
+  useEffect(() => {
     const saved = localStorage.getItem(VOICE_KEY)
-    return VOICES.some(v => v.id === saved) ? saved! : DEFAULT_VOICE
-  })
+    if (saved && VOICES.some(v => v.id === saved)) setVoiceIdState(saved)
+  }, [])
+
+  function setVoiceId(id: string) {
+    setVoiceIdState(id)
+    localStorage.setItem(VOICE_KEY, id)
+  }
   const [speed, setSpeed]   = useState<number>(1)
   const [status, setStatus] = useState<'idle' | 'loading' | 'playing' | 'paused' | 'error'>('idle')
   const [progress, setProgress] = useState(0)
@@ -67,8 +81,6 @@ function AudiobookPlayer(
   const runBaseRef  = useRef(0)      // absolute offset into `text` where the current playback run started
   const lastSaveRef = useRef(0)
   const lastRangeSaveRef = useRef(0)
-
-  useEffect(() => { localStorage.setItem(VOICE_KEY, voiceId) }, [voiceId])
 
   // Pick up any saved position for this course whenever we land on a new module.
   useEffect(() => {
@@ -112,7 +124,7 @@ function AudiobookPlayer(
     const res = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: sourceText, voiceId, courseTitle, chunk: idx, keyTerms: keyTerms ?? [] }),
+      body: JSON.stringify({ text: sourceText, voiceId, courseTitle, objective, chunk: idx, keyTerms: keyTerms ?? [] }),
       signal,
     })
 

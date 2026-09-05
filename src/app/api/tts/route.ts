@@ -57,17 +57,31 @@ function toNarrationSSML(
   md: string,
   azureVoice: string,
   courseTitle: string | undefined,
+  objective: string | undefined,
   keyTerms: KeyTerm[],
   isFirstChunk: boolean
 ): string {
   const lines = md.split('\n')
   const parts: string[] = []
 
+  // Every course record's `subtitle` is already written as an objective
+  // statement ("Turn customers into advocates through systems that sustain
+  // engagement..."), so narrating it up front — for every module, since it's
+  // pulled from the shared data field rather than hand-authored per lesson —
+  // tells the listener what they should walk away able to do before the
+  // lesson itself starts.
   if (isFirstChunk && courseTitle) {
     parts.push(
       `<prosody rate="-15%" pitch="+5%">Welcome to ${escapeXml(courseTitle)}.</prosody>`,
-      `<break time="800ms"/>`
+      `<break time="500ms"/>`
     )
+    if (objective) {
+      parts.push(
+        `<prosody rate="-8%">${escapeXml(objective)}</prosody>`,
+        `<break time="600ms"/>`
+      )
+    }
+    parts.push(`<break time="200ms"/>`)
   }
 
   let inCode = false
@@ -213,7 +227,7 @@ async function azureTTS(ssml: string): Promise<ArrayBuffer> {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { text, voiceId, courseTitle, chunk, keyTerms } = body
+    const { text, voiceId, courseTitle, objective, chunk, keyTerms } = body
 
     if (typeof text !== 'string' || !text) {
       return NextResponse.json({ error: 'text is required' }, { status: 400 })
@@ -228,7 +242,7 @@ export async function POST(req: NextRequest) {
     if (!target) return NextResponse.json({ error: 'Chunk out of range' }, { status: 400 })
 
     const terms: KeyTerm[] = Array.isArray(keyTerms) ? keyTerms : []
-    const ssml = toNarrationSSML(target.text, voice.azureVoice, courseTitle, terms, targetIdx === 0)
+    const ssml = toNarrationSSML(target.text, voice.azureVoice, courseTitle, objective, terms, targetIdx === 0)
     const audioBytes = await azureTTS(ssml)
 
     return new NextResponse(audioBytes, {

@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { pushProgress } from './sync'
 
 export interface CourseProgress {
@@ -89,6 +90,24 @@ export function saveWatchProgress(courseId: string, pct: number) {
 
 export function isCourseCompleted(courseId: string): boolean {
   return getProgress().completedCourses.some(c => c.courseId === courseId && c.completedAt)
+}
+
+// Reads localStorage synchronously the way isCourseCompleted() does, which
+// is safe inside effects/handlers but NOT during render: on first client
+// render (pre-hydration) `window` is already defined, so it returns real
+// data while the server always rendered with none — a hydration mismatch.
+// Call this hook once per component instead and check membership per row.
+export function useCompletedCourseIds(): Set<string> {
+  const [ids, setIds] = useState<Set<string>>(new Set())
+  useEffect(() => {
+    const load = () => setIds(new Set(
+      getProgress().completedCourses.filter(c => c.completedAt).map(c => c.courseId)
+    ))
+    load()
+    const i = setInterval(load, 2000)
+    return () => clearInterval(i)
+  }, [])
+  return ids
 }
 
 export function getWatchProgress(courseId: string): number {

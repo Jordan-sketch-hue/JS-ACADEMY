@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
 import { COURSES, TRACKS, LEVEL_COLORS, type Course, type Track } from '@/lib/courses'
-import { getProgress, isCourseCompleted, levelName, xpToNextLevel, type UserProgress } from '@/lib/progress'
+import { getProgress, useCompletedCourseIds, levelName, xpToNextLevel, type UserProgress } from '@/lib/progress'
 import { Clock, Play, CheckCircle, Flame, Trophy, BookOpen, Star, ChevronRight } from 'lucide-react'
 
 function getTimeOfDay() {
@@ -23,10 +23,11 @@ function LevelBadge({ level }: { level: string }) {
 
 function TrackCard({ track, courses }: { track: Track; courses: Course[] }) {
   const meta = TRACKS[track]
-  const completed = courses.filter(c => isCourseCompleted(c.id)).length
+  const completedIds = useCompletedCourseIds()
+  const completed = courses.filter(c => completedIds.has(c.id)).length
   const total = courses.length
   const pct = total > 0 ? Math.round((completed / total) * 100) : 0
-  const nextCourse = courses.find(c => !isCourseCompleted(c.id))
+  const nextCourse = courses.find(c => !completedIds.has(c.id))
 
   return (
     <div className="bg-white border border-neutral-100 rounded-xl overflow-hidden">

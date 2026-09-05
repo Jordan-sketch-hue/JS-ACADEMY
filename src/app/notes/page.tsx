@@ -3,13 +3,15 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
 import { COURSES, TRACKS, type Track, type Course } from '@/lib/courses'
-import { getCourseOutline } from '@/lib/notes'
-import { isCourseCompleted } from '@/lib/progress'
+import { getCourseOutline, buildBriefingScript } from '@/lib/notes'
+import { useCompletedCourseIds } from '@/lib/progress'
+import AudiobookPlayer from '@/components/AudiobookPlayer'
 import { Search, ChevronDown, BookOpen, CheckCircle, ArrowRight, Zap } from 'lucide-react'
 
 export default function NotesPage() {
   const [query, setQuery] = useState('')
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const completedIds = useCompletedCourseIds()
 
   const q = query.trim().toLowerCase()
 
@@ -77,7 +79,7 @@ export default function NotesPage() {
               <div className="space-y-2">
                 {trackRows.map(({ course, outline }) => {
                   const open = expanded.has(course.id) || (!!q && matches(course, outline))
-                  const done = isCourseCompleted(course.id)
+                  const done = completedIds.has(course.id)
                   return (
                     <div key={course.id} className="bg-white border border-neutral-100 rounded-lg overflow-hidden">
                       <button
@@ -98,6 +100,12 @@ export default function NotesPage() {
 
                       {open && (
                         <div className="px-4 pb-4 border-t border-neutral-100 pt-3">
+                          <AudiobookPlayer
+                            text={buildBriefingScript(course, outline)}
+                            courseTitle={`${course.title} — briefing`}
+                            courseId={`notes-${course.id}`}
+                            keyTerms={course.keyTerms}
+                          />
                           {outline.overview && (
                             <p className="text-[12px] text-neutral-600 leading-relaxed mb-3">{outline.overview}</p>
                           )}
