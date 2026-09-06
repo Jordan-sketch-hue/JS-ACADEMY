@@ -33,7 +33,13 @@ function buildEmphasisText(text: string, keyTerms: KeyTerm[]): string {
   if (!keyTerms.length) return escapeXml(text)
   const sorted = [...keyTerms].sort((a, b) => b.term.length - a.term.length)
   const patterns = sorted.map(k => k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-  const re = new RegExp(`(${patterns.join('|')})`, 'gi')
+  // \b...\b stops a term from matching mid-word (e.g. "Brand" inside
+  // "Brands"), which previously split the emphasis span right before the
+  // plural suffix — Azure's TTS then voiced the stem and the stray "s"/"es"
+  // as two separate units, sounding like the word repeating itself. The
+  // optional trailing s/es is folded into the SAME capturing group so a
+  // regular plural still comes out — and gets emphasized — as one word.
+  const re = new RegExp(`\\b((?:${patterns.join('|')})(?:es|s)?)\\b`, 'gi')
   return text.split(re).map((part, i) =>
     i % 2 === 1
       ? `<emphasis level="moderate">${escapeXml(part)}</emphasis>`
