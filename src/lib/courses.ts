@@ -1,5 +1,5 @@
 export type Level = 'Basic' | 'Masters' | 'PhD' | 'Next-Gen AI'
-export type Track = 'marketing' | 'tech' | 'trading' | 'business' | 'design' | 'mindset' | 'creative' | 'culture' | 'knowledge' | 'future' | 'psychology' | 'higher' | 'language' | 'techco' | 'mktco'
+export type Track = 'marketing' | 'tech' | 'trading' | 'business' | 'design' | 'mindset' | 'creative' | 'culture' | 'knowledge' | 'future' | 'psychology' | 'higher' | 'language' | 'techco' | 'mktco' | 'gamedev'
 
 export interface QuizQuestion {
   q: string
@@ -129,6 +129,13 @@ export const TRACKS: Record<Track, { label: string; color: string; bg: string; d
     description: 'Client acquisition, delivery, team structure, pricing, retention & scaling a marketing agency or consultancy',
     completionOutcome: "You'll know how to price, acquire, deliver, retain, and scale a marketing company — from your first retainer client to a multi-brand agency with systematised delivery and a team that runs without you in every meeting.",
   },
+  gamedev: {
+    label: 'Game Design & Dev',
+    color: '#00bcd4',
+    bg: '#e0f7fa',
+    description: 'Brain-mapped game design, POV mechanics, narrative, reward systems, immersive experience & building with Phaser 3',
+    completionOutcome: "You'll understand how the human brain responds to games at a neurological level, design experiences mapped to specific emotional needs, build compelling narrative and reward systems, and ship a fully playable 2D game using modern web tools — with audio, procedural generation, and no external assets.",
+  },
 }
 
 export const LEVEL_COLORS: Record<Level, { text: string; bg: string }> = {
@@ -152,6 +159,7 @@ import { psychologyCourses } from './tracks/psychology'
 import { higherCourses } from './tracks/higher'
 import { techcoCourses } from './tracks/techco'
 import { mktcoCourses } from './tracks/mktco'
+import { gamedevCourses } from './tracks/gamedev'
 import { languageCoursesFull } from './tracks/language'
 
 const languageCourses: Course[] = [
@@ -243,6 +251,7 @@ export const COURSES: Course[] = [
   ...higherCourses,
   ...techcoCourses,
   ...mktcoCourses,
+  ...gamedevCourses,
   ...languageCoursesFull,
   ...languageCourses, // keep 5 stub entries as fallback until language.ts resolves
 ]
@@ -253,7 +262,7 @@ export function getCourse(id: string): Course | undefined {
 }
 
 export function getAllTracks(): Track[] {
-  return ['marketing', 'tech', 'trading', 'business', 'design', 'mindset', 'creative', 'culture', 'knowledge', 'future', 'psychology', 'higher', 'techco', 'mktco', 'language']
+  return ['marketing', 'tech', 'trading', 'business', 'design', 'mindset', 'creative', 'culture', 'knowledge', 'future', 'psychology', 'higher', 'techco', 'mktco', 'gamedev', 'language']
 }
 
 export function getCoursesByTrack(track: Track): Course[] {
