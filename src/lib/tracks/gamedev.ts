@@ -1102,4 +1102,562 @@ The Vault is shippable. It has: immediate action clarity (shoot enemies, collect
 
 Total cost to build and ship a professional-quality 2D web game: $0–$20.`,
   },
+
+  {
+    id: 'gd-m09',
+    track: 'gamedev',
+    title: 'Level Design & World Building',
+    subtitle: 'Spatial flow, pacing curves, difficulty ramps — how to build spaces players want to move through',
+    level: 'Masters',
+    xp: 130,
+    duration: 13,
+    module: 9,
+    certArea: 'Game Design & Development',
+    keyTerms: [
+      {
+        term: 'Spatial Flow',
+        definition:
+          'The invisible path a well-designed level creates through architecture, lighting, and enemy placement — guiding the player forward without explicit signposting. Spatial flow uses the psychology of curiosity: a visible distant landmark, a half-open door, a light at the end of a corridor. The player moves toward resolution without being told to.',
+      },
+      {
+        term: 'Difficulty Curve',
+        definition:
+          'The graph of challenge over time in a game. Ideal difficulty curves are not smooth — they follow a tension/release pattern: escalate challenge, provide a release valve (a safe room, a cutscene, a healing item), then escalate again from a higher baseline. Flat curves produce boredom; unchecked escalation produces abandonment.',
+      },
+      {
+        term: 'Gating',
+        definition:
+          'A design technique that prevents access to a level area or mechanic until specific conditions are met. Soft gating uses challenge (an enemy the player is not yet ready for); hard gating uses locked doors and keys. Excessive hard gating feels arbitrary; excessive soft gating frustrates players who cannot identify why they are stuck.',
+      },
+      {
+        term: 'Safe Room',
+        definition:
+          'A designated area of a level where no enemies spawn and the player can pause, heal, plan, and breathe. Safe rooms serve a psychological function beyond mechanical rest — they mark the boundary between tension zones, letting the amygdala downregulate before the next escalation. Removing safe rooms from horror games consistently reduces scare effectiveness because players never fully relax.',
+      },
+      {
+        term: 'Landmark Navigation',
+        definition:
+          'Using visually distinctive environmental objects — a tower, a large tree, a burning building — to help players orient in space without a minimap. The hippocampus builds spatial maps anchored to landmarks. Environments without distinctive landmarks cause players to feel lost even in small spaces; environments with well-placed landmarks feel navigable even when large.',
+      },
+    ],
+    quiz: [
+      {
+        q: 'A player says they keep getting lost despite the level being small. The most likely design failure is:',
+        options: [
+          'The level is too small',
+          'Lack of distinctive landmarks for hippocampal spatial mapping',
+          'Too many enemies',
+          'Insufficient HUD elements',
+        ],
+        correct: 1,
+        explanation: 'The hippocampus builds spatial maps anchored to distinctive landmarks. An environment of identical corridors with no distinctive features produces disorientation regardless of actual size.',
+      },
+      {
+        q: 'Why do effective difficulty curves follow a tension/release pattern rather than smooth linear escalation?',
+        options: [
+          'Linear escalation is technically harder to implement',
+          'Players need amygdala downregulation periods between tension spikes for subsequent escalations to land',
+          'Game engines cannot handle smooth difficulty scaling',
+          'Players prefer predictable challenge increases',
+        ],
+        correct: 1,
+        explanation: 'The amygdala habituates to sustained threat. Releasing tension (safe room, breather segment) allows the stress response to reset — making the next escalation feel fresh rather than exhausting.',
+      },
+      {
+        q: 'Spatial flow guides players through a level using:',
+        options: [
+          'Explicit on-screen arrows and waypoints',
+          'Architecture, lighting, and distant landmarks that direct movement through environmental curiosity',
+          'Required linear progression with locked doors',
+          'Enemy spawn density alone',
+        ],
+        correct: 1,
+        explanation: "Spatial flow is invisible direction — the player follows it because they want to, not because they are told to. It works through the brain's natural curiosity response: light, open space, and visible goals create movement without commands.",
+      },
+      {
+        q: 'What is the primary psychological function of safe rooms in horror games?',
+        options: [
+          'Giving the player time to read tutorials',
+          'Allowing amygdala downregulation so subsequent fear spikes land with full impact',
+          'Reducing GPU load in dense enemy areas',
+          'Providing mandatory save points',
+        ],
+        correct: 1,
+        explanation: 'A brain that never gets to relax from sustained threat begins to habituate — and scared stops feeling scary. Safe rooms reset the player\'s stress baseline, making the next threat encounter feel genuinely dangerous again.',
+      },
+    ],
+    content: `## Level Design & World Building
+
+Level design is the discipline of building space that produces specific emotional and cognitive experiences. It is architecture, psychology, and game mechanics unified in a physical environment. A great level feels inevitable — as if it could only exist the way it does. Getting there requires understanding how players move through space and what drives those movements.
+
+### How Players Navigate Space
+
+The hippocampus builds cognitive maps of environments. It does this by anchoring spatial memory to distinctive features — landmarks, distinctive sounds, light sources, architectural irregularities. A player who can see three unique visual reference points at any moment can orient themselves. A player surrounded by visually identical corridors cannot build a map, regardless of how small the space is.
+
+Level design implication: **visual distinctiveness is more important than size**. A sprawling open world with rich landmark variety feels navigable. A small dungeon with identical stone walls feels like a maze.
+
+### The Grammar of Spatial Flow
+
+The best levels create desire to move forward without explicit instruction. The tools:
+
+**Light** — Players move toward light. A torch in a dark corridor, a beam of sunlight through a ceiling hole, a glowing doorway. Use light to create desire; use darkness to create tension and restriction.
+
+**Framing** — Architectural frames (doorways, windows, arches) direct gaze toward what lies beyond. A door left slightly ajar creates more curiosity than a closed one.
+
+**The distant goal** — Placing a visible destination in the distance gives the hippocampus something to navigate toward. A tower on the horizon. A boss chamber visible through a chasm. Players instinctively move toward visible goals.
+
+**Enemy placement as flow control** — Enemies in the path direct movement around them. A blocked corridor with an enemy creates a puzzle: find another way, or clear the path. Used deliberately, enemies sculpt movement through a space.
+
+**Sound** — Distant sounds create off-screen curiosity. Footsteps ahead. A door closing. Music getting louder. The ear creates navigation desire as effectively as the eye.
+
+### Difficulty Ramps — The Tension/Release Pattern
+
+The most common beginner mistake in level design is smooth difficulty escalation: each room is slightly harder than the last, continuously. This produces exhaustion, not engagement.
+
+The professional pattern is **tension and release**:
+
+1. Introduce a new threat or challenge
+2. Escalate over 2–3 encounters
+3. Provide a release — a safe room, a healing pickup, a cutscene, a merchant
+4. Re-introduce from a higher baseline
+
+The release is not a reward for success. It is a neurological requirement — the amygdala needs to downregulate so it can spike again effectively. Horror games that remove all safe areas stop being scary; they become exhausting.
+
+### Gating: Hard vs. Soft
+
+**Hard gates** — physical locks, doors that require specific items, abilities, or keys. Explicit. Clear cause-and-effect. Danger: if the gate is not obviously connected to a solvable problem, players feel arbitrarily blocked.
+
+**Soft gates** — enemies too powerful for the player's current capability, platforming requiring skills not yet mastered, puzzles using mechanics not yet encountered. Implicit. The player should be able to diagnose why they failed. Danger: if the soft gate is indistinguishable from a hard gate, players feel stuck without knowing why.
+
+Best practice: use hard gates for story-required sequencing. Use soft gates to encourage exploration of other areas before returning with better capability. Always make the gate's logic learnable.
+
+### The Vault — Level Design Audit
+
+Our dungeon crawler generates levels procedurally, which means level design decisions are encoded in the generator, not in manual placement. The current generator:
+
+- Places rooms randomly with minimum spacing (spatial separation achieved)
+- Uses L-shaped corridors (flow created; no dead ends)
+- Places boss room last (clear progression goal)
+- Labels enemy names above them (landmark-like visual distinctiveness)
+
+Improvements that would strengthen level design:
+- **Biome variation per floor** — different tile colors for floors 1, 2, 3+ create landmark distinctiveness
+- **Room size variation** — small rooms for tension, large rooms for relief (spatial flow rhythm)
+- **Guaranteed safe room** — one room per floor with no enemies and a healing shard
+- **Visible boss room on minimap from start** — distant goal psychology; player knows what they are moving toward`,
+  },
+
+  {
+    id: 'gd-m10',
+    track: 'gamedev',
+    title: 'Game Monetization & Business Models',
+    subtitle: 'Free-to-play, premium, live service — building revenue without destroying player trust',
+    level: 'PhD',
+    xp: 150,
+    duration: 14,
+    module: 10,
+    certArea: 'Game Design & Development',
+    keyTerms: [
+      {
+        term: 'Free-to-Play (F2P)',
+        definition:
+          'A monetization model in which the game is free to download and play, with revenue generated through in-game purchases — cosmetics, currency, battle passes, or gameplay advantages. F2P enables massive player bases but requires careful ethical design to avoid predatory mechanics that exploit psychological vulnerabilities for extraction rather than value exchange.',
+      },
+      {
+        term: 'Battle Pass',
+        definition:
+          'A seasonal progression system in which players purchase a pass that unlocks rewards as they complete in-game challenges over a defined period (typically 30–90 days). Battle passes are broadly considered more ethical than loot boxes because rewards are deterministic (you know what you get) and earned through play (effort-linked). They monetize time investment, not luck.',
+      },
+      {
+        term: 'Pay-to-Win (P2W)',
+        definition:
+          'A monetization model in which purchased items provide competitive advantages unavailable to free players. P2W produces short-term revenue but destroys competitive community trust and typically causes long-term player base collapse. In a competitive game, monetizing capability rather than cosmetics is a category error — it sells the integrity of the competition itself.',
+      },
+      {
+        term: 'Live Service',
+        definition:
+          'A game model designed for continuous operation and ongoing revenue — regular content updates, seasonal events, new cosmetics, and evolving meta. Live service games treat launch as the beginning of a product lifecycle, not the end. The operational model requires ongoing content investment; the monetization model must sustain that investment without alienating the player base.',
+      },
+      {
+        term: 'Lifetime Value (LTV)',
+        definition:
+          'The total revenue generated by one player over their entire engagement with a game. LTV thinking reframes monetization from extraction (maximum spend per session) to relationship (sustainable spend over years). High-LTV players are loyal, social, and organic advocates. Predatory monetization optimizes for short-term extraction at the cost of LTV.',
+      },
+    ],
+    quiz: [
+      {
+        q: 'Why do battle passes generate less player backlash than loot boxes despite similar revenue potential?',
+        options: [
+          'Battle passes cost less',
+          'Rewards are deterministic and effort-linked rather than randomized',
+          'Battle passes are regulated differently',
+          'Players spend less time on battle passes',
+        ],
+        correct: 1,
+        explanation: "Battle passes: you know exactly what you're working toward and how to get it. Loot boxes: randomized rewards exploit variable-ratio conditioning. Determinism and agency feel fair; randomness at cost feels exploitative.",
+      },
+      {
+        q: 'A competitive multiplayer game introduces a purchasable weapon that deals 20% more damage. This is:',
+        options: [
+          'An acceptable cosmetic monetization',
+          'Pay-to-win — monetizing competitive advantage destroys match integrity and community trust',
+          'A battle pass reward',
+          'A live service feature',
+        ],
+        correct: 1,
+        explanation: 'Competitive games monetize expression (cosmetics, skins) not performance. Selling performance advantages destroys the implicit contract of competitive games — that matches are decided by skill.',
+      },
+      {
+        q: 'LTV (Lifetime Value) thinking changes monetization strategy how?',
+        options: [
+          'It encourages maximum extraction per session',
+          'It shifts focus from short-term spend to sustainable long-term relationship — loyal players spend more over time',
+          'It eliminates the need for premium content',
+          'It makes games more expensive to produce',
+        ],
+        correct: 1,
+        explanation: 'A player who spends $5/month for 4 years ($240 LTV) is far more valuable than one who spends $80 once and leaves. LTV optimization favors retention, loyalty, and player satisfaction over any single transaction.',
+      },
+    ],
+    content: `## Game Monetization & Business Models
+
+The game industry generates over $180 billion annually. Understanding how that money flows — and how to build a sustainable business model without destroying your relationship with players — is as important as understanding how to design the game itself.
+
+### The Business Model Landscape
+
+**Premium (Paid Upfront)** — Player pays once before playing. Simple, clean, no ongoing monetization decisions. Revenue ceiling is launch sales. Best for: narrative games, indie games, games with finite content. Risk: piracy, discoverability.
+
+**Free-to-Play (F2P)** — Game is free. Revenue from in-game purchases. Massive top-of-funnel. Best for: competitive games, live-service games, mobile. Risk: predatory mechanics, community backlash.
+
+**Subscription** — Monthly fee for access. Predictable recurring revenue. Best for: MMOs, large content libraries, cloud gaming services. Risk: churn, content obligation.
+
+**Early Access / Kickstarter** — Revenue before completion. Community investment and feedback. Best for: games with strong concept and community. Risk: unfulfilled promises, scope creep.
+
+**Live Service** — Ongoing game with seasonal content, cosmetics, battle passes. Long lifecycle revenue. Best for: competitive, co-op, social games. Risk: high operational cost, content treadmill.
+
+### Ethical F2P Design
+
+The difference between ethical and predatory F2P is not the existence of purchases — it is whether those purchases create genuine value or exploit psychological vulnerabilities.
+
+**Ethical F2P signals:**
+- Cosmetic-only premium items (player expression, not competitive advantage)
+- Deterministic rewards (you know what you get before you pay)
+- No artificial time pressure to spend ("limited time" mechanics that gate core content)
+- Free players can access all gameplay content; premium is expression or convenience
+- Prices are clearly displayed in real currency (not obscured by fictional currency conversion)
+
+**Predatory F2P signals:**
+- Random loot boxes gating gameplay-relevant items
+- Energy systems that stop free play after a short session
+- Fake "sale" prices on items that never sell at full price
+- Fictional currency that obscures real cost ($4.99 → 500 "gems" → what does that buy?)
+- Social pressure mechanics (friends can see your purchases, purchase displays in social spaces)
+
+### The Battle Pass Model
+
+The battle pass emerged as the post-loot-box consensus on ethical premium F2P — and became the dominant monetization model in competitive games (Fortnite, Apex, Valorant).
+
+Why it works ethically:
+- **Deterministic** — you see exactly what you are purchasing access to
+- **Effort-linked** — rewards come from playing the game, not from additional payment
+- **Value-transparent** — 100 reward tiers visible upfront, player decides if the value justifies the cost
+- **No competitive advantage** — all content is cosmetic in well-designed implementations
+
+Why it can fail:
+- FOMO engineering (pass expires; rewards are permanently lost)
+- Time-gating that penalizes players who cannot play daily
+- Requiring purchase before knowing if the season's content is worthwhile
+
+### Pricing Psychology
+
+- **Anchoring** — Showing a "premium" tier at high cost makes mid-tier feel reasonable. Deliberate.
+- **Charm pricing** — $4.99 feels meaningfully less than $5.00. Real effect, small magnitude.
+- **Bundle value** — Grouping items at a discount signals generosity; players focus on savings over total spend.
+- **Currency obscurement** — Converting to fictional currency is specifically designed to reduce payment salience. Ethical design uses real currency display.
+
+### Building Sustainable Revenue
+
+The long game is always lifetime value. Players who trust you:
+- Spend more over time than players who feel exploited
+- Recruit new players through word-of-mouth
+- Forgive mistakes that exploitative relationships would make unforgivable
+- Stay engaged during dry content periods
+
+Every monetization decision is a trust transaction. Ask: does this feel fair to a player who has no money to spend? If the free player experience is designed to feel punishing — not just limited, but designed to frustrate — the monetization model is predatory.`,
+  },
+
+  {
+    id: 'gd-m11',
+    track: 'gamedev',
+    title: 'Multiplayer & Social Game Design',
+    subtitle: 'Netcode, social loops, community — designing games that are better together',
+    level: 'PhD',
+    xp: 145,
+    duration: 13,
+    module: 11,
+    certArea: 'Game Design & Development',
+    keyTerms: [
+      {
+        term: 'Netcode',
+        definition:
+          'The systems that synchronize game state across multiple players connected over a network. The two dominant models: lockstep (all clients wait for all inputs each frame — deterministic but latency-sensitive) and client-side prediction with server reconciliation (clients act immediately and correct when the server disagrees — responsive but requires lag compensation). Most modern multiplayer games use the latter.',
+      },
+      {
+        term: 'Lag Compensation',
+        definition:
+          'A technique that adjusts for network latency by rewinding game state server-side to determine the game state at the moment a player took an action. When a player with 80ms ping shoots someone, the server rewinds 80ms to determine if the shot was valid at the time it was fired — not at the time it was received. This is why you can die after moving behind cover in a high-latency session.',
+      },
+      {
+        term: 'Social Loop',
+        definition:
+          "The game mechanic that creates reasons for players to interact with, depend on, or compete with each other. Strong social loops include: gifting (asymmetric benefit), guild/clan structures (shared identity and goals), PvP (direct competition), cooperative bosses (shared challenge), and leaderboards (social comparison). Social loops dramatically increase retention because they create interpersonal investment that single-player games cannot replicate.",
+      },
+      {
+        term: 'Matchmaking (MMR)',
+        definition:
+          'The system that pairs players of similar skill levels. Matchmaking Rating (MMR) is a numerical estimate of player skill, typically updated after each match based on outcome and opponent rating. Good matchmaking is invisible — players feel like they are being challenged appropriately. Bad matchmaking produces obvious mismatches that feel unfair.',
+      },
+      {
+        term: 'Community-Driven Content',
+        definition:
+          'Game content created by players — mods, maps, skins, scenarios — that extends the game beyond what the developer produced. Games with robust modding communities (Minecraft, Skyrim, CS:GO) achieve extraordinary longevity because the content pipeline is partially offloaded to the player base. Community content is also an extremely powerful signal of a game\'s cultural impact.',
+      },
+    ],
+    quiz: [
+      {
+        q: 'In client-side prediction, what happens when the server disagrees with the client\'s predicted game state?',
+        options: [
+          'The client ignores the server to maintain smooth gameplay',
+          'The server corrects the client — a process called reconciliation — which may cause a visible position snap',
+          'Both states are averaged and applied to all clients',
+          'The session ends and both players reconnect',
+        ],
+        correct: 1,
+        explanation: 'Client-side prediction shows you the result immediately while sending the input to the server. When the server authoritative state disagrees, it sends a correction. The client reconciles — replaying inputs from the correction point — sometimes producing a visible snap or rollback.',
+      },
+      {
+        q: 'Why do games with strong social loops retain players longer than equivalent single-player games?',
+        options: [
+          'Multiplayer games have more content',
+          'Social loops create interpersonal investment — relationships and reputation that cannot be replicated elsewhere',
+          'Multiplayer games are cheaper to produce',
+          'Players prefer competitive experiences',
+        ],
+        correct: 1,
+        explanation: "When your game is where your friends are, quitting the game means losing daily connection with those friends. Social investment — guild rank, friendships, shared history — is the stickiest retention mechanism in gaming.",
+      },
+      {
+        q: 'Lag compensation causes the "shot behind cover" phenomenon because:',
+        options: [
+          'The server processes shots randomly',
+          'The server rewinds to the shooter\'s game state at the time of the shot — which showed the target still exposed',
+          'The game has poor hit detection code',
+          'High ping players receive advantages by design',
+        ],
+        correct: 1,
+        explanation: "The server validates the shot based on what the world looked like when the shot was fired — not when it was received. From the server's perspective, the target hadn't moved to cover yet. From the target's perspective, they were already safe. Both are correct from their own latency context.",
+      },
+    ],
+    content: `## Multiplayer & Social Game Design
+
+Single-player games are about the relationship between one player and a designed experience. Multiplayer games are about the relationship between players — with the game as the container for that relationship. This distinction changes nearly every design decision.
+
+### The Social Retention Engine
+
+The most powerful retention mechanism in gaming is not content — it is relationships. A player who has friends in a game, a guild they are respected in, a rivalry they care about, a community they belong to will continue playing long after the content has been exhausted.
+
+This is why social games with modest content libraries outretain rich single-player games with deep content. The social loop creates reasons to return that content alone cannot sustain: your friends are logging on, your guild needs you for a raid, your rival just passed your leaderboard rank.
+
+Designing for social retention means designing for:
+- **Interdependence** — mechanics where players genuinely need each other (not just parallel single-player with proximity)
+- **Shared identity** — guilds, teams, factions that the player identifies with, not just belongs to
+- **Social visibility** — achievements, ranks, and milestones that are visible to the community
+- **Asymmetric roles** — different players bring different capabilities; no single player can do everything
+
+### Cooperative vs. Competitive Design
+
+**Cooperative design** — players work together against the game. Design challenges: balancing contribution so all players feel essential, preventing carries (one skilled player doing everything while others watch), creating shared failure states that build rather than destroy relationships.
+
+**Competitive design** — players work against each other. Design challenges: skill-based matchmaking, preventing toxic behavior, building meaningful status hierarchies, ensuring losses feel informative rather than demoralizing.
+
+**Hybrid (PvEvP)** — both simultaneously. The most complex and often most engaging design space. Players cooperate to survive environmental threats while competing with or against each other. Requires extremely careful balance.
+
+### Netcode Without Jargon
+
+For game designers who are not networking engineers, the key concepts to understand are:
+
+**Why does latency exist?** The speed of light. Information traveling between New York and London takes ~70ms at minimum. Players 5000km apart cannot achieve sub-20ms response to each other's actions — physics prevents it.
+
+**What does good netcode hide?** The gap between what you did and what other players see. Client-side prediction shows you the result of your action instantly; the server confirms it slightly later. When your prediction was wrong (because the server saw something you did not), you get a correction — sometimes visibly.
+
+**What do designers control?** How forgiving the design is of latency. Action games with precise hit detection are latency-intolerant. Turn-based games are latency-immune. Designing tolerance into mechanics (larger hit boxes, longer action windows, non-time-critical interactions) makes games more accessible to high-latency players.
+
+### Social Loop Architecture
+
+A fully designed social loop for a multiplayer game includes:
+
+1. **Entry point** — how does a new player find their first social connection? (matchmade random grouping, guild recruitment, friend referral)
+2. **Bonding mechanism** — what creates the first meaningful shared experience? (first co-op victory, first shared failure survived)
+3. **Recurring obligation** — what brings players back at a regular time? (guild raid night, daily PvP window, seasonal event)
+4. **Status economy** — how is reputation earned, displayed, and valued? (leaderboards, titles, cosmetics, guild roles)
+5. **Exit friction** — what does a player lose by leaving? (guild rank, friendships, competitive standing)
+
+Design the loop deliberately. Organic communities form in games that provide these elements even without explicit design; explicit design makes it faster and more reliable.
+
+### Building Community Beyond the Game
+
+The most culturally impactful games — Minecraft, League of Legends, Among Us — built communities that extended beyond the game itself. Discord servers, subreddits, YouTube content creators, fan art, tournament scenes. These are not accidents. They are the result of games that:
+
+- Have shareable moments (spectacular plays, funny emergent situations, dramatic reversals)
+- Have content creators can explain and demonstrate
+- Produce stories worth telling to people who do not play
+- Leave enough player expression space that fans create within the game's aesthetic universe
+
+Design for shareability: what is the screenshot moment? What is the clip worth posting? What is the story worth telling a non-player friend?`,
+  },
+
+  {
+    id: 'gd-m12',
+    track: 'gamedev',
+    title: 'Game Marketing & Launch Strategy',
+    subtitle: 'Trailers, Steam pages, community building, and getting players to show up',
+    level: 'PhD',
+    xp: 160,
+    duration: 15,
+    module: 12,
+    certArea: 'Game Design & Development',
+    keyTerms: [
+      {
+        term: 'Wishlist Velocity',
+        definition:
+          'The rate at which players add a game to their Steam (or App Store) wishlist over time. Wishlist velocity is the primary leading indicator of launch performance on PC — Steam\'s algorithm surfaces games at launch proportional to accumulated wishlists. Every marketing action before launch should be evaluated by its impact on wishlist velocity.',
+      },
+      {
+        term: 'GIF-able Moment',
+        definition:
+          'A 3–8 second game moment that communicates the game\'s core loop, visual identity, and tone without text or context — and is entertaining enough to share. GIF-able moments drive organic social media spread and are the atomic unit of game marketing in the social media era. Identifying and engineering GIF-able moments is a design and marketing discipline simultaneously.',
+      },
+      {
+        term: 'Press Kit',
+        definition:
+          'A curated package of assets for journalists and content creators: game description, key features, high-resolution screenshots, a gameplay trailer, a logo, and developer contact information. A complete, professional press kit is the single highest-ROI marketing investment for an indie developer — it removes every barrier between a journalist and a story about your game.',
+      },
+      {
+        term: 'Content Creator Strategy',
+        definition:
+          'A deliberate plan for engaging YouTube and Twitch creators who will expose your game to their audience. Unlike traditional press coverage, content creator exposure is algorithm-amplified — a single large creator playing your game can generate hundreds of hours of secondary coverage. The strategy: identify creators whose audience matches your game\'s demographic, provide early access with no coverage requirements, and build genuine relationships.',
+      },
+      {
+        term: 'Launch Window',
+        definition:
+          'The 2–4 week period around a game\'s launch during which platform algorithms, press coverage, and community excitement combine to maximize visibility. Launches outside the window (too quiet, too close to a major competitor) underperform regardless of game quality. Choosing the right window — avoiding major releases, platform events, and holidays that shift consumer attention — is a strategic marketing decision.',
+      },
+    ],
+    quiz: [
+      {
+        q: 'Why is wishlist velocity the most important pre-launch metric for PC games?',
+        options: [
+          'Wishlists generate immediate revenue',
+          "Steam's algorithm surfaces games at launch proportional to wishlist count — wishlists directly determine algorithmic launch amplification",
+          'Players who wishlist are guaranteed to buy at launch',
+          'Wishlists indicate review scores',
+        ],
+        correct: 1,
+        explanation: "Steam's launch email goes to everyone who wishlisted your game. The algorithm surfaces games with high wishlists in 'New and Trending' and sale notifications. Wishlist count is the primary lever for Steam's launch amplification system.",
+      },
+      {
+        q: 'A GIF-able moment is valuable for game marketing because:',
+        options: [
+          'It reduces trailer production costs',
+          'It communicates the game\'s core appeal without context — the atomic unit of organic social sharing',
+          'It satisfies App Store screenshot requirements',
+          'It demonstrates graphical fidelity',
+        ],
+        correct: 1,
+        explanation: "A shareable 5-second clip that makes someone laugh, gasp, or say 'I want to do that' reaches audiences no paid ad can efficiently target. GIF-able moments are organic social currency — they spread because people want to share them, not because they were paid to.",
+      },
+      {
+        q: 'The most effective content creator strategy for indie game launches involves:',
+        options: [
+          'Paying large creators for guaranteed coverage',
+          'Providing early access to creators whose audience matches your game — with no coverage requirements',
+          'Only targeting press journalists',
+          'Launching without creator involvement and building organic community post-launch',
+        ],
+        correct: 1,
+        explanation: 'Paying for coverage produces disclosed sponsored content — audiences discount it. Genuinely enthusiastic creators covering your game because they love it produces authentic, algorithm-amplified exposure. Match creators to your game\'s audience; no-strings early access builds real relationships.',
+      },
+    ],
+    content: `## Game Marketing & Launch Strategy
+
+Building a great game is necessary. Making sure players find it is a completely separate discipline. The game industry is littered with excellent games that sold 300 copies because their developers believed quality would find its own audience. It will not. The market is too loud, the competition too dense, and discovery too algorithmically mediated for quality alone to generate attention.
+
+Marketing is not lying about your game. It is making sure the people who would love it know it exists.
+
+### The Pre-Launch Marketing Timeline
+
+**12 months out — Concept public**
+Announce the game with a concept trailer, screenshots, or an early gameplay clip. Goal: begin building a following while you still have time to incorporate community feedback. Platform: Steam Next Fest (for demos), social media, a dedicated Discord.
+
+**6 months out — Wishlist campaign**
+Your Steam (or App Store) page is live. Every piece of content from this point should include a wishlist call to action. Begin outreach to press and content creators with a demo.
+
+**3 months out — Demo + press wave**
+Provide a polished demo. Send press kits to targeted journalists and content creators in your genre. Goal: coverage that converts to wishlists, not just clicks.
+
+**Launch week — Maximum visibility**
+Launch trailer drops. Email goes to all wishlists (Steam handles this). Creators who received early access post their videos. Community event or launch stream. All social channels on maximum output.
+
+**2 weeks post-launch — First update**
+Demonstrate active development. Address the top community feedback items. Signal that this is a live, cared-for product.
+
+### The Trailer Formula That Works
+
+Games trailers fail when they try to show everything. The best game trailers show one thing — the emotional experience — through the following structure:
+
+1. **0:00–0:05** — Hook. The most spectacular, curious, or funny moment you have. Do not waste the first 5 seconds on a logo or slow pan.
+2. **0:05–0:45** — Core experience. Show the game being played. No cutscenes, no UI tour. Show the feeling — the action, the beauty, the tension.
+3. **0:45–1:00** — Escalation. The stakes. The best version of what the game can look like.
+4. **1:00–1:15** — Tag. Game title, platforms, release date or "Wishlist Now." Clean. Confident.
+
+Music: match the game's emotional tone exactly. A horror game with upbeat music confuses prospective players about what they are buying. A cozy farming game with intense orchestral music does the same.
+
+### Platform-Specific Strategy
+
+**Steam PC** — Wishlist velocity is everything. Next Fest demo drives wishlists more than any ad spend. Screenshots must communicate the game in a store page thumbnail. Tags must be accurate — algorithm discovery depends on correct categorization.
+
+**iOS / Google Play** — First 72 hours of launch determines algorithmic placement. The icon is the first and often only marketing asset that matters — it must communicate genre and quality in 60×60 pixels. User acquisition cost is high; organic is driven by app store search and editorial features.
+
+**Itch.io (indie)** — Community-driven. Jam presence (game jams bring enormous traffic). Bundle inclusion. Direct creator connection. Lower revenue ceiling, higher artistic freedom.
+
+**Console (Nintendo/PlayStation/Xbox)** — First-party relationships matter. Platform features (Nintendo Direct indie showcases, PlayStation Indies) can generate millions of wishlists in 30 seconds. Targeting these requires lead time and platform relationships — start 18+ months before launch.
+
+### Community Building as Marketing
+
+The most durable game marketing asset is an engaged community built before launch. A community of 5,000 genuinely excited players on day one:
+
+- Generates initial review volume (early positive reviews determine algorithmic placement)
+- Creates streamer demand organically (streamers play what their audiences request)
+- Provides playtesters throughout development
+- Advocates across their own networks — free, credible, amplified reach
+
+Build community through: devlog transparency (show the process, not just the result), Discord early access, beta testing programs, and genuine engagement with early fans as collaborators rather than audiences.
+
+### The Vault — Marketing What We Built
+
+If The Vault were preparing for a public launch, the marketing toolkit would be:
+
+**GIF-able moments already in the game:**
+- Boss death particle burst + camera shake
+- Skill orb pickup + announcement text
+- Portal reveal moment after boss defeat
+
+**Missing for launch:**
+- A launch trailer (1 minute showing all three — the dungeon, the boss, the portal)
+- A Steam page with 4 screenshots (dungeon combat, boss room, minimap HUD, portal escape)
+- A Discord community with development devlogs
+- A itch.io page for early access testing
+
+**The hook:** "A dungeon crawler built entirely in code — no assets, no files, infinite floors." The procedural generation angle is the story that makes it interesting to press beyond the gameplay itself.`,
+  },
 ]
