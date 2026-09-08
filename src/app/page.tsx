@@ -104,7 +104,7 @@ export default function Dashboard() {
 
   const trackOrder: Track[] = [
     'marketing', 'tech', 'business', 'design', 'mindset',
-    'creative', 'trading', 'culture', 'knowledge', 'future', 'psychology', 'higher',
+    'creative', 'trading', 'culture', 'knowledge', 'future', 'psychology', 'higher', 'gamedev',
   ]
 
   const trackCourses = trackOrder.map(track => ({
