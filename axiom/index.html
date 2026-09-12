@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXIOM — JS Supreme Coding Agent</title>
+<meta name="description" content="AXIOM: a monochrome, self-learning coding agent console.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AXIOM">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- UPDATE BANNER — shown by agentkit.js when a new SW is waiting -->
+<div id="ax-update-banner" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;background:#000;border:1px solid #f5a623;color:#f0f0f0;font-family:'Courier New',monospace;font-size:11px;letter-spacing:.15em;padding:12px 20px;gap:16px;align-items:center;box-shadow:0 4px 24px rgba(0,0,0,.6);white-space:nowrap">
+  <span style="color:#f5a623">◆ UPDATE READY</span>
+  <span style="color:#888">— new version available</span>
+  <button onclick="axiomInstallUpdate()" style="background:#f5a623;color:#000;border:none;padding:8px 18px;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;cursor:pointer">INSTALL ↻</button>
+  <button onclick="document.getElementById('ax-update-banner').style.display='none'" style="background:transparent;color:#555;border:none;font-size:16px;cursor:pointer;padding:0 4px;line-height:1">×</button>
+</div>
+
+<!-- HEADER -->
+<header class="top">
+  <div class="brand">
+    <span class="logo">◆</span>
+    <h1>AXIOM</h1>
+    <span class="tag">JS SUPREME · v1.6</span>
+  </div>
+  <div class="status-row">
+    <span class="pill" id="agent-status">IDLE</span>
+    <span class="pill" id="net-status">NET —</span>
+    <span class="pill" id="kb-status">KB 0</span>
+    <span class="pill" id="db-status">LOCAL</span>
+    <span class="pill dim" id="neural-status" title="Transformers.js neural engine">◌ NEURAL</span>
+    <span class="pill dim" id="clock"></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <span style="font-size:9px;color:var(--dim);letter-spacing:2px">BRAND</span>
+    <select id="brand-selector" style="background:var(--bg);color:var(--ink);border:1px solid var(--faint);font-family:var(--mono);font-size:9px;padding:3px 6px;cursor:pointer;outline:none">
+      <option value="">SELECT BRAND</option>
+      <option value="AXIOM">AXIOM</option>
+      <option value="JST">J SUPREME TECH</option>
+      <option value="JSM">J SUPREME MARKETING</option>
+      <option value="LC">LANGUAGE CRADLE</option>
+      <option value="SUPREME_SUITE">SUPREME SUITE</option>
+      <option value="SOLIDTRUST">SOLID TRUST</option>
+      <option value="BPCOURIERS">BP COURIERS</option>
+      <option value="ABOO">ABOO TOURS</option>
+      <option value="HOMEREADY">H.O.M.E. READY</option>
+      <option value="FERGUSON">FERGUSON LAW</option>
+      <option value="S2D">SHIP 2 DOOR</option>
+      <option value="KELTEC">KELTEC PROMOS</option>
+      <option value="LUXWASH">876 LUXURY WASH</option>
+      <option value="MOVER">THE MOVER GUY</option>
+      <option value="CLEANSER">THE CLEANSER JA</option>
+    </select>
+  </div>
+</div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <span style="font-size:9px;color:var(--dim);letter-spacing:2px">BRAND</span>
+    <select id="brand-selector" style="background:var(--bg);color:var(--ink);border:1px solid var(--faint);font-family:var(--mono);font-size:9px;padding:3px 6px;cursor:pointer;outline:none">
+      <option value="">SELECT BRAND</option>
+      <option value="AXIOM">AXIOM</option>
+      <option value="JST">J SUPREME TECH</option>
+      <option value="LC">LANGUAGE CRADLE</option>
+      <option value="SUPREME_SUITE">SUPREME SUITE</option>
+      <option value="SOLIDTRUST">SOLID TRUST</option>
+      <option value="BPCOURIERS">BP COURIERS</option>
+      <option value="ABOO">ABOO TOURS</option>
+      <option value="HOMEREADY">H.O.M.E. READY</option>
+      <option value="FERGUSON">FERGUSON LAW</option>
+    </select>
+  </div>
+</div>
+</header>
+
+<!-- CONSOLE INPUT -->
+<div class="console-wrap">
+  <div class="console-input">
+    <span class="prompt-char">&gt;</span>
+    <input id="cmd" type="text" autocomplete="off" spellcheck="false"
+           placeholder="describe a build — nextjs dashboard · discord bot · html portfolio · whatsapp bot…">
+    <button id="run">RUN</button>
+  </div>
+  <div class="quick">
+    <button class="chip" data-q="build a nextjs dashboard with supabase, large">nextjs dashboard</button>
+    <button class="chip" data-q="build a discord bot for Railway, medium">discord bot</button>
+    <button class="chip" data-q="build a whatsapp bot with express for Railway">whatsapp bot</button>
+    <button class="chip" data-q="build a simple html portfolio site, small">html site</button>
+    <button class="chip" data-q="build a react video editing tool ui, large">video tool</button>
+    <button class="chip" data-q="build a nextjs e-commerce store with WiPay, medium">shop</button>
+    <button class="chip" data-q="audit my last project">audit last</button>
+  </div>
+</div>
+
+<!-- MAIN SPLIT: STREAM + OUTPUT -->
+<div class="main-split">
+
+  <!-- LEFT: stream -->
+  <div class="split-left">
+    <div class="split-head">
+      <span class="split-label">AGENT STREAM</span>
+      <pre id="state-curr" class="state-inline">IDLE</pre>
+    </div>
+    <div id="stream" class="stream"></div>
+  </div>
+
+  <!-- RIGHT: generated build -->
+  <div class="split-right">
+    <div class="split-head">
+      <span class="split-label">GENERATED BUILD</span>
+      <div class="split-actions">
+        <button class="mini" id="copy-code">COPY</button>
+        <button class="mini" id="dl-code">DL</button>
+        <button class="mini" id="share-code">SHARE ⇢</button>
+        <button class="mini" id="deploy-code">DEPLOY ⇡</button>
+      </div>
+    </div>
+    <pre id="code-out" class="code">// run a directive above — scaffold appears here</pre>
+    <div id="deploy-panel" class="deploy-panel" style="display:none"></div>
+  </div>
+
+</div>
+
+<!-- TAB BAR -->
+<!-- Row 1: Creative tools — single scrollable line, accented -->
+<nav class="tab-bar tab-bar--creative" role="tablist" aria-label="Creative tools">
+  <button class="tab active" data-tab="home" style="color:var(--accent);font-weight:700">◆ START</button>
+  <span class="tab-sep"></span>
+  <button class="tab tab--creative" data-tab="campaign">CAMPAIGNS ◆</button>
+  <button class="tab tab--creative" data-tab="studio">AD CREATIVE</button>
+  <button class="tab tab--creative" data-tab="media">PHOTOS & VIDEO</button>
+  <button class="tab tab--creative" data-tab="imagine">IMAGES ◈</button>
+  <button class="tab tab--creative" data-tab="reels">REELS ◉</button>
+  <button class="tab tab--creative" data-tab="grade">COLOR GRADE</button>
+  <button class="tab tab--creative" data-tab="canvas">EDIT SITE ⬚</button>
+  <button class="tab tab--creative" data-tab="social">SCHEDULE ⇢</button>
+</nav>
+<!-- Row 2: Dev tools — single scrollable line, dimmer/smaller -->
+<nav class="tab-bar tab-bar--dev" role="tablist" aria-label="Developer tools">
+  <button class="tab" data-tab="neural" style="color:var(--accent);font-weight:700">NEURAL ◈</button>
+  <span class="tab-sep"></span>
+  <button class="tab" data-tab="preview">PREVIEW ▶</button>
+  <button class="tab" data-tab="network">NETWORK</button>
+  <button class="tab" data-tab="errors">ERRORS</button>
+  <button class="tab" data-tab="fix">FIX ⚡</button>
+  <button class="tab" data-tab="risk">RISK</button>
+  <button class="tab" data-tab="diff">DIFF ±</button>
+  <button class="tab" data-tab="audit">AUDIT</button>
+  <button class="tab" data-tab="supabase">SUPABASE</button>
+  <button class="tab" data-tab="kb">KB</button>
+  <button class="tab" data-tab="learn">LEARN</button>
+  <button class="tab" data-tab="stack">STACK</button>
+  <button class="tab" data-tab="docs">DOCS ◎</button>
+  <button class="tab" data-tab="context">CONTEXT ⊕</button>
+  <button class="tab" data-tab="train">TRAIN ◈</button>
+  <button class="tab" data-tab="simulate">SIMULATE</button>
+</nav>
+
+<!-- TAB PANELS -->
+<div class="tab-body">
+
+  <!-- HOME — launcher -->
+  <div class="tab-pane active" id="tab-home">
+    <div style="padding:24px 20px;max-width:960px">
+
+      <p style="font-size:9px;letter-spacing:.35em;color:var(--accent);margin-bottom:6px">AXIOM · WHAT DO YOU WANT TO MAKE?</p>
+
+      <!-- MEDIA COMMAND BAR -->
+      <div id="media-cmd-wrap" style="margin-bottom:24px">
+        <div style="display:flex;gap:0;border:1px solid var(--accent)">
+          <textarea id="media-cmd"
+            placeholder="Describe what you want to create… e.g. &quot;make a 9:16 ad for JST, bold style&quot; or &quot;generate a luxury photo of a car wash&quot; or &quot;find stock video of Kingston Jamaica&quot;"
+            rows="2"
+            style="flex:1;background:transparent;border:none;color:var(--ink);font-family:var(--mono);font-size:11px;padding:11px 14px;outline:none;resize:none;line-height:1.5;min-height:48px"></textarea>
+          <button id="media-cmd-run"
+            style="background:var(--accent);color:#000;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.2em;padding:0 18px;border:none;cursor:pointer;white-space:nowrap;align-self:stretch">CREATE ◆</button>
+        </div>
+        <div id="media-cmd-hint" style="font-size:9px;color:var(--dim);margin-top:5px;letter-spacing:.08em">
+          AXIOM will detect what you need — ad creative, AI image, stock media, reel, campaign — and route you there automatically.
+        </div>
+      </div>
+
+      <p style="font-size:9px;color:var(--dim);margin-bottom:14px;letter-spacing:.12em">OR PICK A MODE BELOW</p>
+
+      <!-- 6 mode cards -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:28px">
+
+        <!-- WEBSITES & APPS -->
+        <div onclick="document.getElementById('cmd').focus()" style="border:1px solid var(--accent);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
+          onmouseenter="this.style.background='rgba(245,166,35,0.06)'" onmouseleave="this.style.background='var(--surface)'">
+          <div style="font-size:22px;margin-bottom:10px">🌐</div>
+          <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--accent);margin-bottom:6px">WEBSITES & APPS</p>
+          <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Generate full websites, landing pages, Next.js apps, WhatsApp bots, e-commerce stores — any web project from a single description.</p>
+          <p style="font-size:9px;color:var(--dim)">→ Type your brief in the console above and hit RUN</p>
+        </div>
+
+        <!-- AI IMAGES -->
+        <div onclick="document.querySelector('[data-tab=imagine]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
+          onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
+          <div style="font-size:22px;margin-bottom:10px">🖼️</div>
+          <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">GENERATE IMAGES</p>
+          <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Create AI-generated images using Flux. Describe what you want — logo backgrounds, product shots, lifestyle photos — then download or use in an ad.</p>
+          <p style="font-size:9px;color:var(--dim)">→ Opens the IMAGES tab</p>
+        </div>
+
+        <!-- PHOTOS & VIDEO -->
+        <div onclick="document.querySelector('[data-tab=media]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
+          onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
+          <div style="font-size:22px;margin-bottom:10px">🎬</div>
+          <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">BROWSE PHOTOS & VIDEO</p>
+          <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Search millions of stock photos and video clips from Pexels and Pixabay. Preview, download, or drop them into any ad creative or website.</p>
+          <p style="font-size:9px;color:var(--dim)">→ Opens PHOTOS & VIDEO tab</p>
+        </div>
+
+        <!-- AD CREATIVE -->
+        <div onclick="document.querySelector('[data-tab=studio]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
+          onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
+          <div style="font-size:22px;margin-bottom:10px">🎨</div>
+          <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">BUILD AD CREATIVES</p>
+          <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Design sized ad creatives for Instagram, Facebook, YouTube — 1:1, 9:16, 16:9. Add text layers, B-roll backgrounds, AI captions, and export as PNG.</p>
+          <p style="font-size:9px;color:var(--dim)">→ Opens AD CREATIVE tab</p>
+        </div>
+
+        <!-- EDIT SITE -->
+        <div onclick="document.querySelector('[data-tab=canvas]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
+          onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
+          <div style="font-size:22px;margin-bottom:10px">✏️</div>
+          <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">EDIT A SITE VISUALLY</p>
+          <p style="font-size:11px;color:var(--ink);margin-bottom:8px">After generating a site, open it in the visual editor. Click any element — headline, button, section — to edit text, change colors, or reposition it. No code needed.</p>
+          <p style="font-size:9px;color:var(--dim)">→ Opens EDIT SITE tab (run a build first)</p>
+        </div>
+
+        <!-- COLOR GRADE -->
+        <div onclick="document.querySelector('[data-tab=grade]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
+          onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
+          <div style="font-size:22px;margin-bottom:10px">🎞️</div>
+          <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">COLOR GRADE IMAGES</p>
+          <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Apply cinematic color grading to any image — 12 presets (Cinematic, Golden Hour, Noir, Cold Steel…) or manual exposure, contrast, saturation, vignette sliders. Export graded PNG.</p>
+          <p style="font-size:9px;color:var(--dim)">→ Opens COLOR GRADE tab</p>
+        </div>
+
+      </div>
+
+      <!-- Quick tips -->
+      <div style="border-top:1px solid var(--line);padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="font-size:10px;color:var(--dim);line-height:1.7">
+          <span style="color:var(--accent)">◆ WEBSITES</span> — type a full brief, hit RUN. Download ZIP or deploy.<br>
+          <span style="color:var(--accent)">◆ IMAGES</span> — describe the image, generate, grade, download.<br>
+          <span style="color:var(--accent)">◆ PHOTOS/VIDEO</span> — search, preview, download or use in ads.
+        </div>
+        <div style="font-size:10px;color:var(--dim);line-height:1.7">
+          <span style="color:var(--accent)">◆ ADS</span> — pick format, add brand, add media, export PNG.<br>
+          <span style="color:var(--accent)">◆ EDIT SITE</span> — generate a site first, then click EDIT SITE.<br>
+          <span style="color:var(--accent)">◆ GRADE</span> — upload or pull any image, apply preset, export.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEURAL -->
+  <div class="tab-pane" id="tab-neural" style="padding:0;overflow:hidden;display:flex;flex-direction:column">
+    <div id="neural-mount" style="flex:1;min-height:0;display:flex;flex-direction:column"></div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="tab-pane" id="tab-preview">
+    <div class="preview-bar">
+      <span class="split-label" id="preview-label">RUN A DIRECTIVE TO SEE LIVE PREVIEW</span>
+      <div style="display:flex;gap:6px">
+        <button class="mini" id="preview-reload">RELOAD</button>
+        <button class="mini" id="preview-new-tab">OPEN TAB ↗</button>
+      </div>
+    </div>
+    <div class="preview-wrap">
+      <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups" title="AXIOM Live Preview"></iframe>
+      <div id="preview-placeholder" class="preview-placeholder">
+        <span class="dim">◆ run a directive above — HTML output renders here instantly</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NETWORK -->
+  <div class="tab-pane" id="tab-network">
+    <canvas id="net" height="280"></canvas>
+    <div class="node-legend" id="node-legend"></div>
+  </div>
+
+  <!-- RISK -->
+  <div class="tab-pane" id="tab-risk">
+    <div class="tab-inner">
+      <div class="state-col-row">
+        <div class="state-block"><h3>PREVIOUS</h3><pre id="state-prev">∅</pre></div>
+        <div class="state-block current"><h3>CURRENT STATE</h3><pre id="state-curr2">IDLE</pre></div>
+        <div class="state-block"><h3>FUTURE (ranked)</h3><pre id="state-next">∅</pre></div>
+      </div>
+      <div id="risk-body" class="risk-body"><p class="dim">Run a directive to see risk analysis.</p></div>
+    </div>
+  </div>
+
+  <!-- KB -->
+  <div class="tab-pane" id="tab-kb">
+    <div class="tab-inner">
+      <div class="tab-toolbar">
+        <span class="hint">everything the agent does is saved here — import axiom-seed.json to load your project knowledge</span>
+        <div>
+          <button class="mini" id="kb-import">IMPORT</button>
+          <button class="mini" id="kb-export">EXPORT</button>
+          <button class="mini" id="kb-clear">CLEAR</button>
+          <input type="file" id="kb-import-file" accept=".json" style="display:none">
+        </div>
+      </div>
+      <div id="kb-list" class="kb-list"></div>
+    </div>
+  </div>
+
+  <!-- ERRORS -->
+  <div class="tab-pane" id="tab-errors">
+    <div class="tab-inner">
+      <input id="err-search" class="search" type="text" placeholder="search errors… e.g. undefined, cors, rls, railway, discord">
+      <div id="err-list" class="err-list"></div>
+    </div>
+  </div>
+
+  <!-- LEARN -->
+  <div class="tab-pane" id="tab-learn">
+    <div class="tab-inner">
+      <p class="hint" style="margin-bottom:10px">filtered to your last build stack — free sources only</p>
+      <div id="learn-list" class="learn-list"></div>
+    </div>
+  </div>
+
+  <!-- STACK -->
+  <div class="tab-pane" id="tab-stack">
+    <div class="tab-inner">
+      <input id="stack-search" class="search" type="text" placeholder="search stack… e.g. payments, whatsapp, video, supabase">
+      <div id="stack-list" class="stack-list"></div>
+    </div>
+  </div>
+
+  <!-- SIMULATE -->
+  <div class="tab-pane" id="tab-simulate">
+    <div class="tab-inner">
+      <div class="tab-toolbar">
+        <span class="hint">stress-tests AXIOM across 8 request types — checks classify, codegen, risk on every scenario</span>
+        <div>
+          <button class="mini" id="sim-run">RUN ALL</button>
+          <button class="mini" id="sim-clear">CLEAR</button>
+        </div>
+      </div>
+      <div id="sim-out" class="stream" style="min-height:80px;max-height:220px"></div>
+    </div>
+  </div>
+
+  <!-- SUPABASE -->
+  <div class="tab-pane" id="tab-supabase">
+    <div class="tab-inner">
+
+      <!-- AI KEY SECTION -->
+      <div class="ai-key-section">
+        <p class="section-head">◆ CLAUDE AI BACKBONE</p>
+        <p class="hint" style="margin-bottom:8px">Add your Anthropic key to unlock real AI codegen — AXIOM will call <code>claude-sonnet-5</code> instead of templates.</p>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="ai-key-input" type="password" placeholder="sk-ant-…" style="flex:1;background:transparent;border:none;border-bottom:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px">
+          <button class="mini" id="ai-key-save">SAVE KEY</button>
+          <button class="mini" id="ai-key-clear">CLEAR</button>
+        </div>
+        <pre id="ai-key-status" class="sb-log">ai: no key — using template engine</pre>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button class="mini" id="conv-clear">CLEAR CONVERSATION</button>
+          <span id="conv-status" class="hint" style="line-height:24px"></span>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--line);margin:14px 0"></div>
+
+      <!-- NEURAL ENGINE SECTION -->
+      <div class="ai-key-section">
+        <p class="section-head">◆ NEURAL ENGINE · PHI-3 CLOUD (FREE)</p>
+        <p class="hint" style="margin-bottom:8px">Phi-3-mini runs free on Hugging Face — no billing. Add a free HF token (<code>huggingface.co/settings/tokens</code>) to increase rate limits from 30→60 req/min.</p>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="hf-key-input" type="password" placeholder="hf_… (optional — works without it)" style="flex:1;background:transparent;border:none;border-bottom:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px">
+          <button class="mini" id="hf-key-save">SAVE</button>
+          <button class="mini" id="hf-key-clear">CLEAR</button>
+        </div>
+        <pre id="hf-key-status" class="sb-log">neural: phi-3-mini · free HF inference · no token needed</pre>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button class="mini" id="neural-ctx-clear">CLEAR CONTEXT WINDOW</button>
+          <button class="mini" id="neural-corpus-reload">RELOAD CORPUS</button>
+          <span id="neural-ctx-status" class="hint" style="line-height:24px"></span>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--line);margin:14px 0"></div>
+
+      <!-- SUPABASE SECTION -->
+      <div class="db-form">
+        <p class="section-head">◆ SUPABASE KB SYNC</p>
+        <p class="hint">Connect AXIOM's KB to your Supabase project for cross-device sync.</p>
+        <p class="hint" style="margin-top:4px">Table needed: <code>axiom_kb (id uuid pk, created_at timestamptz, kind text, title text, body jsonb)</code></p>
+        <input id="sb-url" type="text" placeholder="https://YOUR-PROJECT.supabase.co">
+        <input id="sb-key" type="password" placeholder="anon public key">
+        <div class="db-actions">
+          <button class="mini" id="sb-save">SAVE</button>
+          <button class="mini" id="sb-sync">SYNC KB ⇡</button>
+          <button class="mini" id="sb-pull">PULL KB ⇣</button>
+        </div>
+        <pre id="sb-log" class="sb-log">db: local mode</pre>
+      </div>
+
+      <div style="border-top:1px solid var(--line);margin:14px 0"></div>
+
+      <!-- GITHUB TOKEN (AX-007) -->
+      <div class="ai-key-section">
+        <p class="section-head">◆ GITHUB TOKEN</p>
+        <p class="hint" style="margin-bottom:8px">Used by CONTEXT tab to load private repos. Create a token at <code>github.com/settings/tokens</code> with <code>repo</code> scope.</p>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="gh-token-input" type="password" placeholder="ghp_… or github_pat_…" style="flex:1;background:transparent;border:none;border-bottom:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px">
+          <button class="mini" id="gh-token-save">SAVE</button>
+          <button class="mini" id="gh-token-clear">CLEAR</button>
+        </div>
+        <pre id="gh-token-status" class="sb-log">github: no token</pre>
+      </div>
+
+      <div style="border-top:1px solid var(--line);margin:14px 0"></div>
+
+      <!-- VERCEL TOKEN (AX-008) -->
+      <div class="ai-key-section">
+        <p class="section-head">◆ VERCEL TOKEN</p>
+        <p class="hint" style="margin-bottom:8px">Enables DEPLOY tab one-click push. Create at <code>vercel.com/account/tokens</code>.</p>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="vercel-token-input" type="password" placeholder="vercel token…" style="flex:1;background:transparent;border:none;border-bottom:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px">
+          <button class="mini" id="vercel-token-save">SAVE</button>
+          <button class="mini" id="vercel-token-clear">CLEAR</button>
+        </div>
+        <pre id="vercel-token-status" class="sb-log">vercel: no token</pre>
+      </div>
+
+      <div style="border-top:1px solid var(--line);margin:14px 0"></div>
+
+      <!-- META TOKEN (AX-010) -->
+      <div class="ai-key-section">
+        <p class="section-head">◆ META / SOCIAL TOKENS</p>
+        <p class="hint" style="margin-bottom:8px">Per-brand Meta page access tokens for SCHEDULE tab. Get long-lived tokens at <code>developers.facebook.com</code>.</p>
+        <div id="meta-token-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px">
+          <div style="display:flex;gap:6px;align-items:center">
+            <span style="font-size:9px;color:var(--dim);width:100px;flex:none">JST</span>
+            <input data-brand="JST" class="meta-token-input" type="password" placeholder="EAAx… JST page token" style="flex:1;background:transparent;border:none;border-bottom:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:5px 0;outline:none;font-size:11px">
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span style="font-size:9px;color:var(--dim);width:100px;flex:none">LC</span>
+            <input data-brand="LC" class="meta-token-input" type="password" placeholder="EAAx… LC page token" style="flex:1;background:transparent;border:none;border-bottom:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:5px 0;outline:none;font-size:11px">
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span style="font-size:9px;color:var(--dim);width:100px;flex:none">SUPREME SUITE</span>
+            <input data-brand="SUPREME_SUITE" class="meta-token-input" type="password" placeholder="EAAx… page token" style="flex:1;background:transparent;border:none;border-bottom:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:5px 0;outline:none;font-size:11px">
+          </div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="mini" id="meta-tokens-save">SAVE ALL</button>
+          <pre id="meta-tokens-status" class="sb-log" style="display:inline;margin-left:8px">meta: not set</pre>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--line);margin:14px 0"></div>
+
+      <!-- MANUAL TRAIN TRIGGER (AX-017) -->
+      <div class="ai-key-section">
+        <p class="section-head">◆ TRAINING</p>
+        <p class="hint" style="margin-bottom:8px">Trigger a manual training run or push the current KB snapshot to Supabase.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="mini" id="sb-train-trigger">▶ RUN TRAIN NOW</button>
+          <button class="mini" id="sb-push-kb">⇡ PUSH KB SNAPSHOT</button>
+        </div>
+        <pre id="sb-train-log" class="sb-log">train: idle</pre>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TRAIN -->
+  <div class="tab-pane" id="tab-train">
+    <div class="tab-inner">
+      <div class="tab-toolbar">
+        <div>
+          <span class="hint">Runs 30 synthetic builds · extracts patterns · crystallizes operator rules · evolves templates</span><br>
+          <span class="hint" id="train-kb-hint" style="margin-top:4px;display:block"></span>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="mini" id="train-run">TRAIN (30 builds)</button>
+          <button class="mini" id="train-crystallize">CRYSTALLIZE NOW</button>
+          <button class="mini" id="train-clear">CLEAR PATTERNS</button>
+        </div>
+      </div>
+      <div class="train-progress" id="train-progress" style="display:none">
+        <div class="progress-bar-wrap">
+          <div class="progress-track"><div id="train-bar" class="progress-fill-track"></div></div>
+          <span id="train-pct" class="hint">0%</span>
+        </div>
+      </div>
+      <div id="train-out" class="stream" style="min-height:120px;max-height:300px"></div>
+      <div id="train-summary" style="display:none;margin-top:10px"></div>
+    </div>
+  </div>
+
+  <!-- AUDIT -->
+  <div class="tab-pane" id="tab-audit">
+    <div class="tab-inner">
+      <div id="audit-list" class="audit-list"></div>
+    </div>
+  </div>
+
+  <!-- CONTEXT ⊕ — file reader + GitHub repo loader -->
+  <div class="tab-pane" id="tab-context">
+    <div class="tab-inner">
+      <div class="tab-toolbar">
+        <span class="hint">Paste files or load a GitHub repo — AXIOM generates <em>against</em> your actual codebase</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="mini" id="ctx-add-file">ADD FILE</button>
+          <button class="mini" id="ctx-load-gh">LOAD GITHUB</button>
+          <button class="mini" id="ctx-clear">CLEAR</button>
+        </div>
+      </div>
+      <input type="file" id="ctx-file-input" multiple accept=".js,.ts,.tsx,.jsx,.json,.css,.html,.md,.py,.env.example" style="display:none">
+      <div style="display:flex;gap:8px;margin:8px 0">
+        <input id="ctx-gh-url" type="text" class="search" placeholder="https://github.com/user/repo  or  user/repo  or  paste raw GitHub URL" style="flex:1">
+        <button class="mini" id="ctx-gh-fetch">FETCH</button>
+      </div>
+      <pre id="ctx-log" class="sb-log" style="margin-bottom:8px">context: empty — add files or load a repo</pre>
+      <div id="ctx-list" style="display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto"></div>
+    </div>
+  </div>
+
+  <!-- FIX ⚡ — error → diagnosis → patch -->
+  <div class="tab-pane" id="tab-fix">
+    <div class="tab-inner">
+      <div class="tab-toolbar">
+        <span class="hint">Paste an error — AXIOM diagnoses it and patches the exact snippet</span>
+        <div style="display:flex;gap:6px">
+          <button class="mini" id="fix-run">DIAGNOSE + FIX</button>
+          <button class="mini" id="fix-clear">CLEAR</button>
+        </div>
+      </div>
+      <textarea id="fix-input" rows="5"
+        style="width:100%;background:transparent;border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:11px;padding:10px;resize:vertical;outline:none;margin-bottom:8px"
+        placeholder="Paste error message here…&#10;TypeError: Cannot read properties of undefined (reading 'map')&#10;  at Dashboard (app/dashboard/page.tsx:34:18)"></textarea>
+      <div id="fix-out" class="stream" style="min-height:80px;max-height:260px"></div>
+    </div>
+  </div>
+
+  <!-- DIFF ± — surgical diffs instead of full file rewrites -->
+  <div class="tab-pane" id="tab-diff">
+    <div class="tab-inner">
+      <div class="tab-toolbar">
+        <span class="hint">Generate a surgical diff — shows only changed lines, not the full file</span>
+        <div style="display:flex;gap:6px">
+          <button class="mini" id="diff-run">GENERATE DIFF</button>
+          <button class="mini" id="diff-apply">APPLY TO CODE</button>
+          <button class="mini" id="diff-copy">COPY PATCH</button>
+        </div>
+      </div>
+      <textarea id="diff-directive" rows="2"
+        style="width:100%;background:transparent;border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:11px;padding:10px;resize:vertical;outline:none;margin-bottom:8px"
+        placeholder="Describe the change → e.g. add dark mode toggle, change accent to #c9a84c, remove the stats section"></textarea>
+      <pre id="diff-out" class="code" style="min-height:80px;max-height:300px;overflow:auto;font-size:11px;line-height:1.6"></pre>
+    </div>
+  </div>
+
+  <!-- DOCS ◎ — live doc lookup from MDN / npm / DevDocs -->
+  <div class="tab-pane" id="tab-docs">
+    <div class="tab-inner">
+      <div class="tab-toolbar">
+        <span class="hint">Live docs from npm registry · MDN · DevDocs — injected into your next build</span>
+        <div style="display:flex;gap:6px">
+          <button class="mini" id="docs-search-btn">SEARCH</button>
+          <button class="mini" id="docs-inject-btn">INJECT INTO BUILD</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input id="docs-query" class="search" type="text" placeholder="e.g. useEffect   supabase createClient   discord.js Client   next/headers" style="flex:1">
+        <select id="docs-source" style="background:var(--bg);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:10px;padding:4px 8px">
+          <option value="npm">npm</option>
+          <option value="mdn">MDN</option>
+          <option value="devdocs">DevDocs</option>
+        </select>
+      </div>
+      <pre id="docs-log" class="sb-log" style="margin-bottom:8px">docs: ready — search any package, API, or keyword</pre>
+      <div id="docs-results" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
+    </div>
+  </div>
+
+
+  <!-- IMAGINE ◈ — AI image gen + captions + bg removal -->
+  <div class="tab-pane" id="tab-imagine">
+    <div class="tab-inner" style="max-width:680px">
+      <p class="section-head">◆ AI IMAGE GENERATION</p>
+      <p class="hint" style="margin-bottom:12px">Generate ad creatives via Flux-schnell (OpenRouter) · AI captions via Groq · Background removal via Clipdrop</p>
+
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input id="im-prompt" type="text" class="search" style="flex:1"
+          placeholder="Describe the image — e.g. professional woman at laptop, tropical beach background, luxury car interior">
+        <select id="im-size" style="background:var(--bg);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:10px;padding:4px 8px">
+          <option value="1024x1024">1:1 (1024)</option>
+          <option value="1024x1792">9:16 (1024×1792)</option>
+          <option value="1792x1024">16:9 (1792×1024)</option>
+          <option value="1024x1280">4:5 (1024×1280)</option>
+        </select>
+        <button class="mini" id="im-generate">GENERATE ◈</button>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <select id="im-brand" style="flex:1;background:var(--bg);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:10px;padding:6px 8px">
+          <option value="">Brand context (optional)</option>
+        </select>
+        <input id="im-context" type="text" class="search" style="flex:2"
+          placeholder="Caption context — e.g. promoting our new website package, announcing our sale">
+        <button class="mini" id="im-caption">WRITE CAPTIONS ✦</button>
+      </div>
+
+      <pre id="im-status" class="sb-log" style="margin-bottom:10px">imagine: ready — generate an image or write captions</pre>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <!-- Image output -->
+        <div>
+          <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:6px">GENERATED IMAGE</p>
+          <div id="im-img-wrap" style="background:var(--card);border:1px solid var(--line);aspect-ratio:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative">
+            <p id="im-img-ph" style="font-size:10px;color:var(--dim)">Image appears here</p>
+            <img id="im-img" style="width:100%;height:100%;object-fit:contain;display:none">
+          </div>
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <button class="mini" id="im-dl">DOWNLOAD</button>
+            <button class="mini" id="im-remove-bg">REMOVE BG</button>
+            <button class="mini" id="im-to-studio">→ STUDIO</button>
+          </div>
+        </div>
+        <!-- Captions output -->
+        <div>
+          <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:6px">AI CAPTIONS</p>
+          <div id="im-captions" style="background:var(--card);border:1px solid var(--line);padding:10px;min-height:120px;font-size:11px;color:var(--ink);line-height:1.6;overflow-y:auto;max-height:300px">
+            <p style="color:var(--dim)">Captions appear here after generation</p>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <button class="mini" id="im-copy-captions">COPY ALL</button>
+            <button class="mini" id="im-to-social">→ SOCIAL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- API key overrides -->
+      <div style="border-top:1px solid var(--line);margin-top:16px;padding-top:12px">
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:8px">KEY OVERRIDES (optional — baked keys are pre-loaded)</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <p style="font-size:9px;color:var(--dim);margin-bottom:4px">OPENROUTER KEY</p>
+            <input type="password" id="im-or-key" placeholder="sk-or-v1-…"
+              style="width:100%;background:transparent;border:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:6px;font-size:11px;outline:none">
+          </div>
+          <div>
+            <p style="font-size:9px;color:var(--dim);margin-bottom:4px">GROQ KEY</p>
+            <input type="password" id="im-groq-key" placeholder="gsk_…"
+              style="width:100%;background:transparent;border:1px solid var(--line);color:var(--ink);font-family:var(--mono);padding:6px;font-size:11px;outline:none">
+          </div>
+        </div>
+        <button class="mini" id="im-save-keys" style="margin-top:6px">SAVE KEYS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMPAIGN ◆ — JST Campaign Builder -->
+  <div class="tab-pane" id="tab-campaign" style="padding:0;height:calc(100vh - 130px);min-height:540px">
+    <div id="campaign-mount" style="height:100%;width:100%">
+      <div style="padding:20px;color:var(--dim);font-size:11px">Loading Campaign Builder…</div>
+    </div>
+  </div>
+
+  <!-- STUDIO ⬡ — Ad Creative Studio -->
+  <div class="tab-pane" id="tab-studio" style="padding:0;height:calc(100vh - 320px);min-height:480px">
+    <!-- Mounted dynamically by studio.js when tab is activated -->
+    <div id="studio-mount" style="height:100%;width:100%">
+      <div style="padding:20px;color:var(--dim);font-size:11px">Loading Ad Creative Studio…</div>
+    </div>
+  </div>
+
+  <!-- CANVAS ⬚ — Visual HTML editor -->
+  <div class="tab-pane" id="tab-canvas" style="padding:0;height:calc(100vh - 320px);min-height:480px">
+    <div id="canvas-mount" style="height:100%;width:100%">
+      <div style="padding:20px;color:var(--dim);font-size:11px">Run a build first, then switch here to visually edit the output.</div>
+    </div>
+  </div>
+
+  <!-- SOCIAL ⇢ — Social queue + posting -->
+  <div class="tab-pane" id="tab-social" style="padding:0;height:calc(100vh - 320px);min-height:480px">
+    <div id="social-mount" style="height:100%;width:100%">
+      <div style="padding:20px;color:var(--dim);font-size:11px">Loading Social Queue…</div>
+    </div>
+  </div>
+
+  <!-- GRADE 🎨 — Color grading + exposure + visual effects -->
+  <div class="tab-pane" id="tab-grade" style="padding:0;height:calc(100vh - 320px);min-height:480px">
+    <div id="grade-mount" style="height:100%;width:100%">
+      <div style="padding:20px;color:var(--dim);font-size:11px">Loading Color Grade Studio…</div>
+    </div>
+  </div>
+
+  <!-- REELS ◉ — B-roll + text + voice → WebM export -->
+  <div class="tab-pane" id="tab-reels">
+    <div id="reels-mount" style="height:100%">
+      <div style="padding:20px;color:var(--dim);font-size:11px">Loading Reels Builder…</div>
+    </div>
+  </div>
+
+  <!-- MEDIA ◉ — Stock photos + B-roll picker -->
+  <div class="tab-pane" id="tab-media">
+    <div class="tab-inner">
+      <p class="section-head">◆ STOCK MEDIA — PEXELS + PIXABAY</p>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input id="med-query" class="search" type="text" placeholder="Search photos/videos — e.g. tropical beach, business meeting, jamaican culture" style="flex:1">
+        <select id="med-type" style="background:var(--bg);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:10px;padding:4px 8px">
+          <option value="photo">Photos</option>
+          <option value="video">Videos</option>
+        </select>
+        <button class="mini" id="med-search">SEARCH</button>
+      </div>
+      <pre id="med-log" class="sb-log" style="margin-bottom:10px">media: Pexels + Pixabay loaded — search for stock content</pre>
+      <div id="med-results" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;max-height:420px;overflow-y:auto"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="foot">
+  <span>AXIOM · monochrome intelligence · J Supreme Tech · <span id="ax-footer-phone">(658) 218-2282</span> · <a href="lexevo.html" style="color:var(--ink)">◉ LEXEVO →</a></span>
+  <span id="kb-status2"></span>
+</footer>
+
+<script src="stack.js"></script>
+<script src="zip.js"></script>
+<script src="train.js"></script>
+<script src="designkit.js"></script>
+<script src="blocks.js"></script>
+<script src="brands.js"></script>
+<script src="integrations.js"></script>
+<script src="pages.js"></script>
+<script src="media.js"></script>
+<script src="quality.js"></script>
+<script src="app.js"></script>
+<script src="grade.js"></script>
+<script src="imagine.js"></script>
+<script src="studio.js"></script>
+<script src="canvas.js"></script>
+<script src="social.js"></script>
+<script src="reels.js"></script>
+<script src="campaign.js"></script>
+<script src="agentkit.js"></script>
+<script src="neural.js"></script>
+<script src="neuralui.js"></script>
+<script src="router.js"></script>
+<script>
+/* ── CREATIVE MODULE TAB INIT ─────────────────────────────────
+   Mounts IMAGINE, STUDIO, CANVAS, SOCIAL panels on first activation.
+   Intercepts the existing tab-switching logic without replacing it.
+   ──────────────────────────────────────────────────────────── */
+(function() {
+  const mounted = {};
+
+  function initBrandSelects() {
+    if (!window.AXIOM_BRANDS) return;
+    const brands = window.AXIOM_BRANDS.list();
+    ["im-brand", "sq-brand", "sq-token-brand", "sq-filter-brand"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el || el.dataset.populated) return;
+      brands.forEach((b) => {
+        const opt = document.createElement("option");
+        opt.value = b.keys[0]; opt.textContent = b.name;
+        el.appendChild(opt);
+      });
+      el.dataset.populated = "1";
+    });
+  }
+
+  function mountTab(tab) {
+    if (mounted[tab]) return;
+    mounted[tab] = true;
+
+    if (tab === "imagine") {
+      initBrandSelects();
+      _wireImagine();
+    }
+    if (tab === "studio") {
+      if (window.AXIOM_STUDIO) {
+        window.AXIOM_STUDIO.render(document.getElementById("studio-mount"));
+      }
+    }
+    if (tab === "canvas") {
+      // Canvas mounts when a build is available; check now
+      _mountCanvas();
+    }
+    if (tab === "social") {
+      if (window.AXIOM_SOCIAL) {
+        window.AXIOM_SOCIAL.render(document.getElementById("social-mount"));
+      }
+    }
+    if (tab === "media") {
+      _wireMedia();
+    }
+    if (tab === "grade") {
+      if (window.AXIOM_GRADE) window.AXIOM_GRADE.render(document.getElementById("grade-mount"));
+    }
+    if (tab === "reels") {
+      if (window.AXIOM_REELS) window.AXIOM_REELS.render(document.getElementById("reels-mount"));
+    }
+    if (tab === "campaign") {
+      if (window.AXIOM_CAMPAIGN) window.AXIOM_CAMPAIGN.render(document.getElementById("campaign-mount"));
+    }
+  }
+
+  // Re-mount canvas each time (in case a new build loaded since last visit)
+  function _mountCanvas() {
+    const el = document.getElementById("canvas-mount");
+    if (!el) return;
+    const html = window.lastBuild?.code || (window.lastBuild?.files?.[0]?.content);
+    if (!html) {
+      el.innerHTML = '<div style="padding:20px;color:var(--dim);font-size:11px">Run a build first, then return here to visually edit the output.</div>';
+      return;
+    }
+    if (window.AXIOM_CANVAS) window.AXIOM_CANVAS.mount(el, html);
+  }
+
+  /* ── IMAGINE wiring ──────────────────────────────────────── */
+  function _wireImagine() {
+    let _lastImgUrl = null;
+    let _lastCaptions = null;
+
+    document.getElementById("im-generate")?.addEventListener("click", async () => {
+      const prompt = document.getElementById("im-prompt")?.value?.trim();
+      if (!prompt) return;
+      const sizeVal = document.getElementById("im-size")?.value || "1024x1024";
+      const [w, h] = sizeVal.split("x").map(Number);
+      _setImStatus("Generating image via Flux-schnell…");
+      const result = await window.AXIOM_IMAGINE?.generate(prompt, { width: w, height: h });
+      if (result?.url) {
+        _lastImgUrl = result.url;
+        const img = document.getElementById("im-img");
+        const ph  = document.getElementById("im-img-ph");
+        if (img) { img.src = result.url; img.style.display = "block"; }
+        if (ph)  ph.style.display = "none";
+        _setImStatus("◆ Image generated");
+      } else {
+        _setImStatus("✗ Generation failed — check OpenRouter key");
+      }
+    });
+
+    document.getElementById("im-caption")?.addEventListener("click", async () => {
+      const brandKey = document.getElementById("im-brand")?.value;
+      const context  = document.getElementById("im-context")?.value?.trim();
+      const brand = brandKey && window.AXIOM_BRANDS ? window.AXIOM_BRANDS.get(brandKey) : null;
+      _setImStatus("Writing captions via Groq…");
+      const result = await window.AXIOM_IMAGINE?.caption(brand, context);
+      _lastCaptions = result;
+      const box = document.getElementById("im-captions");
+      if (box && result) {
+        box.innerHTML = result.captions.map((c, i) =>
+          `<div style="border-bottom:1px solid var(--line);padding:8px 0"><span style="font-size:9px;color:var(--accent)">OPTION ${i+1}</span><br>${c}</div>`
+        ).join("") + (result.hashtags.length
+          ? `<div style="padding-top:8px;font-size:10px;color:var(--dim)">${result.hashtags.join(" ")}</div>` : "");
+      }
+      _setImStatus("◆ Captions ready");
+    });
+
+    document.getElementById("im-remove-bg")?.addEventListener("click", async () => {
+      const img = document.getElementById("im-img");
+      if (!img || !img.src || img.style.display === "none") { _setImStatus("Generate an image first"); return; }
+      _setImStatus("Removing background…");
+      const result = await window.AXIOM_IMAGINE?.removeBg(img.src);
+      if (result) { img.src = result; _lastImgUrl = result; _setImStatus("◆ Background removed"); }
+      else _setImStatus("✗ BG removal failed — Clipdrop may need API key");
+    });
+
+    document.getElementById("im-dl")?.addEventListener("click", () => {
+      if (!_lastImgUrl) return;
+      const a = document.createElement("a");
+      a.href = _lastImgUrl; a.download = "axiom-image.png"; a.click();
+    });
+
+    document.getElementById("im-to-studio")?.addEventListener("click", () => {
+      if (!_lastImgUrl) return;
+      sessionStorage.setItem("axiom_imagine_export", JSON.stringify({ imageUrl: _lastImgUrl }));
+      // Switch to STUDIO tab
+      document.querySelector('[data-tab="studio"]')?.click();
+    });
+
+    document.getElementById("im-to-social")?.addEventListener("click", () => {
+      if (!_lastCaptions) return;
+      const caption = _lastCaptions.captions[0] + " " + _lastCaptions.hashtags.slice(0,10).join(" ");
+      sessionStorage.setItem("axiom_imagine_caption", caption);
+      if (_lastImgUrl) sessionStorage.setItem("axiom_studio_export", JSON.stringify({ dataUrl: _lastImgUrl }));
+      document.querySelector('[data-tab="social"]')?.click();
+    });
+
+    document.getElementById("im-copy-captions")?.addEventListener("click", () => {
+      if (!_lastCaptions) return;
+      const text = _lastCaptions.captions.join("\n\n") + "\n\n" + _lastCaptions.hashtags.join(" ");
+      navigator.clipboard?.writeText(text);
+      _setImStatus("◆ Copied to clipboard");
+    });
+
+    document.getElementById("im-save-keys")?.addEventListener("click", () => {
+      const orKey   = document.getElementById("im-or-key")?.value?.trim();
+      const groqKey = document.getElementById("im-groq-key")?.value?.trim();
+      if (orKey)   localStorage.setItem("axiom_openrouter_key", orKey);
+      if (groqKey) localStorage.setItem("axiom_groq_key", groqKey);
+      _setImStatus("◆ Keys saved to localStorage");
+    });
+
+    function _setImStatus(msg) {
+      const el = document.getElementById("im-status");
+      if (el) el.textContent = msg;
+    }
+  }
+
+  /* ── MEDIA lightbox ─────────────────────────────────────── */
+  function _openLightbox(full, isVideo, thumb) {
+    let lb = document.getElementById("ax-lightbox");
+    if (!lb) {
+      lb = document.createElement("div");
+      lb.id = "ax-lightbox";
+      lb.style.cssText = "position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.93);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px";
+      lb.addEventListener("click", (e) => { if (e.target === lb) lb.remove(); });
+      document.body.appendChild(lb);
+    }
+    lb.innerHTML = "";
+
+    // Close button
+    const close = document.createElement("button");
+    close.textContent = "✕ CLOSE";
+    close.style.cssText = "position:absolute;top:16px;right:20px;background:none;border:1px solid rgba(255,255,255,.2);color:#fff;font-family:var(--mono);font-size:9px;letter-spacing:.15em;padding:6px 12px;cursor:pointer";
+    close.onclick = () => lb.remove();
+    lb.appendChild(close);
+
+    // Media element
+    let media;
+    if (isVideo) {
+      media = document.createElement("video");
+      media.src = full;
+      media.controls = true;
+      media.autoplay = true;
+      media.style.cssText = "max-width:90vw;max-height:72vh;border:1px solid rgba(255,255,255,.12)";
+    } else {
+      media = document.createElement("img");
+      media.src = full;
+      media.style.cssText = "max-width:90vw;max-height:72vh;object-fit:contain;border:1px solid rgba(255,255,255,.12)";
+    }
+    lb.appendChild(media);
+
+    // Action row
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:10px;align-items:center";
+
+    const dlBtn = document.createElement("a");
+    dlBtn.href = full;
+    dlBtn.download = isVideo ? "axiom-video.mp4" : "axiom-photo.jpg";
+    dlBtn.style.cssText = "background:var(--accent);color:#000;font-family:var(--mono);font-size:9px;letter-spacing:.15em;padding:8px 18px;text-decoration:none;font-weight:700";
+    dlBtn.textContent = "⬇ DOWNLOAD";
+    row.appendChild(dlBtn);
+
+    const studioBtn = document.createElement("button");
+    studioBtn.textContent = "→ USE IN AD";
+    studioBtn.style.cssText = "background:none;border:1px solid rgba(255,255,255,.3);color:#fff;font-family:var(--mono);font-size:9px;letter-spacing:.15em;padding:8px 14px;cursor:pointer";
+    studioBtn.onclick = () => {
+      sessionStorage.setItem("axiom_media_pick", full);
+      lb.remove();
+      document.querySelector('[data-tab="studio"]')?.click();
+    };
+    row.appendChild(studioBtn);
+
+    const copyBtn = document.createElement("button");
+    copyBtn.textContent = "COPY URL";
+    copyBtn.style.cssText = "background:none;border:1px solid rgba(255,255,255,.15);color:#aaa;font-family:var(--mono);font-size:9px;letter-spacing:.15em;padding:8px 12px;cursor:pointer";
+    copyBtn.onclick = () => { navigator.clipboard?.writeText(full); copyBtn.textContent = "COPIED ✓"; };
+    row.appendChild(copyBtn);
+
+    lb.appendChild(row);
+  }
+
+  /* ── MEDIA wiring ────────────────────────────────────────── */
+  function _wireMedia() {
+    document.getElementById("med-search")?.addEventListener("click", async () => {
+      const query = document.getElementById("med-query")?.value?.trim();
+      const type  = document.getElementById("med-type")?.value || "photo";
+      const log   = document.getElementById("med-log");
+      const grid  = document.getElementById("med-results");
+      if (!query) return;
+      if (log) log.textContent = `Searching ${type}s for "${query}"…`;
+      if (grid) grid.innerHTML = "";
+
+      const results = type === "video"
+        ? await window.AXIOM_MEDIA?.videos(query, 12)
+        : await window.AXIOM_MEDIA?.photos(query, 18);
+
+      if (!results?.length) { if (log) log.textContent = "No results found."; return; }
+      if (log) log.textContent = `${results.length} ${type}s found — click any to preview or download`;
+
+      results.forEach((r) => {
+        const thumb = r.thumb || r.src?.medium || r.src?.small || r.image;
+        if (!thumb) return;
+        const full = r.src?.original || r.src?.large2x || r.src?.large || r.video_files?.[0]?.link || r.url || thumb;
+        const isVideo = type === "video";
+
+        const div = document.createElement("div");
+        div.style.cssText = "position:relative;overflow:hidden;border:1px solid var(--line);cursor:pointer;aspect-ratio:1;background:var(--card)";
+
+        if (isVideo) {
+          div.innerHTML = `
+            <div style="position:relative;width:100%;height:100%">
+              <img src="${thumb}" style="width:100%;height:100%;object-fit:cover" loading="lazy">
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+                <div style="width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.65);border:2px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;padding-left:3px">▶</div>
+              </div>
+            </div>`;
+        } else {
+          div.innerHTML = `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover" loading="lazy">`;
+        }
+
+        // Hover overlay with quick download
+        const overlay = document.createElement("div");
+        overlay.style.cssText = "position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.82);padding:7px 8px;font-size:9px;color:#fff;display:none;display:flex;gap:8px;align-items:center";
+        overlay.innerHTML = `
+          <span style="flex:1;font-family:var(--mono);font-size:8px;color:#aaa">${isVideo ? "▶ VIDEO" : "◈ PHOTO"}</span>
+          <a href="${full}" download style="color:var(--accent);font-family:var(--mono);font-size:8px;text-decoration:none;letter-spacing:.1em">⬇ DL</a>
+          <span style="color:#888;font-family:var(--mono);font-size:8px;cursor:pointer" class="med-copy">COPY</span>`;
+        overlay.querySelector(".med-copy")?.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          navigator.clipboard?.writeText(full);
+          if (log) log.textContent = "◆ URL copied to clipboard";
+        });
+        div.appendChild(overlay);
+
+        div.addEventListener("mouseenter", () => { overlay.style.display = "flex"; });
+        div.addEventListener("mouseleave", () => { overlay.style.display = "none"; });
+        div.addEventListener("click", () => _openLightbox(full, isVideo, thumb));
+
+        grid.appendChild(div);
+      });
+    });
+
+    document.getElementById("med-query")?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") document.getElementById("med-search")?.click();
+    });
+  }
+
+  /* ── Hook into existing tab click handler ────────────────── */
+  document.querySelector(".tab-bar")?.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-tab]");
+    if (!btn) return;
+    const tab = btn.dataset.tab;
+    // Neural tab — mount on first visit
+    if (tab === "neural" && window.AXIOM_NEURAL_UI) {
+      setTimeout(() => window.AXIOM_NEURAL_UI.render(document.getElementById("neural-mount")), 50);
+    }
+    // Canvas always re-checks for a fresh build
+    if (tab === "canvas") { mounted.canvas = false; }
+    // Social: re-render to pick up any Studio export that arrived
+    if (tab === "social" && mounted.social) {
+      window.AXIOM_SOCIAL?.render(document.getElementById("social-mount"));
+      return;
+    }
+    setTimeout(() => mountTab(tab), 50);
+  }, true);
+
+  // Pre-populate brand selects after page load
+  window.addEventListener("load", () => {
+    setTimeout(initBrandSelects, 800);
+    // Wire NEURAL tab directly — it lives in the dev tab bar, not the creative one
+    document.querySelector('[data-tab="neural"]')?.addEventListener("click", () => {
+      setTimeout(() => window.AXIOM_NEURAL_UI?.render(document.getElementById("neural-mount")), 80);
+    });
+  });
+
+  /* ── NEURAL ENGINE SETTINGS ─────────────────────────────── */
+  (function() {
+    const inp    = document.getElementById("hf-key-input");
+    const status = document.getElementById("hf-key-status");
+    const ctxSt  = document.getElementById("neural-ctx-status");
+
+    function refreshStatus() {
+      if (!window.AXIOM_NEURAL) return;
+      const s = window.AXIOM_NEURAL.status();
+      if (status) status.textContent = `neural: embed=${s.embedder} · cloud=phi-3-mini(free) · local=${s.localGen} · corpus=${s.corpus} entries · ctx=${s.context} msgs · hf-token=${s.hfToken ? "set" : "none"}`;
+      if (ctxSt) ctxSt.textContent = `${s.context} messages in context · ${s.corpus} KB entries indexed`;
+    }
+
+    document.getElementById("hf-key-save")?.addEventListener("click", () => {
+      const v = inp?.value.trim();
+      window.AXIOM_NEURAL?.setHFToken(v);
+      if (status) status.textContent = v ? "neural: HF token saved — rate limits increased" : "neural: token cleared — using anonymous HF access";
+      if (inp) inp.value = "";
+    });
+    document.getElementById("hf-key-clear")?.addEventListener("click", () => {
+      window.AXIOM_NEURAL?.setHFToken(null);
+      if (status) status.textContent = "neural: token cleared";
+    });
+    document.getElementById("neural-ctx-clear")?.addEventListener("click", () => {
+      window.AXIOM_NEURAL?.clearContext();
+      refreshStatus();
+    });
+    document.getElementById("neural-corpus-reload")?.addEventListener("click", async () => {
+      if (status) status.textContent = "neural: reloading corpus…";
+      const n = await window.AXIOM_NEURAL?.loadCorpus();
+      if (status) status.textContent = `neural: corpus reloaded — ${n} entries indexed`;
+    });
+
+    // Refresh status when SUPABASE tab is opened
+    document.querySelector('[data-tab="supabase"]')?.addEventListener("click", () => setTimeout(refreshStatus, 100));
+    // Also refresh periodically
+    setInterval(refreshStatus, 5000);
+  })();
+
+  /* ── MEDIA COMMAND BAR ───────────────────────────────────── */
+  (function() {
+    const textarea = document.getElementById("media-cmd");
+    const runBtn   = document.getElementById("media-cmd-run");
+    if (!textarea || !runBtn) return;
+
+    function fireRouter() {
+      const prompt = textarea.value.trim();
+      if (!prompt) return;
+      if (window.AXIOM_ROUTER) {
+        window.AXIOM_ROUTER.run(prompt);
+      } else {
+        // Fallback: treat as website directive
+        const cmd = document.getElementById("cmd");
+        if (cmd) { cmd.value = prompt; cmd.focus(); }
+      }
+    }
+
+    runBtn.addEventListener("click", fireRouter);
+    textarea.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); fireRouter(); }
+    });
+
+    // Show detected route hint as user types
+    textarea.addEventListener("input", () => {
+      const hint = document.getElementById("media-cmd-hint");
+      if (!hint || !window.AXIOM_ROUTER) return;
+      const t = textarea.value.trim();
+      if (!t) { hint.textContent = "AXIOM will detect what you need — ad creative, AI image, stock media, reel, campaign — and route you there automatically."; return; }
+      const { route, label } = window.AXIOM_ROUTER.classify(t);
+      hint.textContent = `DETECTED → ${label} · Press ENTER or click CREATE to continue.`;
+      hint.style.color = "var(--accent)";
+    });
+  })();
+})();
+</script>
+</body>
+</html>
