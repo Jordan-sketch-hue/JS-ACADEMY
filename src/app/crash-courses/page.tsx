@@ -34,8 +34,8 @@ export default function CrashCoursesPage() {
         </div>
       </div>
 
-      <div className="p-6 max-w-4xl">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {crashGroups.map(({ cid, title, objective, modules, completedCount, pct }) => {
             const done = completedCount === modules.length
             return (

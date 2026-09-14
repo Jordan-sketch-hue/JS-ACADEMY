@@ -40,7 +40,7 @@ export default function CrashCourseDetailPage({ params }: { params: Promise<{ sl
         <div className="ml-auto text-[11px] text-neutral-400">{completedCount}/{modules.length} complete</div>
       </div>
 
-      <div className="p-6 max-w-3xl">
+      <div className="p-6 max-w-4xl">
         {/* Course objective */}
         {first.courseObjective && (
           <div className="bg-amber-50 border border-amber-100 rounded-xl px-5 py-4 mb-6">
@@ -72,7 +72,7 @@ export default function CrashCourseDetailPage({ params }: { params: Promise<{ sl
               <Link
                 key={module.id}
                 href={`/courses/${module.id}`}
-                className="flex items-center gap-4 bg-white border border-neutral-100 rounded-lg px-4 py-3 hover:border-neutral-300 transition-colors group"
+                className="flex items-center gap-4 bg-white border border-neutral-100 rounded-lg px-5 py-3.5 hover:border-neutral-300 transition-colors group"
               >
                 <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-neutral-50 border border-neutral-100 text-[11px] font-medium text-neutral-500">
                   {module.module}
