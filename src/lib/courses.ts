@@ -1,5 +1,5 @@
-export type Level = 'Basic' | 'Masters' | 'PhD' | 'Next-Gen AI'
-export type Track = 'marketing' | 'tech' | 'trading' | 'business' | 'design' | 'mindset' | 'creative' | 'culture' | 'knowledge' | 'future' | 'psychology' | 'higher' | 'language' | 'techco' | 'mktco' | 'gamedev'
+﻿export type Level = 'Basic' | 'Masters' | 'PhD' | 'Next-Gen AI'
+export type Track = 'marketing' | 'tech' | 'trading' | 'business' | 'design' | 'mindset' | 'creative' | 'culture' | 'knowledge' | 'future' | 'psychology' | 'higher' | 'language' | 'techco' | 'mktco' | 'gamedev' | 'crash'
 
 export interface QuizQuestion {
   q: string
@@ -21,6 +21,10 @@ export interface Course {
   keyTerms: { term: string; definition: string }[]
   quiz: QuizQuestion[]
   certArea?: string
+  crashId?: string
+  crashTitle?: string
+  courseObjective?: string
+  moduleObjective?: string
 }
 
 export const TRACKS: Record<Track, { label: string; color: string; bg: string; description: string; completionOutcome: string }> = {
@@ -70,35 +74,35 @@ export const TRACKS: Record<Track, { label: string; color: string; bg: string; d
     label: 'Creative',
     color: '#b5451b',
     bg: '#fdf0ea',
-    description: 'Photography, videography, editing — vocabulary & direction skills to brief creatives like a pro',
-    completionOutcome: "You'll speak the language of photographers, videographers, and editors fluently — able to direct shoots, evaluate creative work, and brief a production team without needing to hold the camera yourself.",
+    description: 'Photography, videography, editing â€” vocabulary & direction skills to brief creatives like a pro',
+    completionOutcome: "You'll speak the language of photographers, videographers, and editors fluently â€” able to direct shoots, evaluate creative work, and brief a production team without needing to hold the camera yourself.",
   },
   culture: {
     label: 'Cross Cultures',
     color: '#1a7a6e',
     bg: '#e6f5f3',
     description: 'Cultural intelligence, global communication styles & navigating diverse environments',
-    completionOutcome: "You'll navigate global business rooms with cultural fluency — reading unspoken rules, adjusting your register by context, and building trust across the cultural fault lines that derail most deals.",
+    completionOutcome: "You'll navigate global business rooms with cultural fluency â€” reading unspoken rules, adjusting your register by context, and building trust across the cultural fault lines that derail most deals.",
   },
   knowledge: {
     label: 'Need to Know',
     color: '#6b3fa0',
     bg: '#f0eafd',
-    description: 'Essential concepts across law, finance, science, psychology & the world — the things sharp people just know',
-    completionOutcome: "You'll have the cross-domain literacy that distinguishes intellectually sovereign people — able to hold your own in rooms about law, economics, geopolitics, science, and markets without bluffing.",
+    description: 'Essential concepts across law, finance, science, psychology & the world â€” the things sharp people just know',
+    completionOutcome: "You'll have the cross-domain literacy that distinguishes intellectually sovereign people â€” able to hold your own in rooms about law, economics, geopolitics, science, and markets without bluffing.",
   },
   future: {
     label: 'Future Systems',
     color: '#2456c4',
     bg: '#e8eefb',
     description: 'Law-making, lobbying, globalization, AI across every field & aligning with the tech-driven future',
-    completionOutcome: "You'll understand the macro forces reshaping every industry — and be positioned to move with them rather than be displaced by them.",
+    completionOutcome: "You'll understand the macro forces reshaping every industry â€” and be positioned to move with them rather than be displaced by them.",
   },
   psychology: {
     label: 'Psychology',
     color: '#b02a4c',
     bg: '#fdeaf0',
-    description: 'How minds work — and how to recognise & defend against psychopaths, manipulators & toxic people',
+    description: 'How minds work â€” and how to recognise & defend against psychopaths, manipulators & toxic people',
     completionOutcome: "You'll understand the architecture of the human mind, recognise manipulation in real-time, identify dark triad personalities before they cause damage, and build genuine psychological resilience.",
   },
   higher: {
@@ -106,35 +110,42 @@ export const TRACKS: Record<Track, { label: string; color: string; bg: string; d
     color: '#7c3aed',
     bg: '#f3eeff',
     description: 'Self-actualisation, consciousness, mysticism & the inner architecture of a life lived at full potential',
-    completionOutcome: "You'll have a working inner framework — drawn from philosophy, psychology, and contemplative tradition — for living with purpose, meeting difficulty with equanimity, and building a life that means something.",
+    completionOutcome: "You'll have a working inner framework â€” drawn from philosophy, psychology, and contemplative tradition â€” for living with purpose, meeting difficulty with equanimity, and building a life that means something.",
   },
   language: {
     label: 'Language Lab',
     color: '#d4376e',
     bg: '#fde8ef',
-    description: 'Mandarin, Spanish, French, German, Russian, Dutch & more — Basic to PhD with Azure Neural voice coaching',
-    completionOutcome: "You'll have foundational to advanced command of your chosen language — with real pronunciation coaching, cultural context, and practical conversation ability that extends beyond the classroom.",
+    description: 'Mandarin, Spanish, French, German, Russian, Dutch & more â€” Basic to PhD with Azure Neural voice coaching',
+    completionOutcome: "You'll have foundational to advanced command of your chosen language â€” with real pronunciation coaching, cultural context, and practical conversation ability that extends beyond the classroom.",
   },
   techco: {
     label: 'Run Your Tech Co.',
     color: '#0f7490',
     bg: '#e6f6fb',
-    description: 'Product, engineering, hiring, infra, pricing & scaling — everything you need to actually operate a technology company',
-    completionOutcome: "You'll have the operational, strategic, and technical knowledge to run a technology company without being dependent on advisors for every decision — from product roadmap to dev hiring to infrastructure to profitable scaling.",
+    description: 'Product, engineering, hiring, infra, pricing & scaling â€” everything you need to actually operate a technology company',
+    completionOutcome: "You'll have the operational, strategic, and technical knowledge to run a technology company without being dependent on advisors for every decision â€” from product roadmap to dev hiring to infrastructure to profitable scaling.",
   },
   mktco: {
     label: 'Run Your Marketing Co.',
     color: '#7b2fa0',
     bg: '#f4eafd',
     description: 'Client acquisition, delivery, team structure, pricing, retention & scaling a marketing agency or consultancy',
-    completionOutcome: "You'll know how to price, acquire, deliver, retain, and scale a marketing company — from your first retainer client to a multi-brand agency with systematised delivery and a team that runs without you in every meeting.",
+    completionOutcome: "You'll know how to price, acquire, deliver, retain, and scale a marketing company â€” from your first retainer client to a multi-brand agency with systematised delivery and a team that runs without you in every meeting.",
   },
   gamedev: {
     label: 'Game Design & Dev',
     color: '#00bcd4',
     bg: '#e0f7fa',
     description: 'Brain-mapped game design, POV mechanics, narrative, reward systems, immersive experience & building with Phaser 3',
-    completionOutcome: "You'll understand how the human brain responds to games at a neurological level, design experiences mapped to specific emotional needs, build compelling narrative and reward systems, and ship a fully playable 2D game using modern web tools — with audio, procedural generation, and no external assets.",
+    completionOutcome: "You'll understand how the human brain responds to games at a neurological level, design experiences mapped to specific emotional needs, build compelling narrative and reward systems, and ship a fully playable 2D game using modern web tools â€” with audio, procedural generation, and no external assets.",
+  },
+  crash: {
+    label: 'Crash Courses',
+    color: '#f59e0b',
+    bg: '#fffbeb',
+    description: 'Sprint-format mastery — 8 focused modules per language. JavaScript, HTML/CSS, TypeScript, React, Next.js, Tailwind, Supabase, PostgreSQL, REST APIs, Payload CMS.',
+    completionOutcome: "You'll have sprint-certified mastery across ten core full-stack languages — each backed by 8 modules, a course objective, and a verifiable certification.",
   },
 }
 
@@ -160,14 +171,15 @@ import { higherCourses } from './tracks/higher'
 import { techcoCourses } from './tracks/techco'
 import { mktcoCourses } from './tracks/mktco'
 import { gamedevCourses } from './tracks/gamedev'
+import { crashCourses } from './tracks/crash'
 import { languageCoursesFull } from './tracks/language'
 
 const languageCourses: Course[] = [
   {
     id: 'lang-mon',
     track: 'language',
-    title: 'Language Lab — Romance Languages',
-    subtitle: 'Spanish · French · Portuguese · Italian — vocabulary, drills & Azure Neural pronunciation',
+    title: 'Language Lab â€” Romance Languages',
+    subtitle: 'Spanish Â· French Â· Portuguese Â· Italian â€” vocabulary, drills & Azure Neural pronunciation',
     level: 'Basic',
     xp: 50,
     duration: 25,
@@ -180,8 +192,8 @@ const languageCourses: Course[] = [
   {
     id: 'lang-tue',
     track: 'language',
-    title: 'Language Lab — Asian Languages',
-    subtitle: 'Mandarin · Japanese · Korean · Hindi — tones, scripts & character drills',
+    title: 'Language Lab â€” Asian Languages',
+    subtitle: 'Mandarin Â· Japanese Â· Korean Â· Hindi â€” tones, scripts & character drills',
     level: 'Basic',
     xp: 50,
     duration: 25,
@@ -194,8 +206,8 @@ const languageCourses: Course[] = [
   {
     id: 'lang-wed',
     track: 'language',
-    title: 'Language Lab — Germanic & Slavic',
-    subtitle: 'German · Dutch · Russian · Polish — grammar patterns & pronunciation coaching',
+    title: 'Language Lab â€” Germanic & Slavic',
+    subtitle: 'German Â· Dutch Â· Russian Â· Polish â€” grammar patterns & pronunciation coaching',
     level: 'Basic',
     xp: 50,
     duration: 25,
@@ -208,8 +220,8 @@ const languageCourses: Course[] = [
   {
     id: 'lang-thu',
     track: 'language',
-    title: 'Language Lab — Afro-Caribbean & Semitic',
-    subtitle: 'Swahili · Arabic · Patois · Haitian Creole — cultural context & oral fluency',
+    title: 'Language Lab â€” Afro-Caribbean & Semitic',
+    subtitle: 'Swahili Â· Arabic Â· Patois Â· Haitian Creole â€” cultural context & oral fluency',
     level: 'Basic',
     xp: 50,
     duration: 25,
@@ -222,8 +234,8 @@ const languageCourses: Course[] = [
   {
     id: 'lang-gateway',
     track: 'language',
-    title: 'Language Lab — Full Session (All 14)',
-    subtitle: 'Mandarin, Spanish, French, German, Russian, Dutch, Japanese, Arabic, Portuguese, Italian, Korean, Hindi, Swahili, English — comprehensive review',
+    title: 'Language Lab â€” Full Session (All 14)',
+    subtitle: 'Mandarin, Spanish, French, German, Russian, Dutch, Japanese, Arabic, Portuguese, Italian, Korean, Hindi, Swahili, English â€” comprehensive review',
     level: 'Basic',
     xp: 80,
     duration: 30,
@@ -235,7 +247,7 @@ const languageCourses: Course[] = [
   },
 ]
 
-// Merged from all track files — old inline COURSES removed
+// Merged from all track files â€” old inline COURSES removed
 export const COURSES: Course[] = [
   ...marketingCourses,
   ...techCourses,
@@ -262,7 +274,7 @@ export function getCourse(id: string): Course | undefined {
 }
 
 export function getAllTracks(): Track[] {
-  return ['marketing', 'tech', 'trading', 'business', 'design', 'mindset', 'creative', 'culture', 'knowledge', 'future', 'psychology', 'higher', 'techco', 'mktco', 'gamedev', 'language']
+  return ['marketing', 'tech', 'trading', 'business', 'design', 'mindset', 'creative', 'culture', 'knowledge', 'future', 'psychology', 'higher', 'techco', 'mktco', 'gamedev', 'language', 'crash']
 }
 
 export function getCoursesByTrack(track: Track): Course[] {

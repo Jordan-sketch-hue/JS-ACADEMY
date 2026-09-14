@@ -3,11 +3,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { getProgress, levelName, xpToNextLevel } from '@/lib/progress'
-import { BookOpen, LayoutDashboard, Trophy, BarChart2, BookMarked, Award, Flame, Layers, Languages } from 'lucide-react'
+import { BookOpen, LayoutDashboard, Trophy, BarChart2, BookMarked, Award, Flame, Layers, Languages, Zap } from 'lucide-react'
 
 const nav = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/tracks', label: 'All tracks', icon: Layers },
+  { href: '/crash-courses', label: 'Crash Courses', icon: Zap },
   { href: '/language', label: 'Language Lab', icon: Languages },
   { href: '/rewards', label: 'Rewards', icon: Trophy },
   { href: '/certifications', label: 'Certifications', icon: Award },
