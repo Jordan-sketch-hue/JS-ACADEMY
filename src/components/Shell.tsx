@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Layers, Trophy, Award, Flame, Languages, NotebookPen } from 'lucide-react'
+import { LayoutDashboard, Layers, Trophy, Award, Flame, Languages, NotebookPen, Zap } from 'lucide-react'
 import { getProgress, saveProgress, levelName, xpToNextLevel } from '@/lib/progress'
 import { getAllAudioPositions, setAudioPositionLocal } from '@/lib/audio-progress'
 import { pullProgress, pullAudioPositions, mergeProgress, mergeAudioPosition } from '@/lib/sync'
@@ -31,6 +31,7 @@ async function reconcileFromServer() {
 const nav = [
   { href: '/', label: 'Home', icon: LayoutDashboard },
   { href: '/tracks', label: 'Tracks', icon: Layers },
+  { href: '/crash-courses', label: 'Crash Courses', icon: Zap },
   { href: '/language', label: 'Languages', icon: Languages },
   { href: '/notes', label: 'Notes', icon: NotebookPen },
   { href: '/rewards', label: 'Rewards', icon: Trophy },
