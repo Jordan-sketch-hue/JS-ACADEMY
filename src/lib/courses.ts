@@ -266,6 +266,7 @@ export const COURSES: Course[] = [
   ...gamedevCourses,
   ...languageCoursesFull,
   ...languageCourses, // keep 5 stub entries as fallback until language.ts resolves
+  ...crashCourses,
 ]
 
 
