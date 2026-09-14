@@ -100,18 +100,26 @@ function toNarrationSSML(
     if (line.startsWith('```')) {
       if (inCode) {
         if (codeBlockLines.length) {
-          const codeText = codeBlockLines
-            .join(' ')
-            .replace(/[{}()[\];,]/g, ' ')
-            .replace(/[=><]/g, ' ')
-            .replace(/\/\/.*/g, '')
-            .replace(/\s+/g, ' ')
-            .trim()
-          if (codeText.length > 0) {
-            parts.push(`<break time="350ms"/>`)
-            parts.push(`<prosody rate="-8%"><emphasis level="reduced">Code example: ${escapeXml(codeText)}</emphasis></prosody>`)
-            parts.push(`<break time="450ms"/>`)
+          parts.push(`<break time="350ms"/>`)
+          parts.push(`<prosody rate="-5%" pitch="-2%">Code block:</prosody>`)
+          parts.push(`<break time="250ms"/>`)
+          for (const codeLine of codeBlockLines) {
+            // Split code from inline comment, clean both separately
+            const commentMatch = codeLine.match(/\/\/(.*)$/)
+            const comment = commentMatch ? commentMatch[1].trim() : ''
+            const code = codeLine.replace(/\/\/.*$/, '')
+              .replace(/[{}()[\];,'"]/g, ' ')
+              .replace(/[=><]/g, ' equals ')
+              .replace(/\./g, ' dot ')
+              .replace(/\s+/g, ' ')
+              .trim()
+            if (!code && !comment) continue
+            const spoken = comment ? `${code}. ${comment}` : code
+            if (spoken.trim().length < 2) continue
+            parts.push(`<prosody rate="-10%">${escapeXml(spoken.trim())}</prosody>`)
+            parts.push(`<break time="200ms"/>`)
           }
+          parts.push(`<break time="350ms"/>`)
         }
         codeBlockLines = []
         inCode = false
