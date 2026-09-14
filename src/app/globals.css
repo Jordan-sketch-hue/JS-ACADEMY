@@ -50,4 +50,4 @@ body {
 .course-prose h2.reading-now,
 .course-prose h3.reading-now { padding: 0.1rem 0.5rem; margin-left: -0.5rem; }
 /* code blocks keep their dark bg — gold left border marks active narration */
-.course-prose pre.reading-now { background: inherit; box-shadow: none; border-left: 3px solid #c9a84c; }
+.course-prose pre.reading-now { background: #0a0a0a; box-shadow: none; border-left: 3px solid #c9a84c; }
