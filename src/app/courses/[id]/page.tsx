@@ -472,6 +472,7 @@ function renderMarkdown(md: string, ctx: ProseCtx) {
   let i = 0
   let inCode = false
   let codeLines: string[] = []
+  let codeStartOffset = 0
   let inTable = false
   let tableRows: string[][] = []
 
@@ -501,10 +502,19 @@ function renderMarkdown(md: string, ctx: ProseCtx) {
 
     if (line.startsWith('```')) {
       if (inCode) {
-        elements.push(<pre key={`code-${i}`}><code>{codeLines.join('\n')}</code></pre>)
+        const codeEnd = lineStart + line.length
+        const playing = overlapsPlaying(ctx, codeStartOffset, codeEnd)
+        elements.push(
+          <pre key={`code-${i}`} className={playing ? 'reading-now' : undefined}>
+            <code>{codeLines.join('\n')}</code>
+          </pre>
+        )
         codeLines = []
         inCode = false
-      } else { inCode = true }
+      } else {
+        inCode = true
+        codeStartOffset = lineStart
+      }
       i++; continue
     }
     if (inCode) { codeLines.push(line); i++; continue }

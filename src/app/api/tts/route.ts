@@ -91,13 +91,36 @@ function toNarrationSSML(
   }
 
   let inCode = false
+  let codeBlockLines: string[] = []
   let inTable = false
 
   for (const rawLine of lines) {
     const line = rawLine.trim()
 
-    if (line.startsWith('```')) { inCode = !inCode; continue }
-    if (inCode) continue
+    if (line.startsWith('```')) {
+      if (inCode) {
+        if (codeBlockLines.length) {
+          const codeText = codeBlockLines
+            .join(' ')
+            .replace(/[{}()[\];,]/g, ' ')
+            .replace(/[=><]/g, ' ')
+            .replace(/\/\/.*/g, '')
+            .replace(/\s+/g, ' ')
+            .trim()
+          if (codeText.length > 0) {
+            parts.push(`<break time="350ms"/>`)
+            parts.push(`<prosody rate="-8%"><emphasis level="reduced">Code example: ${escapeXml(codeText)}</emphasis></prosody>`)
+            parts.push(`<break time="450ms"/>`)
+          }
+        }
+        codeBlockLines = []
+        inCode = false
+      } else {
+        inCode = true
+      }
+      continue
+    }
+    if (inCode) { codeBlockLines.push(line); continue }
     if (line.startsWith('|')) { inTable = true; continue }
     if (inTable && !line.startsWith('|')) inTable = false
     if (inTable) continue
