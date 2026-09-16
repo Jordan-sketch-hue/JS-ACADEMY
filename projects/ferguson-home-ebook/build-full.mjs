@@ -703,7 +703,7 @@ a{color:inherit}
   <div class="sp"></div>
   <button class="btn-dl" onclick="openLeadGate()" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-    Get the free guide (PDF)
+    Get the guide (PDF)
   </button>
 </div></div>
 
@@ -732,7 +732,7 @@ a{color:inherit}
     </div>
     <button class="cl-dl" onclick="openLeadGate()" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-      Get the free guide (PDF)
+      Get the guide (PDF)
     </button>
     <div class="cl-contact"><b><a class="cl-link" href="https://ferguson-law.vercel.app" target="_blank" rel="noopener">fergusonlawja.com</a></b> · <a class="cl-link" href="tel:${PHONE.replace(/[^\d+]/g, '')}">${PHONE}</a> · <a class="cl-link" href="mailto:contact@fergusonlawja.com">contact@fergusonlawja.com</a></div>
     <p class="cl-legal">This guide is provided for general information purposes only and does not constitute legal advice for your specific situation. Laws and procedures may change. Always consult a qualified Jamaican attorney before taking any action in relation to a property transaction. © Ferguson Law. All rights reserved.</p>
@@ -741,7 +741,7 @@ a{color:inherit}
 <!-- Lead Gate Modal -->
 <div id="lead-gate" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,16,24,.75);backdrop-filter:blur(4px);overflow-y:auto">
   <div style="max-width:520px;margin:40px auto;background:#fff;border-radius:20px;padding:32px 28px;box-shadow:0 32px 80px rgba(0,0,0,.35)">
-    <h2 style="margin:0 0 6px;font-size:1.4rem;color:#0e2518">Get the Free H.O.M.E.® Guide</h2>
+    <h2 style="margin:0 0 6px;font-size:1.4rem;color:#0e2518">Get the H.O.M.E.® Guide</h2>
     <p style="margin:0 0 20px;font-size:.93rem;color:#69736d;line-height:1.6">Fill in a short form and the PDF downloads instantly — complimentary from Ferguson Law.</p>
     <form id="lead-form" onsubmit="submitLead(event)" style="display:grid;gap:14px">
       <input name="name" required placeholder="Full name *" style="padding:10px 14px;border:1px solid #ddd;border-radius:10px;font-size:.95rem;width:100%;box-sizing:border-box">
