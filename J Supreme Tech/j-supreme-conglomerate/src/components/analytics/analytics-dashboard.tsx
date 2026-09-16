@@ -113,17 +113,20 @@ function FunnelBar({
   label,
   value,
   max,
+  prev,
   color,
 }: {
   label: string;
   value: number;
   max: number;
+  prev?: number;
   color: string;
 }) {
   const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+  const dropOff = prev != null && prev > 0 ? Math.round(((prev - value) / prev) * 100) : null;
   return (
     <div className="flex items-center gap-3">
-      <span className="w-36 shrink-0 text-right text-xs text-muted-foreground">
+      <span className="w-28 shrink-0 text-right text-xs text-muted-foreground">
         {label}
       </span>
       <div className="flex-1 overflow-hidden rounded-full bg-muted" style={{ height: 8 }}>
@@ -132,15 +135,25 @@ function FunnelBar({
           style={{ width: `${pct}%`, background: color }}
         />
       </div>
-      <span className="w-10 shrink-0 text-right text-xs font-semibold tabular-nums">
+      <span className="w-8 shrink-0 text-right text-xs font-semibold tabular-nums">
         {value}
       </span>
-      <span className="w-10 shrink-0 text-right text-xs text-muted-foreground tabular-nums">
-        {pct}%
+      <span className="w-12 shrink-0 text-right text-xs tabular-nums">
+        {dropOff != null && dropOff > 0 ? (
+          <span className="text-destructive">−{dropOff}%</span>
+        ) : (
+          <span className="text-muted-foreground">{pct}%</span>
+        )}
       </span>
     </div>
   );
 }
+
+const RANGE_LABELS: Record<Range, string> = {
+  today: "Today",
+  "7d": "Last 7 days",
+  "30d": "Last 30 days",
+};
 
 const EVENT_LABELS: Record<string, string> = {
   page_view: "Page View",
@@ -149,9 +162,22 @@ const EVENT_LABELS: Record<string, string> = {
   form_submit: "Form Submitted",
   newsletter_signup: "Newsletter Signup",
   trial_signup: "Trial Signup",
-  intake_submit: "Intake Submit",
-  hover_dwell: "Hover Dwell",
+  intake_submit: "Intake Submitted",
+  hover_dwell: "Hover / Dwell",
 };
+
+function formatEventTime(iso: string, range: Range): string {
+  const d = new Date(iso);
+  if (range === "today") {
+    return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+  }
+  return d.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 const EVENT_COLORS: Record<string, string> = {
   page_view: C.chart1,
@@ -259,7 +285,13 @@ function DashboardInner({
         <div>
           <h1 className="text-xl font-bold">JST Site Analytics</h1>
           <p className="text-sm text-muted-foreground">
-            jsupremetech.online — live visitor + conversion data
+            jsupremetech.online — {RANGE_LABELS[range]} · synced{" "}
+            {new Date().toLocaleString("en-US", {
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -289,7 +321,7 @@ function DashboardInner({
           label="Page views"
           value={data.pageViews}
           icon={Activity}
-          sub={`${range} window`}
+          sub={RANGE_LABELS[range]}
         />
         <StatTile
           label="CTA clicks"
@@ -436,7 +468,7 @@ function DashboardInner({
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(v: string) =>
-                      v.length > 16 ? v.slice(0, 14) + "…" : v
+                      v.length > 22 ? v.slice(0, 20) + "…" : v
                     }
                   />
                   <Tooltip content={<CustomTooltip />} />
@@ -526,6 +558,10 @@ function DashboardInner({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 pt-2">
+            <div className="mb-1 flex justify-end gap-2 text-[10px] text-muted-foreground">
+              <span className="w-8 text-right">count</span>
+              <span className="w-12 text-right">drop-off</span>
+            </div>
             <FunnelBar
               label="Page views"
               value={data.pageViews}
@@ -536,30 +572,35 @@ function DashboardInner({
               label="Form starts"
               value={data.formStarts}
               max={funnelMax}
+              prev={data.pageViews}
               color={C.chart3}
             />
             <FunnelBar
               label="Form submits"
               value={data.formSubmits}
               max={funnelMax}
+              prev={data.formStarts}
               color={C.chart2}
             />
             <FunnelBar
               label="Newsletter"
               value={data.newsletterSignups}
               max={funnelMax}
+              prev={data.pageViews}
               color={C.chart4}
             />
             <FunnelBar
-              label="Trials"
+              label="Trial signups"
               value={data.trialSignups}
               max={funnelMax}
+              prev={data.pageViews}
               color={C.chart4}
             />
             <FunnelBar
               label="Intake leads"
               value={data.intakeSubmissions}
               max={funnelMax}
+              prev={data.formSubmits}
               color={C.chart2}
             />
           </CardContent>
@@ -569,13 +610,28 @@ function DashboardInner({
       {/* Recent events feed */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Recent events</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold">Recent events</CardTitle>
+            <span className="text-xs text-muted-foreground">
+              {data.recentEvents.length > 20
+                ? `Showing 20 of ${data.recentEvents.length}`
+                : `${data.recentEvents.length} event${data.recentEvents.length !== 1 ? "s" : ""}`}
+              {" · "}{RANGE_LABELS[range]}
+            </span>
+          </div>
         </CardHeader>
         <CardContent>
           {data.recentEvents.length === 0 ? (
-            <p className="text-xs text-muted-foreground">No events yet.</p>
+            <p className="text-xs text-muted-foreground">No events recorded in this window.</p>
           ) : (
             <div className="divide-y divide-border">
+              <div className="flex items-center gap-3 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                <span className="h-1.5 w-1.5 shrink-0" />
+                <span className="w-28 shrink-0">Event</span>
+                <span className="flex-1">Page</span>
+                <span className="w-20 shrink-0 text-right">Source</span>
+                <span className="w-32 shrink-0 text-right">Date / Time</span>
+              </div>
               {data.recentEvents.slice(0, 20).map((e) => (
                 <div
                   key={e.id}
@@ -583,9 +639,7 @@ function DashboardInner({
                 >
                   <span
                     className="h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{
-                      background: EVENT_COLORS[e.event] ?? C.muted,
-                    }}
+                    style={{ background: EVENT_COLORS[e.event] ?? C.muted }}
                   />
                   <span
                     className="w-28 shrink-0 font-medium"
@@ -594,18 +648,19 @@ function DashboardInner({
                     {EVENT_LABELS[e.event] ?? e.event}
                   </span>
                   <span className="flex-1 truncate text-muted-foreground">
-                    {e.page}
+                    {e.page || "/"}
                   </span>
-                  {e.utm_source && (
-                    <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                      {e.utm_source}
-                    </span>
-                  )}
-                  <span className="shrink-0 text-muted-foreground">
-                    {new Date(e.created_at).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                  <span className="w-20 shrink-0 text-right">
+                    {e.utm_source ? (
+                      <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                        {e.utm_source}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground/40">—</span>
+                    )}
+                  </span>
+                  <span className="w-32 shrink-0 text-right tabular-nums text-muted-foreground">
+                    {formatEventTime(e.created_at, range)}
                   </span>
                 </div>
               ))}
