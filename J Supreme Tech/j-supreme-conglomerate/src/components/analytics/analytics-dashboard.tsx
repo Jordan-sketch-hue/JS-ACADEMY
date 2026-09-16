@@ -2,6 +2,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+
+type Site = "jst" | "comms" | "combined";
 import {
   AreaChart,
   Area,
@@ -45,10 +47,14 @@ type Range = "today" | "7d" | "30d";
 
 type AnalyticsData = {
   range: Range;
+  site?: Site;
   totalEvents: number;
   uniqueVisitorsToday: number;
   pageViews: number;
   ctaClicks: number;
+  outboundClicks?: number;
+  affiliateClicks?: number;
+  articleReads?: number;
   formStarts: number;
   formSubmits: number;
   newsletterSignups: number;
@@ -56,7 +62,7 @@ type AnalyticsData = {
   intakeSubmissions: number;
   dailySeries: { date: string; views: number }[];
   topPages: { page: string; views: number }[];
-  utmSources: { utm_source: string; utm_medium: string; sessions: number }[];
+  utmSources: { utm_source: string; utm_medium: string | null; sessions: number }[];
   recentEvents: {
     id: number;
     event: string;
@@ -189,7 +195,7 @@ const EVENT_COLORS: Record<string, string> = {
   intake_submit: C.chart2,
 };
 
-function RangePicker({ current }: { current: Range }) {
+function RangePicker({ current, site }: { current: Range; site: Site }) {
   const router = useRouter();
   const options: { label: string; value: Range }[] = [
     { label: "Today", value: "today" },
@@ -202,7 +208,35 @@ function RangePicker({ current }: { current: Range }) {
         <button
           key={o.value}
           type="button"
-          onClick={() => router.push(`?range=${o.value}`)}
+          onClick={() => router.push(`?range=${o.value}&site=${site}`)}
+          className={cn(
+            "rounded-md px-3 py-1 text-xs font-medium transition-colors",
+            current === o.value
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function SitePicker({ current, range }: { current: Site; range: Range }) {
+  const router = useRouter();
+  const options: { label: string; value: Site }[] = [
+    { label: "JST Website", value: "jst" },
+    { label: "Communications", value: "comms" },
+    { label: "Combined", value: "combined" },
+  ];
+  return (
+    <div className="flex rounded-lg border border-border bg-muted p-0.5">
+      {options.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          onClick={() => router.push(`?range=${range}&site=${o.value}`)}
           className={cn(
             "rounded-md px-3 py-1 text-xs font-medium transition-colors",
             current === o.value
@@ -242,9 +276,11 @@ const CustomTooltip = ({
 function DashboardInner({
   data,
   range,
+  site,
 }: {
   data: AnalyticsData | null;
   range: Range;
+  site: Site;
 }) {
   if (!data) {
     return (
@@ -285,7 +321,12 @@ function DashboardInner({
         <div>
           <h1 className="text-xl font-bold">JST Site Analytics</h1>
           <p className="text-sm text-muted-foreground">
-            jsupremetech.online — {RANGE_LABELS[range]} · synced{" "}
+            {site === "comms"
+              ? "communications.jsupremetech.online"
+              : site === "combined"
+                ? "jsupremetech.online + communications"
+                : "jsupremetech.online"}{" "}
+            — {RANGE_LABELS[range]} · synced{" "}
             {new Date().toLocaleString("en-US", {
               month: "short",
               day: "numeric",
@@ -294,10 +335,11 @@ function DashboardInner({
             })}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <RangePicker current={range} />
+        <div className="flex flex-wrap items-center gap-2">
+          <SitePicker current={site} range={range} />
+          <RangePicker current={range} site={site} />
           <a
-            href="https://jsupremetech.online"
+            href={site === "comms" ? "https://communications.jsupremetech.online" : "https://jsupremetech.online"}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -349,21 +391,43 @@ function DashboardInner({
           value={data.newsletterSignups}
           icon={Mail}
         />
-        <StatTile
-          label="Trial signups"
-          value={data.trialSignups}
-          icon={Zap}
-        />
-        <StatTile
-          label="Intake submissions"
-          value={data.intakeSubmissions}
-          icon={ArrowUpRight}
-        />
-        <StatTile
-          label="Total events"
-          value={data.totalEvents}
-          icon={BarChart2}
-        />
+        {site === "comms" || site === "combined" ? (
+          <>
+            <StatTile
+              label="Article reads"
+              value={data.articleReads ?? 0}
+              icon={FileText}
+            />
+            <StatTile
+              label="Outbound clicks"
+              value={data.outboundClicks ?? 0}
+              icon={ArrowUpRight}
+            />
+            <StatTile
+              label="Affiliate clicks"
+              value={data.affiliateClicks ?? 0}
+              icon={Zap}
+            />
+          </>
+        ) : (
+          <>
+            <StatTile
+              label="Trial signups"
+              value={data.trialSignups}
+              icon={Zap}
+            />
+            <StatTile
+              label="Intake submissions"
+              value={data.intakeSubmissions}
+              icon={ArrowUpRight}
+            />
+            <StatTile
+              label="Total events"
+              value={data.totalEvents}
+              icon={BarChart2}
+            />
+          </>
+        )}
       </div>
 
       {/* Daily trend chart */}
@@ -674,14 +738,60 @@ function DashboardInner({
 
 export function AnalyticsDashboard({
   data,
+  commsData,
+  site = "jst",
   range,
 }: {
   data: AnalyticsData | null;
+  commsData?: AnalyticsData | null;
+  site?: Site;
   range: Range;
 }) {
+  // For "combined" view: merge page views + events from both sources
+  const merged: AnalyticsData | null =
+    site === "combined" && data && commsData
+      ? {
+          ...data,
+          site: "combined",
+          totalEvents: data.totalEvents + commsData.totalEvents,
+          uniqueVisitorsToday: data.uniqueVisitorsToday + commsData.uniqueVisitorsToday,
+          pageViews: data.pageViews + commsData.pageViews,
+          ctaClicks: data.ctaClicks + commsData.ctaClicks,
+          outboundClicks: (data.outboundClicks ?? 0) + (commsData.outboundClicks ?? 0),
+          affiliateClicks: (data.affiliateClicks ?? 0) + (commsData.affiliateClicks ?? 0),
+          articleReads: (data.articleReads ?? 0) + (commsData.articleReads ?? 0),
+          newsletterSignups: data.newsletterSignups + commsData.newsletterSignups,
+          dailySeries: mergeDailySeries(data.dailySeries, commsData.dailySeries),
+          topPages: [...data.topPages, ...commsData.topPages]
+            .sort((a, b) => b.views - a.views)
+            .slice(0, 10),
+          utmSources: [...data.utmSources, ...commsData.utmSources]
+            .sort((a, b) => b.sessions - a.sessions)
+            .slice(0, 10),
+          recentEvents: [...data.recentEvents, ...commsData.recentEvents]
+            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+            .slice(0, 50),
+        }
+      : site === "combined"
+        ? data ?? commsData
+        : site === "comms"
+          ? commsData
+          : data;
+
   return (
     <Suspense>
-      <DashboardInner data={data} range={range} />
+      <DashboardInner data={merged} range={range} site={site} />
     </Suspense>
   );
+}
+
+function mergeDailySeries(
+  a: { date: string; views: number }[],
+  b: { date: string; views: number }[],
+): { date: string; views: number }[] {
+  const map: Record<string, number> = {};
+  for (const e of [...a, ...b]) map[e.date] = (map[e.date] ?? 0) + e.views;
+  return Object.entries(map)
+    .sort(([x], [y]) => x.localeCompare(y))
+    .map(([date, views]) => ({ date, views }));
 }
