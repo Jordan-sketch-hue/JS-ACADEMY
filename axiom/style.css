@@ -1,6 +1,7 @@
 /* AXIOM v1.2 — strict monochrome */
 :root{
   --bg:#000;--ink:#fff;--accent:#fff;--dim:#6a6a6a;--faint:#2a2a2a;--line:#1a1a1a;--panel:#050505;
+  --surface:#080808;--card:#111;
   --mono:"SF Mono","Cascadia Code","Fira Code",Consolas,Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -136,6 +137,9 @@ button:hover{border-color:var(--ink)}
   top:calc(var(--header-h,48px) + 33px);
   border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent);
 }
+.tab-bar--dev-hidden{display:none!important}
+.tab--toggle{color:var(--dim);font-size:8px;letter-spacing:1.5px;opacity:.6}
+.tab--toggle:hover{opacity:1;color:var(--ink)}
 .tab{
   padding:7px 14px;font-size:9px;letter-spacing:2px;color:var(--dim);
   border:none;border-bottom:2px solid transparent;border-radius:0;

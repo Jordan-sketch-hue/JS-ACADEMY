@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import crypto from "crypto";
 
 export const runtime = "edge";
 
@@ -19,15 +18,16 @@ function db() {
   return createClient(url, key, { auth: { persistSession: false } });
 }
 
-function visitorHash(req: Request): string {
+async function visitorHash(req: Request): Promise<string> {
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     req.headers.get("x-real-ip") ||
     "unknown";
-  return crypto
-    .createHash("sha256")
-    .update(`jst-comms:${ip}`)
-    .digest("hex")
+  const data = new TextEncoder().encode(`jst-comms:${ip}`);
+  const hashBuf = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
     .slice(0, 16);
 }
 
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     utm_content: body.utm?.content ? String(body.utm.content).slice(0, 200) : null,
     utm_term: body.utm?.term ? String(body.utm.term).slice(0, 200) : null,
     props: body.props ?? {},
-    visitor_hash: visitorHash(req),
+    visitor_hash: await visitorHash(req),
     user_agent: (req.headers.get("user-agent") ?? "").slice(0, 300),
   };
 

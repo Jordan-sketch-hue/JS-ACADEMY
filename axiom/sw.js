@@ -1,5 +1,5 @@
-/* AXIOM service worker — app shell cache, network-first for everything else */
-const CACHE = "axiom-v1.6.0";
+﻿/* AXIOM service worker — app shell cache, network-first for everything else */
+const CACHE = "axiom-v1.7.0";
 const SHELL = [
   "/", "/index.html", "/lexevo.html", "/style.css",
   "/app.js", "/agentkit.js", "/stack.js", "/train.js", "/zip.js",

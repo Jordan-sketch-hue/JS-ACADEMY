@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    AXIOM — JS Supreme Coding Agent
    Monochrome. Local-first. No paid services.
    Faculties: perceive → classify → assess risk → plan (if/then/else)
@@ -254,7 +254,7 @@ async function loadLEX() {
       emerged: ["build a nextjs dashboard with supabase"],
     };
   }
-}}
+}
 
 function lexScore(text) {
   if (!LEX) return 0;
@@ -606,9 +606,9 @@ async function generateAsync(cls, recall = {}) {
     const brand = window.AXIOM_BRANDS ? window.AXIOM_BRANDS.get(cls.raw) : cls.brand;
     const result = window.AXIOM_PAGES.assemble(cls.raw, brand);
     if (result.issues.length) {
-      result.issues.forEach((i) => streamSay("warn", `LINK: ${i.file} → href="${i.href}" — ${i.fix}`));
+      result.issues.forEach((i) => say("warn", `LINK: ${i.file} → href="${i.href}" — ${i.fix}`));
     }
-    streamSay("ok", `◆ MULTI-PAGE — ${result.pages.length} pages · ${result.files.length} files · ${result.issues.length} link issues`);
+    say("ok", `◆ MULTI-PAGE — ${result.pages.length} pages · ${result.files.length} files · ${result.issues.length} link issues`);
     /* store files array for zip download */
     lastBuild = { code: result.files.map((f) => `=== FILE: ${f.name} ===\n${f.data}`).join("\n\n"), files: result.files, multiPage: true };
     return lastBuild.code;
@@ -663,10 +663,10 @@ ${ctxBlock}${docsBlock}${convCtx ? `\nConversation context:\n${convCtx}` : ""}`;
     if (!injected.blocks.length && !injected.files.length) return baseCode;
     injected.files.forEach((f) => {
       fileBag.push(f);
-      streamSay("ok", `◆ INTEGRATION FILE: ${f.name}`);
+      say("ok", `◆ INTEGRATION FILE: ${f.name}`);
     });
     if (injected.blocks.length) {
-      streamSay("ok", `◆ INTEGRATIONS: ${injected.blocks.map((b) => b.split("\n")[0].slice(0, 60)).join(" · ")}`);
+      say("ok", `◆ INTEGRATIONS: ${injected.blocks.map((b) => b.split("\n")[0].slice(0, 60)).join(" · ")}`);
     }
     return baseCode;
   }
@@ -2262,3 +2262,37 @@ loadLEX().then(() => {
   if (!LEX) say("think", "lexevo: no bundle in Supabase — open lexevo.html, evolve, hit AXIOM SYNC");
 });
 say("sys", "AXIOM ready. type a directive above, or hit a quick chip.");
+
+/* ── DEV NAV TOGGLE ── */
+function axToggleDev() {
+  const bar = document.getElementById("ax-dev-bar");
+  const btn = document.getElementById("ax-dev-toggle");
+  if (!bar) return;
+  const hidden = bar.classList.toggle("tab-bar--dev-hidden");
+  if (btn) btn.textContent = hidden ? "DEV ▸" : "DEV ▾";
+}
+window.axToggleDev = axToggleDev;
+
+/* ── MEDIA COMMAND BAR CREATE BUTTON ── */
+document.addEventListener("DOMContentLoaded", () => {
+  const runBtn = document.getElementById("media-cmd-run");
+  if (!runBtn) return;
+  runBtn.addEventListener("click", () => {
+    const txt = (document.getElementById("media-cmd")?.value || "").trim();
+    if (!txt) return;
+    const lower = txt.toLowerCase();
+    let tab = null;
+    if (/image|photo|generate|flux|picture|logo|background/.test(lower)) tab = "imagine";
+    else if (/stock|video|pexels|pixabay|footage|clip/.test(lower)) tab = "media";
+    else if (/ad|creative|banner|instagram|facebook|social/.test(lower)) tab = "studio";
+    else if (/reel|animation|motion/.test(lower)) tab = "reels";
+    else if (/grade|color|cinematic|preset/.test(lower)) tab = "grade";
+    else if (/campaign|plan|strategy|marketing/.test(lower)) tab = "campaign";
+    if (tab) {
+      document.querySelector(`[data-tab="${tab}"]`)?.click();
+    } else {
+      const cmd = document.getElementById("cmd");
+      if (cmd) { cmd.value = txt; cmd.focus(); }
+    }
+  });
+});

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -61,23 +61,7 @@
       <option value="CLEANSER">THE CLEANSER JA</option>
     </select>
   </div>
-</div>
-  <div style="display:flex;align-items:center;gap:6px">
-    <span style="font-size:9px;color:var(--dim);letter-spacing:2px">BRAND</span>
-    <select id="brand-selector" style="background:var(--bg);color:var(--ink);border:1px solid var(--faint);font-family:var(--mono);font-size:9px;padding:3px 6px;cursor:pointer;outline:none">
-      <option value="">SELECT BRAND</option>
-      <option value="AXIOM">AXIOM</option>
-      <option value="JST">J SUPREME TECH</option>
-      <option value="LC">LANGUAGE CRADLE</option>
-      <option value="SUPREME_SUITE">SUPREME SUITE</option>
-      <option value="SOLIDTRUST">SOLID TRUST</option>
-      <option value="BPCOURIERS">BP COURIERS</option>
-      <option value="ABOO">ABOO TOURS</option>
-      <option value="HOMEREADY">H.O.M.E. READY</option>
-      <option value="FERGUSON">FERGUSON LAW</option>
-    </select>
-  </div>
-</div>
+  <button id="ax-settings-btn" onclick="document.getElementById('ax-settings-modal').style.display='flex'" style="background:none;border:1px solid var(--faint);color:var(--dim);font-family:var(--mono);font-size:9px;letter-spacing:.12em;padding:4px 10px;cursor:pointer">⚙ SETTINGS</button>
 </header>
 
 <!-- CONSOLE INPUT -->
@@ -129,7 +113,7 @@
 </div>
 
 <!-- TAB BAR -->
-<!-- Row 1: Creative tools — single scrollable line, accented -->
+<!-- Row 1: Creative tools -->
 <nav class="tab-bar tab-bar--creative" role="tablist" aria-label="Creative tools">
   <button class="tab active" data-tab="home" style="color:var(--accent);font-weight:700">◆ START</button>
   <span class="tab-sep"></span>
@@ -141,19 +125,20 @@
   <button class="tab tab--creative" data-tab="grade">COLOR GRADE</button>
   <button class="tab tab--creative" data-tab="canvas">EDIT SITE ⬚</button>
   <button class="tab tab--creative" data-tab="social">SCHEDULE ⇢</button>
-</nav>
-<!-- Row 2: Dev tools — single scrollable line, dimmer/smaller -->
-<nav class="tab-bar tab-bar--dev" role="tablist" aria-label="Developer tools">
-  <button class="tab" data-tab="neural" style="color:var(--accent);font-weight:700">NEURAL ◈</button>
   <span class="tab-sep"></span>
+  <button id="ax-dev-toggle" class="tab tab--toggle" onclick="axToggleDev()" title="Show developer tools">DEV ▸</button>
+</nav>
+<!-- Row 2: Dev tools — hidden by default, toggled via DEV button -->
+<nav class="tab-bar tab-bar--dev tab-bar--dev-hidden" id="ax-dev-bar" role="tablist" aria-label="Developer tools">
   <button class="tab" data-tab="preview">PREVIEW ▶</button>
+  <button class="tab" data-tab="neural">NEURAL ◈</button>
   <button class="tab" data-tab="network">NETWORK</button>
   <button class="tab" data-tab="errors">ERRORS</button>
   <button class="tab" data-tab="fix">FIX ⚡</button>
   <button class="tab" data-tab="risk">RISK</button>
   <button class="tab" data-tab="diff">DIFF ±</button>
   <button class="tab" data-tab="audit">AUDIT</button>
-  <button class="tab" data-tab="supabase">SUPABASE</button>
+  <button class="tab" data-tab="supabase">SYNC ◈</button>
   <button class="tab" data-tab="kb">KB</button>
   <button class="tab" data-tab="learn">LEARN</button>
   <button class="tab" data-tab="stack">STACK</button>
@@ -195,7 +180,7 @@
         <!-- WEBSITES & APPS -->
         <div onclick="document.getElementById('cmd').focus()" style="border:1px solid var(--accent);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
           onmouseenter="this.style.background='rgba(245,166,35,0.06)'" onmouseleave="this.style.background='var(--surface)'">
-          <div style="font-size:22px;margin-bottom:10px">🌐</div>
+          <div style="font-size:22px;margin-bottom:10px">◆</div>
           <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--accent);margin-bottom:6px">WEBSITES & APPS</p>
           <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Generate full websites, landing pages, Next.js apps, WhatsApp bots, e-commerce stores — any web project from a single description.</p>
           <p style="font-size:9px;color:var(--dim)">→ Type your brief in the console above and hit RUN</p>
@@ -204,7 +189,7 @@
         <!-- AI IMAGES -->
         <div onclick="document.querySelector('[data-tab=imagine]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
           onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
-          <div style="font-size:22px;margin-bottom:10px">🖼️</div>
+          <div style="font-size:22px;margin-bottom:10px">◆</div>
           <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">GENERATE IMAGES</p>
           <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Create AI-generated images using Flux. Describe what you want — logo backgrounds, product shots, lifestyle photos — then download or use in an ad.</p>
           <p style="font-size:9px;color:var(--dim)">→ Opens the IMAGES tab</p>
@@ -213,7 +198,7 @@
         <!-- PHOTOS & VIDEO -->
         <div onclick="document.querySelector('[data-tab=media]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
           onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
-          <div style="font-size:22px;margin-bottom:10px">🎬</div>
+          <div style="font-size:22px;margin-bottom:10px">◆</div>
           <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">BROWSE PHOTOS & VIDEO</p>
           <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Search millions of stock photos and video clips from Pexels and Pixabay. Preview, download, or drop them into any ad creative or website.</p>
           <p style="font-size:9px;color:var(--dim)">→ Opens PHOTOS & VIDEO tab</p>
@@ -222,7 +207,7 @@
         <!-- AD CREATIVE -->
         <div onclick="document.querySelector('[data-tab=studio]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
           onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
-          <div style="font-size:22px;margin-bottom:10px">🎨</div>
+          <div style="font-size:22px;margin-bottom:10px">◆</div>
           <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">BUILD AD CREATIVES</p>
           <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Design sized ad creatives for Instagram, Facebook, YouTube — 1:1, 9:16, 16:9. Add text layers, B-roll backgrounds, AI captions, and export as PNG.</p>
           <p style="font-size:9px;color:var(--dim)">→ Opens AD CREATIVE tab</p>
@@ -231,7 +216,7 @@
         <!-- EDIT SITE -->
         <div onclick="document.querySelector('[data-tab=canvas]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
           onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
-          <div style="font-size:22px;margin-bottom:10px">✏️</div>
+          <div style="font-size:22px;margin-bottom:10px">◆</div>
           <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">EDIT A SITE VISUALLY</p>
           <p style="font-size:11px;color:var(--ink);margin-bottom:8px">After generating a site, open it in the visual editor. Click any element — headline, button, section — to edit text, change colors, or reposition it. No code needed.</p>
           <p style="font-size:9px;color:var(--dim)">→ Opens EDIT SITE tab (run a build first)</p>
@@ -240,7 +225,7 @@
         <!-- COLOR GRADE -->
         <div onclick="document.querySelector('[data-tab=grade]').click()" style="border:1px solid var(--line);padding:20px 20px 18px;cursor:pointer;background:var(--surface);transition:all .15s"
           onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--line)'">
-          <div style="font-size:22px;margin-bottom:10px">🎞️</div>
+          <div style="font-size:22px;margin-bottom:10px">◆</div>
           <p style="font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--ink);margin-bottom:6px">COLOR GRADE IMAGES</p>
           <p style="font-size:11px;color:var(--ink);margin-bottom:8px">Apply cinematic color grading to any image — 12 presets (Cinematic, Golden Hour, Noir, Cold Steel…) or manual exposure, contrast, saturation, vignette sliders. Export graded PNG.</p>
           <p style="font-size:9px;color:var(--dim)">→ Opens COLOR GRADE tab</p>
@@ -374,7 +359,7 @@
         <pre id="ai-key-status" class="sb-log">ai: no key — using template engine</pre>
         <div style="display:flex;gap:8px;margin-top:6px">
           <button class="mini" id="conv-clear">CLEAR CONVERSATION</button>
-          <span id="conv-status" class="hint" style="line-height:24px"></span>
+          <span id="conv-status" class="hint"></span>
         </div>
       </div>
 
@@ -701,7 +686,7 @@
     </div>
   </div>
 
-  <!-- GRADE 🎨 — Color grading + exposure + visual effects -->
+  <!-- GRADE ◆ — Color grading + exposure + visual effects -->
   <div class="tab-pane" id="tab-grade" style="padding:0;height:calc(100vh - 320px);min-height:480px">
     <div id="grade-mount" style="height:100%;width:100%">
       <div style="padding:20px;color:var(--dim);font-size:11px">Loading Color Grade Studio…</div>
@@ -738,6 +723,149 @@
   <span>AXIOM · monochrome intelligence · J Supreme Tech · <span id="ax-footer-phone">(658) 218-2282</span> · <a href="lexevo.html" style="color:var(--ink)">◉ LEXEVO →</a></span>
   <span id="kb-status2"></span>
 </footer>
+
+<!-- ══ SETTINGS MODAL ══════════════════════════════════════════ -->
+<div id="ax-settings-modal" style="display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,.88);align-items:center;justify-content:center">
+  <div style="background:#060606;border:1px solid #222;width:min(560px,94vw);max-height:88vh;overflow-y:auto;font-family:var(--mono)">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid #1a1a1a;position:sticky;top:0;background:#060606">
+      <span style="font-size:11px;letter-spacing:.25em;font-weight:700">⚙ SETTINGS</span>
+      <button onclick="document.getElementById('ax-settings-modal').style.display='none'" style="background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="padding:20px;display:flex;flex-direction:column;gap:20px">
+
+      <!-- CLAUDE -->
+      <div>
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--accent);margin-bottom:8px">◆ CLAUDE AI KEY</p>
+        <p style="font-size:10px;color:var(--dim);margin-bottom:8px;line-height:1.6">Add your Anthropic key to unlock real AI codegen — calls claude-sonnet-5 instead of templates.</p>
+        <div style="display:flex;gap:8px">
+          <input id="ai-key-input" type="password" placeholder="sk-ant-…" style="flex:1;background:transparent;border:none;border-bottom:1px solid #222;color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px">
+          <button class="mini" id="ai-key-save">SAVE</button>
+          <button class="mini" id="ai-key-clear">CLEAR</button>
+        </div>
+        <pre id="ai-key-status" class="sb-log" style="margin-top:6px">ai: no key — using template engine</pre>
+      </div>
+
+      <!-- NEURAL / HF -->
+      <div>
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:8px">◆ HUGGING FACE TOKEN (optional)</p>
+        <p style="font-size:10px;color:var(--dim);margin-bottom:8px;line-height:1.6">Phi-3-mini is free — a token raises rate limits from 30→60 req/min.</p>
+        <div style="display:flex;gap:8px">
+          <input id="hf-key-input" type="password" placeholder="hf_…" style="flex:1;background:transparent;border:none;border-bottom:1px solid #222;color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px">
+          <button class="mini" id="hf-key-save">SAVE</button>
+          <button class="mini" id="hf-key-clear">CLEAR</button>
+        </div>
+        <pre id="hf-key-status" class="sb-log" style="margin-top:6px">neural: phi-3-mini · free HF inference</pre>
+      </div>
+
+      <!-- SUPABASE -->
+      <div>
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:8px">◆ SUPABASE KB SYNC</p>
+        <p style="font-size:10px;color:var(--dim);margin-bottom:8px;line-height:1.6">Connect AXIOM's knowledge base for cross-device sync. Table: <code>axiom_kb(id,created_at,kind,title,body)</code></p>
+        <input id="sb-url" type="text" placeholder="https://YOUR-PROJECT.supabase.co" style="width:100%;background:transparent;border:none;border-bottom:1px solid #222;color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px;margin-bottom:8px">
+        <input id="sb-key" type="password" placeholder="anon public key" style="width:100%;background:transparent;border:none;border-bottom:1px solid #222;color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px;margin-bottom:10px">
+        <div style="display:flex;gap:6px">
+          <button class="mini" id="sb-save">SAVE</button>
+          <button class="mini" id="sb-sync">SYNC ⇡</button>
+          <button class="mini" id="sb-pull">PULL ⇣</button>
+        </div>
+        <pre id="sb-log" class="sb-log" style="margin-top:6px">db: local mode</pre>
+      </div>
+
+      <!-- GITHUB -->
+      <div>
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:8px">◆ GITHUB TOKEN</p>
+        <p style="font-size:10px;color:var(--dim);margin-bottom:8px;line-height:1.6">Enables CONTEXT tab to load private repos. Scope: <code>repo</code>.</p>
+        <div style="display:flex;gap:8px">
+          <input id="gh-token-input" type="password" placeholder="ghp_… or github_pat_…" style="flex:1;background:transparent;border:none;border-bottom:1px solid #222;color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px">
+          <button class="mini" id="gh-token-save">SAVE</button>
+          <button class="mini" id="gh-token-clear">CLEAR</button>
+        </div>
+        <pre id="gh-token-status" class="sb-log" style="margin-top:6px">github: no token</pre>
+      </div>
+
+      <!-- VERCEL -->
+      <div>
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:8px">◆ VERCEL TOKEN</p>
+        <p style="font-size:10px;color:var(--dim);margin-bottom:8px;line-height:1.6">One-click deploy. Create at vercel.com/account/tokens.</p>
+        <div style="display:flex;gap:8px">
+          <input id="vercel-token-input" type="password" placeholder="vercel token…" style="flex:1;background:transparent;border:none;border-bottom:1px solid #222;color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:12px">
+          <button class="mini" id="vercel-token-save">SAVE</button>
+          <button class="mini" id="vercel-token-clear">CLEAR</button>
+        </div>
+        <pre id="vercel-token-status" class="sb-log" style="margin-top:6px">vercel: no token</pre>
+      </div>
+
+      <!-- IMAGE KEYS -->
+      <div>
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:8px">◆ IMAGE GENERATION KEYS</p>
+        <p style="font-size:10px;color:var(--dim);margin-bottom:8px">OpenRouter (Flux) · Groq (captions) — optional, baked keys are pre-loaded.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <input type="password" id="im-or-key" placeholder="sk-or-v1-… OpenRouter" style="background:transparent;border:none;border-bottom:1px solid #222;color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:11px">
+          <input type="password" id="im-groq-key" placeholder="gsk_… Groq" style="background:transparent;border:none;border-bottom:1px solid #222;color:var(--ink);font-family:var(--mono);padding:7px 0;outline:none;font-size:11px">
+        </div>
+        <button class="mini" id="im-save-keys">SAVE KEYS</button>
+      </div>
+
+      <!-- TRAINING -->
+      <div>
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:8px">◆ TRAINING</p>
+        <div style="display:flex;gap:6px">
+          <button class="mini" id="sb-train-trigger">▶ RUN TRAIN NOW</button>
+          <button class="mini" id="sb-push-kb">⇡ PUSH KB SNAPSHOT</button>
+        </div>
+        <pre id="sb-train-log" class="sb-log" style="margin-top:6px">train: idle</pre>
+      </div>
+
+      <!-- CONVERSATION -->
+      <div>
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:8px">◆ CONVERSATION</p>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="mini" id="conv-clear">CLEAR CONVERSATION</button>
+          <span id="conv-status" class="hint"></span>
+        </div>
+      </div>
+
+      <!-- ANALYTICS DASHBOARD -->
+      <div>
+        <p style="font-size:9px;letter-spacing:.2em;color:var(--dim);margin-bottom:8px">&#9670; USAGE ANALYTICS</p>
+        <div id="ax-analytics-panel">
+          <button class="mini" id="ax-analytics-load" style="margin-bottom:8px">LOAD STATS</button>
+          <div id="ax-analytics-out" style="display:none;font-size:10px;margin-top:6px"></div>
+        </div>
+      </div>
+
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid #1a1a1a;display:flex;justify-content:flex-end">
+      <button onclick="document.getElementById('ax-settings-modal').style.display='none'" style="background:var(--ink);color:var(--bg);border:none;font-family:var(--mono);font-size:10px;letter-spacing:.2em;padding:8px 20px;cursor:pointer;font-weight:700">CLOSE</button>
+    </div>
+  </div>
+</div>
+<!-- ══ DEV TOGGLE SCRIPT ═════════════════════════════════════ -->
+<script>
+function axToggleDev() {
+  const bar = document.getElementById('ax-dev-bar');
+  const btn = document.getElementById('ax-dev-toggle');
+  const hidden = bar.classList.toggle('tab-bar--dev-hidden');
+  btn.textContent = hidden ? 'DEV ▸' : 'DEV ▾';
+  if (!hidden) localStorage.setItem('ax_dev_open', '1');
+  else localStorage.removeItem('ax_dev_open');
+}
+// Restore dev bar state
+if (localStorage.getItem('ax_dev_open')) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('ax-dev-bar');
+    const btn = document.getElementById('ax-dev-toggle');
+    if (bar) bar.classList.remove('tab-bar--dev-hidden');
+    if (btn) btn.textContent = 'DEV ▾';
+  });
+}
+// Close settings modal on backdrop click
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('ax-settings-modal')?.addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+});
+</script>
 
 <script src="stack.js"></script>
 <script src="zip.js"></script>
@@ -1157,5 +1285,119 @@
   })();
 })();
 </script>
+
+<!-- ══ AXIOM ANALYTICS — VPN-resistant fingerprint tracker ══ -->
+<script>
+(function() {
+  // Build a stable device fingerprint from browser characteristics (not IP)
+  async function buildFP() {
+    const raw = [
+      navigator.userAgent,
+      navigator.language,
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      screen.width + "x" + screen.height,
+      screen.colorDepth,
+      navigator.hardwareConcurrency || 0,
+      navigator.deviceMemory || 0,
+      new Date().getTimezoneOffset(),
+    ].join("|");
+    // SHA-256 via SubtleCrypto — no PII leaves the device
+    try {
+      const buf  = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("").slice(0,32);
+    } catch {
+      // Fallback: djb2 hash
+      let h = 5381;
+      for (let i = 0; i < raw.length; i++) h = ((h << 5) + h) ^ raw.charCodeAt(i);
+      return (h >>> 0).toString(16).padStart(8,"0");
+    }
+  }
+
+  async function track(event, meta = {}) {
+    try {
+      const fp = await buildFP();
+      await fetch("/api/axiom/analytics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event, fp, meta }),
+      });
+    } catch { /* silent — analytics must never break the app */ }
+  }
+
+  // Expose for use by other modules
+  window.AXIOM_TRACK = track;
+
+  // Auto-track pageview on load
+  window.addEventListener("load", () => track("pageview", { ref: document.referrer ? "external" : "direct" }));
+
+  // Track tab switches
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-tab]");
+    if (btn) track("tab_switch", { tab: btn.dataset.tab });
+  }, true);
+
+  // Track RUN button
+  document.getElementById("run")?.addEventListener("click", () =>
+    track("run_directive", { len: document.getElementById("cmd")?.value?.length || 0 })
+  );
+
+  // Track settings open
+  document.getElementById("ax-settings-btn")?.addEventListener("click", () => track("settings_open"));
+
+  // Track DEV toggle
+  document.getElementById("ax-dev-toggle")?.addEventListener("click", () =>
+    track("dev_toggle", { open: !document.getElementById("ax-dev-bar")?.classList.contains("tab-bar--dev-hidden") })
+  );
+})();
+</script>
+<script>
+/* ── SETTINGS ANALYTICS DASHBOARD ─────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+  var loadBtn = document.getElementById('ax-analytics-load');
+  var out     = document.getElementById('ax-analytics-out');
+  if (!loadBtn || !out) return;
+  loadBtn.addEventListener('click', function() {
+    var key = localStorage.getItem('axiom_api_key') || '';
+    if (!key) {
+      key = (prompt('Enter AXIOM gate key (AXIOM_API_KEY):') || '').trim();
+      if (key) localStorage.setItem('axiom_api_key', key);
+    }
+    if (!key) return;
+    loadBtn.disabled = true; loadBtn.textContent = 'LOADING\u2026';
+    fetch('/api/axiom/analytics?secret=' + encodeURIComponent(key))
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(d) {
+        var rows = Object.entries(d.by_event || {}).sort(function(a,b){return b[1]-a[1];})
+          .map(function(e){ return '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #1a1a1a"><span>'+e[0]+'</span><span style="color:var(--ink)">'+e[1]+'</span></div>'; }).join('');
+        var recent = (d.recent||[]).map(function(e){ return '<div style="border-bottom:1px solid #1a1a1a;padding:3px 0;font-size:9px">'+e.event+' &nbsp;<span style="color:var(--dim)">'+( e.country||'XX')+' \xb7 '+(e.created_at||'').slice(0,16)+'</span></div>'; }).join('');
+        out.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'
+          +'<div style="border:1px solid #1a1a1a;padding:8px"><div style="font-size:18px;color:var(--ink);font-weight:700">'+(d.total_events||0)+'</div><div style="font-size:9px;letter-spacing:.1em">TOTAL EVENTS</div></div>'
+          +'<div style="border:1px solid #1a1a1a;padding:8px"><div style="font-size:18px;color:var(--ink);font-weight:700">'+(d.unique_devices||0)+'</div><div style="font-size:9px;letter-spacing:.1em">UNIQUE DEVICES</div></div>'
+          +'</div><div style="font-size:9px;letter-spacing:.1em;margin-bottom:6px;color:var(--dim)">BY EVENT</div>'
+          +(rows||'<div style="color:var(--dim)">No events yet.</div>')
+          +'<div style="margin-top:8px;font-size:9px;color:var(--dim)">RECENT</div>'+recent;
+        out.style.display = 'block';
+        loadBtn.disabled = false; loadBtn.textContent = 'RELOAD STATS';
+      })
+      .catch(function(e) {
+        out.style.display='block';
+        out.innerHTML='<span style="color:var(--dim)">Error: '+e.message+'</span>';
+        loadBtn.disabled=false; loadBtn.textContent='RETRY';
+      });
+  });
+});
+</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+

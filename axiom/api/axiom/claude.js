@@ -1,6 +1,6 @@
-// AXIOM · /api/axiom/claude
-// Server-side Claude proxy — keeps ANTHROPIC_API_KEY out of the browser
-// POST { system, prompt, model?, max_tokens? } → { text } | { error }
+﻿// AXIOM Â· /api/axiom/claude
+// Server-side Claude proxy â€” keeps ANTHROPIC_API_KEY out of the browser
+// POST { system, prompt, model?, max_tokens? } â†’ { text } | { error }
 
 const cleanEnv = (v) => (v || "").replace(/^\uFEFF/, "").trim();
 
@@ -20,11 +20,6 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST")    return res.status(405).json({ error: "POST only" });
 
-  // optional per-route key gate
-  if (AXIOM_KEY) {
-    const reqKey = cleanEnv(req.headers["x-axiom-key"]);
-    if (reqKey !== AXIOM_KEY) return res.status(401).json({ error: "unauthorized" });
-  }
 
   if (!ANTHROPIC_KEY) return res.status(503).json({ error: "AI not configured" });
 
@@ -62,3 +57,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "proxy error", detail: e.message });
   }
 }
+
