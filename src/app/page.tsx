@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
@@ -51,12 +51,12 @@ function TrackCard({ track, courses }: { track: Track; courses: Course[] }) {
         </div>
         {pct === 100 && (
           <div className="text-[10px] mt-1.5 font-medium" style={{ color: meta.color }}>
-            âœ“ Track complete
+            ✓ Track complete
           </div>
         )}
       </div>
 
-      {/* completion outcome â€” shown when track is done */}
+      {/* completion outcome — shown when track is done */}
       {pct === 100 && (
         <div className="px-4 pb-3">
           <div className="text-[11px] text-neutral-500 leading-relaxed mt-1">{meta.completionOutcome}</div>
@@ -72,7 +72,7 @@ function TrackCard({ track, courses }: { track: Track; courses: Course[] }) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-[12px] font-medium text-[#0a0a0a] truncate">
-              M{nextCourse.module} Â· {nextCourse.title}
+              M{nextCourse.module} · {nextCourse.title}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="text-[10px] text-neutral-400 flex items-center gap-0.5"><Clock size={9} />{nextCourse.duration}m</span>
@@ -142,7 +142,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-4 gap-2">
           {[
             { icon: Trophy, val: xp.toLocaleString(), label: 'XP', gold: true },
-            { icon: Flame, val: streak || 'â€”', label: 'Streak', gold: false },
+            { icon: Flame, val: streak || '—', label: 'Streak', gold: false },
             { icon: BookOpen, val: completed, label: 'Done', gold: false },
             { icon: Star, val: `L${level}`, label: levelName(level), gold: false },
           ].map(({ icon: Icon, val, label, gold }) => (
@@ -160,7 +160,7 @@ export default function Dashboard() {
           <div className="flex-1 bg-neutral-100 rounded h-2 overflow-hidden">
             <div className="h-full bg-[#c9a84c] rounded transition-all duration-700" style={{ width: `${pct}%` }} />
           </div>
-          <span className="text-[10px] text-neutral-400 flex-shrink-0">{pct}% â†’ L{level + 1}</span>
+          <span className="text-[10px] text-neutral-400 flex-shrink-0">{pct}% → L{level + 1}</span>
         </div>
 
         {/* Track cards */}
@@ -175,11 +175,11 @@ export default function Dashboard() {
         <Link href="/language"
           className="flex items-center gap-4 bg-white border border-neutral-100 rounded-xl px-4 py-3.5 hover:border-neutral-300 transition-colors">
           <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: TRACKS.language.bg }}>
-            <span className="text-base">ðŸŒ</span>
+            <span className="text-base">🌐</span>
           </div>
           <div className="flex-1">
             <div className="text-[13px] font-medium text-[#0a0a0a]">Language Lab</div>
-            <div className="text-[11px] text-neutral-400 mt-0.5">14 languages Â· Azure Neural voice coaching</div>
+            <div className="text-[11px] text-neutral-400 mt-0.5">14 languages · Azure Neural voice coaching</div>
           </div>
           <ChevronRight size={14} className="text-neutral-300" />
         </Link>
@@ -188,4 +188,3 @@ export default function Dashboard() {
     </Shell>
   )
 }
-
