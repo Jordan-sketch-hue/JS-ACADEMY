@@ -869,7 +869,7 @@ test('POST /api/courses validates input', async ({ request }) => {
       starterCode: `// Implement waitFor — retries condition until truthy or timeout
 async function waitFor(condition, { timeout = 5000, interval = 100 } = {}) {
   // TODO:
-  // - Call condition() every `interval` ms
+  // - Call condition() every \`interval\` ms
   // - If it returns truthy (or resolves truthy), return the value
   // - If timeout is exceeded, throw: new Error('Timeout waiting for condition')
   // - If condition throws, keep retrying until timeout

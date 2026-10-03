@@ -35,7 +35,7 @@ A02: Cryptographic Failures
 
 A03: Injection (SQL, NoSQL, OS)
   Root cause: User input concatenated into queries
-  Example: SELECT * FROM users WHERE email = '${req.body.email}'
+  Example: SELECT * FROM users WHERE email = '\${req.body.email}'
   Fix: Parameterized queries, ORM, input validation
 
 A04: Insecure Design
@@ -1189,7 +1189,7 @@ function validateSecrets(config, path = '') {
   // TODO: recursively walk the config object
   // For each string value:
   //   - If value looks like a real secret (matches SECRET_PATTERNS or length > 20 with mixed chars)
-  //     AND doesn't start with "process.env" or "${" (env var reference)
+  //     AND doesn't start with "process.env" or "\${" (env var reference)
   //   - Add an issue: { path: 'database.password', value: 'pa**word', recommendation: '...' }
   //   - Mask the value in the report (show first 3 + asterisks)
 
