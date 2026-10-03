@@ -1217,7 +1217,7 @@ jobs:
 
       - name: Build and push image
         run: |
-          IMAGE=${{ steps.ecr-login.outputs.registry }}/my-app:${{ github.sha }}
+          IMAGE=\${{ steps.ecr-login.outputs.registry }}/my-app:\${{ github.sha }}
           docker build -t $IMAGE .
           docker push $IMAGE
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
