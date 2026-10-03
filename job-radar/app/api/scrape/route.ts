@@ -8,7 +8,7 @@ const supabase = createClient(
 )
 
 async function runScrape() {
-    // Scrape all sources in parallel
+  try {
     const [remotive, remoteok] = await Promise.all([
       scrapeRemotive(),
       scrapeRemoteOK(),
@@ -21,7 +21,6 @@ async function runScrape() {
       return NextResponse.json({ inserted: 0, message: 'No matching jobs found' })
     }
 
-    // Upsert (ignore duplicates by external_id)
     const { error, data: inserted } = await supabase
       .from('jobs')
       .upsert(
@@ -49,7 +48,6 @@ async function runScrape() {
 
     if (error) throw error
 
-    // Send push notifications for high-match new jobs
     const topJobs = scored.filter(j => j.match_score >= 70)
     if (topJobs.length > 0) {
       await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/push`, {
@@ -60,7 +58,7 @@ async function runScrape() {
           body: topJobs.slice(0, 3).map(j => `${j.title} at ${j.company}`).join(' · '),
           url: process.env.NEXT_PUBLIC_APP_URL,
         }),
-      }).catch(() => {}) // non-fatal
+      }).catch(() => {})
     }
 
     return NextResponse.json({ inserted: inserted?.length ?? 0, total_scraped: allRaw.length, matched: scored.length })
