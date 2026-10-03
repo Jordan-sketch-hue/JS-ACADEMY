@@ -59,7 +59,7 @@ export async function scrapeRemoteOK(): Promise<RawJob[]> {
       title: j.position ?? '',
       company: j.company ?? '',
       location: j.location ?? 'Remote',
-      url: `https://remoteok.com/remote-jobs/${j.slug}`,
+      url: j.url || `https://remoteok.com/remote-jobs/${j.id}`,
       description: j.description ?? '',
       tags: j.tags ?? [],
       salary_min: j.salary_min ? parseInt(j.salary_min) : null,
@@ -114,7 +114,7 @@ export async function scrapeArbeitnow(): Promise<RawJob[]> {
       salary_min: null, salary_max: null, currency: null,
       job_type: 'remote',
       source: 'arbeitnow',
-      posted_at: j.created_at ? new Date(j.created_at * 1000).toISOString() : new Date().toISOString(),
+      posted_at: (typeof j.created_at === 'number') ? new Date(j.created_at * 1000).toISOString() : (j.created_at ?? new Date().toISOString()),
     }))
   } catch (_) { return [] }
 }
@@ -212,7 +212,7 @@ export async function scrapeTorre(): Promise<RawJob[]> {
       currency: j.compensation?.currency ?? null,
       job_type: 'remote',
       source: 'torre',
-      posted_at: j.deadline ?? new Date().toISOString(),
+      posted_at: j.published_at ?? j.created_at ?? new Date().toISOString(),
     }))
   } catch (_) { return [] }
 }

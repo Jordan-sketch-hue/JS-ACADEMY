@@ -155,7 +155,7 @@ export function scoreJob(title: string, description: string): { score: number; r
   // Strong bonus if title matches a target role
   const titleLower = title.toLowerCase()
   for (const role of RESUME.jobRoles) {
-    if (titleLower.includes(role.toLowerCase().slice(0, 12))) {
+    if (titleLower.includes(role.toLowerCase())) {
       score += 20
       break
     }

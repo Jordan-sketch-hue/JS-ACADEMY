@@ -53,7 +53,7 @@ async function runScrape() {
           posted_at: j.posted_at,
           scraped_at: new Date().toISOString(),
         })),
-        { onConflict: 'external_id', ignoreDuplicates: true }
+        { onConflict: 'external_id', ignoreDuplicates: false }
       )
       .select('id')
 

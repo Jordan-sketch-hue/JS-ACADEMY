@@ -7,7 +7,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 export async function generateCoverLetter(job: Job): Promise<string> {
   const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+    model: 'claude-haiku-4-5',
     max_tokens: 600,
     messages: [{
       role: 'user',
@@ -41,7 +41,7 @@ Rules:
 
 export async function explainMatchScore(job: Job): Promise<string> {
   const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+    model: 'claude-haiku-4-5',
     max_tokens: 200,
     messages: [{
       role: 'user',

@@ -64,9 +64,7 @@ export default function JobRadar() {
   const [coverLetter, setCoverLetter] = useState<{ id: string; text: string } | null>(null)
   const [pushEnabled, setPushEnabled] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
-  const [dismissed, setDismissed] = useState<Set<string>>(() => {
-    try { return new Set(JSON.parse(localStorage.getItem('dismissed') ?? '[]')) } catch { return new Set() }
-  })
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set())
   const [noDegree, setNoDegree] = useState(false)
   const [expandedCompany, setExpandedCompany] = useState<string | null>(null)
 
@@ -83,6 +81,14 @@ export default function JobRadar() {
   }, [])
 
   useEffect(() => { fetchJobs() }, [fetchJobs])
+
+  // Hydrate dismissed set from localStorage after mount (avoids SSR mismatch)
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('dismissed') ?? '[]')
+      if (stored.length > 0) setDismissed(new Set(stored))
+    } catch { /* ignore */ }
+  }, [])
 
   useEffect(() => {
     let list = jobs.filter(j => !dismissed.has(j.id))
@@ -131,7 +137,11 @@ export default function JobRadar() {
       if (data.cover_letter) {
         setCoverLetter({ id: job.id, text: data.cover_letter })
         setJobs(prev => prev.map(j => j.id === job.id ? { ...j, applied: true } : j))
+      } else {
+        setCoverLetter({ id: job.id, text: data.error ?? 'Failed to generate cover letter. Please try again.' })
       }
+    } catch {
+      setCoverLetter({ id: job.id, text: 'Network error — could not generate cover letter.' })
     } finally {
       setApplying(null)
     }
@@ -139,13 +149,20 @@ export default function JobRadar() {
 
   async function enablePush() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
-    const reg = await navigator.serviceWorker.register('/sw.js')
-    const sub = await reg.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    })
-    await fetch('/api/push', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sub) })
-    setPushEnabled(true)
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js')
+      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? ''
+      const padding = '='.repeat((4 - (vapidKey.length % 4)) % 4)
+      const base64 = (vapidKey + padding).replace(/-/g, '+').replace(/_/g, '/')
+      const raw = window.atob(base64)
+      const keyBytes = new Uint8Array(raw.length)
+      for (let i = 0; i < raw.length; i++) keyBytes[i] = raw.charCodeAt(i)
+      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes })
+      await fetch('/api/push', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sub) })
+      setPushEnabled(true)
+    } catch (err) {
+      console.error('Push subscription failed:', err)
+    }
   }
 
   async function refreshJobs() {
@@ -232,7 +249,7 @@ export default function JobRadar() {
             {(['discover', 'saved', 'applied', 'dream'] as const).map(t => (
               <button
                 key={t}
-                onClick={() => setTab(t)}
+                onClick={() => { setTab(t); setCategory('All') }}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition flex items-center gap-1 ${
                   tab === t ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-slate-200'
                 }`}
@@ -306,7 +323,10 @@ export default function JobRadar() {
         )}
 
         {/* Dream Companies tab */}
-        {tab === 'dream' && (
+        {tab === 'dream' && loading && (
+          <div className="text-center py-20 text-slate-500">Loading dream companies…</div>
+        )}
+        {tab === 'dream' && !loading && (
           <div>
             <p className="text-xs text-slate-500 mb-4">
               Top stable tech companies with active openings matching your profile — scraped live from their job boards.
@@ -397,7 +417,7 @@ export default function JobRadar() {
                       <span>{job.company}</span>
                       <span>·</span>
                       <span>{job.location}</span>
-                      {salaryDisplay(job) && <><span>·</span><span className="text-green-500">{salaryDisplay(job)}</span></>}
+                      {(() => { const sal = salaryDisplay(job); return sal ? <><span>·</span><span className="text-green-500">{sal}</span></> : null })()}
                       <span>·</span>
                       <span className="capitalize">{job.source}</span>
                     </div>

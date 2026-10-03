@@ -7,6 +7,7 @@ export const supabase = createClient(url, key)
 
 export type Job = {
   id: string
+  external_id: string
   title: string
   company: string
   location: string
