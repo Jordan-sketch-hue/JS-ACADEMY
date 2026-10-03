@@ -68,6 +68,7 @@ export default function JobRadar() {
     try { return new Set(JSON.parse(localStorage.getItem('dismissed') ?? '[]')) } catch { return new Set() }
   })
   const [noDegree, setNoDegree] = useState(false)
+  const [expandedCompany, setExpandedCompany] = useState<string | null>(null)
 
   const fetchJobs = useCallback(async () => {
     const { data } = await supabase
@@ -317,12 +318,15 @@ export default function JobRadar() {
                   .sort((a, b) => (b.match_score ?? 0) - (a.match_score ?? 0))
                 if (companyJobs.length === 0) return null
                 const topMatch = companyJobs[0]
+                const isExpanded = expandedCompany === company
+                const visibleJobs = isExpanded ? companyJobs : companyJobs.slice(0, 3)
                 return (
                   <div key={company} className="bg-slate-900/60 border border-slate-600 hover:border-slate-500 rounded-xl p-4 transition">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Building2 size={14} className="text-blue-400" />
                         <span className="font-semibold text-sm">{company}</span>
+                        <span className="text-xs text-slate-600">{companyJobs.length} role{companyJobs.length !== 1 ? 's' : ''}</span>
                       </div>
                       {topMatch ? (
                         <span className={`text-xs font-bold tabular-nums ${scoreColor(topMatch.match_score ?? 0)}`}>
@@ -333,7 +337,7 @@ export default function JobRadar() {
                       )}
                     </div>
                     <div className="space-y-1">
-                      {companyJobs.slice(0, 3).map(j => (
+                      {visibleJobs.map(j => (
                         <a
                           key={j.id}
                           href={j.url}
@@ -346,7 +350,13 @@ export default function JobRadar() {
                         </a>
                       ))}
                       {companyJobs.length > 3 && (
-                        <p className="text-xs text-slate-500 pt-1 border-t border-slate-800">+{companyJobs.length - 3} more open roles</p>
+                        <button
+                          onClick={() => setExpandedCompany(isExpanded ? null : company)}
+                          className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 pt-1 border-t border-slate-800 w-full transition"
+                        >
+                          <ChevronDown size={11} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          {isExpanded ? 'Show less' : `+${companyJobs.length - 3} more open roles`}
+                        </button>
                       )}
                     </div>
                   </div>
