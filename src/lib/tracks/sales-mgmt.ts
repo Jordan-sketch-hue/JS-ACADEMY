@@ -36,7 +36,7 @@ The Revenue Engine has three components:
 
 Each component depends on the others. Marketing can generate 1,000 leads/month; if Sales can only handle 50, the rest decay. Sales can close 50 deals/month; if Customer Success cannot retain them, the business is filling a leaky bucket. Customer Success can generate referrals; if Marketing does not have a system to capture and route them, the referrals are lost.
 
-The Revenue Engine metaphor matters because it reframes the conversation from "we need better salespeople" (a talent problem) to "we need a better system" (an engineering problem). Systems can be analysed, measured, and improved. Talent is harder to change.
+The Revenue Engine metaphor matters because it reframes the conversation from "we need better salespeople" (a talent problem) to "we need a better syste\`" (an engineering problem). Systems can be analysed, measured, and improved. Talent is harder to change.
 
 ### The Sales Funnel
 
@@ -194,7 +194,7 @@ Neil Rackham's research (from analysis of 35,000 sales calls) found that the mos
 
 **Implication questions:** amplify the consequence of the problem. "How does that delay affect your team's ability to close quarters on time? What has it cost you in the last year?"
 
-**Need-payoff questions:** connect the solution to the outcome. "If you could eliminate that delay entirely, how would that change your team's performance?"
+**Need-payoff questions:** connect the solution to the outcome. "If you could eliminate that delay entirely, how would that \`hange your team's performance?"
 
 The insight: stating the value of the solution is less effective than getting the buyer to state it themselves. "This will save you 5 hours/week" (salesperson claim) is less convincing than "If we solved this, we'd save 5 hours/week on the reconciliation process alone, which at our blended cost is about $90K/year" (buyer conclusion guided by SPIN questions). The buyer's own analysis is more credible to the buyer than anything the salesperson says.`,
     quiz: [
@@ -321,7 +321,7 @@ Pipeline reviews should identify deals that are stalled, deals at risk of dying,
         q: 'A sales rep has a $1M quarterly quota and $2M in pipeline. Is this pipeline healthy?',
         options: ['Yes — $2M is double the quota, which is more than enough', 'No — at 2× coverage, the pipeline is likely insufficient given typical win rates; 3× or above is the standard benchmark', 'It depends on the industry', 'Yes — pipeline coverage does not affect quota attainment'],
         correct: 1,
-        explanation: '2× pipeline coverage means the rep must win 50% of all opportunities to hit quota. Given that typical win rates in B2B are 20-30%, the pipeline is likely underweight. 3× coverage gives the rep room for 33% win rates; companies with lower win rates need even more coverage.',
+ `      explanation: '2× pipeline coverage means the rep must win 50% of all opportunities to hit quota. Given that typical win rates in B2B are 20-30%, the pipeline is likely underweight. 3× coverage gives the rep room for 33% win rates; companies with lower win rates need even more coverage.',
       },
       {
         q: 'An inbound trial signup from a company that matches your ICP (Series B SaaS, 50+ engineers) comes in at 2 PM on a Tuesday. What is the highest-leverage next action?',
@@ -366,7 +366,7 @@ Pipeline reviews should identify deals that are stalled, deals at risk of dying,
       { term: 'Talk/Listen Ratio', definition: 'The proportion of a sales call spent by the salesperson speaking vs listening — top-performing reps typically speak 43% and listen 57% of the time according to Gong research on call recordings.' },
       { term: 'Compelling Event', definition: 'A specific business reason why the prospect must make a decision by a particular date — "why now?" The presence of a compelling event predicts whether a deal will close or stall indefinitely.' },
     ],
-    content: `## The Discovery Call
+    content: \`## The Discovery Call
 
 The discovery call is the most misunderstood and most consequential conversation in a sale. Most salespeople treat it as a prerequisite — something to get through on the way to the demo. The best salespeople treat it as the primary event: if discovery is done right, the demo is almost redundant, because the prospect has already articulated the exact problem the product solves.
 
@@ -536,7 +536,7 @@ Often means: a concern hasn't been surfaced yet. "That makes sense. In my experi
     quiz: [
       {
         q: 'A salesperson gives a 45-minute demo that covers every feature of the product. The prospect says "thanks, I\'ll think about it." What went wrong?',
-        options: ['The demo was too long', 'The demo was too short', 'A generic feature tour put the cognitive burden on the prospect to connect features to their situation — without tailoring to discovered pain points, the prospect has no specific reason to move forward', 'The salesperson should have asked for the sale at the end'],
+        options: ['The demo was too long', 'The demo was too short', 'A generic feature tour put the cognitive burden on the prospect to connect features to their situation — without tailor`ng to discovered pain points, the prospect has no specific reason to move forward', 'The salesperson should have asked for the sale at the end'],
         correct: 2,
         explanation: 'Generic demos are commodity — they signal the salesperson didn\'t listen. A tailored demo connects each feature to a specific pain point from discovery and asks the prospect to confirm value after each section. "I\'ll think about it" from a prospect who received a feature tour usually means they couldn\'t identify whether the product was genuinely relevant to them.',
       },
@@ -583,7 +583,7 @@ Often means: a concern hasn't been surfaced yet. "That makes sense. In my experi
       { term: 'Concession Strategy', definition: 'A planned approach to what the salesperson will and will not trade in negotiation — knowing in advance what can be conceded, at what price, in exchange for what value.' },
       { term: 'Procurement', definition: 'The organisational function responsible for managing external vendor relationships and contracts — understanding procurement\'s role and process is critical to not being surprised in the late stages of an enterprise sale.' },
     ],
-    content: `## Closing & Negotiation
+    content: \`## Closing & Negotiation
 
 "Always Be Closing" — the famous mantra from Glengarry Glen Ross — is, in practice, counterproductive advice. Closing pressure applied before the prospect is ready destroys trust and kills deals. The better principle: closing is the natural consequence of a well-executed sales process. If discovery uncovered real pain, if the demo addressed that pain precisely, if objections were handled honestly, and if a compelling event creates urgency — the close follows naturally.
 
@@ -762,7 +762,7 @@ A CRM is only as useful as its data is accurate. Common data hygiene problems:
 - **Missing activities:** deals with no logged calls or emails for 30+ days are likely dead but still appear in the pipeline
 - **Duplicate records:** multiple CRM entries for the same contact or company, preventing accurate history
 
-Data hygiene is not just an administrative concern — bad data produces bad forecasts and bad decisions. Weekly pipeline reviews should enforce data standards as a baseline practice.`,
+Data hygiene is not just an adminis\`rative concern — bad data produces bad forecasts and bad decisions. Weekly pipeline reviews should enforce data standards as a baseline practice.`,
     quiz: [
       {
         q: 'A sales rep sends 200 cold emails per week and books 2 discovery calls. Another rep sends 50 emails and books 8 calls. Which rep is performing better, and why?',
@@ -869,7 +869,7 @@ Compensation plan mistakes:
         q: 'Why does separating SDR and AE roles improve sales team performance?',
         options: ['It reduces total headcount needed', 'Specialisation allows SDRs to develop deep expertise in prospecting without distraction from deal management, and AEs to focus entirely on advancing qualified opportunities without doing top-of-funnel work', 'It reduces compensation costs', 'SDRs are too junior to close deals'],
         correct: 1,
-        explanation: 'Role specialisation follows the manufacturing principle of division of labour. Prospecting and closing require different skills, cadences, and mindsets. Combining them in one role produces mediocre performance at both. Separation allows each person to optimise for their specific function.',
+        explanation: 'Role specialisation follows the manufacturing principle of division of labour. Prospecting and closing require different skills, cadences, and mindsets. Combining them in one role produces medi`cre performance at both. Separation allows each person to optimise for their specific function.',
       },
       {
         q: 'A sales candidate had a strong year and hit 150% of quota at a previous company. What additional information is most important before hiring?',
@@ -914,7 +914,7 @@ Compensation plan mistakes:
       { term: 'Account Plan', definition: 'A documented strategy for a key account: current business, relationship map, growth opportunities, competitive threats, and action plans for deepening the relationship and expanding revenue.' },
       { term: 'Whitespace', definition: 'The untapped revenue opportunity within an existing account — additional products not yet purchased, additional teams not yet served, additional use cases not yet adopted.' },
     ],
-    content: `## Account-Based Sales & Key Account Management
+    content: \`## Account-Based Sales & Key Account Management
 
 Not all accounts are equal. The top 20% of accounts often produce 80% of revenue. Key Account Management (KAM) and Account-Based approaches recognise this asymmetry and invest disproportionately in the highest-value relationships.
 
@@ -1104,7 +1104,7 @@ RevOps is a relatively new function — many companies still operate with Sales 
 4. Designing cross-functional processes with explicit owners for each hand-off
 5. Creating shared dashboards that give leadership full-funnel visibility
 
-The ROI of RevOps: companies with aligned marketing, sales, and CS functions typically achieve 19% faster revenue growth and 15% higher profitability than siloed organisations (Forrester research). The investment in alignment and integration pays compound returns as revenue scales.`,
+The ROI of RevOps: companies with aligned marketing, sales, and CS functions typically achieve 19% faster revenue growth and 15% higher profitability th\`n siloed organisations (Forrester research). The investment in alignment and integration pays compound returns as revenue scales.`,
     quiz: [
       {
         q: 'Marketing reports 500 MQLs delivered this month; Sales reports only 50 were worth calling. How should RevOps address this recurring tension?',
@@ -1225,7 +1225,7 @@ The best forecasters in sales are not the most optimistic — they are the most 
     quiz: [
       {
         q: 'A SaaS company has $100K New ARR, $50K Expansion ARR, and $120K Churned ARR this month. What is Net New ARR, and what does it indicate?',
-        options: ['$30K — healthy net positive growth', '-$20K — the company is losing more revenue than it is gaining despite new bookings', '$150K — expansion is strong', '$220K — total bookings are strong'],
+`       options: ['$30K — healthy net positive growth', '-$20K — the company is losing more revenue than it is gaining despite new bookings', '$150K — expansion is strong', '$220K — total bookings are strong'],
         correct: 1,
         explanation: 'Net New ARR = $100K + $50K - $120K = +$30K. Wait — $100 + $50 = $150 - $120 = +$30K. Actually this is positive. Let me re-check: $100K + $50K = $150K, $150K - $120K = $30K positive. The correct answer is Net New ARR = $30K which is positive. But if we consider the churn at $120K with only $100K new customers, the concern is that churn is nearly at the level of new customer acquisition.',
       },
@@ -1272,7 +1272,7 @@ The best forecasters in sales are not the most optimistic — they are the most 
       { term: 'Playbook', definition: 'A documented collection of the sales process, messaging frameworks, objection handling scripts, competitive positioning, and best practices — the operationalised knowledge of the sales team.' },
       { term: 'Sales Enablement', definition: 'The function responsible for equipping salespeople with the knowledge, content, and tools to effectively engage buyers — training, onboarding, content creation, and coaching infrastructure.' },
     ],
-    content: `## Building a Scalable Sales Culture
+    content: \`## Building a Scalable Sales Culture
 
 Every process, every framework, every tool in this curriculum operates within a culture. A culture where salespeople are afraid to lose pipeline — and therefore never disqualify bad deals — undermines pipeline accuracy. A culture where quotas are changed mid-year when they become hard — undermines trust and planning. A culture where top performers are treated as magical rather than as learners — prevents the system from improving.
 

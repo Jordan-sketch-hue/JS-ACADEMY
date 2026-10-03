@@ -777,9 +777,9 @@ The Web Content Accessibility Guidelines (WCAG) 2.1 and 2.2 define accessibility
 
 Screen readers (VoiceOver on macOS/iOS, NVDA and JAWS on Windows) convert page content to audio or braille. They navigate by semantic structure — headings, links, form labels, landmarks. An interface built with meaningless div elements and CSS-styled buttons is invisible to screen readers; it must be rebuilt with:
 
-- Semantic HTML elements (`<button>`, `<nav>`, `<main>`, `<h1>–<h6>`)
+- Semantic HTML elements (\`<button>\`, \`<nav>\`, \`<main>\`, \`<h1>–<h6>\`)
 - Meaningful alt text on images (not "image1.jpg"; describes what the image conveys)
-- Form labels programmatically associated with their inputs (`<label for="email">`)
+- Form labels programmatically associated with their inputs (\`<label for="email">\`)
 - ARIA attributes where HTML semantics are insufficient (live regions for dynamic content, roles for custom widgets)
 - Logical reading order in the DOM that matches visual order
 
@@ -793,7 +793,7 @@ Contrast ratios affect readability for low-vision users and in suboptimal condit
 
 All interactive elements must be reachable and operable via keyboard:
 - Logical tab order (matches reading order)
-- Visible focus indicators (not removed with `outline: none`)
+- Visible focus indicators (not removed with \`outline: none\`)
 - Focus management for dynamic content (modal opens, focus moves to modal; modal closes, focus returns to trigger)
 - Custom keyboard interactions for complex widgets (arrow keys for menus, Escape to close)
 

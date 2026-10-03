@@ -33,7 +33,7 @@ A PM is sometimes described as "the CEO of the product." This is an overstatemen
 What PMs actually do:
 - **Define the problem** — understand users well enough to know what problem the product should solve
 - **Prioritise ruthlessly** — decide what to build now versus later versus never, and defend those decisions with evidence
-- **Set direction** — communicate a coherent vision and strategy that aligns the team's work
+- **Set direction** — communicate a coherent vision and s\`rategy that aligns the team's work
 - **Manage trade-offs** — make calls when user needs, technical constraints, and business requirements conflict
 - **Measure outcomes** — determine whether shipped features produced the intended results and iterate accordingly
 
@@ -184,7 +184,7 @@ Continuous discovery prevents the organisation from going months or years betwee
     quiz: [
       {
         q: 'Using the Jobs To Be Done framework, what is the "job" someone hires a taxi app for?',
-        options: ['To have a taxi app on their phone', 'To be transported from one location to another without the friction, uncertainty, or planning of alternatives', 'To rate drivers and leave reviews', 'To see available cars on a map'],
+        options: ['To have a taxi app on their phone', 'To be transported from one location to another without the friction, uncertainty, or planning o` alternatives', 'To rate drivers and leave reviews', 'To see available cars on a map'],
         correct: 1,
         explanation: 'JTBD focuses on the underlying goal, not the product feature. The job is "reliably get from A to B without friction" — encompassing availability certainty, pricing transparency, and reduced cognitive effort compared to alternatives (calling a dispatcher, hailing on the street).',
       },
@@ -231,7 +231,7 @@ Continuous discovery prevents the organisation from going months or years betwee
       { term: 'Now-Next-Later Roadmap', definition: 'A roadmap format organising work into three horizons without specific dates — "Now" (in progress), "Next" (validated and ready to start), "Later" (direction but not yet planned) — acknowledging uncertainty.' },
       { term: 'Opportunity Cost', definition: 'The value of the next-best alternative foregone by choosing a course of action — every item on a roadmap represents the decision NOT to build everything else; strategy is as much about what not to do.' },
     ],
-    content: `## Product Strategy & Roadmapping
+    content: \`## Product Strategy & Roadmapping
 
 Strategy is the answer to "how will we win?" For products, this means: which users, which problems, which capabilities, and in what sequence — given limited resources and an uncertain future. Most product "strategies" are actually lists of features, which is planning, not strategy.
 
@@ -386,7 +386,7 @@ The discipline: staying close enough to real users that the pivot is informed by
         q: 'A product has a retention curve that gradually approaches zero by Day 30. What does this indicate?',
         options: ['PMF has been achieved for a small segment', 'The onboarding experience needs improvement', 'Users are not finding lasting value — the product has not achieved PMF', 'The product category has low natural retention'],
         correct: 2,
-        explanation: 'A retention curve approaching zero means users try the product and don\'t come back. No subset of users has found the product genuinely valuable. PMF produces a retention curve that flattens — a portion of users continues to return habitually.',
+        explana`ion: 'A retention curve approaching zero means users try the product and don\'t come back. No subset of users has found the product genuinely valuable. PMF produces a retention curve that flattens — a portion of users continues to return habitually.',
       },
       {
         q: 'The Sean Ellis Test asks "How would you feel if you could no longer use this product?" — what response percentage indicates PMF?',
@@ -431,7 +431,7 @@ The discipline: staying close enough to real users that the pivot is informed by
       { term: 'Edge Case', definition: 'A scenario that occurs at the boundaries of a feature\'s design space — rare inputs, unusual user states, system failures. Well-written requirements address edge cases before they become production bugs.' },
       { term: 'Non-Functional Requirements', definition: 'Requirements that define system quality attributes — performance, security, scalability, reliability — rather than feature behaviour. Often unstated and later discovered as production problems.' },
     ],
-    content: `## Defining Requirements
+    content: \`## Defining Requirements
 
 A requirement is a specification of what must be true for a feature to be considered complete and correct. Poor requirements produce features that don't match user needs, don't meet stakeholder expectations, and surprise engineers with edge cases mid-development. Good requirements align everyone on what is being built and why before the first line of code is written.
 
@@ -629,7 +629,7 @@ The best argument for debt repayment: frame it in user and business terms. "If w
     quiz: [
       {
         q: 'In RICE scoring, a feature scores high on Reach and Impact but low on Confidence. What should the team do?',
-        options: ['Build it immediately — the high impact justifies the uncertainty', 'Deprioritise it permanently', 'Acknowledge the lower score from low confidence and investigate to increase confidence before committing — small validation experiments reduce uncertainty', 'Increase the Effort estimate to compensate'],
+        options: ['Build it immediately — the high impact justifies the uncertainty', 'Deprioritise it permanently', 'Acknowledge the lower score from low confidence and i`vestigate to increase confidence before committing — small validation experiments reduce uncertainty', 'Increase the Effort estimate to compensate'],
         correct: 2,
         explanation: 'Low confidence means the reach and impact estimates are uncertain. The correct response is to run small validation experiments (user interviews, prototypes, data analysis) to increase confidence before investing in a large build — not to guess or ignore the uncertainty.',
       },
@@ -676,7 +676,7 @@ The best argument for debt repayment: frame it in user and business terms. "If w
       { term: 'Definition of Done', definition: 'A shared team agreement on what must be true for a feature to be considered complete — code written, tests passing, code reviewed, documentation updated, QA verified, and accessible.' },
       { term: 'Velocity', definition: 'The average number of story points a team completes per sprint — used for capacity planning and release date estimation, not as a performance metric.' },
     ],
-    content: `## Working with Engineering
+    content: \`## Working with Engineering
 
 The PM-engineer relationship is one of the most consequential dynamics in software development. When it works well: the team builds the right things at a sustainable pace, engineers are creative participants in problem-solving, and technical reality shapes product decisions constructively. When it breaks down: feature factories ship code nobody uses, engineers feel like ticket-closers rather than craftspeople, and product direction is disconnected from technical reality.
 
@@ -848,7 +848,7 @@ Activation improvement levers:
     quiz: [
       {
         q: 'A new productivity app is launching with positioning "for everyone who wants to be more productive." What is the problem with this positioning?',
-        options: ['It is too short', 'It positions against the wrong competitive alternatives', '"Everyone" produces messaging nobody specifically identifies with — positioning requires a specific segment, not a universal claim', 'It does not mention pricing'],
+        options: ['It is too short', 'It positions against the wrong competitive alternatives', '"Everyone" produces messaging nobody specifically identifies with — positioning requires a specific segment, not a universal claim', 'I` does not mention pricing'],
         correct: 2,
         explanation: 'Universal positioning ("for everyone") sounds appealing but produces generic messaging that no specific user identifies with. Specific positioning ("for solopreneurs managing multiple client projects") creates resonance with the target segment while still appealing to adjacent users.',
       },
@@ -895,7 +895,7 @@ Activation improvement levers:
       { term: 'LTV:CAC Ratio', definition: 'Customer Lifetime Value divided by Customer Acquisition Cost — a measure of unit economics health. A ratio above 3:1 is generally considered viable for a sustainable business.' },
       { term: 'Feature Adoption Rate', definition: 'The percentage of eligible users who actively use a feature within a defined period — low adoption on a recently shipped feature is a signal the feature was not what users needed.' },
     ],
-    content: `## Product Metrics & Analytics
+    content: \`## Product Metrics & Analytics
 
 "If you can't measure it, you can't improve it." But the more common failure in product management is measuring the wrong things, or measuring things correctly but drawing the wrong conclusions.
 
@@ -1069,7 +1069,7 @@ Most PMs work in growth or maturity phases. The decisions made during each phase
 ### Managing Stagnation
 
 Stagnation — when growth slows without reaching market saturation — is different from natural maturity. Causes:
-- **PMF for initial segment achieved, but growth to adjacent segments not activated**
+- **PMF for initial segment achieved, but growth to\`adjacent segments not activated**
 - **Retention cliff preventing compounding growth** (losing users as fast as acquiring them)
 - **Channel exhaustion** (the acquisition channel that drove initial growth has saturated or become more expensive)
 - **Competitive displacement** (a new entrant is winning users the product was successfully acquiring)
@@ -1159,7 +1159,7 @@ Stripe's documentation is the canonical example of exceptional DX. Every endpoin
 
 PMs working on APIs do not make low-level technical design decisions — but they shape the requirements that determine API design:
 
-**Naming consistency:** if the API uses `customer_id` in one endpoint, it should not use `client_id` in another for the same concept.
+**Naming consistency:** if the API uses \`customer_id\` in one endpoint, it should not use \`client_id\` in another for the same concept.
 
 **Versioning:** APIs change as the product evolves. Breaking changes (removing fields, changing field semantics) require version increments (v1 → v2) or long deprecation windows. Developers cannot update their integrations on the platform's schedule.
 
@@ -1183,7 +1183,7 @@ Platform PMs must actively manage ecosystem health — maintaining predictabilit
 
 A recurring PM decision for non-platform products: build a proprietary capability or integrate with an existing platform?
 
-The integration economics: Stripe charges ~2.9% per transaction. Building payment processing from scratch requires PCI compliance, bank relationships, fraud management, and ongoing maintenance — likely costing more in aggregate than Stripe's fee at most scales. Similarly, Twilio's SMS and voice infrastructure costs less to use than to replicate. Most products should be customers of platforms rather than builders of competing infrastructure.
+The integration economics: Stripe charges ~2.9% per transaction. Building payment processing from scratch requires PCI compliance, bank relationships, fraud management, and ongoing maintenance — likely costing more in aggregate than Stripe's fee at most scales. Similarly, Twilio's SMS and voice infrastructure costs less to use than to replicate. \`ost products should be customers of platforms rather than builders of competing infrastructure.
 
 The exception: when the platform creates unacceptable strategic risk (single-source dependency for a core capability) or when the product needs capabilities the platform does not provide and cannot be customised to provide.`,
     quiz: [
@@ -1293,7 +1293,7 @@ Managing product debt requires:
 
 The PM career path involves increasing scope and ambiguity at each level:
 - **Associate PM / Junior PM:** owns specific features, works closely with a senior PM, developing craft fundamentals
-- **PM:** owns a product area, leads discovery and delivery, manages stakeholders within a domain
+- **PM:**\`owns a product area, leads discovery and delivery, manages stakeholders within a domain
 - **Senior PM:** owns significant product scope, mentors junior PMs, contributes to product strategy
 - **Principal/Staff PM:** shapes cross-team product strategy, influences organisation-level decisions
 - **Director of PM:** manages a team of PMs, owns product portfolio strategy
