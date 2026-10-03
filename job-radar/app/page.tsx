@@ -5,7 +5,7 @@ import { JOB_CATEGORIES, type JobCategory } from '@/lib/resume'
 import {
   Briefcase, BookmarkCheck, CheckCircle, Search, Bell, BellOff,
   ExternalLink, RefreshCw, ChevronDown, Zap, Shield, Code2,
-  Database, Cloud, Wrench, Bot, Megaphone, Settings, Star
+  Database, Cloud, Wrench, Bot, Megaphone, Settings, Star, X
 } from 'lucide-react'
 
 const CAT_ICONS: Record<string, any> = {
@@ -61,6 +61,9 @@ export default function JobRadar() {
   const [coverLetter, setCoverLetter] = useState<{ id: string; text: string } | null>(null)
   const [pushEnabled, setPushEnabled] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
+  const [dismissed, setDismissed] = useState<Set<string>>(() => {
+    try { return new Set(JSON.parse(localStorage.getItem('dismissed') ?? '[]')) } catch { return new Set() }
+  })
 
   const fetchJobs = useCallback(async () => {
     const { data } = await supabase
@@ -68,8 +71,8 @@ export default function JobRadar() {
       .select('*')
       .order('match_score', { ascending: false })
       .limit(200)
-    // filter out any fake seed jobs (non-numeric IDs like remotive-qa-001)
-    const real = (data ?? []).filter(j => /^(remotive|remoteok)-\d+$/.test(j.external_id))
+    // filter out fake seed jobs (non-numeric IDs) and dismissed jobs
+    const real = (data ?? []).filter(j => /^(remotive|remoteok|jobicy|arbeitnow|workingnomads|getonboard|torre)-/.test(j.external_id))
     setJobs(real)
     setLoading(false)
   }, [])
@@ -77,7 +80,7 @@ export default function JobRadar() {
   useEffect(() => { fetchJobs() }, [fetchJobs])
 
   useEffect(() => {
-    let list = jobs
+    let list = jobs.filter(j => !dismissed.has(j.id))
     if (tab === 'saved') list = list.filter(j => j.saved)
     if (tab === 'applied') list = list.filter(j => j.applied)
     if (category !== 'All') list = list.filter(j => categoryFromJob(j) === category)
@@ -90,12 +93,19 @@ export default function JobRadar() {
       )
     }
     setFiltered(list)
-  }, [jobs, tab, category, search])
+  }, [jobs, tab, category, search, dismissed])
 
   async function toggleSave(job: Job) {
     const saved = !job.saved
     await supabase.from('jobs').update({ saved }).eq('id', job.id)
     setJobs(prev => prev.map(j => j.id === job.id ? { ...j, saved } : j))
+  }
+
+  function dismissJob(job: Job) {
+    const next = new Set(dismissed)
+    next.add(job.id)
+    setDismissed(next)
+    try { localStorage.setItem('dismissed', JSON.stringify([...next])) } catch { /* ignore */ }
   }
 
   async function applyToJob(job: Job) {
@@ -281,6 +291,9 @@ export default function JobRadar() {
                     )}
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
+                    <button onClick={() => dismissJob(job)} className="p-2 rounded-lg hover:bg-slate-800 transition" title="Not interested">
+                      <X size={14} className="text-slate-600 hover:text-red-400" />
+                    </button>
                     <button onClick={() => toggleSave(job)} className="p-2 rounded-lg hover:bg-slate-800 transition">
                       <BookmarkCheck size={14} className={job.saved ? 'text-yellow-400' : 'text-slate-600'} />
                     </button>

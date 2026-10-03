@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { scrapeRemotive, scrapeRemoteOK, enrichJobs } from '@/lib/scraper'
+import {
+  scrapeRemotive, scrapeRemoteOK, scrapeJobicy,
+  scrapeArbeitnow, scrapeWorkingNomads, scrapeGetOnBoard,
+  scrapeTorre, enrichJobs,
+} from '@/lib/scraper'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,12 +13,18 @@ const supabase = createClient(
 
 async function runScrape() {
   try {
-    const [remotive, remoteok] = await Promise.all([
+    // Scrape all sources in parallel
+    const [remotive, remoteok, jobicy, arbeitnow, workingnomads, getonboard, torre] = await Promise.all([
       scrapeRemotive(),
       scrapeRemoteOK(),
+      scrapeJobicy(),
+      scrapeArbeitnow(),
+      scrapeWorkingNomads(),
+      scrapeGetOnBoard(),
+      scrapeTorre(),
     ])
 
-    const allRaw = [...remotive, ...remoteok]
+    const allRaw = [...remotive, ...remoteok, ...jobicy, ...arbeitnow, ...workingnomads, ...getonboard, ...torre]
     const scored = enrichJobs(allRaw)
 
     if (scored.length === 0) {
@@ -48,6 +58,7 @@ async function runScrape() {
 
     if (error) throw error
 
+    // Push notification for high-match jobs
     const topJobs = scored.filter(j => j.match_score >= 70)
     if (topJobs.length > 0) {
       await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/push`, {
@@ -61,7 +72,20 @@ async function runScrape() {
       }).catch(() => {})
     }
 
-    return NextResponse.json({ inserted: inserted?.length ?? 0, total_scraped: allRaw.length, matched: scored.length })
+    return NextResponse.json({
+      inserted: inserted?.length ?? 0,
+      total_scraped: allRaw.length,
+      matched: scored.length,
+      sources: {
+        remotive: remotive.length,
+        remoteok: remoteok.length,
+        jobicy: jobicy.length,
+        arbeitnow: arbeitnow.length,
+        workingnomads: workingnomads.length,
+        getonboard: getonboard.length,
+        torre: torre.length,
+      }
+    })
   } catch (err: any) {
     console.error('Scrape error:', err)
     return NextResponse.json({ error: err.message }, { status: 500 })

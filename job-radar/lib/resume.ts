@@ -164,6 +164,12 @@ export function scoreJob(title: string, description: string): { score: number; r
   // Bonus for remote
   if (text.includes('remote')) { score += 8; if (!reasons.includes('remote')) reasons.push('remote') }
 
+  // Bonus for LATAM / Caribbean / worldwide hiring
+  if (text.match(/latam|latin america|caribbean|jamaica|trinidad|barbados|worldwide|global|anywhere/i)) {
+    score += 15
+    reasons.push('LATAM/Caribbean friendly')
+  }
+
   // Bonus for multilingual/international
   if (text.match(/multilin|locali|international|i18n|l10n/)) {
     score += 12
