@@ -284,6 +284,8 @@ import { crashInterviewFullstackCourses } from './tracks/crash-interview-fullsta
 import { crashInterviewQaCourses } from './tracks/crash-interview-qa'
 import { crashInterviewDataCourses } from './tracks/crash-interview-data'
 import { crashInterviewSecurityCourses } from './tracks/crash-interview-security'
+// AWS crash course
+import { crashAwsCourses } from './tracks/crash-aws'
 
 const languageCourses: Course[] = [
   {
@@ -398,6 +400,8 @@ export const COURSES: Course[] = [
   ...crashRCourses,
   // Ship It
   ...crashShipItCourses,
+  // AWS
+  ...crashAwsCourses,
   // Degree add-ons
   ...crashMarketingDegreeCourses,
   ...crashCsDegreeCourses,

@@ -85,6 +85,12 @@ const CRASH_SECTIONS: { label: string; sublabel: string; color: string; ids: str
     ids: ['cc-ship-it'],
   },
   {
+    label: 'Cloud & Infrastructure',
+    sublabel: 'AWS from first principles',
+    color: '#ea580c',
+    ids: ['cc-aws'],
+  },
+  {
     label: 'Programming Languages',
     sublabel: 'Python, R, Java, Go, Swift, Rust, C++',
     color: '#b45309',
