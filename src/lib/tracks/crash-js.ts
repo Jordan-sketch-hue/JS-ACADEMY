@@ -4,116 +4,316 @@ const CC_JS_OBJ = 'Write real JavaScript from scratch — variables, async patte
 
 export const crashJsCourses: Course[] = [
   {
-    id: 'cc-js-m01', track: 'crash', title: 'Types, Variables & Functions',
-    subtitle: 'Declare variables correctly, understand JS types, and write reusable functions.',
-    moduleObjective: 'Declare variables correctly, understand JS types, and write reusable functions.',
+    id: 'cc-js-m01', track: 'crash', title: 'Environment, Types & Your First Real Function',
+    subtitle: 'Set up VS Code for JavaScript, understand types from first principles, and write your first multi-file program.',
+    moduleObjective: 'Configure VS Code for JS development, declare variables correctly, understand all 8 types, and write reusable functions that span multiple files.',
     courseObjective: CC_JS_OBJ, crashId: 'cc-js', crashTitle: 'JavaScript', level: 'Basic',
-    xp: 150, duration: 10, module: 1, certArea: 'JavaScript Crash Course',
+    xp: 150, duration: 12, module: 1, certArea: 'JavaScript Crash Course',
     keyTerms: [
-      { term: 'let / const', definition: 'Block-scoped declarations. Use const by default, let when reassignment is needed. Never var.' },
-      { term: 'Primitive Types', definition: 'JS has 7: string, number, bigint, boolean, undefined, null, symbol. typeof checks type at runtime.' },
+      { term: 'let / const', definition: 'Block-scoped declarations. Use const by default, let when reassignment is needed. Never var in modern code.' },
+      { term: 'Primitive Types', definition: 'JS has 8: string, number, bigint, boolean, undefined, null, symbol, object. typeof checks type at runtime.' },
       { term: 'Arrow Function', definition: 'Concise syntax: (param) => expression. No own this binding — inherits from surrounding scope.' },
       { term: 'Closure', definition: 'When an inner function retains access to outer scope variables after the outer function returns.' },
-      { term: 'Template Literal', definition: 'Backtick string with embedded expressions: `Hello ${name}`. Replaces string concatenation.' },
+      { term: 'Template Literal', definition: 'Backtick string with embedded expressions: Hello ${name}. Replaces string concatenation.' },
+      { term: 'Module (ES6)', definition: 'A file that exports functions/values using export, and imports them in another file using import.' },
+      { term: 'Node.js', definition: 'JavaScript runtime outside the browser. Lets you run .js files from the terminal using node filename.js.' },
     ],
-    content: `## Types, Variables & Functions
+    content: `## Environment, Types & Your First Real Function
 
-JavaScript is the only language that runs natively in every browser and in Node.js. React, Next.js, TypeScript — they all compile down to JavaScript. Mastering fundamentals removes the magic from every framework above them.
+### Why JavaScript First?
 
-### Variables: The Right Declarations
+JavaScript is the only language that runs natively in every browser — no install, no compile step. It also runs server-side via Node.js. React, Next.js, TypeScript — they all compile down to JavaScript. Mastering fundamentals removes the magic from every framework above them.
 
-\`\`\`js
-const name = 'Jordan'      // cannot be reassigned — use this by default
-let count = 0              // reassignable — use when value changes
-var old = 'never use this' // function-scoped, hoisted — legacy
+**Before you write a single line: your environment must be correct.**
+
+---
+
+### Setting Up VS Code for JavaScript
+
+Open VS Code. Install these extensions once — they will make every lesson easier:
+
+1. **ESLint** — catches errors before you run code
+2. **Prettier** — auto-formats on save
+3. **JavaScript (ES2022+) snippets** — built into VS Code already
+
+**Create your project folder** (Terminal > New Terminal in VS Code):
+
+\`\`\`bash
+mkdir js-crash-course
+cd js-crash-course
+code .
 \`\`\`
 
-**Rule:** default to \`const\`. Use \`let\` only when the value will change.
+**Enable auto-format on save** — open Settings (Ctrl+,), search "format on save", check the box.
 
-### Data Types
+---
 
-\`\`\`js
-typeof 'hello'        // 'string'
-typeof 42             // 'number'
-typeof true           // 'boolean'
-typeof undefined      // 'undefined'
-typeof null           // 'object' ← historic JS bug, never fixed
-typeof []             // 'object'
-typeof function(){}   // 'function'
+### Running JavaScript: Two Environments
+
+**In the browser** — open DevTools (F12), Console tab. Type JS directly. Use this for DOM work.
+
+**In Node.js** — run any .js file from terminal:
+\`\`\`bash
+node main.js
 \`\`\`
 
-Primitives are passed by value. Objects (including arrays) are passed by reference.
+You'll use Node.js for everything in this crash course.
+
+---
+
+### Variables: Three Keywords, One Rule
+
+\`\`\`js
+const name = 'Jordan'      // cannot be reassigned — use this 90% of the time
+let count = 0              // reassignable — use only when value changes
+var old = 'avoid'          // function-scoped, hoisted — legacy code only
+\`\`\`
+
+**The rule: default to \`const\`. Use \`let\` when the value must change. Never \`var\`.**
+
+Why does this matter? \`var\` is hoisted to the top of its function, which causes subtle bugs:
+
+\`\`\`js
+// var leaks out of if blocks
+if (true) {
+  var x = 10
+}
+console.log(x)  // 10 — var escapes the block
+
+// const stays in its block
+if (true) {
+  const y = 10
+}
+console.log(y)  // ReferenceError — y doesn't exist here
+\`\`\`
+
+---
+
+### The 8 Data Types
+
+\`\`\`js
+typeof 'hello'           // 'string'
+typeof 42                // 'number'  (covers integers and floats — JS has no int)
+typeof 9007199254740991n // 'bigint'  (for numbers larger than Number.MAX_SAFE_INTEGER)
+typeof true              // 'boolean'
+typeof undefined         // 'undefined'  (default of unassigned variables)
+typeof null              // 'object'  ← a 25-year-old JS bug, never fixed
+typeof Symbol()          // 'symbol'  (unique identifiers, used in advanced JS)
+typeof {}                // 'object'  (arrays are also objects)
+\`\`\`
+
+**Primitives are immutable and passed by value. Objects are passed by reference.**
+
+\`\`\`js
+let a = 'hello'
+let b = a
+b = 'world'
+console.log(a)  // 'hello' — primitives copied
+
+const obj1 = { x: 1 }
+const obj2 = obj1
+obj2.x = 99
+console.log(obj1.x)  // 99 — objects share reference
+\`\`\`
+
+---
 
 ### Functions: Three Forms
 
 \`\`\`js
-// Declaration — hoisted, callable before definition
+// 1. Function declaration — hoisted, callable before its definition
 function greet(name) {
   return \`Hello, \${name}\`
 }
 
-// Arrow function — concise, no own this
+// 2. Arrow function — concise, no own this binding
 const greet = (name) => \`Hello, \${name}\`
 
-// Expression — not hoisted
+// 3. Function expression — not hoisted
 const greet = function(name) { return \`Hello, \${name}\` }
 \`\`\`
 
-### Default Parameters and Rest/Spread
+**Use arrow functions for callbacks and short functions. Use declarations for top-level named functions.**
 
+---
+
+### Your First Multi-File Program
+
+Real projects split code across files. Here's how it works:
+
+**utils.js** — utility functions exported for other files to use:
 \`\`\`js
-function createUser(name, role = 'viewer') {
-  return { name, role }
+// utils.js
+export function formatCurrency(amount, currency = 'USD') {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+  }).format(amount)
 }
 
-function sum(first, ...rest) {
-  return rest.reduce((acc, n) => acc + n, first)
+export function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
-
-Math.max(...[3, 1, 4, 1, 5, 9])  // 9
 \`\`\`
 
-### Scope and Closures
-
-\`const\` and \`let\` are block-scoped:
-
+**main.js** — the entry point that imports and uses utils.js:
 \`\`\`js
-if (true) {
-  const x = 10
-}
-console.log(x)  // ReferenceError
+// main.js
+import { formatCurrency, capitalize } from './utils.js'
+
+const products = [
+  { name: 'laptop', price: 1299 },
+  { name: 'keyboard', price: 89 },
+]
+
+products.forEach(p => {
+  console.log(\`\${capitalize(p.name)}: \${formatCurrency(p.price)}\`)
+})
 \`\`\`
 
-A closure remembers outer scope:
+**Run it:**
+\`\`\`bash
+node --input-type=module < main.js
+# Or add "type": "module" to package.json and run: node main.js
+\`\`\`
+
+The \`export\` keyword makes a function available. The \`import\` keyword pulls it in. **Files connect through explicit imports — nothing is global by default in modern JS.**
+
+---
+
+### Closures: How State Lives Inside Functions
+
+This is the most important pattern in JavaScript — React's \`useState\` is built on it:
 
 \`\`\`js
 function makeCounter(start = 0) {
-  let count = start
+  let count = start  // this variable lives INSIDE makeCounter's scope
   return {
-    inc: () => ++count,
+    inc: () => ++count,   // this arrow function closes over count
+    dec: () => --count,
     get: () => count,
   }
 }
-const c = makeCounter(5)
-c.inc()  // 6
+
+const counter = makeCounter(10)
+counter.inc()  // 11
+counter.inc()  // 12
+counter.dec()  // 11
+console.log(counter.get())  // 11
 \`\`\`
 
-This is exactly how React's useState works internally.
+\`count\` outlives \`makeCounter\`'s execution because the returned functions hold a reference to it. That's a closure.
 
-### Truthiness
+---
 
-Falsy: \`false\`, \`0\`, \`''\`, \`null\`, \`undefined\`, \`NaN\`. Empty arrays and objects are truthy.
+### Truthiness & Safe Access
+
+Falsy values: \`false\`, \`0\`, \`''\`, \`null\`, \`undefined\`, \`NaN\`. Everything else is truthy.
 
 \`\`\`js
 const user = null
-const name = user?.name ?? 'Guest'  // optional chaining + nullish coalescing
+const name = user?.name ?? 'Guest'   // optional chaining + nullish coalescing
+// user?.name = undefined (safe, doesn't throw)
+// ?? 'Guest'  = use right side only when left is null/undefined
 \`\`\``,
     quiz: [
-      { q: 'Which declaration should you use by default?', options: ['var', 'let', 'const', 'They are equivalent'], correct: 2, explanation: 'Default to const. Use let only when value must be reassigned.' },
-      { q: 'What is a closure?', options: ['A way to exit early', 'Inner function retaining outer scope after outer returns', 'A try/catch wrapper', 'Prevents hoisting'], correct: 1, explanation: 'Closures capture surrounding scope variables. React hooks rely on this.' },
-      { q: 'typeof null returns what?', options: ['"null"', '"undefined"', '"object"', '"primitive"'], correct: 2, explanation: '"object" — a JS bug never fixed for backwards compatibility. Use === null to check for null.' },
-      { q: 'Difference between undefined and null?', options: ['Identical', 'undefined = never assigned; null = intentionally empty', 'null is a number', 'undefined only in TypeScript'], correct: 1, explanation: 'undefined is the default of unassigned vars. null is an explicit signal: intentionally no value.' },
+      { q: 'Which declaration should you use by default in modern JavaScript?', options: ['var', 'let', 'const', 'They are all equivalent'], correct: 2, explanation: 'Default to const. It prevents accidental reassignment and makes intent clear. Use let only when the value genuinely needs to change.' },
+      { q: 'What is a closure?', options: ['A way to exit a function early', 'An inner function that retains access to outer scope variables after the outer function returns', 'A try/catch error wrapper', 'A way to prevent variable hoisting'], correct: 1, explanation: 'Closures capture surrounding scope variables. React hooks, event listeners, and factory functions all rely on this pattern.' },
+      { q: 'typeof null returns what — and why?', options: ['"null"', '"undefined"', '"object"', '"primitive"'], correct: 2, explanation: '"object" — a 25-year-old JavaScript bug that was never fixed to avoid breaking existing code. Always use === null to explicitly check for null.' },
+      { q: 'How do you import a function from another file in modern JavaScript?', options: ['require("./utils")', 'import { fn } from "./utils.js"', '#include "utils.js"', 'using fn from utils'], correct: 1, explanation: 'ES6 modules use import/export syntax. require() is the older CommonJS (Node.js) syntax — still valid, but import is the modern standard.' },
     ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a small multi-file calculator. In utils.js, write add(), subtract(), and multiply(). In main.js, import all three and call them. Then write a makeAccumulator(start) factory function that returns an object with {add, subtract, reset, total} — where each method updates internal state. Call it and log the results.',
+      files: [
+        {
+          name: 'utils.js',
+          language: 'javascript',
+          code: `// utils.js — export three pure math functions
+
+export function add(a, b) {
+  // TODO: return a + b
+}
+
+export function subtract(a, b) {
+  // TODO: return a - b
+}
+
+export function multiply(a, b) {
+  // TODO: return a * b
+}
+`,
+        },
+        {
+          name: 'main.js',
+          language: 'javascript',
+          code: `// main.js — entry point
+
+// Since we're in a single browser sandbox, utils.js functions are
+// already available below. In a real Node.js project you'd use:
+// import { add, subtract, multiply } from './utils.js'
+
+function add(a, b) { return a + b }
+function subtract(a, b) { return a - b }
+function multiply(a, b) { return a * b }
+
+// Test the pure functions
+console.log('add(5, 3):', add(5, 3))        // 8
+console.log('subtract(10, 4):', subtract(10, 4)) // 6
+console.log('multiply(6, 7):', multiply(6, 7))   // 42
+
+// TODO: Write makeAccumulator(start)
+// It should return an object with:
+//   add(n)      — adds n to internal total
+//   subtract(n) — subtracts n
+//   reset()     — resets to start
+//   total()     — returns current total
+function makeAccumulator(start = 0) {
+  let total = start
+  return {
+    // write the methods here
+  }
+}
+
+const acc = makeAccumulator(100)
+// acc.add(50)
+// acc.subtract(30)
+// console.log(acc.total())  // should be 120
+// acc.reset()
+// console.log(acc.total())  // should be 100
+`,
+        },
+      ],
+      hints: [
+        'For add(a, b): just return a + b. The function body is one line.',
+        'makeAccumulator needs a closure — total lives inside the function, and the returned methods close over it. Use let total = start.',
+        'Each method in the returned object should mutate total using += or -= then nothing (for side-effect methods) or return total for total().',
+      ],
+      solution: `function add(a, b) { return a + b }
+function subtract(a, b) { return a - b }
+function multiply(a, b) { return a * b }
+
+console.log('add(5, 3):', add(5, 3))
+console.log('subtract(10, 4):', subtract(10, 4))
+console.log('multiply(6, 7):', multiply(6, 7))
+
+function makeAccumulator(start = 0) {
+  let total = start
+  return {
+    add: (n) => { total += n },
+    subtract: (n) => { total -= n },
+    reset: () => { total = start },
+    total: () => total,
+  }
+}
+
+const acc = makeAccumulator(100)
+acc.add(50)
+acc.subtract(30)
+console.log(acc.total())  // 120
+acc.reset()
+console.log(acc.total())  // 100`,
+    },
   },
   {
     id: 'cc-js-m02', track: 'crash', title: 'Arrays & Objects Deep Dive',

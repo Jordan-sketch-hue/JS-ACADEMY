@@ -7,8 +7,9 @@ import { getCourse, COURSES, TRACKS, LEVEL_COLORS } from '@/lib/courses'
 import { completeCourse, isCourseCompleted, getWatchProgress, saveWatchProgress, markDailyActive } from '@/lib/progress'
 import { ArrowLeft, ArrowRight, Clock, CheckCircle, ChevronRight, BookOpen, Zap } from 'lucide-react'
 import AudiobookPlayer, { type AudiobookPlayerHandle, type PlayingRange } from '@/components/AudiobookPlayer'
+import IdeExercise from '@/components/IdeExercise'
 
-type Phase = 'reading' | 'terms' | 'quiz' | 'done'
+type Phase = 'reading' | 'ide' | 'terms' | 'quiz' | 'done'
 
 export default function CoursePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -261,6 +262,23 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
               )}
             </div>
           </div>
+        ) : phase === 'ide' ? (
+          <div className="flex-1 overflow-auto bg-neutral-950 p-4 md:p-6">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <div className="text-[10px] tracking-[0.2em] uppercase text-neutral-500 mb-1">Practice Exercise</div>
+                  <div className="text-white text-[15px] font-medium">{course.title}</div>
+                </div>
+                <button onClick={() => setPhase('terms')} className="text-[11px] text-neutral-500 hover:text-neutral-300 flex items-center gap-1">
+                  Skip to terms <ChevronRight size={12} />
+                </button>
+              </div>
+              {course.ide && (
+                <IdeExercise exercise={course.ide} onComplete={() => setTimeout(() => setPhase('terms'), 800)} />
+              )}
+            </div>
+          </div>
         ) : phase === 'terms' ? (
           <div ref={contentRef} className="flex-1 overflow-auto bg-neutral-50">
             <div className="max-w-2xl mx-auto p-6">
@@ -330,7 +348,12 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
                   <div className="h-full bg-gold rounded transition-all" style={{ width: `${readPct}%` }} />
                 </div>
                 <div className="text-[10px] text-neutral-400 mb-5">{readPct}% read</div>
-                <button onClick={() => setPhase('terms')} className="w-full py-2 bg-ink text-white text-[11px] rounded mb-2 font-medium">
+                {course.ide && (
+                  <button onClick={() => setPhase('ide')} className="w-full py-2 bg-ink text-white text-[11px] rounded mb-2 font-medium">
+                    Practice →
+                  </button>
+                )}
+                <button onClick={() => setPhase('terms')} className={`w-full py-2 text-[11px] rounded mb-2 font-medium ${course.ide ? 'border border-neutral-200 text-neutral-600 hover:border-ink' : 'bg-ink text-white'}`}>
                   Key terms →
                 </button>
                 <button onClick={startQuiz} className="w-full py-2 border border-neutral-200 text-neutral-600 text-[11px] rounded hover:border-ink">
@@ -359,9 +382,15 @@ export default function CoursePage({ params }: { params: Promise<{ id: string }>
                 <span className="text-[10px] text-neutral-400 flex-shrink-0">{readPct}%</span>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setPhase('terms')} className="flex-1 py-2.5 bg-ink text-white text-[12px] rounded font-medium">
-                  Key terms →
-                </button>
+                {course.ide ? (
+                  <button onClick={() => setPhase('ide')} className="flex-1 py-2.5 bg-ink text-white text-[12px] rounded font-medium">
+                    Practice →
+                  </button>
+                ) : (
+                  <button onClick={() => setPhase('terms')} className="flex-1 py-2.5 bg-ink text-white text-[12px] rounded font-medium">
+                    Key terms →
+                  </button>
+                )}
                 <button onClick={startQuiz} className="flex-1 py-2.5 border border-neutral-200 text-neutral-600 text-[12px] rounded">
                   Skip to quiz
                 </button>

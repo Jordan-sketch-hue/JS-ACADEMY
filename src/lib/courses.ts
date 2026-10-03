@@ -8,6 +8,15 @@ export interface QuizQuestion {
   explanation: string
 }
 
+export interface IdeExercise {
+  language: 'javascript' | 'typescript' | 'html' | 'css' | 'python' | 'bash' | 'sql'
+  task: string
+  starterCode: string
+  solution?: string
+  hints?: string[]
+  files?: Array<{ name: string; code: string; language: string }>
+}
+
 export interface Course {
   id: string
   track: Track
@@ -25,6 +34,7 @@ export interface Course {
   crashTitle?: string
   courseObjective?: string
   moduleObjective?: string
+  ide?: IdeExercise
 }
 
 export const TRACKS: Record<Track, { label: string; color: string; bg: string; description: string; completionOutcome: string }> = {
