@@ -43,6 +43,7 @@ import {
   PanelLeft,
   PiggyBank,
   Globe2,
+  GraduationCap,
   Building2,
   Radar,
   Radio,
@@ -87,7 +88,10 @@ const navSections: { heading: string; items: NavItem[] }[] = [
   },
   {
     heading: "Vision",
-    items: [{ href: "/vision", label: "Vision Board", icon: Compass }],
+    items: [
+      { href: "/vision", label: "Vision Board", icon: Compass },
+      { href: "/todos/learning", label: "Learning Roadmap", icon: GraduationCap },
+    ],
   },
   {
     heading: "Supreme Suite",
