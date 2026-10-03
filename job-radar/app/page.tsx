@@ -21,10 +21,27 @@ const CAT_ICONS: Record<string, any> = {
   'Operations & Admin': Settings,
 }
 
-function scoreColor(score: number) {
-  if (score >= 70) return 'text-green-400'
-  if (score >= 50) return 'text-yellow-400'
-  return 'text-slate-400'
+const NAV_ITEMS = [
+  { key: 'discover' as const, icon: Zap, label: 'Discover' },
+  { key: 'saved' as const, icon: BookmarkCheck, label: 'Saved' },
+  { key: 'applied' as const, icon: CheckCircle, label: 'Applied' },
+  { key: 'dream' as const, icon: Building2, label: 'Dream' },
+]
+
+const AVATAR_COLORS = [
+  'bg-blue-900/60 border-blue-700/40 text-blue-300',
+  'bg-purple-900/60 border-purple-700/40 text-purple-300',
+  'bg-pink-900/60 border-pink-700/40 text-pink-300',
+  'bg-orange-900/60 border-orange-700/40 text-orange-300',
+  'bg-teal-900/60 border-teal-700/40 text-teal-300',
+  'bg-indigo-900/60 border-indigo-700/40 text-indigo-300',
+  'bg-rose-900/60 border-rose-700/40 text-rose-300',
+]
+
+function scoreBg(score: number) {
+  if (score >= 70) return 'bg-green-900/30 border-green-700/60 text-green-400'
+  if (score >= 50) return 'bg-yellow-900/30 border-yellow-700/60 text-yellow-400'
+  return 'bg-slate-800/60 border-slate-700/60 text-slate-400'
 }
 
 function salaryDisplay(job: Job) {
@@ -50,6 +67,38 @@ function categoryFromJob(job: Job): JobCategory {
   return 'Software Development'
 }
 
+function CompanyAvatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
+  const idx = (name.charCodeAt(0) + name.length) % AVATAR_COLORS.length
+  const cls = size === 'sm'
+    ? 'w-8 h-8 rounded-lg text-xs'
+    : 'w-10 h-10 rounded-xl text-sm'
+  return (
+    <div className={`${cls} ${AVATAR_COLORS[idx]} border flex items-center justify-center shrink-0 font-bold`}>
+      {name.charAt(0).toUpperCase()}
+    </div>
+  )
+}
+
+function SkeletonCard() {
+  return (
+    <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 animate-pulse">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl bg-slate-800 shrink-0" />
+        <div className="flex-1 space-y-2.5">
+          <div className="h-4 bg-slate-800 rounded-lg w-3/4" />
+          <div className="h-3 bg-slate-800 rounded-lg w-1/2" />
+          <div className="flex gap-2 mt-1">
+            <div className="h-5 w-14 bg-slate-800 rounded-full" />
+            <div className="h-5 w-10 bg-slate-800 rounded-full" />
+            <div className="h-5 w-16 bg-slate-800 rounded-full" />
+          </div>
+        </div>
+        <div className="w-11 h-11 rounded-xl bg-slate-800 shrink-0" />
+      </div>
+    </div>
+  )
+}
+
 export default function JobRadar() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [filtered, setFiltered] = useState<Job[]>([])
@@ -69,20 +118,21 @@ export default function JobRadar() {
   const [expandedCompany, setExpandedCompany] = useState<string | null>(null)
 
   const fetchJobs = useCallback(async () => {
+    setLoading(true)
     const { data } = await supabase
       .from('jobs')
       .select('*')
       .order('match_score', { ascending: false })
       .limit(500)
-    // filter out fake seed jobs (non-numeric IDs) and dismissed jobs
-    const real = (data ?? []).filter(j => /^(remotive|remoteok|jobicy|arbeitnow|workingnomads|getonboard|torre|greenhouse)-/.test(j.external_id))
+    const real = (data ?? []).filter(j =>
+      /^(remotive|remoteok|jobicy|arbeitnow|workingnomads|getonboard|torre|greenhouse)-/.test(j.external_id)
+    )
     setJobs(real)
     setLoading(false)
   }, [])
 
   useEffect(() => { fetchJobs() }, [fetchJobs])
 
-  // Hydrate dismissed set from localStorage after mount (avoids SSR mismatch)
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem('dismissed') ?? '[]')
@@ -187,6 +237,11 @@ export default function JobRadar() {
     }
   }
 
+  function changeTab(t: typeof tab) {
+    setTab(t)
+    setCategory('All')
+  }
+
   const stats = {
     total: jobs.length,
     highMatch: jobs.filter(j => (j.match_score ?? 0) >= 70).length,
@@ -195,94 +250,111 @@ export default function JobRadar() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-slate-100 font-sans">
-      {/* Header */}
-      <header className="border-b border-slate-800 bg-[#0d0d14] px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Zap className="text-yellow-400" size={22} />
-            <span className="text-lg font-bold tracking-tight">Job Radar</span>
-            <span className="text-xs text-slate-500 hidden sm:block">Jordan Morris · Niche Match Engine</span>
+    <div className="min-h-screen bg-[#0a0a0f] text-slate-100 font-sans" style={{ overscrollBehavior: 'none' }}>
+
+      {/* ── Sticky glassmorphism header ──────────────────────────────────── */}
+      <header
+        className="sticky top-0 z-40 border-b border-slate-800/50 bg-[#0d0d14]/85 backdrop-blur-xl"
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      >
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+          {/* Logo */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-yellow-400/15 border border-yellow-500/30 flex items-center justify-center">
+              <Zap size={14} className="text-yellow-400" />
+            </div>
+            <span className="font-bold tracking-tight">Job Radar</span>
+            <span className="hidden sm:block text-xs text-slate-600">Jordan Morris</span>
           </div>
+
+          {/* Actions */}
           <div className="flex items-center gap-2">
             <button
               onClick={refreshJobs}
               disabled={refreshing}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm transition disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 h-9 min-w-[44px] rounded-xl bg-slate-800/70 hover:bg-slate-700/70 active:scale-95 text-sm transition-all disabled:opacity-40 border border-slate-700/50"
             >
               <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
-              Refresh
+              <span className="hidden sm:inline">Refresh</span>
             </button>
             <button
               onClick={pushEnabled ? undefined : enablePush}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition ${
-                pushEnabled ? 'bg-green-900/40 text-green-400' : 'bg-slate-800 hover:bg-slate-700'
+              className={`flex items-center gap-1.5 px-3 h-9 min-w-[44px] rounded-xl text-sm transition-all active:scale-95 border ${
+                pushEnabled
+                  ? 'bg-green-900/30 border-green-700/50 text-green-400'
+                  : 'bg-slate-800/70 hover:bg-slate-700/70 border-slate-700/50'
               }`}
             >
               {pushEnabled ? <Bell size={13} /> : <BellOff size={13} />}
-              {pushEnabled ? 'Alerts On' : 'Enable Alerts'}
+              <span className="hidden sm:inline">{pushEnabled ? 'Alerts On' : 'Alerts'}</span>
             </button>
           </div>
         </div>
+
+        {/* Desktop tab bar (underline style) */}
+        <div className="hidden sm:flex max-w-6xl mx-auto px-4">
+          {NAV_ITEMS.map(({ key, icon: Icon, label }) => (
+            <button
+              key={key}
+              onClick={() => changeTab(key)}
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-all ${
+                tab === key
+                  ? 'border-yellow-400 text-yellow-400'
+                  : 'border-transparent text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              <Icon size={13} />
+              {label}
+            </button>
+          ))}
+        </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        {/* Stats row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      {/* ── Main content ─────────────────────────────────────────────────── */}
+      <main className="max-w-6xl mx-auto px-4 pt-5 pb-28 sm:pb-10">
+
+        {/* Stats grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-5">
           {[
-            { label: 'Total Jobs', value: stats.total, icon: Briefcase, color: 'text-blue-400' },
-            { label: 'High Match (70+)', value: stats.highMatch, icon: Star, color: 'text-green-400' },
-            { label: 'Saved', value: stats.saved, icon: BookmarkCheck, color: 'text-yellow-400' },
-            { label: 'Applied', value: stats.applied, icon: CheckCircle, color: 'text-purple-400' },
+            { label: 'Total Jobs', value: stats.total, icon: Briefcase, accent: 'bg-blue-500', text: 'text-blue-400' },
+            { label: 'High Match', value: stats.highMatch, icon: Star, accent: 'bg-green-500', text: 'text-green-400' },
+            { label: 'Saved', value: stats.saved, icon: BookmarkCheck, accent: 'bg-yellow-500', text: 'text-yellow-400' },
+            { label: 'Applied', value: stats.applied, icon: CheckCircle, accent: 'bg-purple-500', text: 'text-purple-400' },
           ].map(s => (
-            <div key={s.label} className="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-              <div className={`${s.color} mb-1`}><s.icon size={16} /></div>
-              <div className="text-2xl font-bold">{s.value}</div>
-              <div className="text-xs text-slate-500 mt-0.5">{s.label}</div>
+            <div key={s.label} className="relative bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 overflow-hidden">
+              <div className={`absolute left-0 inset-y-0 w-[3px] rounded-r-full ${s.accent} opacity-70`} />
+              <div className={`${s.text} mb-2`}><s.icon size={14} /></div>
+              <div className="text-2xl font-bold tabular-nums">{loading ? <span className="text-slate-700">–</span> : s.value}</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">{s.label}</div>
             </div>
           ))}
         </div>
 
-        {/* Tabs + Search */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
-          <div className="flex gap-1 bg-slate-900 border border-slate-800 rounded-lg p-1">
-            {(['discover', 'saved', 'applied', 'dream'] as const).map(t => (
-              <button
-                key={t}
-                onClick={() => { setTab(t); setCategory('All') }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition flex items-center gap-1 ${
-                  tab === t ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {t === 'dream' && <Building2 size={11} />}
-                {t === 'dream' ? 'Dream Co.' : t}
-              </button>
-            ))}
-          </div>
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
-            <input
-              type="text"
-              placeholder="Search jobs, companies, tags…"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-800 rounded-lg text-sm placeholder-slate-600 focus:outline-none focus:border-slate-600"
-            />
-          </div>
+        {/* Search bar */}
+        <div className="relative mb-3">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={15} />
+          <input
+            type="search"
+            inputMode="search"
+            placeholder="Search jobs, companies, skills…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 h-11 bg-slate-900/80 border border-slate-800 rounded-xl text-sm placeholder-slate-600 focus:outline-none focus:border-slate-600 focus:bg-slate-900 transition-all"
+          />
         </div>
 
-        {/* Category pills */}
-        <div className="flex gap-2 flex-wrap mb-5">
+        {/* Category pills — horizontal scroll, no wrap */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide scroll-touch pb-1 mb-3">
           {JOB_CATEGORIES.map(cat => {
             const Icon = cat === 'All' ? Briefcase : (CAT_ICONS[cat] ?? Briefcase)
             return (
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition ${
+                className={`flex items-center gap-1.5 px-3 h-8 rounded-full text-xs font-medium border transition-all shrink-0 active:scale-95 ${
                   category === cat
                     ? 'bg-blue-600 border-blue-500 text-white'
-                    : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-200'
+                    : 'bg-slate-900 border-slate-700/80 text-slate-400 hover:border-slate-600 hover:text-slate-200'
                 }`}
               >
                 <Icon size={11} />
@@ -293,43 +365,44 @@ export default function JobRadar() {
         </div>
 
         {/* Filter row */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-2.5 mb-5 flex-wrap">
           <button
             onClick={() => setNoDegree(v => !v)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
+            className={`flex items-center gap-1.5 px-3 h-8 rounded-full text-xs font-medium border transition-all active:scale-95 ${
               noDegree
-                ? 'bg-green-900/40 border-green-700 text-green-400'
-                : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-200'
+                ? 'bg-green-900/40 border-green-700/60 text-green-400'
+                : 'bg-slate-900 border-slate-700/80 text-slate-400 hover:border-slate-600'
             }`}
           >
             <CheckCircle size={11} />
             No Degree Required
           </button>
+          {pushEnabled && (
+            <>
+              <button
+                onClick={testPush}
+                disabled={testingPush}
+                className="flex items-center gap-1.5 px-3 h-8 rounded-full border border-slate-700/80 bg-slate-900 text-xs text-slate-400 hover:text-slate-200 transition-all active:scale-95 disabled:opacity-50"
+              >
+                <Send size={11} className={testingPush ? 'animate-pulse' : ''} />
+                {testingPush ? 'Sending…' : 'Test Alert'}
+              </button>
+              {pushTestResult && <span className="text-xs text-slate-500">{pushTestResult}</span>}
+            </>
+          )}
         </div>
 
-        {/* Push test button — shown when alerts enabled */}
-        {pushEnabled && (
-          <div className="flex items-center gap-3 mb-4">
-            <button
-              onClick={testPush}
-              disabled={testingPush}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs transition disabled:opacity-50"
-            >
-              <Send size={11} className={testingPush ? 'animate-pulse' : ''} />
-              {testingPush ? 'Sending…' : 'Test Alert'}
-            </button>
-            {pushTestResult && <span className="text-xs text-slate-400">{pushTestResult}</span>}
+        {/* ── Dream Companies tab ──────────────────────────────────────────── */}
+        {tab === 'dream' && loading && (
+          <div className="space-y-3">
+            {[0, 1, 2, 3].map(i => <SkeletonCard key={i} />)}
           </div>
         )}
 
-        {/* Dream Companies tab */}
-        {tab === 'dream' && loading && (
-          <div className="text-center py-20 text-slate-500">Loading dream companies…</div>
-        )}
         {tab === 'dream' && !loading && (
-          <div>
+          <>
             <p className="text-xs text-slate-500 mb-4">
-              Top stable tech companies with active openings matching your profile — scraped live from their job boards.
+              Active openings at top tech companies — matched live to your profile.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {Object.keys(DREAM_COMPANIES).map(company => {
@@ -341,41 +414,42 @@ export default function JobRadar() {
                 const isExpanded = expandedCompany === company
                 const visibleJobs = isExpanded ? companyJobs : companyJobs.slice(0, 3)
                 return (
-                  <div key={company} className="bg-slate-900/60 border border-slate-600 hover:border-slate-500 rounded-xl p-4 transition">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Building2 size={14} className="text-blue-400" />
-                        <span className="font-semibold text-sm">{company}</span>
-                        <span className="text-xs text-slate-600">{companyJobs.length} role{companyJobs.length !== 1 ? 's' : ''}</span>
+                  <div key={company} className="bg-slate-900/60 border border-slate-700/50 hover:border-slate-600/60 active:scale-[0.99] rounded-2xl p-4 transition-all">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2.5">
+                        <CompanyAvatar name={company} />
+                        <div>
+                          <span className="font-semibold text-sm block leading-tight">{company}</span>
+                          <span className="text-[11px] text-slate-500">
+                            {companyJobs.length} role{companyJobs.length !== 1 ? 's' : ''}
+                          </span>
+                        </div>
                       </div>
-                      {topMatch ? (
-                        <span className={`text-xs font-bold tabular-nums ${scoreColor(topMatch.match_score ?? 0)}`}>
-                          {topMatch.match_score}% match
-                        </span>
-                      ) : (
-                        <span className="text-xs text-slate-600">No matches yet</span>
-                      )}
+                      <div className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl border ${scoreBg(topMatch.match_score ?? 0)}`}>
+                        <span className="text-xs font-bold tabular-nums leading-tight">{topMatch.match_score}</span>
+                        <span className="text-[9px] opacity-60">%</span>
+                      </div>
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-0">
                       {visibleJobs.map(j => (
                         <a
                           key={j.id}
                           href={j.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-between gap-2 text-xs text-slate-300 hover:text-white py-1 border-t border-slate-800 first:border-0"
+                          className="flex items-center justify-between gap-2 text-xs text-slate-400 hover:text-white py-2 border-t border-slate-800/70 first:border-0 active:opacity-60 transition-all"
                         >
                           <span className="truncate">{j.title}</span>
-                          <ExternalLink size={10} className="text-slate-500 shrink-0" />
+                          <ExternalLink size={10} className="text-slate-600 shrink-0" />
                         </a>
                       ))}
                       {companyJobs.length > 3 && (
                         <button
                           onClick={() => setExpandedCompany(isExpanded ? null : company)}
-                          className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 pt-1 border-t border-slate-800 w-full transition"
+                          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 pt-2 border-t border-slate-800/70 w-full transition-all active:opacity-70"
                         >
-                          <ChevronDown size={11} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                          {isExpanded ? 'Show less' : `+${companyJobs.length - 3} more open roles`}
+                          <ChevronDown size={11} className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                          {isExpanded ? 'Show less' : `+${companyJobs.length - 3} more roles`}
                         </button>
                       )}
                     </div>
@@ -383,114 +457,199 @@ export default function JobRadar() {
                 )
               })}
             </div>
+          </>
+        )}
+
+        {/* ── Job list ─────────────────────────────────────────────────────── */}
+        {tab !== 'dream' && loading && (
+          <div className="space-y-3">
+            {[0, 1, 2, 3, 4].map(i => <SkeletonCard key={i} />)}
           </div>
         )}
 
-        {tab !== 'dream' && loading ? (
-          <div className="text-center py-20 text-slate-500">Loading jobs…</div>
-        ) : tab !== 'dream' && filtered.length === 0 ? (
-          <div className="text-center py-20 text-slate-500">
-            {jobs.length === 0 ? 'No jobs yet — click Refresh to scrape.' : 'No jobs match this filter.'}
+        {tab !== 'dream' && !loading && filtered.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-24 text-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-800/60 border border-slate-700/50 flex items-center justify-center">
+              <Search size={24} className="text-slate-600" />
+            </div>
+            <div>
+              <p className="text-slate-400 text-sm font-medium">
+                {jobs.length === 0 ? 'No jobs yet' : 'No matches'}
+              </p>
+              <p className="text-slate-600 text-xs mt-1">
+                {jobs.length === 0 ? 'Tap Refresh to scrape latest openings.' : 'Try a different filter or category.'}
+              </p>
+            </div>
           </div>
-        ) : tab !== 'dream' ? (
-          <div className="space-y-3">
-            {filtered.map(job => (
-              <div
-                key={job.id}
-                className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 hover:border-slate-700 transition"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`text-sm font-bold tabular-nums ${scoreColor(job.match_score ?? 0)}`}>
-                        {job.match_score ?? 0}%
-                      </span>
-                      <h3 className="font-semibold text-sm truncate">{job.title}</h3>
-                      {job.applied && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-purple-900/40 text-purple-400 border border-purple-800">Applied</span>
-                      )}
-                      {job.saved && !job.applied && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-900/40 text-yellow-400 border border-yellow-800">Saved</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 flex-wrap">
-                      <span>{job.company}</span>
-                      <span>·</span>
-                      <span>{job.location}</span>
-                      {(() => { const sal = salaryDisplay(job); return sal ? <><span>·</span><span className="text-green-500">{sal}</span></> : null })()}
-                      <span>·</span>
-                      <span className="capitalize">{job.source}</span>
-                    </div>
-                    {(job.match_reasons ?? []).length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {(job.match_reasons ?? []).slice(0, 4).map((r: string) => (
-                          <span key={r} className="text-xs px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">{r}</span>
-                        ))}
+        )}
+
+        {tab !== 'dream' && !loading && filtered.length > 0 && (
+          <div className="space-y-2.5">
+            {filtered.map(job => {
+              const sal = salaryDisplay(job)
+              const score = job.match_score ?? 0
+              return (
+                <div
+                  key={job.id}
+                  className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 hover:border-slate-700/80 active:scale-[0.99] transition-all"
+                >
+                  {/* Card header */}
+                  <div className="flex items-start gap-3">
+                    <CompanyAvatar name={job.company} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-2 justify-between">
+                        <div className="min-w-0 flex-1">
+                          <h3 className="font-semibold text-sm leading-snug mb-0.5 line-clamp-2">{job.title}</h3>
+                          <p className="text-[12px] text-slate-500 truncate">{job.company} · {job.location}</p>
+                        </div>
+                        {/* Score badge */}
+                        <div className={`shrink-0 w-11 h-11 rounded-xl border flex flex-col items-center justify-center ${scoreBg(score)}`}>
+                          <span className="text-xs font-bold tabular-nums leading-tight">{score}</span>
+                          <span className="text-[9px] opacity-60">%</span>
+                        </div>
                       </div>
-                    )}
+
+                      {/* Match tags */}
+                      {(job.match_reasons ?? []).length > 0 && (
+                        <div className="flex gap-1.5 mt-2.5 overflow-x-auto scrollbar-hide scroll-touch">
+                          {(job.match_reasons ?? []).slice(0, 5).map((r: string) => (
+                            <span
+                              key={r}
+                              className="text-[11px] px-2 py-0.5 rounded-full bg-slate-800/80 border border-slate-700/50 text-slate-400 shrink-0 whitespace-nowrap"
+                            >
+                              {r}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Salary + status */}
+                      {(sal || job.applied || job.saved) && (
+                        <div className="flex items-center gap-2 mt-2 flex-wrap">
+                          {sal && <span className="text-[11px] text-green-500 font-medium">{sal}</span>}
+                          {job.applied && (
+                            <span className="text-[11px] px-2 py-0.5 rounded-full bg-purple-900/40 text-purple-400 border border-purple-800/60">Applied</span>
+                          )}
+                          {job.saved && !job.applied && (
+                            <span className="text-[11px] px-2 py-0.5 rounded-full bg-yellow-900/40 text-yellow-400 border border-yellow-800/60">Saved</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button onClick={() => dismissJob(job)} className="p-2 rounded-lg hover:bg-slate-800 transition" title="Not interested">
-                      <X size={14} className="text-slate-600 hover:text-red-400" />
-                    </button>
-                    <button onClick={() => toggleSave(job)} className="p-2 rounded-lg hover:bg-slate-800 transition">
-                      <BookmarkCheck size={14} className={job.saved ? 'text-yellow-400' : 'text-slate-600'} />
-                    </button>
-                    <a href={job.url} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-slate-800 transition">
-                      <ExternalLink size={14} className="text-slate-500" />
-                    </a>
+
+                  {/* Action row */}
+                  <div className="flex items-center mt-3 pt-3 border-t border-slate-800/50">
+                    <div className="flex items-center gap-0.5">
+                      <button
+                        onClick={() => dismissJob(job)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-800 active:scale-90 transition-all"
+                        title="Not interested"
+                      >
+                        <X size={16} className="text-slate-600 hover:text-red-400 transition-colors" />
+                      </button>
+                      <button
+                        onClick={() => toggleSave(job)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-800 active:scale-90 transition-all"
+                      >
+                        <BookmarkCheck size={16} className={job.saved ? 'text-yellow-400' : 'text-slate-600'} />
+                      </button>
+                      <a
+                        href={job.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-800 active:scale-90 transition-all"
+                      >
+                        <ExternalLink size={16} className="text-slate-500" />
+                      </a>
+                    </div>
                     <button
                       onClick={() => setExpanding(expanding === job.id ? null : job.id)}
-                      className="p-2 rounded-lg hover:bg-slate-800 transition"
+                      className="ml-auto flex items-center gap-1.5 px-3 h-9 rounded-xl hover:bg-slate-800 active:scale-95 transition-all text-xs text-slate-500 hover:text-slate-300"
                     >
-                      <ChevronDown size={14} className={`text-slate-500 transition-transform ${expanding === job.id ? 'rotate-180' : ''}`} />
+                      {expanding === job.id ? 'Close' : 'Details'}
+                      <ChevronDown size={13} className={`transition-transform duration-200 ${expanding === job.id ? 'rotate-180' : ''}`} />
                     </button>
                   </div>
-                </div>
 
-                {/* Expanded: description + apply */}
-                {expanding === job.id && (
-                  <div className="mt-4 border-t border-slate-800 pt-4">
-                    <p className="text-xs text-slate-400 leading-relaxed whitespace-pre-wrap line-clamp-10">
-                      {job.description?.replace(/<[^>]+>/g, '').slice(0, 1200)}
-                    </p>
-                    {!job.applied && (
-                      <button
-                        onClick={() => applyToJob(job)}
-                        disabled={applying === job.id}
-                        className="mt-3 flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 rounded-lg text-sm font-medium transition"
-                      >
-                        {applying === job.id ? (
-                          <><RefreshCw size={13} className="animate-spin" /> Generating cover letter…</>
-                        ) : (
-                          <><Zap size={13} /> Apply with AI Cover Letter</>
-                        )}
-                      </button>
-                    )}
-                  </div>
-                )}
-
-                {/* Cover letter */}
-                {coverLetter?.id === job.id && (
-                  <div className="mt-4 border-t border-slate-800 pt-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold text-green-400">Generated Cover Letter</span>
-                      <button onClick={() => setCoverLetter(null)} className="text-xs text-slate-500 hover:text-slate-300">dismiss</button>
+                  {/* Expanded details */}
+                  {expanding === job.id && (
+                    <div className="mt-3 pt-3 border-t border-slate-800/50">
+                      <p className="text-xs text-slate-400 leading-relaxed line-clamp-10">
+                        {job.description?.replace(/<[^>]+>/g, '').slice(0, 1200)}
+                      </p>
+                      {!job.applied && (
+                        <button
+                          onClick={() => applyToJob(job)}
+                          disabled={applying === job.id}
+                          className="mt-3 w-full sm:w-auto flex items-center justify-center gap-2 px-5 h-11 bg-blue-600 hover:bg-blue-500 active:scale-[0.98] disabled:opacity-60 rounded-xl text-sm font-semibold transition-all"
+                        >
+                          {applying === job.id ? (
+                            <><RefreshCw size={13} className="animate-spin" /> Generating…</>
+                          ) : (
+                            <><Zap size={13} /> Apply with AI Cover Letter</>
+                          )}
+                        </button>
+                      )}
                     </div>
-                    <pre className="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed bg-slate-950 rounded-lg p-3 border border-slate-800">
-                      {coverLetter.text}
-                    </pre>
-                    <button
-                      onClick={() => navigator.clipboard.writeText(coverLetter.text)}
-                      className="mt-2 text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition"
-                    >Copy to clipboard</button>
-                  </div>
-                )}
-              </div>
-            ))}
+                  )}
+
+                  {/* Cover letter panel */}
+                  {coverLetter?.id === job.id && (
+                    <div className="mt-3 pt-3 border-t border-slate-800/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-semibold text-green-400">Generated Cover Letter</span>
+                        <button
+                          onClick={() => setCoverLetter(null)}
+                          className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                        >
+                          dismiss
+                        </button>
+                      </div>
+                      <pre className="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed bg-slate-950/80 rounded-xl p-3 border border-slate-800/80 max-h-64 overflow-y-auto scroll-touch">
+                        {coverLetter.text}
+                      </pre>
+                      <button
+                        onClick={() => navigator.clipboard.writeText(coverLetter.text)}
+                        className="mt-2 text-xs px-3 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 transition-all"
+                      >
+                        Copy to clipboard
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
-        ) : null}
+        )}
       </main>
+
+      {/* ── Mobile bottom nav (sm: hidden on desktop) ───────────────────── */}
+      <nav
+        className="sm:hidden fixed bottom-0 inset-x-0 z-50 bg-[#0d0d14]/90 backdrop-blur-xl border-t border-slate-800/50"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <div className="flex">
+          {NAV_ITEMS.map(({ key, icon: Icon, label }) => (
+            <button
+              key={key}
+              onClick={() => changeTab(key)}
+              className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 min-h-[56px] transition-all active:opacity-60 ${
+                tab === key ? 'text-yellow-400' : 'text-slate-500'
+              }`}
+            >
+              <Icon size={21} strokeWidth={tab === key ? 2.5 : 1.5} />
+              <span className={`text-[10px] font-medium ${tab === key ? 'text-yellow-400' : 'text-slate-500'}`}>
+                {label}
+              </span>
+              {tab === key && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[2px] bg-yellow-400 rounded-full" />
+              )}
+            </button>
+          ))}
+        </div>
+      </nav>
+
     </div>
   )
 }
