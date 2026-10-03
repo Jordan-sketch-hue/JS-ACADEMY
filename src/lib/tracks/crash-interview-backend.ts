@@ -36,7 +36,7 @@ DELETE /products/123/reviews/456  — delete review 456 of product 123
 \`\`\`
 
 **Interview question: "When do you use PUT vs PATCH?"**
-> PUT replaces the entire resource — you must send all fields. PATCH updates only the provided fields. If a client sends PUT with only `name`, all other fields would be erased. PATCH is safer for partial updates. PUT is correct when the client owns the full representation.
+> PUT replaces the entire resource — you must send all fields. PATCH updates only the provided fields. If a client sends PUT with only \`name\`, all other fields would be erased. PATCH is safer for partial updates. PUT is correct when the client owns the full representation.
 
 ---
 
@@ -57,7 +57,7 @@ DELETE /products/123/reviews/456  — delete review 456 of product 123
 503 Unavailable    — server down/overloaded (include Retry-After header)
 \`\`\`
 
-**Common mistake:** Returning 200 with `{ error: "not found" }` in the body. Use the correct status code — clients (and monitoring tools) depend on it.
+**Common mistake:** Returning 200 with \`{ error: "not found" }\` in the body. Use the correct status code — clients (and monitoring tools) depend on it.
 
 ---
 
@@ -1490,7 +1490,7 @@ Layer 4: Production (platform env vars)
 \`\`\`
 
 **Why not ARG in Dockerfile for secrets?**
-ARG values are baked into image layers — visible in `docker history`. Use runtime ENV only.
+ARG values are baked into image layers — visible in \`docker history\`. Use runtime ENV only.
 
 ---
 
@@ -1547,7 +1547,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t myapp:${{ github.sha }} .
+        run: docker build -t myapp:\${{ github.sha }} .
 
       - name: Deploy to Railway
         run: railway up

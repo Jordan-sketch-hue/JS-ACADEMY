@@ -154,9 +154,9 @@ Semantic:
 
 ### BEM — Writing CSS That Doesn't Break
 
-Block: `.card`
-Element (belongs to block): `.card__title`, `.card__image`, `.card__body`
-Modifier (state/variant): `.card--featured`, `.card--disabled`
+Block: \`.card\`
+Element (belongs to block): \`.card__title\`, \`.card__image\`, \`.card__body\`
+Modifier (state/variant): \`.card--featured\`, \`.card--disabled\`
 
 \`\`\`html
 <div class="card card--featured">

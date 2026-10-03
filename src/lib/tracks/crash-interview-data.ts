@@ -620,7 +620,7 @@ ax.fill_between(monthly['month'].astype(str), monthly['revenue'],
 # Annotate the peak
 peak_idx = monthly['revenue'].idxmax()
 ax.annotate(
-    f"Peak: ${monthly.loc[peak_idx, 'revenue']:,.0f}",
+    f"Peak: \${monthly.loc[peak_idx, 'revenue']:,.0f}",
     xy=(monthly.loc[peak_idx, 'month'].astype(str), monthly.loc[peak_idx, 'revenue']),
     xytext=(0, 15), textcoords='offset points',
     ha='center', fontsize=9, color='#1D4ED8'
@@ -629,7 +629,7 @@ ax.annotate(
 ax.set_title('Monthly Revenue 2024', fontsize=14, fontweight='bold', pad=15)
 ax.set_xlabel('Month')
 ax.set_ylabel('Revenue ($)')
-ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'${x:,.0f}'))
+ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'\${x:,.0f}'))
 sns.despine()   # remove top and right spines (chart junk)
 plt.tight_layout()
 
@@ -642,7 +642,7 @@ bars = ax.bar(top_products['name'], top_products['revenue'],
 for bar in bars:
     height = bar.get_height()
     ax.text(bar.get_x() + bar.get_width()/2., height + 500,
-            f'${height:,.0f}', ha='center', va='bottom', fontsize=9)
+            f'\${height:,.0f}', ha='center', va='bottom', fontsize=9)
 
 # 3. Scatter with regression line
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -806,7 +806,7 @@ cac = total_marketing_spend / new_customers_acquired  # $100
 
 # LTV:CAC ratio (should be 3:1 or better)
 ltv_cac_ratio = ltv / cac  # 20:1 — healthy!
-print(f"LTV: ${ltv:,.0f} | CAC: ${cac:,.0f} | LTV:CAC: {ltv_cac_ratio:.1f}x")
+print(f"LTV: \${ltv:,.0f} | CAC: \${cac:,.0f} | LTV:CAC: {ltv_cac_ratio:.1f}x")
 \`\`\`
 
 ### Churn analysis

@@ -134,7 +134,7 @@ export const config = {
 3. **Server Component** renders — fetches data directly from Postgres (no round-trip)
 4. **HTML streams** to client in chunks — first chunk paints immediately (low FCP)
 5. **JS bundle** downloads in parallel — React hydrates interactive components
-6. **Client islands** (`'use client'`) attach event listeners, manage local state
+6. **Client islands** (\`'use client'\`) attach event listeners, manage local state
 
 Key point: Server Components eliminate the classic "fetch waterfall" — no API route needed for server-side data.`,
     quiz: [
