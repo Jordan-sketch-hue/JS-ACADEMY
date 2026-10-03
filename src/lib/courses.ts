@@ -1,5 +1,5 @@
 export type Level = 'Basic' | 'Masters' | 'PhD' | 'Next-Gen AI'
-export type Track = 'marketing' | 'tech' | 'trading' | 'business' | 'design' | 'mindset' | 'creative' | 'culture' | 'knowledge' | 'future' | 'psychology' | 'higher' | 'language' | 'techco' | 'mktco' | 'gamedev' | 'crash' | 'terms'
+export type Track = 'marketing' | 'tech' | 'trading' | 'business' | 'design' | 'mindset' | 'creative' | 'culture' | 'knowledge' | 'future' | 'psychology' | 'higher' | 'language' | 'techco' | 'mktco' | 'gamedev' | 'crash' | 'terms' | 'cs-foundations' | 'software-eng' | 'networks-os' | 'consumer-psych' | 'marketing-science' | 'brand-strategy' | 'hci' | 'product-mgmt' | 'sales-mgmt'
 
 export interface QuizQuestion {
   q: string
@@ -35,12 +35,54 @@ export const TRACKS: Record<Track, { label: string; color: string; bg: string; d
     description: 'Brand strategy, paid growth, content & positioning',
     completionOutcome: "You'll be able to build a full acquisition funnel, brief a media buyer, write converting copy, and read attribution data without being misled by vanity metrics.",
   },
+  'consumer-psych': {
+    label: 'Consumer Psychology',
+    color: '#b8902a',
+    bg: '#fdf0d0',
+    description: 'Cognitive biases, motivation, persuasion science, qualitative & quantitative research methods',
+    completionOutcome: "You'll understand why consumers actually make decisions — the biases, emotions, social forces, and unconscious processes behind every purchase — and apply that knowledge to research, messaging, and strategy.",
+  },
+  'marketing-science': {
+    label: 'Marketing Science',
+    color: '#c4952a',
+    bg: '#fdf2d8',
+    description: 'Analytics, pricing, MMM, CLV modeling, CRO, PLG, email science & ROI frameworks',
+    completionOutcome: "You'll approach marketing as a science — measuring, modeling, and optimizing with the rigor of a data scientist — from attribution and pricing strategy to CLV modeling and budget allocation.",
+  },
+  'brand-strategy': {
+    label: 'Brand Strategy',
+    color: '#a87a20',
+    bg: '#fdefc8',
+    description: 'Brand equity, positioning, identity systems, architecture, global strategy & crisis management',
+    completionOutcome: "You'll build and manage brands like a senior brand strategist — positioning for competitive advantage, building identity systems that scale, managing equity across markets and over time, and connecting brand to financial outcomes.",
+  },
   tech: {
     label: 'Technology',
     color: '#378add',
     bg: '#e6f1fb',
     description: 'Full-stack, AI systems, architecture & automation',
     completionOutcome: "You'll understand how modern software is actually built, how AI models work under the hood, and how to architect and automate systems without being dependent on developers for every decision.",
+  },
+  'cs-foundations': {
+    label: 'CS Foundations',
+    color: '#1a5fa8',
+    bg: '#deeaf8',
+    description: 'Algorithms, data structures, discrete math, OS theory, compilers & CS fundamentals',
+    completionOutcome: "You'll have the theoretical computer science foundation that underpins everything you build — algorithms, complexity, systems theory, and the mental models that separate engineers who understand computing from those who only use tools.",
+  },
+  'software-eng': {
+    label: 'Software Engineering',
+    color: '#1e6bb5',
+    bg: '#e2edf9',
+    description: 'SOLID principles, design patterns, clean code, testing, architecture & engineering culture',
+    completionOutcome: "You'll write and direct code with professional discipline — SOLID principles, design patterns, meaningful tests, clean architecture, and the engineering culture practices that separate high-performing teams from chaotic ones.",
+  },
+  'networks-os': {
+    label: 'Networks & OS',
+    color: '#2060a0',
+    bg: '#dce8f6',
+    description: 'TCP/IP, OS internals, Linux, cloud infrastructure, containers, SRE & systems engineering',
+    completionOutcome: "You'll understand what actually happens beneath your application — the OS scheduling your threads, the TCP handshakes carrying your data, the Linux kernel you deploy on, and the reliability engineering practices that keep production alive.",
   },
   trading: {
     label: 'Trading',
@@ -154,6 +196,27 @@ export const TRACKS: Record<Track, { label: string; color: string; bg: string; d
     description: 'The vocabulary every operator, founder, and creator needs — decoded without the fluff',
     completionOutcome: "You'll command 200+ essential business, tech, marketing, finance, legal, ops, creative, AI, and global commerce terms — and recognise the jargon traps that make smart people sound confused.",
   },
+  hci: {
+    label: 'Human-Computer Interaction',
+    color: '#6d28d9',
+    bg: '#ede9fe',
+    description: 'User research, usability, cognitive models, accessibility, interaction design & HCI theory',
+    completionOutcome: "You'll design systems that match how people actually think and behave — grounded in cognitive science, usability research, and interaction design principles that separate frustrating products from exceptional ones.",
+  },
+  'product-mgmt': {
+    label: 'Product Management',
+    color: '#0891b2',
+    bg: '#e0f2fe',
+    description: 'Discovery, strategy, roadmapping, PMF, requirements, prioritisation, GTM & product leadership',
+    completionOutcome: "You'll operate as a senior product manager — leading discovery, defining strategy, setting roadmaps, working with engineering, and measuring product success with the rigour of a principal PM at a growth-stage company.",
+  },
+  'sales-mgmt': {
+    label: 'Sales Management',
+    color: '#b45309',
+    bg: '#fef3c7',
+    description: 'Sales system design, buyer psychology, prospecting, discovery, closing, CRM, team structure, ABM, RevOps & sales culture',
+    completionOutcome: "You'll design and operate a revenue system — not just sell — managing pipeline, coaching a team, forecasting accurately, building key account relationships, and creating the culture where great salespeople become exceptional ones.",
+  },
 }
 
 export const LEVEL_COLORS: Record<Level, { text: string; bg: string }> = {
@@ -164,6 +227,12 @@ export const LEVEL_COLORS: Record<Level, { text: string; bg: string }> = {
 }
 
 import { marketingCourses } from './tracks/marketing'
+import { csfCourses } from './tracks/cs-foundations'
+import { sweCourses } from './tracks/software-eng'
+import { nosCourses } from './tracks/networks-os'
+import { cpsCourses } from './tracks/consumer-psych'
+import { mscCourses } from './tracks/marketing-science'
+import { bstCourses } from './tracks/brand-strategy'
 import { creativeCourses } from './tracks/creative'
 import { tradingCourses } from './tracks/trading'
 import { techCourses } from './tracks/tech'
@@ -181,6 +250,9 @@ import { gamedevCourses } from './tracks/gamedev'
 import { crashCourses } from './tracks/crash'
 import { termsCourses } from './tracks/terms'
 import { languageCoursesFull } from './tracks/language'
+import { hciCourses } from './tracks/hci'
+import { pmCourses } from './tracks/product-mgmt'
+import { salesCourses } from './tracks/sales-mgmt'
 
 const languageCourses: Course[] = [
   {
@@ -258,7 +330,13 @@ const languageCourses: Course[] = [
 // Merged from all track files Ã¢â‚¬â€ old inline COURSES removed
 export const COURSES: Course[] = [
   ...marketingCourses,
+  ...cpsCourses,
+  ...mscCourses,
+  ...bstCourses,
   ...techCourses,
+  ...csfCourses,
+  ...sweCourses,
+  ...nosCourses,
   ...tradingCourses,
   ...businessCourses,
   ...designCourses,
@@ -276,6 +354,9 @@ export const COURSES: Course[] = [
   ...languageCourses, // keep 5 stub entries as fallback until language.ts resolves
   ...crashCourses,
   ...termsCourses,
+  ...hciCourses,
+  ...pmCourses,
+  ...salesCourses,
 ]
 
 
@@ -284,7 +365,7 @@ export function getCourse(id: string): Course | undefined {
 }
 
 export function getAllTracks(): Track[] {
-  return ['marketing', 'tech', 'trading', 'business', 'design', 'mindset', 'creative', 'culture', 'knowledge', 'future', 'psychology', 'higher', 'techco', 'mktco', 'gamedev', 'language', 'crash', 'terms']
+  return ['marketing', 'consumer-psych', 'marketing-science', 'brand-strategy', 'tech', 'cs-foundations', 'software-eng', 'networks-os', 'trading', 'business', 'design', 'mindset', 'creative', 'culture', 'knowledge', 'future', 'psychology', 'higher', 'techco', 'mktco', 'gamedev', 'language', 'crash', 'terms', 'hci', 'product-mgmt', 'sales-mgmt']
 }
 
 export function getCoursesByTrack(track: Track): Course[] {
