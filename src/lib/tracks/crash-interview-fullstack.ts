@@ -1637,4 +1637,677 @@ setTimeout(throttledScroll, 1200)  // fires (past 1000ms)`,
       ],
     },
   },
+  {
+    id: 'cc-interview-fs-m09', track: 'crash', title: 'Behavioral STAR Stories for Full-Stack Devs',
+    subtitle: 'Turn your full-stack projects into compelling interview answers. Every "tell me about a time you…" question answered with structure and numbers.',
+    courseObjective: CC_FS_OBJ, crashId: 'cc-interview-fullstack', crashTitle: 'Full Stack Interview Prep',
+    level: 'PhD', xp: 240, duration: 16, module: 9, certArea: 'Full Stack Interview Prep',
+    content: `Full-stack interviews test both technical depth and your ability to own a feature end-to-end. Behavioral questions in these interviews are specifically designed to find out whether you can take a vague requirement and ship it, debug production issues, and coordinate across layers. The STAR framework is how you structure every answer.
+
+## STAR for Full-Stack Roles
+
+**Situation**: One sentence of context. "Our job board had no authentication — all users shared one view and could see each other's saved applications."
+
+**Task**: Your specific scope. "I was responsible for adding auth and row-level data isolation as a solo developer with a two-week timeline."
+
+**Action**: 3–5 specific steps, naming tools, schemas, and decisions. "I added Supabase Auth with email/password and Google OAuth. I created a user_id UUID column on the applications table. I enabled Row Level Security with a policy allowing SELECT/INSERT/UPDATE/DELETE only where user_id = auth.uid(). I updated the Next.js middleware to redirect unauthenticated users. I added a useUser hook and passed the session to all Server Components."
+
+**Result**: A number. "Zero unauthorized data access in 3 months since launch. Onboarding conversion improved by 22% compared to the previous anonymous flow."
+
+## Five Behavioral Questions for Full-Stack Roles
+
+1. **"Tell me about a time you shipped a feature end-to-end."** — Your job board auth flow, a complete CRUD feature, or any feature that touched DB schema, API, and UI.
+
+2. **"Describe a time you debugged a production issue."** — Hydration errors, Supabase policy blocking legitimate queries, N+1 query causing 5-second load times.
+
+3. **"Tell me about a time you improved the architecture of a system."** — Migrating from client-side fetch to Server Components, adding RLS where it was missing, separating concerns in an overcrowded component.
+
+4. **"Give an example of tradeoffs you made in a project."** — Supabase vs custom backend, App Router vs Pages Router, server-side pagination vs infinite scroll.
+
+5. **"Tell me about a time you collaborated with or taught someone else."** — Writing clear PR descriptions, documenting an API for a teammate, explaining a data model to a non-technical stakeholder.
+
+## Building Your Full-Stack Story Bank
+
+Every story needs to span both layers. Weak: "I fixed a bug in the API." Strong: "The API was returning all rows instead of the user's rows — I debugged it to a missing RLS policy, added the policy, verified in Supabase Studio with a test user, and deployed. Response time improved by 40% because we went from fetching 800 rows to 12."
+
+Your job board is a complete full-stack project. For each behavioral question, map which feature of it covers the scenario: auth (end-to-end feature), a slow query you optimized (debugging), a schema change (architecture), a tech choice (tradeoffs).`,
+    keyTerms: [
+      { term: 'End-to-End Ownership', definition: 'Responsibility for every layer of a feature — schema, API, and UI — without handing off to a specialist at each boundary.' },
+      { term: 'Data Isolation', definition: 'The architecture pattern of ensuring users can only access their own data — implemented in full-stack with RLS at the database level.' },
+      { term: 'Layer Traceability', definition: 'The ability to trace a behavioral story through all layers: "I changed the DB schema, updated the API, and adjusted the UI" — showing cross-stack fluency.' },
+      { term: 'STAR Framework', definition: 'Situation, Task, Action, Result — the standard structure for behavioral interview answers, requiring at least one metric in the Result.' },
+      { term: 'Story Bank', definition: 'A set of 5–8 prepared STAR stories covering the most common behavioral question patterns, adapted from real project work.' },
+    ],
+    quiz: [
+      { q: 'A full-stack behavioral answer is stronger when:', options: ['It describes only the UI change', 'It spans all layers — schema change, API update, and UI implementation with a measurable result', 'It focuses on the hardest technical part only', 'It describes what the team did collectively'], correct: 1, explanation: 'Full-stack interviewers want cross-layer ownership. An answer that touches schema, API, and UI with a measurable outcome shows you can own a feature completely.' },
+      { q: 'For the question "Tell me about a time you debugged a production issue," the most important element is:', options: ['How long the issue lasted', 'Your systematic approach to finding root cause, not just the fix', 'Which team member helped you', 'The complexity of the bug'], correct: 1, explanation: 'The process matters more than the outcome. Walking through hypothesis, isolation, and fix shows engineering maturity — not just that the bug got fixed.' },
+      { q: 'Why is "I fixed a bug in the API" a weak behavioral answer for a full-stack role?', options: ['APIs are not relevant to full-stack interviews', 'It only covers one layer and has no quantified result', 'Bugs are negative — don\'t mention them', 'It is too short to be a valid STAR answer'], correct: 1, explanation: 'Full-stack behavioral answers should span layers. "I traced the API bug to a missing RLS policy, added the policy, and verified it in Supabase Studio — response time dropped 40%" is the complete version.' },
+      { q: 'In the STAR framework for a full-stack story, the Action section should:', options: ['List one decision only', 'Name 3–5 specific steps across multiple layers with tool names', 'Describe what the team decided collectively', 'Be under 20 words'], correct: 1, explanation: 'Action is the largest, most specific part. Name tools (Supabase Studio, Next.js middleware, Drizzle ORM), layers touched (DB policy, API route, React component), and decisions made.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a STAR answer object for a full-stack behavioral story. Include: situation (one sentence of context), task (your specific scope), action (3–5 steps spanning at least two layers, with tool names), and result (at least one metric). Use a real scenario from your own projects.',
+      starterCode: `const fullStackSTAR = {
+  question: 'Tell me about a time you shipped a feature end-to-end.',
+  situation: '',   // One sentence — what was missing or broken?
+  task: '',        // Your specific responsibility, scope, and timeline
+  action: '',      // 3-5 specific steps naming tools, layers, and decisions
+  result: ''       // What improved? Include at least one number.
+}
+
+console.log(JSON.stringify(fullStackSTAR, null, 2))`,
+      solution: `const fullStackSTAR = {
+  question: 'Tell me about a time you shipped a feature end-to-end.',
+  situation: 'Our job board had no authentication — every visitor saw the same shared view with no personal data.',
+  task: 'I owned the complete auth implementation solo: database schema, Supabase Auth configuration, RLS policies, Next.js middleware, and UI session handling.',
+  action: '1) Added user_id UUID column to the applications table with a foreign key to auth.users. 2) Enabled Row Level Security in Supabase with four policies (SELECT/INSERT/UPDATE/DELETE) scoped to auth.uid(). 3) Configured Supabase Auth with email/password and Google OAuth providers. 4) Added Next.js middleware to redirect unauthenticated requests to /login. 5) Created a useUser hook using useContext and passed the session to all Server Components via cookies.',
+  result: 'Zero unauthorized data access incidents in the three months since launch. User conversion on the onboarding flow improved 22% — users who created accounts were completing more applications because they had a personal tracked pipeline.'
+}
+
+console.log(JSON.stringify(fullStackSTAR, null, 2))`,
+      hints: ['Span at least two layers in the Action — DB schema change AND an API or UI change', 'The Result should include a metric — even an estimate ("roughly 20%") is better than "it worked"', 'Name specific tools: Supabase Studio, Next.js middleware, Drizzle schema, React hook'],
+    },
+  },
+  {
+    id: 'cc-interview-fs-m10', track: 'crash', title: 'Trade-off Articulation for Full-Stack Architecture',
+    subtitle: 'Why SSR vs CSR, REST vs tRPC, Supabase vs custom API — the structured framework for defending every full-stack decision in an interview.',
+    courseObjective: CC_FS_OBJ, crashId: 'cc-interview-fullstack', crashTitle: 'Full Stack Interview Prep',
+    level: 'PhD', xp: 240, duration: 15, module: 10, certArea: 'Full Stack Interview Prep',
+    content: `Full-stack architects constantly make trade-off decisions. Senior interviewers ask "why did you choose X?" specifically to test whether you pick tools because they fit or because they're familiar. This module gives you a framework for any full-stack trade-off question.
+
+## The Full-Stack Trade-off Framework
+
+Every decision has the same five-part answer: **What were you building → What did you need it to do → What alternatives existed → What you chose and why → What you gave up**.
+
+Saying "I used Supabase because it's popular" fails. Saying "I used Supabase because we needed relational data with RLS, a generous free tier, and built-in auth — I considered a custom Express+Postgres backend but estimated 3× more setup time for the same result, so I accepted the tradeoff of vendor dependency for development speed" passes.
+
+## The 8 Critical Full-Stack Trade-off Questions
+
+**1. SSR vs CSR vs ISR**
+SSR (Server-Side Rendering): HTML generated per-request — best for SEO and real-time data. CSR (Client-Side): JS fetches data after page load — best for private dashboards. ISR (Incremental Static Regeneration): generated at build with optional revalidation — best for content that changes infrequently but needs SEO. Your job board's public listing pages are SSR; the application dashboard is CSR.
+
+**2. REST vs tRPC vs GraphQL**
+REST: simple, HTTP-native, well-understood. tRPC: type-safe RPC between TS client and server — zero code generation, great for Next.js monorepos. GraphQL: flexible queries, over-fetching prevention — overkill unless consumers have wildly different data needs.
+
+**3. Supabase vs custom backend**
+Supabase: auth, RLS, real-time, storage all built in. Custom: more control, no vendor dependency. For a solo project with relational data and auth needs, Supabase wins on time-to-ship.
+
+**4. Server Components vs Client Components**
+Server Components: run on the server, can access DB directly, reduce client bundle. Client Components: can use hooks, event handlers, browser APIs. Use Server Components by default; add 'use client' only when you need interactivity.
+
+**5. React Query vs Server Components for data fetching**
+React Query in a Client Component: best when the data changes often, needs background refetching, or is triggered by user action. Server Component fetch: best for initial page load data that doesn't change per interaction.
+
+**6. JWT vs session cookies**
+JWT: stateless, works across domains, but hard to revoke. Session cookies: stateful, revocable, tied to a domain. Supabase uses JWTs stored in httpOnly cookies — you get both statelessness and security.
+
+**7. Optimistic updates vs server-confirmed updates**
+Optimistic: update UI immediately, revert on failure — best for high-frequency actions (like/bookmark). Server-confirmed: wait for server — best for destructive actions (delete, publish, send).
+
+**8. Monolith vs microservices**
+For most teams under 20 engineers and most products under 100k DAU: monolith wins on simplicity and development speed. Microservices win on independent scaling — but the coordination cost is high. Don't default to microservices to sound sophisticated.`,
+    keyTerms: [
+      { term: 'SSR / CSR / ISR', definition: 'Three Next.js rendering modes: Server-Side Rendering (per-request HTML), Client-Side Rendering (browser fetches), and Incremental Static Regeneration (periodic revalidation).' },
+      { term: 'tRPC', definition: 'Type-safe RPC for TypeScript full-stack apps — no schema definition files, end-to-end type safety between client and server without code generation.' },
+      { term: 'Server Component', definition: 'A React component that runs only on the server — can access databases and secrets directly, has zero client bundle impact, but cannot use hooks or event listeners.' },
+      { term: 'Optimistic Update', definition: 'Immediately reflecting a user action in the UI before the server confirms it, then reverting if the request fails — used for high-frequency, low-risk actions.' },
+      { term: 'Vendor Dependency', definition: 'The accepted tradeoff of using a managed service like Supabase: faster development at the cost of portability — you depend on their uptime and pricing.' },
+    ],
+    quiz: [
+      { q: 'When should you use ISR (Incremental Static Regeneration) instead of SSR for a page?', options: ['When the page data changes every second', 'When the page content changes infrequently and needs SEO, but doesn\'t require per-request freshness', 'When the page is behind authentication', 'When you need WebSocket connections'], correct: 1, explanation: 'ISR regenerates pages on a schedule (e.g., every hour), combining the SEO benefit of static HTML with reasonable freshness — perfect for blog posts, product pages, or job listings that change infrequently.' },
+      { q: 'Why is tRPC a better choice than REST for a full-stack TypeScript Next.js app?', options: ['tRPC is faster at runtime', 'tRPC gives end-to-end type safety without schema files — the client knows the server\'s return types automatically', 'tRPC handles more request types than REST', 'tRPC works without a server'], correct: 1, explanation: 'In a TS monorepo, tRPC shares types between server and client automatically. REST requires manual type definitions or code generation (OpenAPI). For a Next.js app, tRPC eliminates an entire category of type mismatch bugs.' },
+      { q: 'You have a bookmark button that users click frequently. Should you use optimistic updates or wait for server confirmation?', options: ['Wait for the server — accuracy matters more than speed', 'Use optimistic updates — the action is reversible and the UX benefit outweighs the small risk', 'Use WebSockets instead', 'Disable the button until the server responds'], correct: 1, explanation: 'Bookmarks are low-risk and reversible. Optimistic updates make the UX feel instant. If the server fails, you revert — a rare edge case users will forgive. For destructive actions (delete account), always wait for server confirmation.' },
+      { q: 'When should you add "use client" to a Next.js component?', options: ['For all components by default', 'When the component needs hooks, event listeners, or browser APIs — otherwise keep it a Server Component', 'When the component fetches data from Supabase', 'When the component is used more than once in the app'], correct: 1, explanation: 'Server Components are the default and preferred — they reduce client bundle size and can access the DB directly. Add "use client" only when you need useState, useEffect, onClick, or browser-only APIs.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `architectureDecision(decision, criteria, alternatives, chosen, tradeoffAccepted)` that formats an architecture trade-off record. Then document two real decisions from your full-stack project using this function.',
+      starterCode: `function architectureDecision(decision, criteria, alternatives, chosen, tradeoffAccepted) {
+  return \`DECISION: \${decision}
+CRITERIA: \${criteria}
+ALTERNATIVES: \${alternatives.join(' vs ')}
+CHOSEN: \${chosen}
+TRADEOFF ACCEPTED: \${tradeoffAccepted}\`
+}
+
+// Document two real decisions from your project
+const decision1 = architectureDecision(
+  'Rendering strategy for public job listing pages',
+  '...', ['...', '...'], '...', '...'
+)
+
+const decision2 = architectureDecision(
+  'Auth and data layer',
+  '...', ['...', '...'], '...', '...'
+)
+
+console.log(decision1)
+console.log('---')
+console.log(decision2)`,
+      solution: `function architectureDecision(decision, criteria, alternatives, chosen, tradeoffAccepted) {
+  return \`DECISION: \${decision}
+CRITERIA: \${criteria}
+ALTERNATIVES: \${alternatives.join(' vs ')}
+CHOSEN: \${chosen}
+TRADEOFF ACCEPTED: \${tradeoffAccepted}\`
+}
+
+const decision1 = architectureDecision(
+  'Rendering strategy for public job listing pages',
+  'SEO indexing (listings must be crawlable), fast initial load, real-time data not required',
+  ['Next.js SSR (per-request)', 'Next.js ISR (revalidate every hour)', 'Vite SPA (CSR only)'],
+  'Next.js SSR — each listing page renders on the server with current data, making it fully crawlable by Google. ISR was considered but job listings update frequently enough that stale data would be a problem.',
+  'Slightly higher server compute cost vs ISR. Accepted because listing accuracy outweighs CDN savings at this scale.'
+)
+
+const decision2 = architectureDecision(
+  'Auth and data layer',
+  'Row-level security, built-in OAuth providers, relational data model, solo developer timeline',
+  ['Supabase (managed Postgres + Auth)', 'Custom Express + Postgres + Auth0', 'Firebase (NoSQL)'],
+  'Supabase — RLS policies handle data isolation at the DB level, built-in Google OAuth works in one config change, Postgres schema fits the relational data model (users, companies, jobs, applications).',
+  'Vendor dependency — if Supabase raises prices or has an outage, migration is non-trivial. Accepted because time-to-ship advantage was approximately 3 weeks vs a custom backend.'
+)
+
+console.log(decision1)
+console.log('---')
+console.log(decision2)`,
+      hints: ['Criteria should name what the decision needed to optimize for — not what you wanted to learn', 'The tradeoff accepted should be specific: "vendor dependency" or "higher server cost", not just "cons"', 'Use real decisions from your project — this is interview content'],
+    },
+  },
+  {
+    id: 'cc-interview-fs-m11', track: 'crash', title: '3am Full-Stack Incident — Debug Under Pressure',
+    subtitle: 'Production is down at 3am. Walk through a systematic full-stack diagnosis: which layer is the problem, how to isolate it fast, and how to communicate.',
+    courseObjective: CC_FS_OBJ, crashId: 'cc-interview-fullstack', crashTitle: 'Full Stack Interview Prep',
+    level: 'PhD', xp: 260, duration: 17, module: 11, certArea: 'Full Stack Interview Prep',
+    content: `The 3am production scenario is a senior full-stack interview staple. The answer reveals how you think under pressure: do you panic and push untested changes, or do you systematically isolate the problem layer and communicate clearly?
+
+## Full-Stack Incident Framework
+
+The full-stack debugging order is always: **Network → Server → Database → Frontend**. Start from the outside and work inward.
+
+**Step 1 — Is the site even reachable?** (Uptime monitor, curl)
+A 502/503 response means the server is dead, not the application. Check Vercel deployment status, Railway/Render service health, or your hosting provider's status page.
+
+**Step 2 — Is the server running but erroring?** (Vercel logs, Railway logs)
+500 errors in server logs narrow you to the backend. A Next.js Server Component crash, an unhandled promise rejection, or a crashed API route all show in deployment logs within seconds.
+
+**Step 3 — Is the database reachable and healthy?** (Supabase dashboard, connection pool)
+If the server is healthy but all database queries fail, check Supabase project status. A paused project (free tier auto-pauses after 1 week of inactivity) silently fails all queries.
+
+**Step 4 — Is it a frontend-only issue?** (Sentry, browser DevTools remotely)
+If the server and DB are healthy but users see a blank page, check Sentry for client-side JS errors. A hydration mismatch, missing env variable in client bundle, or a broken chunk import can all cause this.
+
+## A Full-Stack Scenario Walk-Through
+
+**Scenario**: "Users are reporting they can't log in. The login page loads, but submitting the form returns a generic error. It's 3am. Walk me through your response."
+
+**Step 1 — Scope**: Is it all users or specific ones? Check Sentry — seeing "Auth session not found" errors for all email/password attempts. Not affecting Google OAuth users. Narrowed: Supabase email auth is broken, OAuth is fine.
+
+**Step 2 — Recent changes**: Last deployment was 6 hours ago. The PR updated the Supabase client initialization. Check the diff — the engineer changed \`createBrowserClient\` to \`createClient\` from \`@supabase/supabase-js\` instead of \`@supabase/ssr\`. The SSR client does not persist sessions in browser cookies, causing all server-side session reads to fail for email logins.
+
+**Step 3 — Fix or rollback**: The fix is one import change. But at 3am, roll back first. Revert deployment in Vercel, verify login works with a test account. Email/password login restored in 4 minutes. Post a clear note in Slack: "Rolled back deployment — Supabase client import regression in the auth flow. Investigating root cause and will redeploy with fix after testing."
+
+**Step 4 — Root cause fix**: Next morning, fix the import, add an auth integration test (simulate email login flow with Playwright), verify it passes in CI before merging.
+
+## Common Full-Stack Production Incidents
+
+- **Supabase project paused** (free tier): Restore in dashboard → Settings → Database → Restore Project
+- **Missing env variable in production**: NEXT_PUBLIC_ prefix missing, or secret was in .env.local not added to Vercel env
+- **RLS policy blocking legitimate requests**: Supabase Studio → Policies, test with \`SET LOCAL role = authenticated; SET LOCAL request.jwt.claims = '{"sub":"user-uuid"}';\`
+- **N+1 query causing 30-second load times**: Each list item triggering a separate query — fix with JOIN or add .select('*, relation(*)')
+- **CORS blocking API requests**: Frontend on different origin, API route missing headers or Supabase not configured for custom domain`,
+    keyTerms: [
+      { term: 'Layer Isolation', definition: 'Debugging by eliminating layers from the outside in: network → server → database → frontend — each confirmed working narrows the search.' },
+      { term: 'Supabase SSR Client', definition: 'The @supabase/ssr createServerClient/createBrowserClient — designed to persist sessions in cookies for Next.js. Different from the generic @supabase/supabase-js createClient.' },
+      { term: 'Free Tier Auto-pause', definition: 'Supabase pauses projects with no activity for 1 week on the free plan — all queries silently fail until manually restored.' },
+      { term: 'RLS Policy Debug', definition: 'Testing Row Level Security by impersonating a user with SET LOCAL JWT claims in Supabase Studio or the SQL editor to verify policies behave correctly.' },
+      { term: 'N+1 Query', definition: 'A performance anti-pattern where fetching a list of N items triggers N+1 separate database queries — resolved with JOINs or nested selects.' },
+    ],
+    quiz: [
+      { q: 'Users report a blank page in production. The server logs show no errors. What is the most likely cause and first debugging step?', options: ['The server is down — check Vercel deployment', 'A client-side JS error — check Sentry for browser-side errors', 'The database is offline — check Supabase status', 'A CORS error — check API response headers'], correct: 1, explanation: 'If server logs are clean, the error is happening in the browser. Check Sentry for unhandled JS errors, hydration mismatches, or a broken import. Blank pages with no server errors are almost always client-side.' },
+      { q: 'Your Supabase free-tier project is returning errors for all queries. The most likely cause is:', options: ['Rate limiting from too many requests', 'An expired API key', 'The project auto-paused after a week of inactivity', 'A schema migration that dropped the wrong table'], correct: 2, explanation: 'Supabase free-tier projects auto-pause after 7 days of no activity. The fix is: Supabase dashboard → Settings → Database → Restore Project. This is a common 3am production panic with a one-click fix.' },
+      { q: 'The correct debugging order for a full-stack production incident is:', options: ['Frontend → API → Database → Network', 'Database → Server → Network → Frontend', 'Network → Server → Database → Frontend (outside in)', 'Check recent commits first, then narrow the layer'], correct: 2, explanation: 'Start from the outermost layer: Is the site reachable? (Network) → Is the server responding? → Is the DB healthy? → Is it a frontend JS error? Each layer confirmed narrows your search space.' },
+      { q: 'At 3am, you identify a one-line fix for a production bug. The safest action is:', options: ['Push the fix immediately — you know exactly what\'s wrong', 'Roll back first to restore service, then deploy the fix tomorrow after testing', 'Disable the feature in a feature flag', 'Leave it until morning — one-line fixes can still break things'], correct: 1, explanation: 'Rollback restores service immediately with zero new risk. Push tested fixes during business hours. A one-line change still goes through CI and code review — 3am is not the time for shortcuts.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `debugIncident(symptom, affectedUsers, recentChanges, hypothesis, layersChecked, resolution)` that formats a systematic incident diagnosis. Fill it in for the "users can\'t log in" scenario from this module.',
+      starterCode: `function debugIncident({ symptom, affectedUsers, recentChanges, hypothesis, layersChecked, resolution }) {
+  // Format the incident diagnosis as a structured report
+}
+
+const loginIncident = debugIncident({
+  symptom: '...',
+  affectedUsers: '...',
+  recentChanges: '...',
+  hypothesis: '...',
+  layersChecked: [],
+  resolution: '...'
+})
+
+console.log(loginIncident)`,
+      solution: `function debugIncident({ symptom, affectedUsers, recentChanges, hypothesis, layersChecked, resolution }) {
+  return \`SYMPTOM: \${symptom}
+AFFECTED USERS: \${affectedUsers}
+RECENT CHANGES: \${recentChanges}
+LAYERS CHECKED: \${layersChecked.join(' → ')}
+HYPOTHESIS: \${hypothesis}
+RESOLUTION: \${resolution}\`
+}
+
+const loginIncident = debugIncident({
+  symptom: 'Login form submits but returns generic error — users cannot authenticate',
+  affectedUsers: 'All email/password users. Google OAuth users unaffected.',
+  recentChanges: 'Deployment 6 hours ago — PR changed Supabase client initialization from @supabase/ssr createBrowserClient to @supabase/supabase-js createClient',
+  hypothesis: 'The wrong Supabase client is being used — @supabase/supabase-js createClient does not persist sessions in cookies for Next.js SSR, causing all server-side session reads to fail',
+  layersChecked: ['Network (site loads)', 'Server (Vercel logs clean)', 'Sentry (Auth session not found errors for email logins only)', 'Deployment diff (found Supabase client import change)'],
+  resolution: 'Rolled back deployment via Vercel dashboard in 4 minutes. Next morning: restored correct @supabase/ssr import, added Playwright auth integration test, deployed after CI passed.'
+})
+
+console.log(loginIncident)`,
+      hints: ['Layer checking should go outside-in: network, server, DB, then client/code', 'Hypothesis should name the specific line or change you suspect, not just "a bug in auth"', 'Resolution should separate the immediate fix (rollback) from the root cause fix (code change + test)'],
+    },
+  },
+  {
+    id: 'cc-interview-fs-m12', track: 'crash', title: 'Product Thinking for Full-Stack Engineers',
+    subtitle: 'Full-stack engineers who think like product owners get the offer. Learn to connect every technical decision to user outcomes and business results.',
+    courseObjective: CC_FS_OBJ, crashId: 'cc-interview-fullstack', crashTitle: 'Full Stack Interview Prep',
+    level: 'PhD', xp: 260, duration: 16, module: 12, certArea: 'Full Stack Interview Prep',
+    content: `Full-stack engineers are uniquely positioned to own product outcomes — they control the entire vertical slice from database to user interface. The engineers who advance fastest are not the ones who wait for a product manager to define a spec — they're the ones who ask "what problem does this solve?" before opening a code editor.
+
+## The Full-Stack Product Mindset
+
+Product thinking for a full-stack engineer means asking three questions at every layer:
+
+- **DB layer**: Does this schema capture the data we need to make the product work and measure success? Is this the right normalized vs denormalized structure for the query patterns we'll need?
+- **API layer**: Is this the right API surface? Would a different shape make the frontend simpler? Are we fetching too much or too little?
+- **UI layer**: Does this interface help the user complete their job-to-be-done, or are we just building the feature the spec described?
+
+## Product Story for Your Job Board
+
+Weak narrative: "I built a job board with Next.js, Supabase, and Tailwind."
+
+Strong narrative: "I built a job board to solve my own problem as an active job seeker — managing applications across 15 different portals was chaotic. I designed the schema around three jobs-to-be-done: discover matching roles, track application status, and prepare for interviews with stored company research. The stack decisions were driven by the product: Next.js SSR for SEO (job listings need to be indexed), Supabase for relational data with row-level isolation (each user sees only their applications), and Tailwind for fast UI iteration during the feature discovery phase."
+
+## Connecting Technical Decisions to Product Outcomes
+
+Full-stack engineers often make technical decisions that have direct product impact. Practice naming the product outcome for each major decision:
+
+- **Added RLS at the DB layer** → Product outcome: users trust the product with their private application data
+- **Added SSR to listing pages** → Product outcome: 3× more organic traffic from Google, reducing CAC
+- **Added optimistic updates to bookmark button** → Product outcome: 40% fewer "did this work?" clicks and re-tries
+- **Added error boundaries to dashboard** → Product outcome: a broken widget no longer loses the user's whole session
+
+## Questions You Will Face
+
+**"What would you prioritize if you had 3 more weeks on this project?"**
+Wrong: "Add more features" or "use a new framework."
+Right: "I'd add email reminders for follow-up dates — I observed that applications older than 2 weeks never get followed up on. That's the highest-impact user problem I haven't solved yet."
+
+**"How would you measure the success of your job board?"**
+Right: Primary metric — weekly active users completing at least one application tracked per session. Guardrail — time-to-complete an application tracking action stays under 30 seconds (don't add friction in the name of features).
+
+**"Why does the world need another job board?"**
+This is a product thinking question disguised as a challenge. Answer: "It doesn't — this is a personal productivity tool that solves my specific problem. But building it taught me to design a product around a user's job-to-be-done, not around a technology stack."`,
+    keyTerms: [
+      { term: 'Vertical Slice Ownership', definition: 'Owning a feature from database schema through API to UI — the defining capability of a full-stack engineer that enables product thinking.' },
+      { term: 'Schema for Product Outcomes', definition: 'Designing a database schema around the queries the product needs and the data needed to measure success, not just around normalized theory.' },
+      { term: 'Job-to-be-Done', definition: 'The specific task a user hires the product to do: "When I am tracking applications, I want to see status at a glance, so I can prioritize follow-ups."' },
+      { term: 'Product Metric', definition: 'A measurable outcome indicating the product is delivering user value — e.g., weekly active users completing a tracked application, not page views.' },
+      { term: 'Guardrail Metric', definition: 'A secondary constraint ensuring improving the primary metric doesn\'t cause harm — e.g., don\'t improve engagement at the cost of session completion time.' },
+    ],
+    quiz: [
+      { q: 'A full-stack engineer designs a schema to "properly normalize the data." What question should they ask first?', options: ['Which ORM supports this schema best?', 'What queries will the product need to run? Does this schema support them efficiently?', 'How many tables will this create?', 'Does this match the schema from my last project?'], correct: 1, explanation: 'Normalization is a tool, not a goal. The schema should be designed around the product\'s query patterns and data needs — over-normalized schemas often perform poorly for the specific access patterns a product requires.' },
+      { q: 'An interviewer asks "What would you prioritize in 3 more weeks?" The strongest answer:', options: ['Names a new technology to learn', 'Identifies the highest-impact unsolved user problem, grounded in observed behavior', 'Lists all features that are missing', 'Says the product is complete as-is'], correct: 1, explanation: 'Product thinking prioritizes by user impact. "I\'d add follow-up reminders because I observed applications older than 2 weeks never get followed up on" shows a user problem driving the roadmap.' },
+      { q: 'Which technical decision has a clear product outcome?', options: ['"I normalized the schema to 3NF" — outcome: cleaner codebase', '"I added SSR to listing pages" — outcome: 3× more organic traffic from Google, reducing CAC', '"I used TypeScript" — outcome: fewer bugs', '"I chose Tailwind" — outcome: faster development'], correct: 1, explanation: 'SSR directly enables SEO, which drives organic traffic. That\'s a product and business outcome, not just a technical choice. Always connect technical decisions to user-facing or business-facing results.' },
+      { q: 'The primary metric for your job board should be:', options: ['Total page views per month', 'Lighthouse performance score', 'Weekly active users completing at least one tracked application per session', 'Number of job listings indexed by Google'], correct: 2, explanation: 'Primary metrics measure whether the product is delivering its core value. The job board\'s value is helping users manage applications — "users completing a tracked application" is the right measure. Page views and Lighthouse scores are vanity and proxy metrics.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `productSlice(dbDecision, apiDecision, uiDecision)` that formats a full-stack product ownership narrative — for each layer, state the technical decision and its product outcome. Fill it in for one feature from your job board.',
+      starterCode: `function productSlice(feature, dbDecision, apiDecision, uiDecision) {
+  return \`FEATURE: \${feature}
+
+DB LAYER: \${dbDecision}
+API LAYER: \${apiDecision}
+UI LAYER: \${uiDecision}\`
+}
+
+// Document one feature from your project — name the decision AND its product outcome at each layer
+const authFeature = productSlice(
+  'User authentication and data isolation',
+  'DB decision: ... → Product outcome: ...',
+  'API decision: ... → Product outcome: ...',
+  'UI decision: ... → Product outcome: ...'
+)
+
+console.log(authFeature)`,
+      solution: `function productSlice(feature, dbDecision, apiDecision, uiDecision) {
+  return \`FEATURE: \${feature}
+
+DB LAYER: \${dbDecision}
+API LAYER: \${apiDecision}
+UI LAYER: \${uiDecision}\`
+}
+
+const authFeature = productSlice(
+  'User authentication and data isolation',
+  'DB: Added user_id FK on applications + RLS policies scoped to auth.uid() → Product outcome: Users trust the product with private job search data — no accidental data leaks possible at the application layer.',
+  'API: Used Supabase SSR client in middleware to validate sessions server-side before returning any data → Product outcome: No unauthenticated data exposure even if client-side code has a bug.',
+  'UI: Added persistent session with cookie-based auth so users don\'t re-login on refresh + Google OAuth for one-click signup → Product outcome: Onboarding friction reduced — users who signed up with Google were 2× more likely to complete their first application entry.'
+)
+
+console.log(authFeature)`,
+      hints: ['Every technical decision should have a "→ Product outcome:" that names user or business value', 'DB decisions affect data trust and query performance — name the product impact', 'UI decisions affect user behavior — name what changed or improved for users'],
+    },
+  },
+  {
+    id: 'cc-interview-fs-m13', track: 'crash', title: 'Performance Awareness — Full-Stack 10× Optimization',
+    subtitle: '"How would you make this 10x faster?" across the full stack — profile the right layer, fix the right bottleneck, verify the improvement.',
+    courseObjective: CC_FS_OBJ, crashId: 'cc-interview-fullstack', crashTitle: 'Full Stack Interview Prep',
+    level: 'PhD', xp: 260, duration: 17, module: 13, certArea: 'Full Stack Interview Prep',
+    content: `Full-stack performance questions cover every layer — a 10× improvement might come from the database, the API, the rendering strategy, or the client bundle. The engineer who says "measure first" and then traces the bottleneck to its actual layer wins the interview.
+
+## Full-Stack Performance Hierarchy
+
+**1. Database layer** (highest impact, often overlooked)
+- Missing indexes on filter/sort columns → add a compound index → 100× query speedup
+- N+1 query problem → fix with a JOIN or nested select → eliminate 99% of queries
+- Missing connection pool → add pgBouncer or Supabase connection pooling → handle 10× more concurrent users
+
+**2. Server/API layer**
+- No caching → add server-side caching with stale-while-revalidate → eliminate redundant DB calls
+- Returning 200 fields when the client needs 5 → add field selection → reduce payload 40×
+- No pagination → add cursor-based pagination → response time from 8s to 80ms
+
+**3. Rendering strategy**
+- Using CSR for a public page → switch to SSR or SSG → LCP from 6s to 1.2s (no client waterfall)
+- Fetching data client-side on every mount → move to Server Component → eliminate round-trip
+
+**4. Client/frontend layer**
+- Unoptimized images → next/image with WebP → 70% size reduction
+- 500KB unused JavaScript → code split with dynamic() → 60% bundle reduction
+- Re-rendering entire lists → add React.memo or virtualization → 10× scroll performance
+
+## The Profiling Sequence
+
+For any full-stack performance problem:
+1. **Check response time at the network level first** (Chrome DevTools Network tab) — is the server slow or is the client rendering slow?
+2. **If server slow**: check the database query plan (\`EXPLAIN ANALYZE\` in Supabase SQL editor)
+3. **If client slow**: Lighthouse for Core Web Vitals, Performance tab for JS flame chart, Bundle Analyzer for size
+4. **Apply the highest-impact fix, verify, then move to the next**
+
+## N+1: The Most Common Full-Stack Performance Bug
+
+\`\`\`js
+// N+1 problem — 1 query for posts + N queries for author of each post
+const posts = await db.select().from(postsTable)
+const postsWithAuthors = await Promise.all(
+  posts.map(post => db.select().from(usersTable).where(eq(usersTable.id, post.userId)))
+)
+// 101 queries for 100 posts
+
+// Fix: JOIN in one query
+const postsWithAuthors = await db.select({
+  id: postsTable.id,
+  title: postsTable.title,
+  authorName: usersTable.name
+}).from(postsTable).innerJoin(usersTable, eq(postsTable.userId, usersTable.id))
+// 1 query — same result
+\`\`\``,
+    keyTerms: [
+      { term: 'N+1 Query', definition: 'Fetching N related records with N separate queries instead of 1 JOIN — the most common full-stack performance anti-pattern.' },
+      { term: 'EXPLAIN ANALYZE', definition: 'Postgres command that shows the query execution plan and actual timing — used to identify missing indexes and inefficient joins.' },
+      { term: 'Connection Pooling', definition: 'Reusing database connections instead of opening a new one per request — critical for handling concurrent users at scale.' },
+      { term: 'Stale-While-Revalidate', definition: 'A caching strategy that returns a cached response immediately while fetching a fresh one in the background — balances freshness and speed.' },
+      { term: 'Code Splitting', definition: 'Breaking a JavaScript bundle into smaller chunks loaded on demand — reduces initial bundle size and improves Time to Interactive.' },
+    ],
+    quiz: [
+      { q: 'A page takes 8 seconds to load. Where do you look first?', options: ['Optimize images', 'Check Network tab — is the server response slow or is the client rendering slow?', 'Run Lighthouse', 'Reduce JavaScript'], correct: 1, explanation: 'Always identify which layer is slow before optimizing. Network tab shows if the server takes 7s (backend problem) or 200ms (client rendering problem). The fix is completely different.' },
+      { q: 'You have 100 posts and need each post\'s author name. You see 101 queries being fired. The fix is:', options: ['Add indexes on the posts table', 'Replace the per-post user query with a single JOIN', 'Enable connection pooling', 'Cache the user objects in memory'], correct: 1, explanation: 'N+1 is solved by fetching related data in the same query with a JOIN or nested select. 101 queries → 1 query is often a 50–100× improvement.' },
+      { q: 'A public job listing page has a 6-second LCP. The server responds in 200ms. The most impactful fix is:', options: ['Add more server RAM', 'Switch from CSR (client-side fetch) to SSR — server sends rendered HTML, eliminating the client-side data waterfall', 'Optimize the CSS', 'Add a loading skeleton'], correct: 1, explanation: 'If the server is fast but the page is slow, the bottleneck is the client waterfall: blank HTML loads → JS loads → fetch fires → data arrives → render. SSR sends fully rendered HTML directly, cutting LCP by 3–5×.' },
+      { q: 'EXPLAIN ANALYZE in Postgres reveals a "Seq Scan" (sequential scan) on a 500,000-row table. The fix is:', options: ['Increase the database memory', 'Add an index on the column being filtered', 'Rewrite the query in raw SQL', 'Upgrade to a larger Supabase plan'], correct: 1, explanation: 'A sequential scan reads every row. Adding an index on the filtered column switches to an Index Scan — O(n) → O(log n). For 500k rows, this is typically a 100–1000× speedup.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Fix the N+1 query problem below. The function currently runs one query per post to get the author\'s name. Rewrite it to use a single JOIN that returns all posts with author names in one query. Use the Supabase-style chained query format.',
+      starterCode: `// N+1 PROBLEM — DO NOT LEAVE THIS AS IS
+async function getPostsWithAuthors(supabase) {
+  // Query 1: get all posts
+  const { data: posts } = await supabase.from('posts').select('id, title, user_id')
+
+  // Queries 2..N+1: get author for each post
+  const results = await Promise.all(
+    posts.map(async post => {
+      const { data: author } = await supabase
+        .from('profiles')
+        .select('name')
+        .eq('id', post.user_id)
+        .single()
+      return { ...post, authorName: author.name }
+    })
+  )
+
+  return results
+}
+
+// FIXED VERSION — write it here
+async function getPostsWithAuthorsFIXED(supabase) {
+  // Use Supabase nested select to get posts + profiles in one query
+  // Supabase syntax: .select('*, profiles(name)')
+}`,
+      solution: `async function getPostsWithAuthorsFIXED(supabase) {
+  // One query: posts joined with profiles via foreign key
+  const { data, error } = await supabase
+    .from('posts')
+    .select(\`
+      id,
+      title,
+      user_id,
+      profiles(name)
+    \`)
+
+  if (error) throw error
+
+  // Normalize the nested structure
+  return data.map(post => ({
+    id: post.id,
+    title: post.title,
+    userId: post.user_id,
+    authorName: post.profiles?.name ?? 'Unknown'
+  }))
+}
+
+// Result: 1 query instead of N+1
+// For 100 posts: was 101 queries → now 1 query
+// Typical improvement: 50-100x faster`,
+      hints: ['Supabase nested select syntax: .select("*, related_table(columns)")', 'The foreign key relationship must exist in your schema for nested selects to work', 'Map the result to normalize profiles.name into a flat authorName field'],
+    },
+  },
+  {
+    id: 'cc-interview-fs-m14', track: 'crash', title: 'Security Instincts — Full-Stack Vulnerability Detection',
+    subtitle: 'Spot auth bypasses, missing RLS, exposed secrets, and injection risks across the full stack — without being told to look.',
+    courseObjective: CC_FS_OBJ, crashId: 'cc-interview-fullstack', crashTitle: 'Full Stack Interview Prep',
+    level: 'PhD', xp: 260, duration: 17, module: 14, certArea: 'Full Stack Interview Prep',
+    content: `Full-stack security instincts mean looking at any piece of code — DB schema, API route, or frontend component — and immediately seeing the exploitation path. This module trains the instinct across every layer.
+
+## The Full-Stack Security Mental Model
+
+Every full-stack vulnerability is one of: **authorization failure**, **injection**, **data exposure**, or **session/trust issue**. Train yourself to scan each layer for its specific vulnerability class.
+
+**Database layer**: Missing RLS, missing input validation, SQL injection via raw queries
+**API layer**: Missing auth checks, over-permissive endpoints, returning sensitive fields
+**Frontend layer**: XSS via dangerouslySetInnerHTML, secrets in NEXT_PUBLIC_, client-side auth only
+
+## Missing RLS — The Most Dangerous Full-Stack Mistake
+
+\`\`\`sql
+-- VULNERABLE: Table exists but RLS is disabled
+-- Any authenticated user can read ALL other users' applications
+SELECT * FROM applications WHERE status = 'applied';
+-- Returns every user's job applications, not just yours
+
+-- FIX: Enable RLS + policy
+ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "users see own applications"
+  ON applications FOR ALL
+  USING (user_id = auth.uid());
+\`\`\`
+
+Without RLS enabled, every Supabase query returns all rows to any authenticated user. Enabling the table and forgetting RLS is the #1 Supabase security mistake.
+
+## API Route Auth Bypass
+
+\`\`\`ts
+// VULNERABLE — no auth check
+export async function GET(req: Request) {
+  const applications = await supabase.from('applications').select('*')
+  return Response.json(applications)
+}
+// Anyone who knows the URL can call this and get ALL applications
+
+// FIX — verify session before querying
+export async function GET(req: Request) {
+  const supabase = createRouteHandlerClient({ cookies })
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return new Response('Unauthorized', { status: 401 })
+
+  const { data } = await supabase.from('applications').select('*')
+  // With RLS enabled, this only returns the authenticated user's rows
+  return Response.json(data)
+}
+\`\`\`
+
+## Server Action Auth Bypass
+
+\`\`\`ts
+// VULNERABLE — Server Action with no auth check
+'use server'
+export async function deleteApplication(id: string) {
+  await supabase.from('applications').delete().eq('id', id)
+  // Any user who can call this action can delete ANY application by guessing its UUID
+}
+
+// FIX — always verify ownership server-side
+'use server'
+export async function deleteApplication(id: string) {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) throw new Error('Unauthorized')
+
+  await supabase.from('applications')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', session.user.id)  // User can only delete their own
+}
+\`\`\`
+
+## Environment Variable Exposure
+
+\`\`\`ts
+// VULNERABLE — service role key in a client component
+'use client'
+const supabaseAdmin = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!)
+// Service role key bypasses ALL RLS — every user now has admin access
+
+// FIX — service role client only in Server Components / API routes
+// server-only file — never imported by client components
+import 'server-only'
+const supabaseAdmin = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY!)  // No NEXT_PUBLIC_
+\`\`\`
+
+## The Security Code Review Checklist for Full-Stack
+
+1. Is RLS enabled on every table that holds user data?
+2. Does every API route and Server Action check the session before operating on data?
+3. Is the SUPABASE_SERVICE_ROLE_KEY used anywhere with NEXT_PUBLIC_ prefix?
+4. Are Server Actions scoped to the authenticated user's data (\`.eq('user_id', session.user.id)\`)?
+5. Is user-controlled content ever passed to dangerouslySetInnerHTML without sanitization?`,
+    keyTerms: [
+      { term: 'Row Level Security (RLS)', definition: 'Postgres security that filters rows based on the current user identity — must be explicitly enabled per table or all authenticated users can read all rows.' },
+      { term: 'Service Role Key', definition: 'Supabase admin key that bypasses all RLS — must never appear in client-side code or with NEXT_PUBLIC_ prefix.' },
+      { term: 'API Route Auth Bypass', definition: 'An API route that queries the database without first verifying the caller\'s session — any attacker who knows the URL can access all data.' },
+      { term: 'Server Action Scope', definition: 'A Server Action that deletes or updates by ID without checking ownership allows any user to affect any row by guessing its ID.' },
+      { term: 'Authorization Layer Defense', definition: 'The principle that authorization should be enforced at every layer: middleware, API route/Server Action, and database (RLS) — each layer is a safety net for the others.' },
+    ],
+    quiz: [
+      { q: 'A Supabase table "applications" has user_id but RLS is not enabled. What can any authenticated user do?', options: ['Only read their own applications — Supabase enforces user_id by default', 'Read, update, or delete every user\'s applications by querying without a user_id filter', 'Nothing — Supabase denies all queries without explicit RLS policies', 'Only read — writes are blocked without RLS'], correct: 1, explanation: 'Without RLS enabled, there is no row filtering at the database level. Any authenticated Supabase client can SELECT * FROM applications and get every user\'s data. RLS must be explicitly enabled.' },
+      { q: 'What is wrong with using NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY?', options: ['NEXT_PUBLIC_ variables are not supported in Next.js 14', 'The service role key bypasses all RLS — putting it in a NEXT_PUBLIC_ variable sends it to every browser, giving every user admin DB access', 'Service role keys don\'t work with the Supabase JS client', 'This is the correct way to use the service role key in Next.js'], correct: 1, explanation: 'The service role key ignores RLS entirely — it has admin access to all data. Exposing it via NEXT_PUBLIC_ means any user can extract it from the page source and make admin-level database calls.' },
+      { q: 'A Server Action deletes a row by ID with `.eq("id", id)` but no user_id check. What is the vulnerability?', options: ['The action is missing error handling', 'Any authenticated user can delete any row by guessing or knowing its ID — missing ownership check', 'The action should use DELETE instead of .delete()', 'IDs are hashed so they can\'t be guessed'], correct: 1, explanation: 'UUIDs are not secret — they appear in URLs, logs, and can be found through other queries. Always scope destructive actions with `.eq("user_id", session.user.id)` to enforce ownership.' },
+      { q: 'The correct defense-in-depth approach for a full-stack app is:', options: ['Rely entirely on RLS — no auth checks needed in API routes', 'Auth check in middleware only — API routes don\'t need to re-verify', 'Auth check in middleware + session check in API routes/Server Actions + RLS at DB — each layer is a safety net', 'RLS is optional if all API routes check auth'], correct: 2, explanation: 'Defense in depth: middleware catches unauthenticated navigation, API/Server Action checks catch direct API calls, and RLS is the final safety net if application code has a bug. All three layers together.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `auditFullStackSecurity(schema, apiRoutes, envVars)` that checks for 4 common full-stack security issues: missing RLS, unauthenticated API routes, exposed service role key, and Server Actions without user_id scope. Return an array of findings.',
+      starterCode: `function auditFullStackSecurity({ tables, apiRoutes, envVars, serverActions }) {
+  const findings = []
+
+  // Check 1: Tables missing RLS
+  // Check 2: API routes without session checks
+  // Check 3: Service role key exposed via NEXT_PUBLIC_
+  // Check 4: Server Actions that delete/update without user_id filter
+
+  return findings
+}
+
+const audit = auditFullStackSecurity({
+  tables: [
+    { name: 'applications', hasRls: false },
+    { name: 'profiles', hasRls: true },
+  ],
+  apiRoutes: [
+    { path: '/api/applications', checksSession: false },
+    { path: '/api/profile', checksSession: true },
+  ],
+  envVars: ['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY'],
+  serverActions: [
+    { name: 'deleteApplication', hasUserIdFilter: false },
+    { name: 'updateProfile', hasUserIdFilter: true },
+  ]
+})
+
+console.log(audit)`,
+      solution: `function auditFullStackSecurity({ tables, apiRoutes, envVars, serverActions }) {
+  const findings = []
+
+  tables.forEach(t => {
+    if (!t.hasRls) findings.push({ severity: 'CRITICAL', type: 'Missing RLS', detail: \`Table "\${t.name}" has no Row Level Security — all authenticated users can read/write all rows.\` })
+  })
+
+  apiRoutes.forEach(r => {
+    if (!r.checksSession) findings.push({ severity: 'HIGH', type: 'Unauthenticated API Route', detail: \`Route "\${r.path}" does not check session — unauthenticated callers can access this endpoint.\` })
+  })
+
+  envVars.forEach(v => {
+    if (v.startsWith('NEXT_PUBLIC_') && /SERVICE_ROLE|ADMIN|SECRET/i.test(v)) {
+      findings.push({ severity: 'CRITICAL', type: 'Exposed Admin Key', detail: \`"\${v}" has NEXT_PUBLIC_ prefix — this key is bundled into the client JS and visible to every user. Remove the NEXT_PUBLIC_ prefix.\` })
+    }
+  })
+
+  serverActions.forEach(a => {
+    if (!a.hasUserIdFilter) findings.push({ severity: 'HIGH', type: 'Missing Ownership Check', detail: \`Server Action "\${a.name}" operates by ID without a user_id filter — any authenticated user can affect any row by knowing its ID.\` })
+  })
+
+  return findings.length ? findings : [{ severity: 'PASS', type: 'Clean', detail: 'No common vulnerabilities detected.' }]
+}
+
+const audit = auditFullStackSecurity({
+  tables: [
+    { name: 'applications', hasRls: false },
+    { name: 'profiles', hasRls: true },
+  ],
+  apiRoutes: [
+    { path: '/api/applications', checksSession: false },
+    { path: '/api/profile', checksSession: true },
+  ],
+  envVars: ['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY'],
+  serverActions: [
+    { name: 'deleteApplication', hasUserIdFilter: false },
+    { name: 'updateProfile', hasUserIdFilter: true },
+  ]
+})
+
+console.log(JSON.stringify(audit, null, 2))`,
+      hints: ['RLS check: loop tables, flag any with hasRls: false', 'Service role key: look for NEXT_PUBLIC_ prefix combined with SERVICE_ROLE or ADMIN in the name', 'Server Action scope: any destructive action without hasUserIdFilter: true is a finding'],
+    },
+  },
 ]

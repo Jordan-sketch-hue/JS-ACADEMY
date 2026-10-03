@@ -1466,4 +1466,1294 @@ analyzeConversionAnomalies(metrics)
       ],
     },
   },
+  {
+    id: 'cc-interview-data-m09', track: 'crash', title: 'Behavioral STAR Stories for Data Analysts',
+    subtitle: 'Turn your analytical wins into compelling interview stories using the STAR framework.',
+    moduleObjective: 'Build a story bank of data-driven STAR stories covering insight discovery, stakeholder influence, and analysis that changed decisions.',
+    courseObjective: CC_DATA_OBJ, crashId: 'cc-interview-data', crashTitle: 'Data Analyst Interview Prep',
+    level: 'PhD', xp: 240, duration: 13, module: 9, certArea: 'Data Analyst Interview Prep',
+    keyTerms: [
+      { term: 'STAR Framework', definition: 'Situation, Task, Action, Result — the structure for turning work experiences into memorable, structured interview answers.' },
+      { term: 'Data-Driven Decision', definition: 'A decision where analysis output materially changed the outcome — not just data used to confirm an existing belief.' },
+      { term: 'Insight vs Finding', definition: 'A finding is what the data shows; an insight is what it means for the business and what action it implies.' },
+      { term: 'Stakeholder Influence', definition: 'The ability to use data and communication to change what a decision-maker does — the core value of a data analyst.' },
+      { term: 'Story Bank', definition: 'A prepared set of STAR stories covering different competencies, ready to adapt to any behavioral question in an interview.' },
+    ],
+    content: `## Behavioral STAR Stories for Data Analysts
+
+### What data analyst behavioral questions test
+
+Interviewers for data roles ask behavioral questions to probe:
+1. **Analytical rigor** — did you check your assumptions, validate your data, consider confounders?
+2. **Business impact** — did your analysis change a decision or just inform it?
+3. **Communication** — can you explain findings to non-technical stakeholders?
+4. **Ambiguity handling** — what did you do when the data was incomplete or contradictory?
+5. **Proactivity** — did you wait for questions or seek out insights independently?
+
+### STAR Framework for Data Analysts
+
+\`\`\`
+S — Situation: What was the business context? (company stage, team, what was at stake)
+T — Task:      What was YOUR analytical mandate? (what question did you need to answer)
+A — Action:    What analysis did you run? What data? What did you check?
+R — Result:    How did the business decision change? What was the outcome?
+\`\`\`
+
+**Critical rule:** The Result must show the decision that changed, not just the insight you found. "I discovered that mobile conversion was 40% lower than desktop" is a finding. "The product team redirected 2 sprints to the mobile checkout flow, which raised mobile conversion by 18%" is a result.
+
+### Story 1: The metric that prevented a bad decision
+
+> "Our marketing team was planning a $200K campaign based on a 25% increase in sign-ups that month. They asked me to build a conversion funnel report to size the opportunity. When I segmented the sign-up cohort, I found that 80% of the new users came from a referral link posted in a niche Reddit thread — they had zero engagement after sign-up and a 2-day churn rate of 87%. The 'growth' was an artifact. I presented this alongside the organic cohort's LTV data. The team redirected the campaign budget toward retention instead, and 3-month revenue retention improved 12% for that cohort."
+
+**STAR breakdown:**
+- **S:** Marketing team about to spend $200K on a campaign
+- **T:** Build a funnel report to size the opportunity
+- **A:** Segmented cohorts, found referral-driven skew, calculated churn rate
+- **R:** $200K redirected, 12% retention improvement
+
+### Story 2: The analysis that nobody asked for
+
+> "During routine dashboard maintenance I noticed our B2B customers had a 3× higher LTV than B2C but represented less than 8% of our acquisition spend. This wasn't my assigned task, but I built a full cohort analysis comparing CAC, LTV, payback period, and NPS by segment. I presented it to the growth lead in a 5-minute slot. Within one quarter, the acquisition mix shifted to 35% B2B. Revenue per user increased 28% year-over-year."
+
+**Key lesson for interviews:** Proactive insight — not just reactive query-running — is what separates analysts from BI tools.
+
+### Story 3: When the data said one thing and the business pushed back
+
+> "After an A/B test showed no statistically significant improvement in the new onboarding flow, the product team was ready to ship it anyway because they'd invested heavily in it. I ran a segment analysis and found the test had been underpowered for mobile users specifically — we only had 60% of the required sample. I extended the test 2 more weeks and collected sufficient mobile data. The mobile cohort showed a significant negative effect (−14% completion). We shipped the desktop version only and avoided a mobile regression that would have affected 40% of our users."
+
+### The 5 questions you MUST have stories for
+
+\`\`\`
+1. "Tell me about a time your analysis changed a business decision."
+   → Use Story 1. Quantify the decision that changed and its outcome.
+
+2. "Describe a time you found an insight nobody asked for."
+   → Use Story 2. Show proactivity and business awareness.
+
+3. "Tell me about a time you disagreed with a stakeholder about data."
+   → Use Story 3. Show rigor, not stubbornness. Back up with methodology.
+
+4. "Tell me about a time your analysis was wrong."
+   → Be honest. Show how you caught it, corrected it, and what process changed.
+
+5. "How do you handle a request when the data isn't available or complete?"
+   → Show that you identify assumptions, triangulate from proxies, and communicate uncertainty.
+\`\`\``,
+    quiz: [
+      {
+        q: 'What distinguishes a "result" from a "finding" in a data analyst STAR story?',
+        options: ['Results include charts; findings are just text', 'A result shows what business decision changed; a finding is just what the data showed', 'Results are quantified; findings are qualitative', 'There is no meaningful difference'],
+        correct: 1,
+        explanation: 'A finding is "mobile conversion is 40% lower." A result is "the team redirected 2 sprints based on that, raising mobile conversion 18%." Interviewers want to see business impact, not just analytical ability.',
+      },
+      {
+        q: 'A product team wants to ship a new feature despite an A/B test showing "no significant improvement." What\'s the analyst\'s role?',
+        options: ['Defer to the PM — product decisions aren\'t analytics\' responsibility', 'Investigate whether the test was properly powered and check for segment-level effects before accepting "no effect"', 'Report the result and move on', 'Run the test again until significance is reached'],
+        correct: 1,
+        explanation: 'A "no significant result" can mean no effect OR insufficient statistical power. Checking sample size, power, and segment-level effects is core analytical rigor — not blocking the PM.',
+      },
+      {
+        q: 'Why is proactive insight more valuable than reactive query-running?',
+        options: ['Proactive insight is faster', 'It demonstrates business awareness and distinguishes analysts from BI tools that answer only the questions asked', 'Stakeholders prefer analysts who work independently', 'It saves meeting time'],
+        correct: 1,
+        explanation: 'A BI tool answers the question asked. An analyst finds the question that should be asked. The B2B/B2C segment story demonstrates the kind of business impact that comes from proactive analysis.',
+      },
+      {
+        q: 'What should you do when a stakeholder pushes back against your data-driven recommendation?',
+        options: ['Back down — they know the business better', 'Show your methodology, invite them to challenge specific assumptions, and offer to extend the analysis to address their concerns', 'Escalate to their manager', 'Repeat the same analysis more forcefully'],
+        correct: 1,
+        explanation: 'Data-driven influence requires intellectual humility and rigor. Invite stakeholders to challenge specific assumptions. If their challenge is valid, update the analysis. If not, stand firm with methodology, not authority.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a cohort retention analyzer. Given an array of user events with { userId, event, date }, calculate weekly retention: for each week after sign-up (week 1–4), what percentage of users who signed up in week 0 returned? Return an array of { week, retainedUsers, retentionRate }.',
+      starterCode: `const events = [
+  { userId: 'u1', event: 'signup',   date: '2024-01-01' },
+  { userId: 'u1', event: 'session',  date: '2024-01-08' },
+  { userId: 'u1', event: 'session',  date: '2024-01-15' },
+  { userId: 'u2', event: 'signup',   date: '2024-01-01' },
+  { userId: 'u2', event: 'session',  date: '2024-01-08' },
+  { userId: 'u3', event: 'signup',   date: '2024-01-01' },
+  // u3 churned after signup
+  { userId: 'u4', event: 'signup',   date: '2024-01-01' },
+  { userId: 'u4', event: 'session',  date: '2024-01-08' },
+  { userId: 'u4', event: 'session',  date: '2024-01-22' },
+]
+
+function calculateWeeklyRetention(events) {
+  // 1. Find all users who signed up (event === 'signup') and their signup date
+  // 2. For each week 1-4 after signup, check if the user had a 'session' event
+  //    in that 7-day window (day 7-13 = week 1, day 14-20 = week 2, etc.)
+  // 3. Return [{ week, retainedUsers, retentionRate }] for weeks 1-4
+
+  return []
+}
+
+console.log(calculateWeeklyRetention(events))`,
+      solution: `const events = [
+  { userId: 'u1', event: 'signup',   date: '2024-01-01' },
+  { userId: 'u1', event: 'session',  date: '2024-01-08' },
+  { userId: 'u1', event: 'session',  date: '2024-01-15' },
+  { userId: 'u2', event: 'signup',   date: '2024-01-01' },
+  { userId: 'u2', event: 'session',  date: '2024-01-08' },
+  { userId: 'u3', event: 'signup',   date: '2024-01-01' },
+  { userId: 'u4', event: 'signup',   date: '2024-01-01' },
+  { userId: 'u4', event: 'session',  date: '2024-01-08' },
+  { userId: 'u4', event: 'session',  date: '2024-01-22' },
+]
+
+function calculateWeeklyRetention(events) {
+  // Get signup dates
+  const signups = {}
+  for (const e of events) {
+    if (e.event === 'signup') signups[e.userId] = new Date(e.date)
+  }
+  const totalUsers = Object.keys(signups).length
+
+  // Get all session dates per user
+  const sessions = {}
+  for (const e of events) {
+    if (e.event === 'session') {
+      if (!sessions[e.userId]) sessions[e.userId] = []
+      sessions[e.userId].push(new Date(e.date))
+    }
+  }
+
+  // Calculate weekly retention
+  const results = []
+  for (let week = 1; week <= 4; week++) {
+    const weekStart = week * 7
+    const weekEnd = weekStart + 6
+
+    let retained = 0
+    for (const [userId, signupDate] of Object.entries(signups)) {
+      const userSessions = sessions[userId] || []
+      const hadSession = userSessions.some(d => {
+        const daysSinceSignup = (d - signupDate) / (1000 * 60 * 60 * 24)
+        return daysSinceSignup >= weekStart && daysSinceSignup <= weekEnd
+      })
+      if (hadSession) retained++
+    }
+
+    results.push({ week, retainedUsers: retained, retentionRate: +(retained / totalUsers * 100).toFixed(1) })
+  }
+  return results
+}
+
+console.log(calculateWeeklyRetention(events))`,
+      hints: [
+        'First pass: build a { userId: signupDate } map from signup events',
+        'Second pass: group session dates by userId',
+        'For week N: days since signup between N*7 and N*7+6 — use (sessionDate - signupDate) / 86400000 for days',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-data-m10', track: 'crash', title: 'Trade-off Articulation for Data Analysts',
+    subtitle: 'How to frame tool, methodology, and architecture decisions as principled trade-offs.',
+    moduleObjective: 'Articulate 5 key data analyst trade-offs — SQL vs Python, descriptive vs predictive, Tableau vs Looker, batch vs streaming, and precision vs speed — with clear criteria.',
+    courseObjective: CC_DATA_OBJ, crashId: 'cc-interview-data', crashTitle: 'Data Analyst Interview Prep',
+    level: 'PhD', xp: 245, duration: 13, module: 10, certArea: 'Data Analyst Interview Prep',
+    keyTerms: [
+      { term: 'Exploratory Data Analysis (EDA)', definition: 'Open-ended investigation of a dataset to discover patterns, anomalies, and hypotheses before formal analysis.' },
+      { term: 'Batch Processing', definition: 'Processing data in scheduled intervals (hourly, daily) — simpler and cheaper than real-time but introduces latency.' },
+      { term: 'Streaming Analytics', definition: 'Processing data as it arrives in real time — enables instant dashboards but adds infrastructure complexity.' },
+      { term: 'Descriptive vs Predictive', definition: 'Descriptive analytics explains what happened; predictive analytics forecasts what will happen.' },
+      { term: 'Self-Serve Analytics', definition: 'A data infrastructure where business users can answer their own questions without analyst intervention.' },
+    ],
+    content: `## Trade-off Articulation for Data Analysts
+
+### The Trade-off Framework
+
+\`\`\`
+1. Context  — team size, data volume, stakeholder technical literacy, time to value
+2. Criteria — what matters most: speed, accuracy, maintainability, self-serve capability?
+3. Options  — realistic choices given constraints
+4. Decision — best fit given context + criteria
+5. Trade-offs Accepted — what you're giving up, and why it's acceptable here
+\`\`\`
+
+### Trade-off 1: SQL vs Python for Analysis
+
+**Not a binary choice — a division of labor:**
+
+\`\`\`
+Use SQL when:
+  ✓ Data lives in a SQL database or data warehouse
+  ✓ Aggregations, joins, and filtering are the main operations
+  ✓ Output goes to a BI tool
+  ✓ Query needs to be maintained by non-engineers
+  ✓ Freshness matters (SQL runs against live data)
+
+Use Python when:
+  ✓ Statistical modeling (regression, clustering, forecasting)
+  ✓ Complex data transformations (reshaping, parsing, NLP)
+  ✓ Visualization beyond BI tool capabilities (custom charts)
+  ✓ Reproducible, version-controlled analysis notebooks
+  ✓ Machine learning preprocessing
+\`\`\`
+
+**Interview frame:** "My default is SQL for anything that's a filter/aggregate/join. I switch to Python when I need statistical modeling, complex transformations, or anything that needs to be version-controlled and reproduced."
+
+### Trade-off 2: Tableau vs Looker vs custom dashboards
+
+| Factor | Tableau | Looker | Custom (React + chart lib) |
+|--------|---------|--------|--------------------------|
+| Time to first dashboard | Hours | Days (LookML setup) | Weeks |
+| Self-serve for business users | High | Medium | None |
+| Consistent metrics definitions | Medium | High (LookML enforces) | Varies |
+| Custom interactivity | Low | Low | Full |
+| Maintenance cost | Low | Medium | High |
+
+**Best answer frame:** "For a team where business stakeholders need self-serve access and metric consistency matters, Looker's LookML layer is worth the setup cost. For ad-hoc analysis and rapid prototyping, Tableau or even Python notebooks are faster."
+
+### Trade-off 3: Descriptive vs Predictive Analytics
+
+\`\`\`
+Descriptive: What happened? (dashboards, reports, cohort analysis)
+  + Fast to build, easy to trust, always useful
+  - Backward-looking; tells you what, not what will happen
+
+Predictive: What will happen? (churn models, demand forecasting, LTV prediction)
+  + Forward-looking; enables proactive decisions
+  - Requires more data, expertise, validation; models degrade over time
+
+When to use each:
+  New product/company → descriptive first (establish baselines)
+  Mature product with clean data → predictive for high-value questions (churn, LTV)
+  Operations team → descriptive (real-time status)
+  Growth/marketing → predictive (which users to target)
+\`\`\`
+
+### Trade-off 4: Batch vs Streaming
+
+\`\`\`
+Batch (daily/hourly jobs):
+  + Simple, cheap, reliable
+  + Easy to backfill and reprocess
+  - Stale data (up to 24h lag)
+  - Not suitable for real-time alerts
+
+Streaming (Kafka, Flink, real-time):
+  + Near-real-time dashboards and alerts
+  + Enables instant fraud detection, live A/B results
+  - Complex infrastructure
+  - Harder to debug and backfill
+  - Significantly more expensive
+
+Use batch when: daily reporting, marketing attribution, financial reconciliation
+Use streaming when: fraud detection, live monitoring, personalization engines
+\`\`\`
+
+### Trade-off 5: Analysis speed vs analysis depth
+
+**The analyst's constant tension:** stakeholders want answers in an hour; rigorous analysis takes a week.
+
+\`\`\`
+Tiered response strategy:
+  Hour 1 → Quick answer: surface-level analysis with stated assumptions
+            "Based on last 30 days, revenue is down ~15% — caveat: seasonality not adjusted"
+  Day 1  → Preliminary answer: validated key assumptions, major segments checked
+  Week 1 → Rigorous answer: full cohort, confounders controlled, statistical tests run
+
+Always communicate which tier you're in and what the caveats are.
+Never present a "quick answer" as a rigorous one.
+\`\`\``,
+    quiz: [
+      {
+        q: 'When should a data analyst prefer Python over SQL for analysis?',
+        options: ['Always — Python is more powerful than SQL', 'For statistical modeling, complex transformations, or analysis that needs version control and reproducibility', 'When the dataset is very large', 'When the output will be shared with non-technical stakeholders'],
+        correct: 1,
+        explanation: 'SQL is better for filter/aggregate/join operations against live data. Python excels at statistical modeling, complex transforms, and reproducible notebooks. The best answer is "SQL by default, Python when the problem needs it."',
+      },
+      {
+        q: 'What is Looker\'s LookML and why is it valuable?',
+        options: ['A query language faster than SQL', 'A modeling layer that enforces consistent metric definitions across all dashboards', 'A data warehouse product', 'A Python library for data visualization'],
+        correct: 1,
+        explanation: 'LookML defines metrics once centrally (e.g., "revenue" = sum of payments where status=\'completed\'). Every dashboard built on top uses the same definition, preventing metric inconsistency across teams.',
+      },
+      {
+        q: 'A startup with 6 months of data asks you to build a churn prediction model. What\'s your response?',
+        options: ['Start modeling immediately', 'Build descriptive cohort analysis first to establish baselines and check if you have enough data quality for modeling', 'Decline — 6 months isn\'t enough data', 'Use a pre-built ML model'],
+        correct: 1,
+        explanation: 'Predictive models require clean historical data with enough examples of the outcome (churn). With 6 months of data, establish descriptive baselines first, validate data quality, and determine if you have sufficient churn events to train a reliable model.',
+      },
+      {
+        q: 'A stakeholder asks for analysis results in 1 hour. The rigorous answer takes 3 days. What do you do?',
+        options: ['Tell them to wait 3 days', 'Say you can\'t help them', 'Give a tiered response: quick answer in 1 hour with stated caveats, preliminary answer tomorrow, rigorous answer by end of week', 'Give the rigorous answer but cut corners'],
+        correct: 2,
+        explanation: 'Tiered responses respect the stakeholder\'s urgency while maintaining analytical integrity. The key is being explicit about which tier you\'re in and what the caveats are — never presenting a quick answer as a rigorous one.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a simple A/B test significance calculator. Given control and treatment groups (each with { visitors, conversions }), calculate: conversion rate for each group, absolute lift, relative lift, and whether the result is statistically significant using a chi-squared approximation (p < 0.05 = significant).',
+      starterCode: `function analyzeABTest(control, treatment) {
+  // control = { visitors: number, conversions: number }
+  // treatment = { visitors: number, conversions: number }
+
+  const controlRate = 0 // TODO: conversions / visitors
+  const treatmentRate = 0 // TODO: same
+
+  const absoluteLift = 0 // TODO: treatmentRate - controlRate
+  const relativeLift = 0 // TODO: (treatmentRate - controlRate) / controlRate * 100
+
+  // Chi-squared test (simplified)
+  // Expected counts if no difference: use pooled rate
+  // pooledRate = (control.conversions + treatment.conversions) / (control.visitors + treatment.visitors)
+  // chiSquared = sum of (observed - expected)^2 / expected across all 4 cells
+  // p < 0.05 when chiSquared > 3.841
+
+  const isSignificant = false // TODO
+
+  return {
+    controlRate: +(controlRate * 100).toFixed(2) + '%',
+    treatmentRate: +(treatmentRate * 100).toFixed(2) + '%',
+    absoluteLift: +(absoluteLift * 100).toFixed(2) + '%',
+    relativeLift: +relativeLift.toFixed(1) + '%',
+    isSignificant,
+    recommendation: isSignificant ? 'Ship it' : 'Needs more data'
+  }
+}
+
+console.log(analyzeABTest(
+  { visitors: 5000, conversions: 250 },   // 5% baseline
+  { visitors: 5000, conversions: 310 }    // 6.2% treatment
+))`,
+      solution: `function analyzeABTest(control, treatment) {
+  const controlRate = control.conversions / control.visitors
+  const treatmentRate = treatment.conversions / treatment.visitors
+  const absoluteLift = treatmentRate - controlRate
+  const relativeLift = (absoluteLift / controlRate) * 100
+
+  const pooledRate = (control.conversions + treatment.conversions) / (control.visitors + treatment.visitors)
+
+  // 4 cells: [control converts, control doesn't, treatment converts, treatment doesn't]
+  const cells = [
+    { obs: control.conversions, exp: control.visitors * pooledRate },
+    { obs: control.visitors - control.conversions, exp: control.visitors * (1 - pooledRate) },
+    { obs: treatment.conversions, exp: treatment.visitors * pooledRate },
+    { obs: treatment.visitors - treatment.conversions, exp: treatment.visitors * (1 - pooledRate) },
+  ]
+
+  const chiSquared = cells.reduce((sum, c) => sum + Math.pow(c.obs - c.exp, 2) / c.exp, 0)
+  const isSignificant = chiSquared > 3.841  // p < 0.05, df=1
+
+  return {
+    controlRate: +(controlRate * 100).toFixed(2) + '%',
+    treatmentRate: +(treatmentRate * 100).toFixed(2) + '%',
+    absoluteLift: +(absoluteLift * 100).toFixed(2) + '%',
+    relativeLift: +relativeLift.toFixed(1) + '%',
+    isSignificant,
+    chiSquared: +chiSquared.toFixed(3),
+    recommendation: isSignificant ? 'Ship it' : 'Needs more data'
+  }
+}
+
+console.log(analyzeABTest({ visitors: 5000, conversions: 250 }, { visitors: 5000, conversions: 310 }))`,
+      hints: [
+        'controlRate = control.conversions / control.visitors',
+        'pooledRate = total conversions / total visitors — used as expected rate for both groups',
+        'chiSquared > 3.841 means p < 0.05 for 1 degree of freedom (standard A/B test)',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-data-m11', track: 'crash', title: '3am Production Incident — Data Analyst Edition',
+    subtitle: 'When your dashboard shows the wrong numbers: diagnosing and resolving a data quality incident.',
+    moduleObjective: 'Apply systematic debugging to a data pipeline failure, identify root causes, and implement process improvements that prevent recurrence.',
+    courseObjective: CC_DATA_OBJ, crashId: 'cc-interview-data', crashTitle: 'Data Analyst Interview Prep',
+    level: 'PhD', xp: 250, duration: 14, module: 11, certArea: 'Data Analyst Interview Prep',
+    keyTerms: [
+      { term: 'Data Quality Incident', definition: 'A situation where data in production dashboards or reports is incorrect, missing, or inconsistent.' },
+      { term: 'Silent Data Error', definition: 'A data quality issue that doesn\'t throw an error or alert — dashboards still render, but the numbers are wrong.' },
+      { term: 'Data Lineage', definition: 'The chain of transformations from raw source data to the final metric — understanding this is essential for debugging.' },
+      { term: 'Backfill', definition: 'Reprocessing historical data after fixing a pipeline bug to correct past values in dashboards.' },
+      { term: 'Data Contract', definition: 'An agreement about the format, freshness, and completeness of data passed between teams or systems.' },
+    ],
+    content: `## 3am Production Incident — Data Analyst Edition
+
+### The scenario
+
+> **Monday morning.** The CMO sends a Slack message at 7am: "Our revenue dashboard shows we had our worst week in 18 months — revenue down 62% week-over-week. Is this real or is the data broken?" The marketing team has already started drafting a board update. You have 30 minutes before the exec team meeting.
+
+This is a data analyst's most common high-pressure situation: **the dashboard is wrong, but how wrong, and why?**
+
+### The Data Incident Response Framework
+
+\`\`\`
+Phase 1 — ASSESS the data, not the panic (5 min)
+  Is this a display issue (visualization bug) or a data issue?
+  When did the change happen? (check the exact timestamp)
+  Does the raw source data match the dashboard?
+
+Phase 2 — CHECK THE PIPELINE (10 min)
+  Did any ETL jobs fail or complete late?
+  Did any upstream schema change?
+  Did any new data source get added or removed?
+
+Phase 3 — TRIANGULATE (10 min)
+  Cross-reference with 2+ independent data sources
+  Check a known-good metric from the same time period
+  Manually calculate the metric for a small sample
+
+Phase 4 — COMMUNICATE EARLY (always)
+  Don't wait until you have the full answer
+  "Dashboard shows anomaly, investigating now, will update in 30 minutes"
+  Much better than silence followed by "the board update is wrong"
+
+Phase 5 — FIX AND BACKFILL
+  Fix the root cause
+  Determine scope: how many days/weeks of data are affected?
+  Run backfill to correct historical values
+  Add validation test to prevent recurrence
+\`\`\`
+
+### Working the revenue scenario
+
+**Assess:**
+\`\`\`sql
+-- Check raw transactions table for last 2 weeks
+SELECT
+  DATE_TRUNC('week', created_at) AS week,
+  SUM(amount) AS raw_revenue,
+  COUNT(*) AS transaction_count
+FROM transactions
+WHERE created_at >= NOW() - INTERVAL '14 days'
+GROUP BY 1
+ORDER BY 1;
+-- Raw data shows normal transaction volume and amounts
+-- The raw data is fine — this is a pipeline/transform issue
+\`\`\`
+
+**Check the pipeline:**
+\`\`\`
+ETL logs → revenue_daily_agg job completed successfully
+But wait: "completed" at 3:17am vs normal 1:45am — ran 90 minutes late
+Check dependency: payments_raw table refreshed at 2:58am
+
+Root cause hypothesis: The ETL job uses a filter:
+  WHERE payment_date >= CURRENT_DATE - 7
+
+If the job ran late (after midnight), CURRENT_DATE changed.
+The "last 7 days" window is correct as of 3am Monday, but yesterday's
+data (Sunday) got excluded because it fell exactly on the boundary.
+\`\`\`
+
+**The actual bug:**
+\`\`\`sql
+-- Bug: CURRENT_DATE is evaluated at job run time, not data collection period
+-- This meant 1 day of revenue ($45K) was excluded from "last 7 days"
+-- Combined with 2 days of the prior week being included (timezone shift), this
+-- created an artificial 62% drop
+
+-- Fix: use explicit date parameters, not CURRENT_DATE in production queries
+WHERE payment_date >= '2024-01-15'  -- pass as parameter from orchestrator
+  AND payment_date < '2024-01-22'
+\`\`\`
+
+**Communication:**
+> "The revenue drop is a data pipeline issue, not a real revenue event. An ETL job ran 90 minutes late which caused the date boundary calculation to exclude 1 day of revenue. Real week-over-week revenue is -3.2%, which is within normal variance. I've corrected the historical data and added a freshness check that will alert us if any ETL job runs more than 30 minutes late."
+
+### Post-mortem action items for data incidents
+
+\`\`\`
+1. Root cause: ETL job used CURRENT_DATE evaluated at runtime, not a fixed parameter
+2. Why no alert? No data freshness monitoring — dashboard didn't show data age
+3. Why ran late? Upstream dependency (payments_raw) runs started delaying last month
+
+Fix actions:
+  a. Parameterize all date ranges in ETL jobs (pass from orchestrator)
+  b. Add data freshness indicator to all dashboards ("Last updated: 2h ago")
+  c. Add Great Expectations check: revenue[today] > revenue[yesterday] * 0.5
+  d. Add SLA monitoring: alert if any ETL job runs > 30min past scheduled time
+\`\`\``,
+    quiz: [
+      {
+        q: 'The CMO sees a 62% revenue drop on Monday morning. What do you do first?',
+        options: ['Immediately tell them it\'s a data error', 'Verify whether raw source data matches the dashboard before communicating anything', 'Run the ETL job again', 'Check with the sales team'],
+        correct: 1,
+        explanation: 'Always verify the raw source data before communicating. The drop could be real (a real revenue problem) or a pipeline issue. The first step is to check whether the raw transactions match the dashboard numbers.',
+      },
+      {
+        q: 'What is a "silent data error" and why is it the most dangerous type of data quality issue?',
+        options: ['An error that only affects small datasets', 'An error where the dashboard renders correctly but shows wrong numbers — no alert fires', 'An error that only data engineers can see', 'An error that only affects historical data'],
+        correct: 1,
+        explanation: 'Silent data errors are the most dangerous because they look like success — the dashboard loads, no errors appear, but the numbers are wrong. Business decisions get made on incorrect data before anyone notices.',
+      },
+      {
+        q: 'In the scenario, the ETL bug was using CURRENT_DATE at job runtime. What\'s the correct fix?',
+        options: ['Run ETL jobs only during business hours', 'Parameterize date ranges — pass explicit start/end dates from the orchestrator, not evaluated at runtime', 'Add more timezone handling', 'Use UTC throughout'],
+        correct: 1,
+        explanation: 'CURRENT_DATE evaluated at runtime is fragile — jobs running late, timezone changes, or daylight saving time shifts can all cause boundary issues. Explicit parameters passed from the orchestrator make the date range deterministic.',
+      },
+      {
+        q: 'When should you communicate with stakeholders during a data incident?',
+        options: ['Only after you have the full root cause', 'Early and with uncertainty — "investigating now, 62% drop appears to be a data issue, will confirm in 30 minutes"', 'After you\'ve fixed everything', 'Only if the error affects more than 24 hours of data'],
+        correct: 1,
+        explanation: 'Early communication prevents decisions being made on wrong data. "Investigating now" is much better than silence that lets a board update go out based on a data artifact. Communicate what you know, what you\'re unsure of, and your timeline.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a data freshness checker. Given an array of daily metrics (each with { date, value }), detect anomalies: days where value is more than 2 standard deviations below the rolling 7-day average. Return { anomalies: [{ date, value, rollingAvg, zScore }], summary: string }.',
+      starterCode: `const metrics = [
+  { date: '2024-01-01', value: 45000 },
+  { date: '2024-01-02', value: 47000 },
+  { date: '2024-01-03', value: 44000 },
+  { date: '2024-01-04', value: 46000 },
+  { date: '2024-01-05', value: 48000 },
+  { date: '2024-01-06', value: 43000 },
+  { date: '2024-01-07', value: 45000 },
+  { date: '2024-01-08', value: 17000 }, // anomaly! pipeline bug
+  { date: '2024-01-09', value: 44000 },
+]
+
+function detectAnomalies(metrics) {
+  const anomalies = []
+
+  for (let i = 7; i < metrics.length; i++) {
+    // Get the 7 days before day i
+    const window = metrics.slice(i - 7, i).map(m => m.value)
+
+    // TODO: Calculate rolling average of window
+    const rollingAvg = 0
+
+    // TODO: Calculate standard deviation of window
+    const stdDev = 0
+
+    // TODO: Calculate z-score = (value - mean) / stdDev
+    const zScore = 0
+
+    // TODO: If zScore < -2, it's an anomaly — add to anomalies array
+  }
+
+  return {
+    anomalies,
+    summary: anomalies.length > 0
+      ? \`Found \${anomalies.length} anomaly/anomalies\`
+      : 'No anomalies detected'
+  }
+}
+
+console.log(detectAnomalies(metrics))`,
+      solution: `const metrics = [
+  { date: '2024-01-01', value: 45000 },
+  { date: '2024-01-02', value: 47000 },
+  { date: '2024-01-03', value: 44000 },
+  { date: '2024-01-04', value: 46000 },
+  { date: '2024-01-05', value: 48000 },
+  { date: '2024-01-06', value: 43000 },
+  { date: '2024-01-07', value: 45000 },
+  { date: '2024-01-08', value: 17000 },
+  { date: '2024-01-09', value: 44000 },
+]
+
+function detectAnomalies(metrics) {
+  const anomalies = []
+
+  for (let i = 7; i < metrics.length; i++) {
+    const window = metrics.slice(i - 7, i).map(m => m.value)
+    const rollingAvg = window.reduce((a, b) => a + b, 0) / window.length
+    const variance = window.reduce((sum, v) => sum + Math.pow(v - rollingAvg, 2), 0) / window.length
+    const stdDev = Math.sqrt(variance)
+    const zScore = stdDev === 0 ? 0 : (metrics[i].value - rollingAvg) / stdDev
+
+    if (zScore < -2) {
+      anomalies.push({
+        date: metrics[i].date,
+        value: metrics[i].value,
+        rollingAvg: +rollingAvg.toFixed(0),
+        zScore: +zScore.toFixed(2)
+      })
+    }
+  }
+
+  return {
+    anomalies,
+    summary: anomalies.length > 0
+      ? \`Found \${anomalies.length} anomaly/anomalies: \${anomalies.map(a => a.date).join(', ')}\`
+      : 'No anomalies detected'
+  }
+}
+
+console.log(detectAnomalies(metrics))`,
+      hints: [
+        'rollingAvg = window.reduce((a, b) => a + b, 0) / window.length',
+        'variance = window.reduce((sum, v) => sum + (v - mean)^2, 0) / window.length; stdDev = Math.sqrt(variance)',
+        'zScore = (currentValue - rollingAvg) / stdDev; anomaly if zScore < -2',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-data-m12', track: 'crash', title: 'Product Thinking for Data Analysts',
+    subtitle: 'How great analysts frame metrics as product decisions and make data self-serve.',
+    moduleObjective: 'Define north star metrics, identify vanity vs actionable metrics, and build the case for self-serve analytics infrastructure.',
+    courseObjective: CC_DATA_OBJ, crashId: 'cc-interview-data', crashTitle: 'Data Analyst Interview Prep',
+    level: 'PhD', xp: 245, duration: 13, module: 12, certArea: 'Data Analyst Interview Prep',
+    keyTerms: [
+      { term: 'North Star Metric', definition: 'The single metric that best captures the core value your product delivers to customers — drives all other metric decisions.' },
+      { term: 'Vanity Metric', definition: 'A metric that looks good on paper but doesn\'t correlate with business outcomes — page views, total registered users, social followers.' },
+      { term: 'Actionable Metric', definition: 'A metric where a change tells you what to do: if it drops, you know what to investigate and fix.' },
+      { term: 'Metric Tree', definition: 'A hierarchy showing how the north star metric is composed of sub-metrics — useful for diagnosing where a change is coming from.' },
+      { term: 'Self-Serve Analytics', definition: 'Infrastructure and tooling that lets business users answer their own data questions without analyst involvement.' },
+    ],
+    content: `## Product Thinking for Data Analysts
+
+### The data analyst as product owner
+
+Great data analysts don't just answer questions — they define which questions matter. That means understanding:
+1. What business outcome are we trying to drive?
+2. Which metrics predict that outcome?
+3. What does a change in this metric tell us to do?
+
+### North Star Metrics
+
+Every product has one metric that captures its core value delivery. Everything else is either a leading indicator, a guardrail, or a vanity metric.
+
+\`\`\`
+Company type         North Star Metric example
+────────────────────────────────────────────────────────────
+SaaS                 Weekly active users who completed core action
+Marketplace          Gross merchandise value (GMV)
+Social platform      Daily active users / DAU:MAU ratio
+E-commerce           Revenue per visitor (not orders, not revenue alone)
+Content platform     Content consumed per user per week
+B2B SaaS             Seats with active usage (not licenses sold)
+\`\`\`
+
+**Interview test:** Be ready to define the north star metric for a company in any of these categories, and explain why you chose it over alternatives.
+
+### Vanity metrics vs actionable metrics
+
+\`\`\`
+Vanity metric (avoid as primary KPIs):
+  - Total registered users (include everyone who never came back)
+  - Page views (doesn't distinguish between users)
+  - Total revenue (without segmenting by cohort, you can't act on it)
+  - Social followers
+
+Why they're dangerous: they feel good and can grow while the business is dying.
+A product with 1M registered users but 2% monthly active users is in trouble.
+
+Actionable metrics (use these):
+  - D1/D7/D30 retention rate (tells you if users see value)
+  - Weekly Active Users / Monthly Active Users ratio (engagement intensity)
+  - Revenue per user by cohort (tells you if product value is improving)
+  - Feature adoption rate (tells you if a shipped feature actually worked)
+  - Support ticket volume by category (tells you what's broken)
+\`\`\`
+
+### Metric trees — diagnosing a change
+
+When your north star drops, a metric tree tells you where to look:
+
+\`\`\`
+North Star: Weekly Active Users
+  ├── New user activation (new users completing key action in week 1)
+  │   ├── Traffic volume (acquisition)
+  │   ├── Sign-up conversion rate
+  │   └── Onboarding completion rate
+  └── Retained user engagement (returning users taking key action)
+      ├── D7 retention rate
+      ├── Feature usage frequency
+      └── Session depth (actions per session)
+
+If WAU drops, check: is it new activation or retained engagement?
+If activation: is traffic down, or are users signing up but not activating?
+This narrows root cause in minutes, not days.
+\`\`\`
+
+### Self-serve analytics — the analyst as platform builder
+
+Senior analysts build infrastructure that multiplies analytical capacity:
+
+\`\`\`
+Level 1: You answer all questions (1× capacity)
+Level 2: You build dashboards for recurring questions (5× capacity)
+Level 3: You build a self-serve layer where PMs answer their own questions (50× capacity)
+\`\`\`
+
+Self-serve analytics requires:
+1. **Consistent metric definitions** (LookML, dbt metrics)
+2. **Documented data dictionaries** (what does each table/column mean?)
+3. **Curated exploration layers** (a "mart" layer PMs can explore safely)
+4. **Training** (30-min session for PMs on your BI tool)
+
+**Interview frame:** "My goal is to work myself out of the simple reporting job so I can focus on the hard analysis that requires statistical judgment. I invest in self-serve infrastructure so PMs can get their own pie charts."`,
+    quiz: [
+      {
+        q: 'Why is "total registered users" typically a vanity metric?',
+        options: ['It\'s too hard to measure accurately', 'It includes all users who never returned, making it grow while engagement is declining', 'It doesn\'t grow fast enough to be useful', 'It\'s not meaningful to investors'],
+        correct: 1,
+        explanation: 'Total registered users includes churned users, spambots, and one-time visitors. It can grow while your active user base is declining. DAU or WAU with a minimum engagement threshold are far more actionable.',
+      },
+      {
+        q: 'A product\'s North Star Metric (weekly active users) dropped 15% this week. What\'s the first analytical step?',
+        options: ['Run a survey to ask users what happened', 'Decompose using the metric tree: is the drop in new user activation or retained user engagement?', 'Check if it was a seasonal effect', 'Present the drop to the exec team'],
+        correct: 1,
+        explanation: 'A metric tree decomposition narrows the root cause immediately. If activation is down, look at traffic and onboarding. If retention is down, look at engagement patterns. This turns a confusing number into a specific investigation path.',
+      },
+      {
+        q: 'What is the goal of "self-serve analytics" and why does it matter for a senior data analyst?',
+        options: ['Letting users see raw data directly', 'Building infrastructure that lets PMs and business users answer their own simple questions, freeing analysts for high-value analysis', 'Reducing headcount in the data team', 'Making data available without SQL'],
+        correct: 1,
+        explanation: 'Self-serve analytics multiplies analytical capacity. When PMs can answer "what is our conversion rate by country?" themselves, analysts focus on "why is conversion lower for users from India and what should we do about it?" — the higher-value work.',
+      },
+      {
+        q: 'Which metric is more actionable for an e-commerce product?',
+        options: ['Total revenue', 'Revenue per visitor, segmented by acquisition channel and cohort', 'Number of orders', 'Total page views'],
+        correct: 1,
+        explanation: 'Revenue per visitor by acquisition channel tells you exactly where to invest or cut marketing spend. Total revenue tells you a number without a direction to act.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a metric tree evaluator. Given a north star metric value, a previous period value, and a metric tree object (nested structure), determine which branch explains the most of the overall change. For each leaf metric, calculate its contribution to the total change.',
+      starterCode: `const metricTree = {
+  name: 'Weekly Active Users',
+  current: 8500,
+  previous: 10000,
+  children: [
+    {
+      name: 'New User Activation',
+      current: 1800,
+      previous: 2500,
+      children: [
+        { name: 'Traffic', current: 12000, previous: 13000 },
+        { name: 'Signup Conversion', current: 0.25, previous: 0.28 },
+        { name: 'Onboarding Completion', current: 0.60, previous: 0.69 },
+      ]
+    },
+    {
+      name: 'Retained Engagement',
+      current: 6700,
+      previous: 7500,
+      children: [
+        { name: 'D7 Retention', current: 0.42, previous: 0.44 },
+        { name: 'Feature Usage Rate', current: 0.71, previous: 0.75 },
+      ]
+    }
+  ]
+}
+
+function analyzeMetricTree(node, depth = 0) {
+  const change = node.current - node.previous
+  const changePct = ((change / node.previous) * 100).toFixed(1)
+  const indent = '  '.repeat(depth)
+
+  console.log(\`\${indent}\${node.name}: \${node.current} vs \${node.previous} (\${changePct}%)\`)
+
+  if (node.children) {
+    // TODO: recurse into children
+    // TODO: find which child has the largest absolute % change and flag it
+
+    let biggestDrop = null
+    for (const child of node.children) {
+      analyzeMetricTree(child, depth + 1)
+      const childChangePct = Math.abs((child.current - child.previous) / child.previous * 100)
+      if (!biggestDrop || childChangePct > biggestDrop.pct) {
+        biggestDrop = { name: child.name, pct: childChangePct }
+      }
+    }
+
+    if (depth === 0) {
+      console.log(\`\\n→ Biggest driver: \${biggestDrop?.name} (\${biggestDrop?.pct.toFixed(1)}% change)\`)
+    }
+  }
+}
+
+analyzeMetricTree(metricTree)`,
+      solution: `const metricTree = {
+  name: 'Weekly Active Users',
+  current: 8500,
+  previous: 10000,
+  children: [
+    {
+      name: 'New User Activation',
+      current: 1800,
+      previous: 2500,
+      children: [
+        { name: 'Traffic', current: 12000, previous: 13000 },
+        { name: 'Signup Conversion', current: 0.25, previous: 0.28 },
+        { name: 'Onboarding Completion', current: 0.60, previous: 0.69 },
+      ]
+    },
+    {
+      name: 'Retained Engagement',
+      current: 6700,
+      previous: 7500,
+      children: [
+        { name: 'D7 Retention', current: 0.42, previous: 0.44 },
+        { name: 'Feature Usage Rate', current: 0.71, previous: 0.75 },
+      ]
+    }
+  ]
+}
+
+function analyzeMetricTree(node, depth = 0) {
+  const change = node.current - node.previous
+  const changePct = ((change / node.previous) * 100).toFixed(1)
+  const indent = '  '.repeat(depth)
+  const arrow = change < 0 ? '↓' : change > 0 ? '↑' : '→'
+
+  console.log(\`\${indent}\${arrow} \${node.name}: \${node.current} vs \${node.previous} (\${changePct}%)\`)
+
+  if (node.children) {
+    let biggestDrop = null
+    for (const child of node.children) {
+      analyzeMetricTree(child, depth + 1)
+      const childChangePct = Math.abs((child.current - child.previous) / child.previous * 100)
+      if (!biggestDrop || childChangePct > biggestDrop.pct) {
+        biggestDrop = { name: child.name, pct: childChangePct }
+      }
+    }
+
+    if (depth === 0) {
+      console.log(\`\\n→ Biggest driver of change: \${biggestDrop?.name} (\${biggestDrop?.pct.toFixed(1)}% change)\`)
+      console.log(\`  → Investigate this branch first\`)
+    }
+  }
+}
+
+analyzeMetricTree(metricTree)`,
+      hints: [
+        'changePct = (current - previous) / previous * 100',
+        'Recurse with analyzeMetricTree(child, depth + 1)',
+        'Track biggestDrop by comparing absolute changePct across children',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-data-m13', track: 'crash', title: 'Performance Awareness for Data Analysts',
+    subtitle: 'Query optimization, data pipeline efficiency, and knowing when performance is a data quality issue.',
+    moduleObjective: 'Optimize slow SQL queries, understand query execution plans, and design efficient data models that scale with data volume.',
+    courseObjective: CC_DATA_OBJ, crashId: 'cc-interview-data', crashTitle: 'Data Analyst Interview Prep',
+    level: 'PhD', xp: 250, duration: 14, module: 13, certArea: 'Data Analyst Interview Prep',
+    keyTerms: [
+      { term: 'Query Execution Plan', definition: 'The database\'s plan for how to execute a query — shows whether it uses indexes, how it joins tables, and where the bottlenecks are.' },
+      { term: 'Sequential Scan', definition: 'Reading every row in a table — correct for small tables or full scans, slow and expensive on large tables without indexes.' },
+      { term: 'Index', definition: 'A data structure that speeds up reads by maintaining a sorted copy of one or more columns — trades write speed for read speed.' },
+      { term: 'Aggregation Table', definition: 'A pre-computed summary table (e.g., daily revenue by country) that makes dashboard queries fast by trading storage for speed.' },
+      { term: 'Materialized View', definition: 'A stored query result that can be refreshed on a schedule — faster to read than the underlying complex query.' },
+    ],
+    content: `## Performance Awareness for Data Analysts
+
+### Why performance matters for data analysts
+
+A slow query isn't just annoying — it:
+1. Blocks other queries on the database (lock contention)
+2. Makes dashboards unusable in practice (no one waits 3 minutes for a chart)
+3. Can cost real money in cloud data warehouses (BigQuery, Snowflake charge per byte scanned)
+
+### Reading a Query Execution Plan
+
+\`\`\`sql
+EXPLAIN ANALYZE
+SELECT
+  u.country,
+  COUNT(DISTINCT o.user_id) AS active_users,
+  SUM(o.amount) AS revenue
+FROM orders o
+JOIN users u ON u.id = o.user_id
+WHERE o.created_at >= '2024-01-01'
+GROUP BY u.country
+ORDER BY revenue DESC;
+\`\`\`
+
+\`\`\`
+-- Output (simplified):
+Sort (cost=45000..45001 rows=50 width=64) (actual time=12453.2..12453.3 rows=50)
+  -> HashAggregate (cost=44890..44940 rows=50 width=64)
+     -> Hash Join (cost=8234..43210 rows=340000 width=32)
+        -> Seq Scan on orders (cost=0..22000 rows=880000 width=16)
+           Filter: (created_at >= '2024-01-01')
+        -> Hash  (cost=4000..4000 rows=195000 width=24)
+           -> Seq Scan on users (cost=0..4000 rows=195000 width=24)
+
+Key signals:
+  "Seq Scan on orders ... rows=880000" → reading 880K rows without an index
+  "actual time=12453" → 12 seconds
+\`\`\`
+
+**What to look for:**
+- \`Seq Scan\` on large tables → add an index
+- \`rows\` estimate vs actual rows far apart → out-of-date statistics (run ANALYZE)
+- High cost in early steps → query is doing too much work early
+
+### Adding the right index
+
+\`\`\`sql
+-- The query filters on created_at and joins on user_id
+-- Add a composite index that covers both:
+CREATE INDEX idx_orders_created_at ON orders (created_at);
+-- Or even better, covering index:
+CREATE INDEX idx_orders_created_user ON orders (created_at, user_id, amount);
+
+-- After index:
+-- Index Scan on orders (cost=0..1200 rows=22000 width=16)
+-- actual time=380.1  → from 12s to 0.38s
+\`\`\`
+
+### Pre-aggregation for dashboard performance
+
+Production dashboards should never run complex analytical queries on every page load:
+
+\`\`\`sql
+-- Expensive to run on every dashboard load (scans 10M rows):
+SELECT country, SUM(amount) FROM orders WHERE created_at >= '2024-01-01' GROUP BY country;
+
+-- Instead: run nightly, store in aggregation table:
+CREATE TABLE revenue_by_country_daily AS
+SELECT
+  DATE(created_at) AS date,
+  country,
+  SUM(amount) AS revenue,
+  COUNT(DISTINCT user_id) AS active_users
+FROM orders JOIN users ON users.id = orders.user_id
+GROUP BY 1, 2;
+
+-- Dashboard query (reads 365 rows, not 10M):
+SELECT country, SUM(revenue) FROM revenue_by_country_daily
+WHERE date >= '2024-01-01' GROUP BY country;
+\`\`\`
+
+### The performance hierarchy for data analysts
+
+\`\`\`
+1. Data model design  → correct joins, proper granularity (cheapest to fix early)
+2. Indexes           → add where queries filter/join (minutes to fix)
+3. Pre-aggregation   → materialized views, summary tables (hours to implement)
+4. Query rewriting   → avoid SELECT *, push filters early, avoid DISTINCT abuse
+5. Partitioning      → partition large tables by date or region
+6. Hardware upgrade  → always the last resort (expensive, doesn't fix bad queries)
+\`\`\``,
+    quiz: [
+      {
+        q: 'Your dashboard query takes 15 seconds. EXPLAIN ANALYZE shows "Seq Scan on orders (rows=5000000)". What\'s the most likely fix?',
+        options: ['Increase the database server memory', 'Add an index on the column(s) used in the WHERE clause of the query', 'Rewrite the query in Python', 'Partition the orders table'],
+        correct: 1,
+        explanation: 'A sequential scan on 5M rows means no index exists for the filter column. Adding an index on the WHERE clause column(s) can reduce query time from seconds to milliseconds.',
+      },
+      {
+        q: 'Why should production dashboards use pre-aggregated tables rather than running complex queries?',
+        options: ['Complex queries are too hard to maintain', 'Pre-aggregated tables make dashboards fast (reading 365 rows vs 10M rows) and avoid locking the production database during peak hours', 'Complex queries don\'t work in BI tools', 'Pre-aggregated tables are cheaper to store'],
+        correct: 1,
+        explanation: 'A dashboard that scans 10M orders on every page load is unusable in practice and competes with real-time production queries. Pre-aggregated summary tables move the heavy computation to off-hours ETL, making dashboards instant.',
+      },
+      {
+        q: 'In a cloud data warehouse (BigQuery, Snowflake), why is query performance directly tied to cost?',
+        options: ['Slow queries require more server time, which costs more per hour', 'Cloud warehouses charge per byte scanned — a query scanning 1TB costs 10× more than one scanning 100GB', 'Cloud warehouses charge per query, so slow queries mean more total queries', 'Performance and cost are not related in cloud warehouses'],
+        correct: 1,
+        explanation: 'BigQuery charges per TB scanned; Snowflake charges per compute-second. A poorly written query that scans unnecessary columns or doesn\'t use partitioning can cost hundreds of dollars; the same query with partition pruning might cost pennies.',
+      },
+      {
+        q: 'What does the "rows" estimate in EXPLAIN ANALYZE tell you?',
+        options: ['The actual number of rows returned by the query', 'The query planner\'s estimate of rows — if far from actual, statistics are stale and you should run ANALYZE', 'The number of rows in the table', 'The number of rows that passed the filter'],
+        correct: 1,
+        explanation: 'The query planner uses table statistics to estimate row counts and choose execution strategies. If estimates are far from actual (e.g., estimated 100 rows, actual 1M), the planner is making bad decisions. Run ANALYZE to update statistics.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Implement a simple query cost estimator. Given a "query plan" as a JS object (type, rowsEstimated, children), calculate total estimated cost where: sequential scan costs 1 unit per row, index scan costs 0.01 per row, hash join costs 0.1 per row for the larger side, and costs are summed recursively. Return { totalCost, bottleneck: string }.',
+      starterCode: `const queryPlan = {
+  type: 'sort',
+  rowsEstimated: 50,
+  children: [{
+    type: 'hash_aggregate',
+    rowsEstimated: 50,
+    children: [{
+      type: 'hash_join',
+      rowsEstimated: 340000,
+      children: [
+        { type: 'seq_scan', rowsEstimated: 880000, children: [] },  // orders
+        { type: 'seq_scan', rowsEstimated: 195000, children: [] },  // users
+      ]
+    }]
+  }]
+}
+
+const COSTS = {
+  seq_scan: 1.0,
+  index_scan: 0.01,
+  hash_join: 0.1,
+  hash_aggregate: 0.05,
+  sort: 0.01,
+}
+
+function estimateCost(plan) {
+  // Calculate cost for this node
+  const nodeCost = (COSTS[plan.type] || 0.1) * plan.rowsEstimated
+
+  // TODO: Recursively sum children costs
+  const childrenCost = 0
+
+  const totalCost = nodeCost + childrenCost
+
+  return { totalCost, bottleneck: plan.type } // TODO: identify actual bottleneck
+}
+
+console.log(estimateCost(queryPlan))`,
+      solution: `const queryPlan = {
+  type: 'sort',
+  rowsEstimated: 50,
+  children: [{
+    type: 'hash_aggregate',
+    rowsEstimated: 50,
+    children: [{
+      type: 'hash_join',
+      rowsEstimated: 340000,
+      children: [
+        { type: 'seq_scan', rowsEstimated: 880000, children: [] },
+        { type: 'seq_scan', rowsEstimated: 195000, children: [] },
+      ]
+    }]
+  }]
+}
+
+const COSTS = { seq_scan: 1.0, index_scan: 0.01, hash_join: 0.1, hash_aggregate: 0.05, sort: 0.01 }
+
+function estimateCost(plan) {
+  const nodeCost = (COSTS[plan.type] || 0.1) * plan.rowsEstimated
+
+  let childrenCost = 0
+  let bottleneck = { type: plan.type, cost: nodeCost }
+
+  for (const child of plan.children || []) {
+    const childResult = estimateCost(child)
+    childrenCost += childResult.totalCost
+    if (childResult.totalCost > bottleneck.cost) {
+      bottleneck = { type: child.type, cost: childResult.totalCost }
+    }
+  }
+
+  return {
+    totalCost: nodeCost + childrenCost,
+    bottleneck: bottleneck.type,
+    bottleneckCost: bottleneck.cost
+  }
+}
+
+console.log(estimateCost(queryPlan))
+// { totalCost: ~1080050, bottleneck: 'seq_scan', bottleneckCost: 880000 }`,
+      hints: [
+        'nodeCost = COSTS[plan.type] * plan.rowsEstimated',
+        'Recursively call estimateCost for each child and sum childrenCost',
+        'Track bottleneck by comparing nodeCost vs children totalCosts',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-data-m14', track: 'crash', title: 'Security Instincts for Data Analysts',
+    subtitle: 'PII handling, data access controls, and the privacy obligations every data analyst must own.',
+    moduleObjective: 'Apply data privacy principles, implement PII anonymization, and design access control policies for sensitive data.',
+    courseObjective: CC_DATA_OBJ, crashId: 'cc-interview-data', crashTitle: 'Data Analyst Interview Prep',
+    level: 'PhD', xp: 255, duration: 14, module: 14, certArea: 'Data Analyst Interview Prep',
+    keyTerms: [
+      { term: 'PII', definition: 'Personally Identifiable Information — any data that can identify a specific individual (name, email, IP address, device ID).' },
+      { term: 'Anonymization', definition: 'Irreversibly removing identifying information so individuals cannot be re-identified even with additional data.' },
+      { term: 'Pseudonymization', definition: 'Replacing identifiers with artificial IDs — still reversible with the mapping key, so still regulated as personal data.' },
+      { term: 'Data Minimization', definition: 'Collecting only the data actually needed for a stated purpose — a core GDPR principle.' },
+      { term: 'k-Anonymity', definition: 'A property where every record in a dataset is indistinguishable from at least k-1 other records on quasi-identifying attributes.' },
+    ],
+    content: `## Security Instincts for Data Analysts
+
+### Why data privacy is a core analyst responsibility
+
+Data analysts sit at the intersection of raw data and business decisions. The risks:
+1. **Accidental PII exposure** — sharing a spreadsheet with user emails to "make the analysis easier"
+2. **Re-identification** — combining anonymized datasets that together identify individuals
+3. **Access proliferation** — building dashboards that give everyone access to sensitive data
+4. **Retention violations** — keeping raw user data longer than GDPR allows
+
+A single data breach traced to an analyst's workflow can result in millions in fines and destroyed user trust.
+
+### PII categories every analyst must know
+
+\`\`\`
+Direct identifiers (clearly PII):
+  Name, email, phone, SSN, passport number, credit card
+
+Indirect identifiers (PII in combination):
+  IP address, device ID, cookie ID, user_id
+
+Quasi-identifiers (PII when combined):
+  ZIP code + birth date + gender → 87% of US population uniquely identified
+  Browser fingerprint (user agent + screen resolution + plugins) → unique
+
+Derived data (treat as PII):
+  Location history → reveals home, work, medical visits
+  Purchase history → reveals health conditions, religious practices
+\`\`\`
+
+### Anonymization vs Pseudonymization
+
+\`\`\`javascript
+// Raw user record
+const user = { id: 'user_123', email: 'alice@example.com', age: 34, zipCode: '94102', purchaseCategory: 'diabetes medication' }
+
+// Pseudonymization — replace email with hash (STILL PII — reversible)
+const pseudo = {
+  id: hash(user.email),  // SHA-256 of email — can be re-identified with the email
+  age: user.age,
+  zipCode: user.zipCode,
+  purchaseCategory: user.purchaseCategory
+}
+
+// Anonymization — generalize quasi-identifiers (NOT PII — irreversible)
+const anon = {
+  ageRange: user.age < 40 ? '25-40' : '40+',  // generalize
+  zipPrefix: user.zipCode.substring(0, 3),      // 941xx not 94102
+  purchaseCategory: user.purchaseCategory.split(' ')[0]  // 'diabetes' not 'diabetes medication'
+}
+// Even with all three fields, many users share this profile → k-anonymity
+\`\`\`
+
+### Data access control for analytics
+
+**Principle of least privilege for data:**
+\`\`\`sql
+-- Bad: everyone gets the raw users table
+GRANT SELECT ON users TO analytics_team;
+
+-- Better: create views that mask PII
+CREATE VIEW users_analytics AS
+SELECT
+  id,
+  CASE WHEN age < 25 THEN '18-24'
+       WHEN age < 35 THEN '25-34'
+       ELSE '35+' END AS age_range,
+  country,  -- not full address
+  created_at
+FROM users;
+
+GRANT SELECT ON users_analytics TO analytics_team;
+-- No raw emails, no precise ages, no location below country level
+\`\`\`
+
+### GDPR obligations for data analysts
+
+\`\`\`
+Key obligations that affect analyst workflows:
+
+1. Data minimization → don't copy the full users table into your notebook
+   "Just grab what I need for this analysis" — right
+
+2. Purpose limitation → data collected for product analytics can't be used for ad targeting
+   Check with your legal/privacy team before cross-using datasets
+
+3. Retention → raw user events can't be kept indefinitely
+   Most companies have 13-month rolling retention for behavioral data
+   Your historical analyses must work without PII after the retention window
+
+4. Right to erasure → if a user requests deletion, their data must be removed from ALL systems
+   Including your local analysis files and BI tool caches
+   This is why you should never download PII to local spreadsheets
+\`\`\`
+
+### The practical rule for analysts
+
+\`\`\`
+Never download PII to local files (email, name, phone, full address)
+Always work with user_id or hashed IDs in analysis
+If you need to see a real user's data, use your company's secure access tool
+Before sharing an analysis, strip all PII or verify the recipient has appropriate access
+When in doubt: ask your privacy/legal team — a 10-minute check beats a €20M GDPR fine
+\`\`\``,
+    quiz: [
+      {
+        q: 'Is replacing a user\'s email with SHA-256(email) considered anonymization under GDPR?',
+        options: ['Yes — the email is no longer visible', 'No — it\'s pseudonymization; if you have the original email, you can re-identify the user', 'Yes — hashing is irreversible', 'It depends on the hash algorithm used'],
+        correct: 1,
+        explanation: 'Hashing an email is pseudonymization, not anonymization. Anyone with the email can compute the same hash and re-identify the record. GDPR still applies to pseudonymized data. True anonymization requires generalization and k-anonymity.',
+      },
+      {
+        q: 'A colleague asks you to export the users table (with emails) to a spreadsheet for a "quick analysis." What do you do?',
+        options: ['Agree — it\'s just for internal use', 'Decline and offer an alternative: extract only the needed non-PII fields (user_id, country, cohort) for the analysis', 'Ask your manager for permission first', 'Only share it if you trust the colleague'],
+        correct: 1,
+        explanation: 'PII should never be downloaded to local files or spreadsheets. The correct response is to work with the minimal data needed (user_id + needed dimensions) through your secure analytics infrastructure.',
+      },
+      {
+        q: 'What is the "Right to Erasure" under GDPR and why does it matter for data analysts?',
+        options: ['Users can erase their own browsing history', 'Users can request deletion of their personal data from ALL systems — including analysis files and BI caches', 'Companies can erase old data after 7 years', 'Only applies to EU companies'],
+        correct: 1,
+        explanation: 'The Right to Erasure ("right to be forgotten") means a user\'s data must be removed from every system that holds it — including local analysis notebooks, BI tool caches, and historical reports. This is why you should never download PII locally.',
+      },
+      {
+        q: 'What is k-anonymity and when does it matter for data analysis?',
+        options: ['k is the number of encryption keys used to protect a dataset', 'A property where every record shares its quasi-identifying attributes with at least k-1 others — prevents re-identification', 'The minimum number of rows needed for statistical significance', 'A type of index that protects sensitive columns'],
+        correct: 1,
+        explanation: 'k-anonymity ensures that any individual record is indistinguishable from at least k-1 others. Before sharing an anonymized dataset, verify that no combination of quasi-identifiers (age, ZIP, gender) uniquely identifies any individual.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a PII detector. Given an array of column names from a database table, classify each as: "direct_pii" (email, name, SSN, phone, address), "indirect_pii" (user_id, ip_address, device_id), "quasi_identifier" (age, zip_code, gender, birth_date), or "safe" (everything else). Return a risk report.',
+      starterCode: `const columns = [
+  'user_id', 'email', 'first_name', 'last_name', 'phone',
+  'age', 'gender', 'zip_code', 'country', 'created_at',
+  'ip_address', 'device_id', 'purchase_amount', 'plan_type',
+  'birth_date', 'ssn', 'revenue', 'session_count'
+]
+
+function detectPII(columns) {
+  const DIRECT_PII = ['email', 'first_name', 'last_name', 'full_name', 'phone', 'ssn', 'address', 'street', 'credit_card']
+  const INDIRECT_PII = ['user_id', 'ip_address', 'device_id', 'cookie_id', 'session_id']
+  const QUASI_IDENTIFIERS = ['age', 'gender', 'zip_code', 'postal_code', 'birth_date', 'ethnicity', 'nationality']
+
+  // TODO: classify each column and return:
+  // { column, classification }[]
+  // Plus a summary: { directPii: [], indirectPii: [], quasiIdentifiers: [], safe: [], riskScore: number }
+
+  return {}
+}
+
+console.log(detectPII(columns))`,
+      solution: `const columns = [
+  'user_id', 'email', 'first_name', 'last_name', 'phone',
+  'age', 'gender', 'zip_code', 'country', 'created_at',
+  'ip_address', 'device_id', 'purchase_amount', 'plan_type',
+  'birth_date', 'ssn', 'revenue', 'session_count'
+]
+
+function detectPII(columns) {
+  const DIRECT_PII = ['email', 'first_name', 'last_name', 'full_name', 'name', 'phone', 'ssn', 'address', 'street', 'credit_card']
+  const INDIRECT_PII = ['user_id', 'ip_address', 'device_id', 'cookie_id', 'session_id']
+  const QUASI_IDENTIFIERS = ['age', 'gender', 'zip_code', 'postal_code', 'birth_date', 'ethnicity', 'nationality']
+
+  const classified = columns.map(col => {
+    const lower = col.toLowerCase()
+    if (DIRECT_PII.some(p => lower.includes(p))) return { column: col, classification: 'direct_pii' }
+    if (INDIRECT_PII.some(p => lower.includes(p))) return { column: col, classification: 'indirect_pii' }
+    if (QUASI_IDENTIFIERS.some(p => lower.includes(p))) return { column: col, classification: 'quasi_identifier' }
+    return { column: col, classification: 'safe' }
+  })
+
+  const byType = {
+    directPii: classified.filter(c => c.classification === 'direct_pii').map(c => c.column),
+    indirectPii: classified.filter(c => c.classification === 'indirect_pii').map(c => c.column),
+    quasiIdentifiers: classified.filter(c => c.classification === 'quasi_identifier').map(c => c.column),
+    safe: classified.filter(c => c.classification === 'safe').map(c => c.column),
+  }
+
+  const riskScore = byType.directPii.length * 3 + byType.indirectPii.length * 2 + byType.quasiIdentifiers.length * 1
+  const recommendation = riskScore > 5
+    ? 'HIGH RISK: Do not share this table without masking PII columns'
+    : riskScore > 0
+    ? 'MEDIUM RISK: Use a view that excludes or generalizes sensitive columns'
+    : 'LOW RISK: Safe to share with analytics team'
+
+  return { classified, ...byType, riskScore, recommendation }
+}
+
+console.log(detectPII(columns))`,
+      hints: [
+        'Use column.toLowerCase().includes(piiKeyword) to match variations (first_name matches "name")',
+        'Check DIRECT_PII first, then INDIRECT_PII, then QUASI_IDENTIFIERS, else "safe"',
+        'riskScore: direct_pii = 3 points each, indirect = 2, quasi = 1',
+      ],
+    },
+  },
 ]

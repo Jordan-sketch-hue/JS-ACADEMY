@@ -1623,4 +1623,1396 @@ simulateRequest('u1', 'manage:users')  // member → DENIED`,
       ],
     },
   },
+  {
+    id: 'cc-interview-sec-m09', track: 'crash', title: 'Behavioral STAR Stories for Security Engineers',
+    subtitle: 'Turn your security wins into compelling interview stories using the STAR framework.',
+    moduleObjective: 'Build a story bank of STAR stories demonstrating vulnerability discovery, incident response, security culture building, and risk communication.',
+    courseObjective: CC_SEC_OBJ, crashId: 'cc-interview-security', crashTitle: 'Security Interview Prep',
+    level: 'PhD', xp: 240, duration: 13, module: 9, certArea: 'Security Interview Prep',
+    keyTerms: [
+      { term: 'STAR Framework', definition: 'Situation, Task, Action, Result — the structure for transforming security work into compelling, structured interview answers.' },
+      { term: 'Responsible Disclosure', definition: 'The practice of reporting a discovered vulnerability privately to the affected organization before public disclosure, allowing time to fix it.' },
+      { term: 'Security Culture', definition: 'An organizational environment where all team members consider security implications of their work, not just the security team.' },
+      { term: 'Risk Communication', definition: 'Translating technical vulnerability severity into business impact language that executives and PMs can understand and act on.' },
+      { term: 'Threat Modeling', definition: 'A structured analysis of potential attackers, their goals, and the paths they might take to compromise a system.' },
+    ],
+    content: `## Behavioral STAR Stories for Security Engineers
+
+### What security interview behavioral questions test
+
+Security engineering interviews probe:
+1. **Discovery ability** — how do you find vulnerabilities others miss?
+2. **Impact analysis** — can you assess business risk, not just technical severity?
+3. **Communication** — can you explain findings to engineers and executives?
+4. **Incident ownership** — do you take responsibility or point fingers?
+5. **Culture building** — do you make the whole org more secure, not just your own code?
+
+### STAR Framework for Security
+
+\`\`\`
+S — Situation: What was the system? What was at stake? (users, data, revenue)
+T — Task:      What was YOUR security responsibility in this context?
+A — Action:    What specific steps did YOU take? (tools, analysis, communication)
+R — Result:    What was the business outcome? (vulnerability fixed, breach prevented, policy adopted)
+\`\`\`
+
+### Story 1: Finding a critical vulnerability
+
+> "During a routine code review for a new API endpoint, I noticed the authorization check was reading the user's role from the request body rather than the server-side session. An attacker could claim any role — including admin — simply by modifying the JSON payload. I confirmed the vulnerability in staging by sending a modified request and receiving a 200 with admin data. I classified it as Critical (CVSS 9.8), filed an internal security advisory, and coordinated with the backend team on an immediate fix: move role resolution to the server-side JWT validation layer. I wrote a regression test that would permanently prevent this pattern. The fix was deployed in 4 hours. I also proposed a mandatory code review checklist for auth-related endpoints, which the team adopted."
+
+**STAR breakdown:**
+- **S:** New API endpoint, auth logic in code review
+- **T:** Security review of authorization implementation
+- **A:** Found role-from-body pattern, confirmed in staging, CVSS scored, filed advisory, coordinated fix, wrote regression test
+- **R:** Critical vuln fixed in 4 hours; auth review checklist adopted
+
+### Story 2: Security culture through education
+
+> "Our team had recurring XSS issues in pull requests — developers knew XSS existed but didn't recognize the patterns in their own code. Rather than just filing issues, I ran a 30-minute 'XSS in the wild' workshop showing real incidents from our own codebase alongside famous historical breaches. I created a one-page cheat sheet: 'XSS unsafe patterns' paired with 'safe alternatives' tailored to our React stack. Within 2 sprints, XSS-related findings in code review dropped by 80%. I measured this by tagging my code review comments."
+
+**Key lesson:** Security engineers who make the rest of the team more secure have disproportionate impact compared to those who just file bugs.
+
+### Story 3: Incident response under pressure
+
+> "We received a report from a user that they could see another user's order history by changing the ID in the URL. Within 30 minutes of the report I confirmed it was a real IDOR vulnerability across all order IDs, estimated 50K orders were potentially exposed, and escalated to the CTO with a recommended response: take the endpoint offline temporarily, fix the authorization check, and send a notification to all affected users. The endpoint was down within 45 minutes of the initial report. The fix shipped in 3 hours. We sent a user notification within 24 hours. Our response time and transparency preserved user trust."
+
+### The 5 questions you MUST have stories for
+
+\`\`\`
+1. "Tell me about a security vulnerability you found and how you handled it."
+   → Use Story 1. Include CVSS score, timeline, prevention.
+
+2. "How have you improved security culture beyond your own code?"
+   → Use Story 2. Show education, documentation, measurement.
+
+3. "Tell me about a security incident you responded to."
+   → Use Story 3. Show calm, prioritization, communication.
+
+4. "How do you communicate security risk to non-technical stakeholders?"
+   → "I translate CVSS scores into business impact: a 9.8 = any attacker can become admin.
+      I estimate revenue at risk, regulatory exposure, and user trust impact."
+
+5. "Tell me about a time you had to push back on a feature for security reasons."
+   → Show you use risk framing, not just 'no.' Propose alternatives.
+\`\`\``,
+    quiz: [
+      {
+        q: 'In a security STAR story, what makes the Result section compelling?',
+        options: ['Describing the technical details of the vulnerability', 'Quantifying impact: CVSS score, users protected, time to fix, policy changes adopted', 'Mentioning the CVE number', 'Describing all the tools used'],
+        correct: 1,
+        explanation: 'Results should show business impact: "Critical (CVSS 9.8) fixed in 4 hours, auth review checklist adopted by the team." This shows both urgency and lasting improvement — not just that you found a bug.',
+      },
+      {
+        q: 'What distinguishes a security engineer with high impact from one with average impact?',
+        options: ['Knowing more vulnerability types', 'Making the entire team more secure through education, documentation, and culture — not just fixing their own code', 'Having more certifications', 'Finding more bugs in code review'],
+        correct: 1,
+        explanation: 'A security engineer who teaches 10 developers to recognize XSS prevents 100× more XSS than one who just finds and files issues themselves. Culture and education have multiplicative impact.',
+      },
+      {
+        q: 'You discover a critical IDOR vulnerability in production. What\'s your first action?',
+        options: ['Write the fix immediately', 'Confirm the scope (how many users, what data exposed), then escalate immediately with a recommended response', 'File a Jira ticket', 'Notify your manager by email'],
+        correct: 1,
+        explanation: 'Scope assessment before escalation lets you give leadership the information they need to decide (take endpoint offline? notify users? brief legal?). Filing a ticket without escalation on a Critical finding loses precious response time.',
+      },
+      {
+        q: 'How should you frame a security concern when a PM says "we need to ship this feature"?',
+        options: ['Say "we cannot ship until it\'s fixed"', 'Use risk framing: "Here\'s the specific risk, here\'s a mitigation that lets us ship, here\'s the residual risk if we accept it"', 'Escalate over the PM\'s head', 'Accept the decision and document your objection'],
+        correct: 1,
+        explanation: 'Security professionals influence without authority. "We can\'t ship" creates conflict. "Here\'s a 2-hour fix that reduces the risk to acceptable" is a collaborative response that PMs can work with.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a CVSS v3 base score calculator (simplified). Given { attackVector ("network"|"adjacent"|"local"|"physical"), complexity ("low"|"high"), privilegesRequired ("none"|"low"|"high"), userInteraction ("none"|"required"), scope ("unchanged"|"changed"), confidentiality, integrity, availability (each "none"|"low"|"high") }, calculate the CVSS base score (0-10).',
+      starterCode: `function calculateCVSS(metrics) {
+  // Simplified CVSS v3 base score
+  // Each metric maps to a numeric weight
+
+  const AV = { network: 0.85, adjacent: 0.62, local: 0.55, physical: 0.2 }
+  const AC = { low: 0.77, high: 0.44 }
+  const PR_UNCHANGED = { none: 0.85, low: 0.62, high: 0.27 }
+  const PR_CHANGED    = { none: 0.85, low: 0.68, high: 0.50 }
+  const UI = { none: 0.85, required: 0.62 }
+  const CIA = { none: 0.00, low: 0.22, high: 0.56 }
+
+  const scope = metrics.scope
+  const pr = scope === 'changed' ? PR_CHANGED : PR_UNCHANGED
+
+  // Exploitability sub-score
+  const exploitability = 8.22 * AV[metrics.attackVector] * AC[metrics.complexity] * pr[metrics.privilegesRequired] * UI[metrics.userInteraction]
+
+  // Impact sub-score
+  const iscBase = 1 - (1 - CIA[metrics.confidentiality]) * (1 - CIA[metrics.integrity]) * (1 - CIA[metrics.availability])
+
+  let impact
+  if (scope === 'unchanged') {
+    impact = 6.42 * iscBase
+  } else {
+    impact = 7.52 * (iscBase - 0.029) - 3.25 * Math.pow(iscBase - 0.02, 15)
+  }
+
+  // TODO: Calculate base score
+  // If impact <= 0, score is 0
+  // If scope unchanged: roundUp(Math.min(impact + exploitability, 10))
+  // If scope changed: roundUp(Math.min(1.08 * (impact + exploitability), 10))
+
+  function roundUp(value) {
+    return Math.ceil(value * 10) / 10
+  }
+
+  const score = 0 // TODO
+
+  const severity = score === 0 ? 'None' : score < 4 ? 'Low' : score < 7 ? 'Medium' : score < 9 ? 'High' : 'Critical'
+
+  return { score, severity }
+}
+
+// The role-from-body auth bypass from Story 1
+console.log(calculateCVSS({
+  attackVector: 'network', complexity: 'low', privilegesRequired: 'none',
+  userInteraction: 'none', scope: 'changed',
+  confidentiality: 'high', integrity: 'high', availability: 'none'
+}))
+// Should be ~9.8 Critical`,
+      solution: `function calculateCVSS(metrics) {
+  const AV = { network: 0.85, adjacent: 0.62, local: 0.55, physical: 0.2 }
+  const AC = { low: 0.77, high: 0.44 }
+  const PR_UNCHANGED = { none: 0.85, low: 0.62, high: 0.27 }
+  const PR_CHANGED    = { none: 0.85, low: 0.68, high: 0.50 }
+  const UI = { none: 0.85, required: 0.62 }
+  const CIA = { none: 0.00, low: 0.22, high: 0.56 }
+
+  const scope = metrics.scope
+  const pr = scope === 'changed' ? PR_CHANGED : PR_UNCHANGED
+
+  const exploitability = 8.22 * AV[metrics.attackVector] * AC[metrics.complexity] * pr[metrics.privilegesRequired] * UI[metrics.userInteraction]
+
+  const iscBase = 1 - (1 - CIA[metrics.confidentiality]) * (1 - CIA[metrics.integrity]) * (1 - CIA[metrics.availability])
+
+  let impact
+  if (scope === 'unchanged') {
+    impact = 6.42 * iscBase
+  } else {
+    impact = 7.52 * (iscBase - 0.029) - 3.25 * Math.pow(iscBase - 0.02, 15)
+  }
+
+  function roundUp(value) {
+    return Math.ceil(value * 10) / 10
+  }
+
+  let score
+  if (impact <= 0) {
+    score = 0
+  } else if (scope === 'unchanged') {
+    score = roundUp(Math.min(impact + exploitability, 10))
+  } else {
+    score = roundUp(Math.min(1.08 * (impact + exploitability), 10))
+  }
+
+  const severity = score === 0 ? 'None' : score < 4 ? 'Low' : score < 7 ? 'Medium' : score < 9 ? 'High' : 'Critical'
+
+  return { score, severity, exploitability: +exploitability.toFixed(2), impact: +impact.toFixed(2) }
+}
+
+console.log(calculateCVSS({
+  attackVector: 'network', complexity: 'low', privilegesRequired: 'none',
+  userInteraction: 'none', scope: 'changed',
+  confidentiality: 'high', integrity: 'high', availability: 'none'
+}))`,
+      hints: [
+        'If impact <= 0, score is 0',
+        'scope unchanged: roundUp(Math.min(impact + exploitability, 10))',
+        'scope changed: roundUp(Math.min(1.08 * (impact + exploitability), 10))',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-sec-m10', track: 'crash', title: 'Trade-off Articulation for Security Engineers',
+    subtitle: 'How to frame security tool, architecture, and process decisions as principled trade-offs.',
+    moduleObjective: 'Articulate 5 key security trade-offs — WAF vs code-level fixes, SAST vs DAST, pen test vs bug bounty, security vs UX, and perimeter vs zero trust — with structured criteria.',
+    courseObjective: CC_SEC_OBJ, crashId: 'cc-interview-security', crashTitle: 'Security Interview Prep',
+    level: 'PhD', xp: 245, duration: 13, module: 10, certArea: 'Security Interview Prep',
+    keyTerms: [
+      { term: 'WAF', definition: 'Web Application Firewall — a security layer that inspects and filters HTTP traffic based on rules, blocking known attack patterns.' },
+      { term: 'SAST', definition: 'Static Application Security Testing — analyzing source code without executing it to find security vulnerabilities.' },
+      { term: 'DAST', definition: 'Dynamic Application Security Testing — testing a running application by sending requests and analyzing responses for security issues.' },
+      { term: 'Defense in Depth', definition: 'Multiple independent security controls at different layers — so if one fails, others still protect the system.' },
+      { term: 'Zero Trust Architecture', definition: 'Never trust, always verify — every request is authenticated and authorized regardless of network location or previous session.' },
+    ],
+    content: `## Trade-off Articulation for Security Engineers
+
+### The Security Trade-off Framework
+
+\`\`\`
+1. Context  — attack surface, compliance requirements, team size, threat model
+2. Criteria — what matters: detection rate, false positive rate, time to remediate, cost?
+3. Options  — security controls that address the risk
+4. Decision — best fit given context + criteria
+5. Trade-offs Accepted — what you give up, and why it's acceptable
+\`\`\`
+
+### Trade-off 1: WAF vs code-level fixes
+
+| Factor | WAF | Code-level fix |
+|--------|-----|----------------|
+| Speed to protection | Hours (rule update) | Days to weeks (code + deploy) |
+| Completeness | Partial (rule-based, bypassable) | Complete (fix the root cause) |
+| Maintenance | Ongoing rule tuning | One-time fix |
+| False positives | Common | None |
+| Cost | High (licensing) | Engineering time |
+
+**Best answer:** "A WAF buys time — it's a temporary mitigation while the code fix is being developed. It's not a replacement for fixing the root cause. I use WAFs as a defense-in-depth layer, never as a substitute for code hardening."
+
+### Trade-off 2: SAST vs DAST
+
+\`\`\`
+SAST (Static Analysis):
+  + Runs in CI before deployment — finds issues at lowest cost
+  + Coverage: every code path, not just exercised ones
+  - High false positive rate (10–40%)
+  - Can't find runtime/configuration issues
+  - Blind to dependencies' behavior at runtime
+
+DAST (Dynamic Analysis):
+  + Tests the actual running application — finds real exploitable paths
+  + Lower false positive rate (tests pass/fail definitively)
+  - Requires a deployed environment to test against
+  - Slower (runs against live system)
+  - Coverage limited to exercised code paths
+
+Best practice: SAST in CI for every PR, DAST on staging before major releases.
+\`\`\`
+
+### Trade-off 3: Penetration testing vs Bug Bounty
+
+\`\`\`
+Penetration Test:
+  + Controlled, scoped, time-boxed (2–4 weeks)
+  + Professional report with prioritized findings
+  + Good for compliance (PCI DSS, SOC 2 require annual pen test)
+  - Expensive ($15K–$100K+)
+  - Snapshot in time — next deploy could introduce new vulns
+  - Limited to 1–5 testers' expertise
+
+Bug Bounty (HackerOne, Bugcrowd):
+  + Continuous coverage — testers look 24/7
+  + Diverse tester expertise (hundreds of researchers)
+  + Pay per valid finding (no finding, no cost)
+  - Less structured — findings arrive unpredictably
+  - Researchers don't test everything systematically
+  - Requires mature triage process (false positives, duplicates)
+
+Best answer: "Pen test for compliance and new-product launches. Bug bounty for continuous coverage after the pen test baseline is clean."
+\`\`\`
+
+### Trade-off 4: Security vs User Experience
+
+The hardest trade-off in security — you're always taking something from the user.
+
+\`\`\`
+MFA enforcement:
+  + Dramatically reduces account takeover (99.9% according to Microsoft)
+  - 5–15% of users won't complete enrollment; some will abandon
+  Decision: enforce for high-value actions (checkout, account changes), optional elsewhere
+
+Password complexity rules:
+  + Prevents weak passwords
+  - NIST now recommends AGAINST complexity rules in favor of length + breached-password checks
+  Decision: minimum 12 chars + HIBP check > 8 chars + special character requirements
+
+Session timeout:
+  + Limits damage from stolen tokens
+  - Users hate logging in repeatedly
+  Decision: sliding window (extend on activity), absolute timeout only for financial actions
+\`\`\`
+
+### Trade-off 5: Perimeter security vs Zero Trust
+
+\`\`\`
+Perimeter ("castle and moat"):
+  + Simple mental model
+  + Low friction inside the network
+  - Assumes internal traffic is trusted (wrong)
+  - Single breach gives attacker free movement inside
+  - Doesn't work with remote work, cloud, SaaS
+
+Zero Trust:
+  + Every request authenticated and authorized — no implicit trust
+  + Limits blast radius of any single compromise
+  - More complex to implement
+  - Can increase latency (every request hits auth service)
+  - Requires strong identity infrastructure
+
+Best answer: "Zero trust is the right model for modern architectures. The perimeter is already dissolved — every company has remote workers, SaaS tools, and cloud services. The question isn't whether to adopt zero trust but how fast to migrate."
+\`\`\``,
+    quiz: [
+      {
+        q: 'A critical SQL injection vulnerability is discovered in production. Should you deploy a WAF rule or fix the code first?',
+        options: ['WAF rule only — it\'s faster and sufficient', 'Deploy a WAF rule immediately to stop active exploitation, then fix the root cause in code', 'Fix the code only — WAFs create false positives', 'Wait for the code fix — WAF rules aren\'t reliable'],
+        correct: 1,
+        explanation: 'The WAF rule stops active exploitation within hours. The code fix eliminates the root cause. Both are needed — the WAF buys time while the code fix is developed, reviewed, and deployed.',
+      },
+      {
+        q: 'When is SAST most valuable in the development lifecycle?',
+        options: ['After deployment, on the running application', 'In CI/CD on every pull request — when fixes are cheapest and fastest', 'Only during annual security reviews', 'Before production deployment only'],
+        correct: 1,
+        explanation: 'SAST in CI catches security issues at the pull request stage — before they merge, before they\'re deployed, and before other code depends on them. This is the lowest-cost point to fix security issues.',
+      },
+      {
+        q: 'What\'s the main advantage of a bug bounty program over a scheduled penetration test?',
+        options: ['Bug bounties are always cheaper', 'Continuous coverage — hundreds of researchers looking 24/7, not a 2-week snapshot', 'Bug bounties produce better compliance reports', 'Bug bounties find more vulnerabilities'],
+        correct: 1,
+        explanation: 'A pen test is a snapshot; a bug bounty is continuous. New features deployed after a pen test have no coverage until the next test. Bug bounty researchers test new features as they deploy.',
+      },
+      {
+        q: 'Why does Zero Trust replace the perimeter security model for modern organizations?',
+        options: ['Zero Trust is faster and cheaper', 'The perimeter no longer exists — remote work, cloud, and SaaS mean the network boundary is dissolved', 'Zero Trust requires fewer security tools', 'Perimeter security only works for on-premises systems'],
+        correct: 1,
+        explanation: 'The "castle and moat" model assumed employees sat inside a trusted network. Modern organizations have remote workers, cloud services, SaaS tools, and contractors — the perimeter is already dissolved. Zero Trust acknowledges this reality.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a security control selector. Given a vulnerability type and a set of constraints { budget: "low"|"medium"|"high", timeToFix: "immediate"|"days"|"weeks", complianceRequired: boolean }, return an ordered list of recommended security controls with their trade-offs.',
+      starterCode: `const CONTROLS = {
+  sql_injection: [
+    { name: 'WAF Rule', speed: 'immediate', cost: 'medium', permanent: false, notes: 'Buys time; can be bypassed' },
+    { name: 'Parameterized Queries', speed: 'days', cost: 'low', permanent: true, notes: 'Root cause fix; permanent solution' },
+    { name: 'ORM Migration', speed: 'weeks', cost: 'medium', permanent: true, notes: 'Prevents entire class of injection' },
+    { name: 'Input Validation Layer', speed: 'days', cost: 'low', permanent: false, notes: 'Defense in depth; not sufficient alone' },
+  ],
+  xss: [
+    { name: 'Content Security Policy', speed: 'immediate', cost: 'low', permanent: true, notes: 'Blocks inline script execution' },
+    { name: 'Output Encoding', speed: 'days', cost: 'low', permanent: true, notes: 'Root cause fix' },
+    { name: 'WAF Rule', speed: 'immediate', cost: 'medium', permanent: false, notes: 'Pattern-based; can be bypassed' },
+    { name: 'DOMPurify Library', speed: 'days', cost: 'low', permanent: true, notes: 'For dynamic HTML rendering' },
+  ]
+}
+
+function selectControls(vulnerabilityType, constraints) {
+  const controls = CONTROLS[vulnerabilityType]
+  if (!controls) return { error: 'Unknown vulnerability type' }
+
+  // TODO: Filter and prioritize controls based on constraints
+  // If timeToFix === 'immediate': prioritize speed === 'immediate' controls first
+  // If budget === 'low': filter out cost === 'high'
+  // If complianceRequired: prefer permanent controls
+
+  // Return filtered + sorted controls with a recommendation
+
+  return {
+    recommended: controls, // TODO: filter/sort
+    primary: controls[0],
+    rationale: ''
+  }
+}
+
+console.log(selectControls('sql_injection', { budget: 'medium', timeToFix: 'immediate', complianceRequired: true }))`,
+      solution: `const CONTROLS = {
+  sql_injection: [
+    { name: 'WAF Rule', speed: 'immediate', cost: 'medium', permanent: false, notes: 'Buys time; can be bypassed' },
+    { name: 'Parameterized Queries', speed: 'days', cost: 'low', permanent: true, notes: 'Root cause fix; permanent solution' },
+    { name: 'ORM Migration', speed: 'weeks', cost: 'medium', permanent: true, notes: 'Prevents entire class of injection' },
+    { name: 'Input Validation Layer', speed: 'days', cost: 'low', permanent: false, notes: 'Defense in depth; not sufficient alone' },
+  ],
+  xss: [
+    { name: 'Content Security Policy', speed: 'immediate', cost: 'low', permanent: true, notes: 'Blocks inline script execution' },
+    { name: 'Output Encoding', speed: 'days', cost: 'low', permanent: true, notes: 'Root cause fix' },
+    { name: 'WAF Rule', speed: 'immediate', cost: 'medium', permanent: false, notes: 'Pattern-based; can be bypassed' },
+    { name: 'DOMPurify Library', speed: 'days', cost: 'low', permanent: true, notes: 'For dynamic HTML rendering' },
+  ]
+}
+
+function selectControls(vulnerabilityType, constraints) {
+  const controls = CONTROLS[vulnerabilityType]
+  if (!controls) return { error: 'Unknown vulnerability type' }
+
+  const budgetOrder = { low: 1, medium: 2, high: 3 }
+  const speedOrder = { immediate: 1, days: 2, weeks: 3 }
+  const maxBudgetOrder = budgetOrder[constraints.budget]
+  const maxSpeedOrder = speedOrder[constraints.timeToFix]
+
+  let filtered = controls.filter(c => budgetOrder[c.cost] <= maxBudgetOrder)
+
+  filtered = filtered.sort((a, b) => {
+    // If immediate needed, prioritize immediate controls
+    if (constraints.timeToFix === 'immediate') {
+      if (speedOrder[a.speed] !== speedOrder[b.speed]) return speedOrder[a.speed] - speedOrder[b.speed]
+    }
+    // If compliance needed, prefer permanent
+    if (constraints.complianceRequired) {
+      if (a.permanent !== b.permanent) return b.permanent ? 1 : -1
+    }
+    return speedOrder[a.speed] - speedOrder[b.speed]
+  })
+
+  const immediate = filtered.filter(c => c.speed === 'immediate')
+  const permanent = filtered.filter(c => c.permanent)
+
+  let rationale = ''
+  if (constraints.timeToFix === 'immediate' && immediate.length > 0) {
+    rationale = \`Deploy \${immediate[0].name} immediately for rapid mitigation.\`
+    if (permanent.length > 0) rationale += \` Follow with \${permanent[0].name} as the permanent fix.\`
+  } else if (permanent.length > 0) {
+    rationale = \`Implement \${permanent[0].name} as the root cause fix.\`
+  }
+
+  return { recommended: filtered, primary: filtered[0], rationale }
+}
+
+console.log(selectControls('sql_injection', { budget: 'medium', timeToFix: 'immediate', complianceRequired: true }))`,
+      hints: [
+        'Map budget/speed strings to numbers for comparison: { low: 1, medium: 2, high: 3 }',
+        'Filter controls where budgetOrder[c.cost] <= budgetOrder[constraints.budget]',
+        'Sort: if immediate needed, sort by speed first; if compliance needed, prefer permanent: true',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-sec-m11', track: 'crash', title: '3am Security Incident Response',
+    subtitle: 'How to contain, investigate, and communicate a live security incident under pressure.',
+    moduleObjective: 'Apply the security incident response lifecycle — detect, contain, eradicate, recover, post-mortem — to a realistic intrusion scenario.',
+    courseObjective: CC_SEC_OBJ, crashId: 'cc-interview-security', crashTitle: 'Security Interview Prep',
+    level: 'PhD', xp: 250, duration: 14, module: 11, certArea: 'Security Interview Prep',
+    keyTerms: [
+      { term: 'Incident Response Lifecycle', definition: 'NIST framework: Preparation → Detection → Containment → Eradication → Recovery → Post-incident Activity.' },
+      { term: 'Containment', definition: 'Actions taken to limit the spread and impact of a security incident without necessarily eliminating the threat.' },
+      { term: 'Eradication', definition: 'Removing the attacker\'s access, tools, and persistence mechanisms from the environment.' },
+      { term: 'Indicators of Compromise (IoC)', definition: 'Evidence that a system has been compromised: unusual login times, new admin accounts, unexpected outbound connections.' },
+      { term: 'Forensic Preservation', definition: 'Capturing system state (logs, memory, disk images) before remediation, to enable investigation and potential legal action.' },
+    ],
+    content: `## 3am Security Incident Response
+
+### The scenario
+
+> **3:14am.** Your SIEM alerts: "Unusual admin API activity — 847 admin-privileged requests in 3 minutes from IP 203.0.113.45." Normal admin activity is 20–30 requests per hour. You're the on-call security engineer.
+
+### The NIST Incident Response Lifecycle
+
+\`\`\`
+1. PREPARATION   (done before incidents happen)
+   - Runbooks, escalation contacts, forensic tools installed
+   - Log retention, SIEM rules, endpoint detection
+
+2. DETECTION     (the alert)
+   - Validate the alert — false positive or real?
+   - Assess severity — how bad could this be?
+
+3. CONTAINMENT   (stop the bleeding)
+   - Short-term: block IP, revoke token, disable account
+   - Long-term: understand full scope before eradicating
+
+4. ERADICATION   (remove the threat)
+   - Remove attacker's access, backdoors, persistence
+   - Patch the vulnerability they exploited
+
+5. RECOVERY      (restore safe operation)
+   - Verify environment is clean
+   - Restore service, monitor closely
+
+6. POST-INCIDENT (learn and improve)
+   - Timeline reconstruction
+   - Root cause analysis
+   - Control improvements
+\`\`\`
+
+### Working the admin API scenario
+
+**Detection — is this real?**
+\`\`\`
+Check 1: Is 203.0.113.45 a known IP?
+  → Not in our allowlist; not a VPN exit node; GeoIP: Eastern Europe
+
+Check 2: What admin account is making these requests?
+  → admin@company.com — our super-admin account
+
+Check 3: When did this account last authenticate normally?
+  → Last normal login: 12 days ago from our office IP
+
+Check 4: What are the requests doing?
+  → Bulk export of user PII: names, emails, addresses
+  → Total records exported in 3 minutes: ~45,000 users
+
+Assessment: REAL — active data exfiltration in progress, Critical severity
+\`\`\`
+
+**Containment (immediate actions):**
+\`\`\`
+1. Revoke all sessions for admin@company.com (force re-auth)
+2. Block IP 203.0.113.45 at WAF + firewall level
+3. Disable admin@company.com temporarily — force password reset + MFA enrollment
+4. Capture current state: preserve logs, don't modify the account yet (forensics)
+5. Alert CTO, Legal, and PR immediately (potential GDPR/CCPA notification obligation)
+\`\`\`
+
+**Investigation (after containment):**
+\`\`\`
+Q: How did the attacker get admin credentials?
+Check 1: admin@company.com in HaveIBeenPwned → yes, credential stuffing risk
+Check 2: Was MFA enabled on admin account? → NO ← root cause
+
+Q: What exactly was exfiltrated?
+Check API logs: /api/admin/users/export, /api/admin/orders/export
+Scope: 45,211 user records (name, email, address), 12,847 order records (no card data)
+
+Q: Is there persistence (backdoor, new admin account)?
+Check admin account list: 1 new admin account created at 3:11am — 'support@company.biz'
+→ ERADICATE this account immediately
+\`\`\`
+
+**Communication template:**
+\`\`\`
+INCIDENT: Unauthorized Admin Access — In Progress
+Time detected: 3:14am
+Current status: CONTAINED (attacker access revoked at 3:28am)
+Scope: 45K user records (PII) potentially exfiltrated — no payment data
+Next steps:
+  - Forensic investigation underway
+  - Legal reviewing GDPR notification obligation (72h window)
+  - Auth hardening: MFA mandatory on all admin accounts by 9am
+Next update: 6am
+\`\`\`
+
+### Post-incident: 5 Whys
+
+\`\`\`
+Why was data exfiltrated?
+  → Attacker had admin credentials
+
+Why did they have valid credentials?
+  → Credential stuffing — password reused from a breached service
+
+Why wasn't this caught sooner?
+  → No MFA on admin accounts
+
+Why no MFA?
+  → Policy existed but not enforced technically
+
+Why not enforced?
+  → MFA was "recommended" not "required" in our IAM configuration
+
+Root cause: IAM policy gap — admin accounts not required to use MFA
+Fix: Require MFA for all accounts with admin role in IAM policy (not just recommendation)
+\`\`\``,
+    quiz: [
+      {
+        q: 'You\'ve confirmed an active data exfiltration at 3am. What\'s your first action?',
+        options: ['Run a forensic investigation to find the root cause', 'Notify the CEO', 'Contain: revoke the compromised account sessions and block the attacker IP immediately', 'Wait for a full impact assessment before acting'],
+        correct: 2,
+        explanation: 'Containment stops active harm. Every minute of delay during active exfiltration means more data stolen. Contain first (revoke access, block IP), then investigate, then communicate.',
+      },
+      {
+        q: 'Why is forensic preservation important before eradicating an attacker\'s access?',
+        options: ['To slow down the response process', 'To capture evidence (logs, account states, network connections) needed for investigation and potential legal action — which would be destroyed by remediation', 'To comply with GDPR', 'To find the attacker\'s identity'],
+        correct: 1,
+        explanation: 'Eradication (deleting accounts, wiping logs) destroys evidence. Forensic preservation captures the state before cleanup, enabling timeline reconstruction, root cause analysis, and potentially law enforcement investigation.',
+      },
+      {
+        q: 'In the incident, a new admin account was created during the breach. What category of attacker action is this?',
+        options: ['Lateral movement', 'Persistence — creating a backdoor to maintain access even after the original credentials are revoked', 'Privilege escalation', 'Data exfiltration'],
+        correct: 1,
+        explanation: 'Creating a second admin account is persistence — the attacker anticipates their original access might be revoked and creates a backup. This is why incident response must include checking for new accounts, new API keys, and other persistence mechanisms.',
+      },
+      {
+        q: 'After containing a breach affecting 45K user records, you have a 72-hour GDPR notification obligation. Who must you notify?',
+        options: ['Only affected users', 'Your supervisory authority (e.g., ICO in the UK, DPA in Germany) within 72 hours; notify affected users if high risk', 'Only your board of directors', 'Notification is optional unless payment data was involved'],
+        correct: 1,
+        explanation: 'GDPR Article 33 requires notification to the supervisory authority within 72 hours of discovering a breach involving personal data. Article 34 requires notifying affected individuals if the breach is likely to result in high risk to their rights and freedoms.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build an incident timeline analyzer. Given an array of log entries with { timestamp, event, severity, userId, ip }, detect: 1) any IP with more than 50 requests in a 5-minute window, 2) any user account used from more than 2 different IPs in under 1 hour, 3) any admin actions outside business hours (before 8am or after 8pm UTC). Return { anomalies: [] }.',
+      starterCode: `const logs = [
+  { timestamp: '2024-01-15T03:14:00Z', event: 'admin_export', severity: 'high',   userId: 'admin@co.com', ip: '203.0.113.45' },
+  { timestamp: '2024-01-15T03:14:10Z', event: 'admin_export', severity: 'high',   userId: 'admin@co.com', ip: '203.0.113.45' },
+  { timestamp: '2024-01-15T03:14:20Z', event: 'admin_export', severity: 'high',   userId: 'admin@co.com', ip: '203.0.113.45' },
+  { timestamp: '2024-01-15T03:15:00Z', event: 'login',        severity: 'medium', userId: 'user@co.com',  ip: '1.2.3.4' },
+  { timestamp: '2024-01-15T03:16:00Z', event: 'login',        severity: 'medium', userId: 'user@co.com',  ip: '5.6.7.8' },
+  { timestamp: '2024-01-15T03:17:00Z', event: 'login',        severity: 'medium', userId: 'user@co.com',  ip: '9.10.11.12' },
+  { timestamp: '2024-01-15T10:00:00Z', event: 'login',        severity: 'low',    userId: 'dev@co.com',   ip: '10.0.0.1' },
+]
+
+function analyzeIncidentTimeline(logs) {
+  const anomalies = []
+
+  // TODO: Check 1 — IP with > 50 requests in any 5-minute window
+  // Group by IP, for each IP check if any 5-min window has > 50 events
+
+  // TODO: Check 2 — User account used from > 2 IPs within 1 hour
+  // Group events by userId, look for > 2 unique IPs in any 60-min window
+
+  // TODO: Check 3 — Admin events outside business hours (UTC hour < 8 or >= 20)
+  // Filter for admin events, check UTC hour
+
+  return { anomalies, total: anomalies.length }
+}
+
+console.log(analyzeIncidentTimeline(logs))`,
+      solution: `const logs = [
+  { timestamp: '2024-01-15T03:14:00Z', event: 'admin_export', severity: 'high',   userId: 'admin@co.com', ip: '203.0.113.45' },
+  { timestamp: '2024-01-15T03:14:10Z', event: 'admin_export', severity: 'high',   userId: 'admin@co.com', ip: '203.0.113.45' },
+  { timestamp: '2024-01-15T03:14:20Z', event: 'admin_export', severity: 'high',   userId: 'admin@co.com', ip: '203.0.113.45' },
+  { timestamp: '2024-01-15T03:15:00Z', event: 'login',        severity: 'medium', userId: 'user@co.com',  ip: '1.2.3.4' },
+  { timestamp: '2024-01-15T03:16:00Z', event: 'login',        severity: 'medium', userId: 'user@co.com',  ip: '5.6.7.8' },
+  { timestamp: '2024-01-15T03:17:00Z', event: 'login',        severity: 'medium', userId: 'user@co.com',  ip: '9.10.11.12' },
+  { timestamp: '2024-01-15T10:00:00Z', event: 'login',        severity: 'low',    userId: 'dev@co.com',   ip: '10.0.0.1' },
+]
+
+function analyzeIncidentTimeline(logs) {
+  const anomalies = []
+  const parsed = logs.map(l => ({ ...l, ts: new Date(l.timestamp).getTime() }))
+
+  // Check 1: IP with > 5 requests in 5-minute window (using 5 as threshold for demo)
+  const byIp = {}
+  for (const entry of parsed) {
+    if (!byIp[entry.ip]) byIp[entry.ip] = []
+    byIp[entry.ip].push(entry.ts)
+  }
+  for (const [ip, times] of Object.entries(byIp)) {
+    times.sort((a, b) => a - b)
+    for (let i = 0; i < times.length; i++) {
+      const windowEnd = times[i] + 5 * 60 * 1000
+      const inWindow = times.filter(t => t >= times[i] && t <= windowEnd).length
+      if (inWindow > 2) { // using 2 for demo (would be 50 in prod)
+        anomalies.push({ type: 'high_request_rate', ip, count: inWindow, window: '5min' })
+        break
+      }
+    }
+  }
+
+  // Check 2: User account with > 2 IPs in 1 hour
+  const byUser = {}
+  for (const entry of parsed) {
+    if (!byUser[entry.userId]) byUser[entry.userId] = []
+    byUser[entry.userId].push({ ts: entry.ts, ip: entry.ip })
+  }
+  for (const [userId, events] of Object.entries(byUser)) {
+    events.sort((a, b) => a.ts - b.ts)
+    for (let i = 0; i < events.length; i++) {
+      const window = events.filter(e => e.ts >= events[i].ts && e.ts <= events[i].ts + 3600000)
+      const uniqueIps = new Set(window.map(e => e.ip))
+      if (uniqueIps.size > 2) {
+        anomalies.push({ type: 'multiple_ips', userId, uniqueIps: [...uniqueIps], window: '1hr' })
+        break
+      }
+    }
+  }
+
+  // Check 3: Admin events outside business hours
+  for (const entry of parsed) {
+    if (entry.event.startsWith('admin')) {
+      const hour = new Date(entry.timestamp).getUTCHours()
+      if (hour < 8 || hour >= 20) {
+        anomalies.push({ type: 'after_hours_admin', userId: entry.userId, event: entry.event, hour, timestamp: entry.timestamp })
+      }
+    }
+  }
+
+  return { anomalies, total: anomalies.length }
+}
+
+console.log(analyzeIncidentTimeline(logs))`,
+      hints: [
+        'Group by IP: if (!byIp[ip]) byIp[ip] = []; byIp[ip].push(timestamp)',
+        'For 5-min window: filter times where t >= start && t <= start + 5*60*1000',
+        'UTC hour: new Date(timestamp).getUTCHours()',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-sec-m12', track: 'crash', title: 'Product Thinking for Security Engineers',
+    subtitle: 'How great security engineers balance security rigor with user experience and business velocity.',
+    moduleObjective: 'Apply security as a product lens: design security controls that users will actually use, communicate risk in business terms, and make security the path of least resistance.',
+    courseObjective: CC_SEC_OBJ, crashId: 'cc-interview-security', crashTitle: 'Security Interview Prep',
+    level: 'PhD', xp: 245, duration: 13, module: 12, certArea: 'Security Interview Prep',
+    keyTerms: [
+      { term: 'Secure by Default', definition: 'Designing systems so the default configuration is the most secure option — users must actively reduce security rather than actively enable it.' },
+      { term: 'Security UX', definition: 'The design of security controls to be usable, understandable, and minimally disruptive to legitimate users.' },
+      { term: 'Friction', definition: 'Any added step or cognitive load in a security control — necessary friction protects; unnecessary friction drives users to workarounds.' },
+      { term: 'Security as a Feature', definition: 'Framing security controls as user-facing value (privacy, account protection, trust) rather than compliance overhead.' },
+      { term: 'Paved Path', definition: 'Making the secure option the easy option — the "paved path" is the one engineers naturally reach for, which should already be secure.' },
+    ],
+    content: `## Product Thinking for Security Engineers
+
+### The fundamental security UX problem
+
+When a security control is too annoying, users work around it:
+- Too many MFA prompts → users share sessions or disable MFA
+- Too-short session timeouts → users write passwords on sticky notes
+- Too-complex password rules → users add "1!" to their old password and increment
+
+**The goal:** design security that users don't fight.
+
+### Secure by Default
+
+The most powerful security principle for product design:
+
+\`\`\`
+Wrong: Optional security
+  - MFA available if users want it
+  - HTTPS available but app works over HTTP
+  - Strong encryption opt-in
+
+Right: Secure by default
+  - MFA enforced for admin roles, opt-out requires justification
+  - HSTS forces HTTPS; HTTP requests are redirected
+  - Strong encryption only — no fallback to weak ciphers
+
+Users don't read security documentation.
+If the default is insecure, most deployments will be insecure.
+\`\`\`
+
+### Measuring security control adoption
+
+A security control that 10% of users use is worse than one 90% use, even if the 10% control is technically stronger.
+
+\`\`\`
+Metrics that matter:
+  - MFA enrollment rate (not just availability)
+  - Password manager adoption (proxy: unique passwords per user)
+  - Phishing simulation click rate over time (does training work?)
+  - Time to patch (how fast do engineers update dependencies?)
+  - Security finding open time (how long do vulns sit unpatched?)
+\`\`\`
+
+### Communicating security risk to PMs
+
+**Don't use:** CVSS scores, CVE IDs, CWE categories (internal technical language)
+
+**Do use:**
+\`\`\`
+Business impact framing:
+  "This vulnerability allows any user to read any other user's orders.
+   At 50K users, that's a potential GDPR breach covering 50K data subjects.
+   GDPR fine: up to 4% of annual revenue (~$2M for us).
+   Plus: user trust damage if disclosed publicly.
+   The fix takes 4 hours."
+
+The PM hears: risk ($2M + trust) vs cost (4 hours). Easy decision.
+\`\`\`
+
+### The "paved path" security strategy
+
+\`\`\`
+Level 1: Security is manual work → engineers write insecure code by default
+Level 2: Security guidelines exist → engineers read them sometimes
+Level 3: Security linting in CI → engineers get warnings at PR time
+Level 4: Secure libraries provided → it's harder to do it wrong than right
+Level 5: Platform enforces it → insecure code can't ship (the paved path)
+
+Goal: reach Level 4 or 5 for your highest-risk security controls.
+
+Example:
+  SQL injection: provide an ORM wrapper — engineers use it by default,
+  raw SQL requires explicit opt-out and code reviewer approval.
+
+  XSS: React escapes by default — dangerouslySetInnerHTML requires
+  explicit opt-in with a security annotation.
+\`\`\`
+
+### Security as a product feature for users
+
+Users actually want security — they just don't want friction. Reframe:
+
+\`\`\`
+Friction framing:              Product framing:
+"We're adding MFA"          →  "We're protecting your account from unauthorized access"
+"Session expires after 1h"  →  "We automatically sign you out on shared devices"
+"Password breach check"     →  "We check if your password was exposed in known breaches"
+"Data encrypted at rest"    →  "Your data is locked — only you can access it"
+\`\`\`
+
+The product framing is also the marketing framing. Security done well is a competitive advantage.`,
+    quiz: [
+      {
+        q: 'What does "secure by default" mean and why is it the most effective security principle?',
+        options: ['Security features should be free', 'The default configuration should be the most secure — users must actively reduce security rather than actively enable it', 'Security should be the default team priority', 'All defaults should be disabled'],
+        correct: 1,
+        explanation: 'Most users never change defaults. If the default is insecure, most deployments will be insecure. If the default is secure, most deployments will be secure. This scales security without requiring user action or education.',
+      },
+      {
+        q: 'A PM resists mandatory MFA because "it will reduce conversion by 8%." How do you respond?',
+        options: ['Accept the decision — PMs own the product', 'Refuse to ship without MFA', 'Quantify the risk: "Account takeovers cost us $X in support + fraud; MFA virtually eliminates them. Here\'s a risk-adjusted ROI."', 'Escalate to the CISO'],
+        correct: 2,
+        explanation: 'Security and product decisions are both about risk and reward. Quantify the cost of NOT having MFA (fraud losses, support cost, breach risk) against the conversion impact. This turns a "security vs UX" conflict into a business decision.',
+      },
+      {
+        q: 'What is the "paved path" security strategy?',
+        options: ['Building roads to data centers', 'Making the secure option the easy option — so engineers naturally use secure patterns without extra effort', 'A compliance framework for path-based access control', 'Mapping attacker paths through a system'],
+        correct: 1,
+        explanation: 'The paved path makes secure choices the default and easy choices. An ORM that prevents SQL injection, React\'s default HTML escaping, and required security annotations for unsafe operations are all paved path examples.',
+      },
+      {
+        q: 'Why is MFA enrollment rate a better security metric than MFA availability?',
+        options: ['Enrollment rate is easier to measure', 'A control that\'s available but unused provides no security benefit — adoption rate measures actual protection', 'Availability metrics can be gamed', 'Enrollment rate is a GDPR requirement'],
+        correct: 1,
+        explanation: 'A security control\'s effectiveness is proportional to its adoption. 100% MFA availability with 10% enrollment is nearly worthless. Measuring enrollment rate reveals the real protection level and motivates improving UX to increase adoption.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a security posture scorer. Given a system configuration object with security properties, calculate a score (0-100) and list specific improvements. Score: MFA enabled (+20), HTTPS only (+15), CSP header (+15), rate limiting (+15), password policy (+10), audit logging (+15), encryption at rest (+10).',
+      starterCode: `function scoreSecurityPosture(config) {
+  // config properties (each true/false):
+  // mfaEnabled, httpsOnly, cspHeader, rateLimiting,
+  // strongPasswordPolicy, auditLogging, encryptionAtRest
+
+  const checks = [
+    { key: 'mfaEnabled',          points: 20, label: 'Multi-factor authentication' },
+    { key: 'httpsOnly',           points: 15, label: 'HTTPS-only (HSTS)' },
+    { key: 'cspHeader',           points: 15, label: 'Content Security Policy header' },
+    { key: 'rateLimiting',        points: 15, label: 'API rate limiting' },
+    { key: 'strongPasswordPolicy',points: 10, label: 'Strong password policy' },
+    { key: 'auditLogging',        points: 15, label: 'Security audit logging' },
+    { key: 'encryptionAtRest',    points: 10, label: 'Encryption at rest' },
+  ]
+
+  // TODO: Calculate score, passing checks, and improvements
+
+  return { score: 0, grade: 'F', passing: [], improvements: [] }
+}
+
+const config = {
+  mfaEnabled: true,
+  httpsOnly: true,
+  cspHeader: false,
+  rateLimiting: true,
+  strongPasswordPolicy: false,
+  auditLogging: false,
+  encryptionAtRest: true,
+}
+
+console.log(scoreSecurityPosture(config))`,
+      solution: `function scoreSecurityPosture(config) {
+  const checks = [
+    { key: 'mfaEnabled',          points: 20, label: 'Multi-factor authentication' },
+    { key: 'httpsOnly',           points: 15, label: 'HTTPS-only (HSTS)' },
+    { key: 'cspHeader',           points: 15, label: 'Content Security Policy header' },
+    { key: 'rateLimiting',        points: 15, label: 'API rate limiting' },
+    { key: 'strongPasswordPolicy',points: 10, label: 'Strong password policy' },
+    { key: 'auditLogging',        points: 15, label: 'Security audit logging' },
+    { key: 'encryptionAtRest',    points: 10, label: 'Encryption at rest' },
+  ]
+
+  let score = 0
+  const passing = []
+  const improvements = []
+
+  for (const check of checks) {
+    if (config[check.key]) {
+      score += check.points
+      passing.push(\`✓ \${check.label}\`)
+    } else {
+      improvements.push({ label: check.label, points: check.points, action: \`Enable \${check.label.toLowerCase()}\` })
+    }
+  }
+
+  improvements.sort((a, b) => b.points - a.points)
+
+  const grade = score >= 90 ? 'A' : score >= 75 ? 'B' : score >= 60 ? 'C' : score >= 40 ? 'D' : 'F'
+
+  return {
+    score,
+    grade,
+    passing,
+    improvements: improvements.map(i => \`✗ \${i.label} (+\${i.points} points)\`),
+    topPriority: improvements[0]?.action || 'All controls enabled!'
+  }
+}
+
+const config = { mfaEnabled: true, httpsOnly: true, cspHeader: false, rateLimiting: true, strongPasswordPolicy: false, auditLogging: false, encryptionAtRest: true }
+
+console.log(scoreSecurityPosture(config))`,
+      hints: [
+        'Loop through checks, check config[check.key], add points if true',
+        'Sort improvements by points descending to prioritize high-value fixes',
+        'Grade: 90+ = A, 75+ = B, 60+ = C, 40+ = D, else F',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-sec-m13', track: 'crash', title: 'Performance Awareness for Security Engineers',
+    subtitle: 'The cost of security controls: TLS overhead, bcrypt tuning, rate limiting, and making security fast.',
+    moduleObjective: 'Understand and optimize the performance overhead of common security controls — TLS, hashing, rate limiting, JWT validation — without compromising security.',
+    courseObjective: CC_SEC_OBJ, crashId: 'cc-interview-security', crashTitle: 'Security Interview Prep',
+    level: 'PhD', xp: 250, duration: 14, module: 13, certArea: 'Security Interview Prep',
+    keyTerms: [
+      { term: 'TLS Overhead', definition: 'The latency cost of the TLS handshake (50–100ms initially; near-zero for resumed sessions) and CPU cost of encryption/decryption.' },
+      { term: 'bcrypt Cost Factor', definition: 'The work factor that controls how slow bcrypt is — higher means harder to brute force but slower to authenticate; 10–12 is standard.' },
+      { term: 'Rate Limiting', definition: 'Throttling requests to prevent abuse — implemented with token bucket, sliding window, or fixed window algorithms.' },
+      { term: 'JWT Validation', definition: 'Verifying a JSON Web Token\'s signature and claims — should use asymmetric keys (RS256) for distributed validation without secret sharing.' },
+      { term: 'Connection Pooling', definition: 'Reusing established TLS connections — prevents per-request handshake overhead by keeping connections alive.' },
+    ],
+    content: `## Performance Awareness for Security Engineers
+
+### Security has a performance cost — know it
+
+Every security control adds latency, CPU, or memory overhead. A security engineer who ignores this will get their controls removed when they slow down production.
+
+### TLS Performance
+
+\`\`\`
+TLS 1.3 handshake: 50–100ms on first connection
+TLS 1.3 resumed session: 0-RTT (near zero)
+TLS 1.2 handshake: 100–200ms (two round trips)
+
+Encryption overhead: 1–5% CPU for modern AES-GCM with hardware acceleration
+
+Optimization strategies:
+1. TLS session resumption — enabled by default in modern servers
+2. HTTP/2 multiplexing — single connection for multiple requests
+3. OCSP stapling — server provides cert validity, client doesn't need to check
+4. CDN termination — TLS handshake at edge (geographically close to user)
+
+Rule of thumb: TLS overhead is negligible for modern applications with HTTP keep-alive.
+The 50–100ms only matters for the first request; subsequent requests reuse the session.
+\`\`\`
+
+### bcrypt Cost Factor Tuning
+
+\`\`\`javascript
+const bcrypt = require('bcrypt')
+
+// Cost factor 10: ~100ms per hash (standard for web apps)
+// Cost factor 12: ~400ms per hash (more secure, slower login)
+// Cost factor 14: ~1600ms per hash (too slow for web apps)
+
+// Rule: pick the highest cost factor where login takes < 250ms on your server
+// Test it:
+async function benchmarkBcrypt(costFactor) {
+  const start = Date.now()
+  await bcrypt.hash('test-password', costFactor)
+  console.log(\`Cost \${costFactor}: \${Date.now() - start}ms\`)
+}
+
+// The performance goal: brute forcing one password should take > 100 years
+// With cost 10: 10M hashes/sec on GPU → 100-year resistance for 12+ char passwords
+\`\`\`
+
+**Interview frame:** "I choose bcrypt with cost factor 12 for new systems. I benchmark it on our specific hardware — I want authentication to take 100–250ms, which is imperceptible to users but makes brute force impractical."
+
+### Rate Limiting Algorithms
+
+\`\`\`javascript
+// Token Bucket (recommended for API rate limits)
+// - Users get N tokens per time window
+// - Each request consumes a token
+// - Unused tokens accumulate up to bucket size
+// - Allows burst traffic up to bucket size, then throttles
+
+class TokenBucket {
+  constructor(capacity, refillRate) {
+    this.capacity = capacity      // max tokens
+    this.tokens = capacity        // current tokens
+    this.refillRate = refillRate  // tokens per second
+    this.lastRefill = Date.now()
+  }
+
+  consume(n = 1) {
+    // Refill based on elapsed time
+    const elapsed = (Date.now() - this.lastRefill) / 1000
+    this.tokens = Math.min(this.capacity, this.tokens + elapsed * this.refillRate)
+    this.lastRefill = Date.now()
+
+    if (this.tokens >= n) {
+      this.tokens -= n
+      return true  // request allowed
+    }
+    return false  // rate limited
+  }
+}
+\`\`\`
+
+### JWT Validation Performance
+
+\`\`\`
+HMAC (HS256) — symmetric secret:
+  + Fast (microseconds)
+  - Secret must be shared with every service that validates tokens
+  - One compromised service exposes the secret to forge any token
+
+RSA (RS256) — asymmetric key:
+  + Public key can be distributed freely — any service validates without the secret
+  + Key rotation is easier (publish new public key)
+  - Slower (~1ms vs ~0.1ms for HMAC) — negligible at scale
+
+Recommendation: RS256 for distributed systems; HS256 only for monolithic single-service apps
+
+Caching validation:
+  - Cache decoded, validated JWTs for 30–60 seconds using the token's jti claim as key
+  - Eliminates repeated signature verification for hot paths
+  - Respect token expiration — never cache past exp claim
+\`\`\`
+
+### The security performance hierarchy
+
+\`\`\`
+Priority 1: Is the control correct? (secure, prevents the attack)
+Priority 2: Is it testable? (covered by automated tests)
+Priority 3: Is it maintainable? (can be updated when vulnerabilities are found)
+Priority 4: Is it fast enough? (< 10% overhead on the protected operation)
+
+Optimize only after profiling shows actual bottleneck.
+Never disable a security control for performance without measuring the actual impact.
+"TLS is slow" is a myth in 2024 — prove it before removing it.
+\`\`\``,
+    quiz: [
+      {
+        q: 'A developer says "TLS is adding 100ms to every request." What\'s the most accurate response?',
+        options: ['They\'re right — TLS is inherently slow', 'TLS adds 50–100ms only on the first connection; resumed sessions have near-zero overhead. Check if HTTP keep-alive is enabled.', 'Disable TLS on internal services to fix this', 'Switch to HMAC instead of TLS'],
+        correct: 1,
+        explanation: 'TLS overhead is primarily the handshake on the first connection. With HTTP/1.1 keep-alive and TLS session resumption, subsequent requests have near-zero TLS overhead. Always profile before claiming TLS is the bottleneck.',
+      },
+      {
+        q: 'How do you choose a bcrypt cost factor?',
+        options: ['Always use the highest value for maximum security', 'Benchmark on your hardware and choose the highest value where authentication takes < 250ms', 'Use the library default', 'The cost factor doesn\'t affect security'],
+        correct: 1,
+        explanation: 'The right cost factor balances security (higher = harder to brute force) and user experience (higher = slower login). Benchmark on your actual server hardware — a value appropriate for a development laptop may be too slow in a cloud VM with limited CPU.',
+      },
+      {
+        q: 'Why should distributed microservices prefer RS256 (asymmetric JWT signing) over HS256 (symmetric)?',
+        options: ['RS256 is faster', 'HS256 requires sharing a secret with every service; a single compromised service can forge tokens for all services. RS256 lets services verify with only the public key.', 'RS256 produces shorter tokens', 'HS256 is deprecated'],
+        correct: 1,
+        explanation: 'With HS256, every service that needs to validate tokens must know the secret — meaning a compromise of any service exposes the signing key. RS256 distributes only the public key for validation, keeping the private signing key in one secure location.',
+      },
+      {
+        q: 'A team wants to remove rate limiting because "it\'s adding 5ms to every API call." What do you say?',
+        options: ['5ms is significant — remove it', 'Measure first: what attack does rate limiting prevent, what\'s the business cost of that attack, and is 5ms actually coming from rate limiting (profile it)?', 'Keep rate limiting but move it to the CDN', 'Rate limiting overhead is fixed by caching'],
+        correct: 1,
+        explanation: 'Never remove security controls based on unvalidated performance claims. Profile to confirm rate limiting is actually causing the 5ms (it shouldn\'t — a token bucket check is microseconds). If it is, investigate the implementation (Redis connection overhead, etc.).',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Implement a sliding window rate limiter. Given a userId, a request timestamp, and a store (object that persists request timestamps per user), return { allowed: boolean, remaining: number, resetAt: number } using a 60-second sliding window with a limit of 100 requests.',
+      starterCode: `// Sliding window rate limiter
+// Window: 60 seconds, limit: 100 requests per user
+
+const store = {} // { userId: [timestamp, timestamp, ...] }
+
+function checkRateLimit(userId, now = Date.now(), windowMs = 60000, limit = 100) {
+  // 1. Get existing timestamps for this user (default to [])
+  // 2. Filter out timestamps older than windowMs ago (the "sliding" part)
+  // 3. If remaining count >= limit, deny the request
+  // 4. Otherwise, add current timestamp and allow
+  // 5. Return { allowed, remaining, resetAt: time when oldest request expires }
+
+  const windowStart = now - windowMs
+
+  if (!store[userId]) store[userId] = []
+
+  // TODO: filter to only timestamps within the current window
+  // TODO: check if limit exceeded
+  // TODO: if allowed, add current timestamp to store
+  // TODO: calculate resetAt (when the oldest request in window expires)
+
+  return { allowed: true, remaining: limit, resetAt: now + windowMs }
+}
+
+// Test it:
+const user = 'user123'
+const baseTime = Date.now()
+
+// Make 5 requests
+for (let i = 0; i < 5; i++) {
+  console.log(checkRateLimit(user, baseTime + i * 1000))
+}`,
+      solution: `const store = {}
+
+function checkRateLimit(userId, now = Date.now(), windowMs = 60000, limit = 100) {
+  const windowStart = now - windowMs
+
+  if (!store[userId]) store[userId] = []
+
+  // Remove timestamps outside the window (sliding)
+  store[userId] = store[userId].filter(ts => ts > windowStart)
+
+  const count = store[userId].length
+
+  if (count >= limit) {
+    const resetAt = store[userId][0] + windowMs  // when oldest request expires
+    return { allowed: false, remaining: 0, resetAt }
+  }
+
+  store[userId].push(now)
+
+  const resetAt = store[userId].length > 0 ? store[userId][0] + windowMs : now + windowMs
+
+  return {
+    allowed: true,
+    remaining: limit - store[userId].length,
+    resetAt
+  }
+}
+
+const user = 'user123'
+const baseTime = Date.now()
+
+for (let i = 0; i < 5; i++) {
+  console.log(checkRateLimit(user, baseTime + i * 1000))
+}`,
+      hints: [
+        'windowStart = now - windowMs; filter timestamps: ts > windowStart',
+        'If count >= limit, return { allowed: false }; else push now and return { allowed: true }',
+        'resetAt = oldest timestamp in window + windowMs (when it will expire)',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-sec-m14', track: 'crash', title: 'Threat Modeling & Advanced Security Instincts',
+    subtitle: 'STRIDE threat modeling, supply chain security, and thinking like an attacker to find what scanners miss.',
+    moduleObjective: 'Apply the STRIDE threat modeling framework, identify supply chain attack vectors, and demonstrate the attacker mindset that separates senior security engineers.',
+    courseObjective: CC_SEC_OBJ, crashId: 'cc-interview-security', crashTitle: 'Security Interview Prep',
+    level: 'PhD', xp: 260, duration: 15, module: 14, certArea: 'Security Interview Prep',
+    keyTerms: [
+      { term: 'STRIDE', definition: 'A threat modeling framework: Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege.' },
+      { term: 'Data Flow Diagram (DFD)', definition: 'A diagram showing how data moves through a system — the foundation for threat modeling by identifying trust boundaries.' },
+      { term: 'Trust Boundary', definition: 'A line in a DFD where data crosses from one trust level to another — every crossing is a potential attack vector.' },
+      { term: 'Supply Chain Attack', definition: 'Compromising software by attacking a dependency, build system, or distribution channel rather than the target application directly.' },
+      { term: 'Attacker Mindset', definition: 'Thinking about how an adversary would abuse a feature or system rather than how a legitimate user would use it.' },
+    ],
+    content: `## Threat Modeling & Advanced Security Instincts
+
+### Why threat modeling is the most valuable security skill
+
+Automated scanners find known patterns. Threat modeling finds design-level flaws before any code is written. A security engineer who can threat model prevents entire vulnerability classes — not just individual bugs.
+
+### STRIDE Threat Modeling
+
+\`\`\`
+S — Spoofing         Pretending to be someone else (auth bypass, forged tokens)
+T — Tampering        Modifying data in transit or at rest (MITM, DB tampering)
+R — Repudiation      Denying an action occurred (no audit log, forged timestamps)
+I — Info Disclosure  Exposing data to unauthorized parties (IDOR, verbose errors)
+D — Denial of Service Preventing legitimate use (rate limit bypass, resource exhaustion)
+E — Elevation of Privilege Getting higher access than authorized (IDOR, role manipulation)
+\`\`\`
+
+### Applying STRIDE to a payment flow
+
+\`\`\`
+System: User submits order → API validates → Payment processor → DB write
+
+Trust boundaries:
+  User browser ──[TLS]──> API server ──[internal]──> Payment API
+  API server   ──[TLS]──> Database
+
+STRIDE analysis:
+
+S (Spoofing):
+  Can an attacker forge the user's identity in the API request?
+  → JWT is validated server-side? Yes. ✓
+  → Can the payment processor be spoofed? Webhook signatures?
+  → FINDING: No webhook signature verification → attacker can fake payment success
+
+T (Tampering):
+  Can the order amount be modified in transit?
+  → HTTPS prevents MITM on the wire ✓
+  → Can client-side code modify the price before checkout?
+  → FINDING: Price sent from client and trusted by API → must verify price server-side from DB
+
+R (Repudiation):
+  If a user claims they never made a purchase, can we prove they did?
+  → Do we log the JWT, IP, and user agent at order creation?
+  → FINDING: Order table has no audit trail — add created_by_session, ip_address
+
+I (Information Disclosure):
+  Does the API return more than needed?
+  → Does /api/orders return other users' order IDs?
+  → Does the error message leak query structure?
+
+D (Denial of Service):
+  Can an attacker exhaust resources?
+  → No rate limit on checkout endpoint → brute-force product IDs or price probing
+
+E (Elevation of Privilege):
+  Can a regular user trigger admin actions?
+  → Is admin role validated server-side or just hidden from UI?
+  → FINDING: Admin button hidden in UI but API endpoint unprotected
+\`\`\`
+
+### Supply Chain Security
+
+The SolarWinds and Log4Shell attacks showed that the dependency is the attack surface:
+
+\`\`\`
+Supply chain attack vectors:
+  1. Compromised npm package — malicious code in a popular package
+     Defense: lock dependencies (package-lock.json), audit regularly (npm audit)
+
+  2. Typosquatting — "lodahs" instead of "lodash"
+     Defense: verify package names, use npm namespace for internal packages
+
+  3. Compromised build system — CI/CD credentials stolen, malicious code injected
+     Defense: signed commits, reproducible builds, SLSA framework
+
+  4. Abandoned package takeover — maintainer sells an old package to attacker
+     Defense: pin major versions, monitor for ownership changes
+
+Practical actions:
+  npm audit fix                    # fix known CVEs
+  npx better-npm-audit             # more detailed vulnerability report
+  npm pack && tar tf <package.tgz> # inspect what a package actually ships
+\`\`\`
+
+### The attacker mindset in practice
+
+**For every feature, ask:**
+\`\`\`
+1. "What if I send an unexpected value here?"
+   → Edge cases: null, empty string, 0, negative numbers, MAX_INT
+
+2. "What if I run this 10,000 times in parallel?"
+   → Race conditions, resource exhaustion, rate limit bypass
+
+3. "What if I'm logged in as user A but use user B's ID?"
+   → IDOR — the most common access control failure
+
+4. "What information does the error message reveal?"
+   → Stack traces, SQL queries, file paths — all useful to attackers
+
+5. "What if I don't send this required field?"
+   → Null pointer exceptions, undefined behavior, skipped validation
+\`\`\`
+
+The best security engineers think like adversaries during design — not just during code review.`,
+    quiz: [
+      {
+        q: 'In STRIDE, what category does "an attacker can fake a payment success webhook" belong to?',
+        options: ['Tampering', 'Spoofing — pretending to be the payment processor by sending a fake webhook', 'Repudiation', 'Elevation of Privilege'],
+        correct: 1,
+        explanation: 'Spoofing is impersonating a legitimate entity. A fake webhook impersonates the payment processor. The defense is webhook signature verification — the payment processor signs each webhook with a secret, and your API verifies the signature before processing.',
+      },
+      {
+        q: 'The checkout page sends the product price from the browser to the API. What STRIDE threat does this create?',
+        options: ['Spoofing', 'Tampering — a user can modify the price before it\'s sent to the API, paying less than the real price', 'Information Disclosure', 'Denial of Service'],
+        correct: 1,
+        explanation: 'Never trust client-provided prices. The browser can be modified with DevTools to send any price. The API must always look up the price from the database server-side and use that for the charge.',
+      },
+      {
+        q: 'What is a supply chain attack and which famous security incident is the most prominent example?',
+        options: ['Attacking a company\'s shipping logistics systems', 'Compromising software by attacking a dependency or build pipeline rather than the application directly — SolarWinds 2020 is the most prominent example', 'Hacking into a software vendor\'s website', 'Stealing source code from a company\'s repository'],
+        correct: 1,
+        explanation: 'SolarWinds 2020: attackers compromised SolarWinds\' build pipeline to inject malicious code into their Orion software update. Thousands of organizations, including US government agencies, installed the backdoored update. The attack targeted the supply chain, not the end organizations.',
+      },
+      {
+        q: 'What does the "attacker mindset" mean in practice during feature development?',
+        options: ['Thinking about how to prevent all possible attacks', 'Actively trying to break a feature by asking "what if I send unexpected values, run this 10K times, or use another user\'s ID?" before the code ships', 'Having a security engineer review all code', 'Using threat modeling software'],
+        correct: 1,
+        explanation: 'The attacker mindset means actively adversarial thinking during design and development — not just "how will legitimate users use this?" but "how could a malicious user abuse this?" The goal is to find design-level flaws before they become shipped vulnerabilities.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a STRIDE threat analyzer. Given a system component object with { name, type, trustBoundaries, dataFlows }, generate a list of potential STRIDE threats. For each STRIDE category, check relevant conditions and return applicable threats with suggested mitigations.',
+      starterCode: `const paymentComponent = {
+  name: 'Checkout API',
+  type: 'api_endpoint',
+  acceptsClientInput: true,
+  hasAuthentication: true,
+  hasRateLimiting: false,
+  logsRequests: false,
+  returnsDetailedErrors: true,
+  webhooksVerified: false,
+  dataFlows: ['user_to_api', 'api_to_database', 'payment_provider_to_api'],
+}
+
+const STRIDE_CHECKS = {
+  spoofing: [
+    { condition: c => !c.hasAuthentication, threat: 'Missing authentication — unauthenticated access possible', mitigation: 'Add JWT/session authentication to all endpoints' },
+    { condition: c => !c.webhooksVerified && c.dataFlows.includes('payment_provider_to_api'), threat: 'Unverified webhooks — attacker can fake payment events', mitigation: 'Verify webhook signatures using HMAC' },
+  ],
+  tampering: [
+    { condition: c => c.acceptsClientInput, threat: 'Client-provided values may be tampered (prices, IDs, roles)', mitigation: 'Re-fetch all sensitive values from database server-side' },
+  ],
+  repudiation: [
+    { condition: c => !c.logsRequests, threat: 'No audit trail — cannot prove who did what or when', mitigation: 'Log all state-changing operations with user ID, timestamp, IP' },
+  ],
+  informationDisclosure: [
+    { condition: c => c.returnsDetailedErrors, threat: 'Detailed errors may reveal internal structure', mitigation: 'Return generic error messages; log details server-side only' },
+  ],
+  denialOfService: [
+    { condition: c => !c.hasRateLimiting, threat: 'No rate limiting — endpoint vulnerable to abuse and DoS', mitigation: 'Add token bucket rate limiting per user/IP' },
+  ],
+  elevationOfPrivilege: [
+    { condition: c => c.acceptsClientInput, threat: 'Client-controlled role or permission values may enable privilege escalation', mitigation: 'Always validate permissions server-side; never trust client-provided role claims' },
+  ],
+}
+
+function analyzeSTRIDE(component) {
+  const threats = []
+
+  // TODO: For each STRIDE category, run the checks and collect applicable threats
+
+  return {
+    component: component.name,
+    threats,
+    totalThreats: threats.length,
+    priority: threats.length > 3 ? 'HIGH' : threats.length > 1 ? 'MEDIUM' : 'LOW'
+  }
+}
+
+console.log(analyzeSTRIDE(paymentComponent))`,
+      solution: `const paymentComponent = {
+  name: 'Checkout API',
+  type: 'api_endpoint',
+  acceptsClientInput: true,
+  hasAuthentication: true,
+  hasRateLimiting: false,
+  logsRequests: false,
+  returnsDetailedErrors: true,
+  webhooksVerified: false,
+  dataFlows: ['user_to_api', 'api_to_database', 'payment_provider_to_api'],
+}
+
+const STRIDE_CHECKS = {
+  spoofing: [
+    { condition: c => !c.hasAuthentication, threat: 'Missing authentication — unauthenticated access possible', mitigation: 'Add JWT/session authentication to all endpoints' },
+    { condition: c => !c.webhooksVerified && c.dataFlows.includes('payment_provider_to_api'), threat: 'Unverified webhooks — attacker can fake payment events', mitigation: 'Verify webhook signatures using HMAC' },
+  ],
+  tampering: [
+    { condition: c => c.acceptsClientInput, threat: 'Client-provided values may be tampered (prices, IDs, roles)', mitigation: 'Re-fetch all sensitive values from database server-side' },
+  ],
+  repudiation: [
+    { condition: c => !c.logsRequests, threat: 'No audit trail — cannot prove who did what or when', mitigation: 'Log all state-changing operations with user ID, timestamp, IP' },
+  ],
+  informationDisclosure: [
+    { condition: c => c.returnsDetailedErrors, threat: 'Detailed errors may reveal internal structure', mitigation: 'Return generic error messages; log details server-side only' },
+  ],
+  denialOfService: [
+    { condition: c => !c.hasRateLimiting, threat: 'No rate limiting — endpoint vulnerable to abuse and DoS', mitigation: 'Add token bucket rate limiting per user/IP' },
+  ],
+  elevationOfPrivilege: [
+    { condition: c => c.acceptsClientInput, threat: 'Client-controlled role or permission values may enable privilege escalation', mitigation: 'Always validate permissions server-side; never trust client-provided role claims' },
+  ],
+}
+
+function analyzeSTRIDE(component) {
+  const threats = []
+
+  for (const [category, checks] of Object.entries(STRIDE_CHECKS)) {
+    for (const check of checks) {
+      if (check.condition(component)) {
+        threats.push({ category: category.toUpperCase(), threat: check.threat, mitigation: check.mitigation })
+      }
+    }
+  }
+
+  return {
+    component: component.name,
+    threats,
+    totalThreats: threats.length,
+    priority: threats.length > 3 ? 'HIGH' : threats.length > 1 ? 'MEDIUM' : 'LOW'
+  }
+}
+
+console.log(analyzeSTRIDE(paymentComponent))`,
+      hints: [
+        'Iterate over Object.entries(STRIDE_CHECKS) to get [category, checks] pairs',
+        'For each check, call check.condition(component) — if true, push to threats',
+        'Include the category in each threat object for clarity',
+      ],
+    },
+  },
 ]
