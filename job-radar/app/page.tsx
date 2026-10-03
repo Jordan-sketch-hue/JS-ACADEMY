@@ -67,6 +67,7 @@ export default function JobRadar() {
   const [dismissed, setDismissed] = useState<Set<string>>(() => {
     try { return new Set(JSON.parse(localStorage.getItem('dismissed') ?? '[]')) } catch { return new Set() }
   })
+  const [noDegree, setNoDegree] = useState(false)
 
   const fetchJobs = useCallback(async () => {
     const { data } = await supabase
@@ -87,6 +88,12 @@ export default function JobRadar() {
     if (tab === 'saved') list = list.filter(j => j.saved)
     if (tab === 'applied') list = list.filter(j => j.applied)
     if (category !== 'All') list = list.filter(j => categoryFromJob(j) === category)
+    if (noDegree) {
+      list = list.filter(j => {
+        const d = (j.description ?? '').toLowerCase()
+        return !d.match(/bachelor'?s? degree required|bs\/ba required|require.{0,20}degree|degree.{0,20}required|must have.{0,20}degree/)
+      })
+    }
     if (search) {
       const q = search.toLowerCase()
       list = list.filter(j =>
@@ -96,7 +103,7 @@ export default function JobRadar() {
       )
     }
     setFiltered(list)
-  }, [jobs, tab, category, search, dismissed])
+  }, [jobs, tab, category, search, dismissed, noDegree])
 
   async function toggleSave(job: Job) {
     const saved = !job.saved
@@ -265,6 +272,21 @@ export default function JobRadar() {
               </button>
             )
           })}
+        </div>
+
+        {/* Filter row */}
+        <div className="flex items-center gap-3 mb-4">
+          <button
+            onClick={() => setNoDegree(v => !v)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
+              noDegree
+                ? 'bg-green-900/40 border-green-700 text-green-400'
+                : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-200'
+            }`}
+          >
+            <CheckCircle size={11} />
+            No Degree Required
+          </button>
         </div>
 
         {/* Push test button — shown when alerts enabled */}
