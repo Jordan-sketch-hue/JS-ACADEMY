@@ -321,7 +321,7 @@ Pipeline reviews should identify deals that are stalled, deals at risk of dying,
         q: 'A sales rep has a $1M quarterly quota and $2M in pipeline. Is this pipeline healthy?',
         options: ['Yes — $2M is double the quota, which is more than enough', 'No — at 2× coverage, the pipeline is likely insufficient given typical win rates; 3× or above is the standard benchmark', 'It depends on the industry', 'Yes — pipeline coverage does not affect quota attainment'],
         correct: 1,
- `      explanation: '2× pipeline coverage means the rep must win 50% of all opportunities to hit quota. Given that typical win rates in B2B are 20-30%, the pipeline is likely underweight. 3× coverage gives the rep room for 33% win rates; companies with lower win rates need even more coverage.',
+        explanation: '2× pipeline coverage means the rep must win 50% of all opportunities to hit quota. Given that typical win rates in B2B are 20-30%, the pipeline is likely underweight. 3× coverage gives the rep room for 33% win rates; companies with lower win rates need even more coverage.',
       },
       {
         q: 'An inbound trial signup from a company that matches your ICP (Series B SaaS, 50+ engineers) comes in at 2 PM on a Tuesday. What is the highest-leverage next action?',
@@ -1225,7 +1225,7 @@ The best forecasters in sales are not the most optimistic — they are the most 
     quiz: [
       {
         q: 'A SaaS company has $100K New ARR, $50K Expansion ARR, and $120K Churned ARR this month. What is Net New ARR, and what does it indicate?',
-`       options: ['$30K — healthy net positive growth', '-$20K — the company is losing more revenue than it is gaining despite new bookings', '$150K — expansion is strong', '$220K — total bookings are strong'],
+        options: ['$30K — healthy net positive growth', '-$20K — the company is losing more revenue than it is gaining despite new bookings', '$150K — expansion is strong', '$220K — total bookings are strong'],
         correct: 1,
         explanation: 'Net New ARR = $100K + $50K - $120K = +$30K. Wait — $100 + $50 = $150 - $120 = +$30K. Actually this is positive. Let me re-check: $100K + $50K = $150K, $150K - $120K = $30K positive. The correct answer is Net New ARR = $30K which is positive. But if we consider the churn at $120K with only $100K new customers, the concern is that churn is nearly at the level of new customer acquisition.',
       },

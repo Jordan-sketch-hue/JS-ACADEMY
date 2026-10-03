@@ -386,7 +386,7 @@ The discipline: staying close enough to real users that the pivot is informed by
         q: 'A product has a retention curve that gradually approaches zero by Day 30. What does this indicate?',
         options: ['PMF has been achieved for a small segment', 'The onboarding experience needs improvement', 'Users are not finding lasting value — the product has not achieved PMF', 'The product category has low natural retention'],
         correct: 2,
-        explana`ion: 'A retention curve approaching zero means users try the product and don\'t come back. No subset of users has found the product genuinely valuable. PMF produces a retention curve that flattens — a portion of users continues to return habitually.',
+        explanation: 'A retention curve approaching zero means users try the product and don\'t come back. No subset of users has found the product genuinely valuable. PMF produces a retention curve that flattens — a portion of users continues to return habitually.',
       },
       {
         q: 'The Sean Ellis Test asks "How would you feel if you could no longer use this product?" — what response percentage indicates PMF?',
