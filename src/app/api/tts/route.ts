@@ -262,6 +262,14 @@ async function azureTTS(ssml: string): Promise<ArrayBuffer> {
 }
 
 export async function POST(req: NextRequest) {
+  const expectedKey = process.env.JST_TTS_API_KEY;
+  if (expectedKey) {
+    const provided = req.headers.get("x-api-key");
+    if (provided !== expectedKey) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
   try {
     const body = await req.json()
     const { text, voiceId, courseTitle, objective, chunk, keyTerms } = body

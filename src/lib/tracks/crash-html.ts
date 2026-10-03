@@ -4,23 +4,42 @@ const CC_HTML_OBJ = 'Build and style real web pages from scratch — semantic HT
 
 export const crashHtmlCourses: Course[] = [
   {
-    id: 'cc-html-m01', track: 'crash', title: 'HTML Foundations — Structure & Semantics',
-    subtitle: 'Write semantic HTML that browsers, screen readers, and search engines all understand.',
-    moduleObjective: 'Write semantic HTML that communicates structure and meaning to browsers, assistive tech, and search engines.',
+    id: 'cc-html-m01', track: 'crash', title: 'Environment, Structure & Your First Real Web Page',
+    subtitle: 'Set up VS Code, link HTML to CSS and JS, and write semantic structure from scratch.',
+    moduleObjective: 'Configure a live development environment, create a 3-file project, and write semantic HTML connected to CSS and JavaScript.',
     courseObjective: CC_HTML_OBJ, crashId: 'cc-html', crashTitle: 'HTML & CSS', level: 'Basic',
-    xp: 150, duration: 10, module: 1, certArea: 'HTML & CSS Crash Course',
+    xp: 150, duration: 12, module: 1, certArea: 'HTML & CSS Crash Course',
     keyTerms: [
-      { term: 'Semantic HTML', definition: 'Using elements that describe their content: nav, main, article, aside, section, header, footer. Improves accessibility and SEO.' },
-      { term: 'Block vs Inline', definition: 'Block elements (div, p, h1) start on a new line and take full width. Inline elements (span, a, strong) flow within text.' },
-      { term: 'Void Elements', definition: 'Self-closing tags with no content: img, input, br, hr, meta, link. No closing tag needed.' },
-      { term: 'DOCTYPE', definition: '<!DOCTYPE html> at the top of every HTML file tells the browser to use modern HTML5 standards mode.' },
-      { term: 'Accessibility (a11y)', definition: 'Making content usable for people with disabilities. Semantic HTML, alt text, labels, and ARIA attributes are the foundations.' },
+      { term: 'Live Server', definition: 'VS Code extension that auto-reloads the browser on every file save — no manual refreshing needed during development.' },
+      { term: 'DOCTYPE', definition: '<!DOCTYPE html> at the top of every HTML file tells the browser to use HTML5 standards mode, not legacy quirks mode.' },
+      { term: 'Semantic HTML', definition: 'Using elements that communicate content purpose: nav, main, article, aside, header, footer. Free accessibility and SEO.' },
+      { term: 'link tag', definition: '<link rel="stylesheet" href="styles.css"> inside <head> — connects an external CSS file to the HTML document.' },
+      { term: 'script tag', definition: '<script src="script.js"></script> before </body> — connects JavaScript after HTML is in the DOM.' },
     ],
-    content: `## HTML Foundations
+    content: `## Environment, Structure & Your First Real Web Page
 
-HTML is the skeleton of every web page. React generates HTML. Next.js generates HTML. Tailwind styles HTML. Understanding HTML structure means you can read and debug any web page.
+Before writing HTML, set up your editor so changes appear in the browser instantly.
 
-### Document Structure
+### VS Code Extensions to Install
+
+Open the Extensions panel (Ctrl+Shift+X on Windows, Cmd+Shift+X on Mac) and install:
+
+**Live Server** (by Ritwick Dey) — right-click any HTML file in the Explorer sidebar → "Open with Live Server" → browser reloads on every save. This is your dev loop: write, save, see. You never need to manually refresh the browser again.
+
+**Prettier** (by Prettier) — auto-formats on save so you never manually indent again. After installing: press Ctrl+Shift+P → "Format Document With" → choose Prettier. Open Settings (Ctrl+,) → search "format on save" → enable it.
+
+### Create Your First Project
+
+In VS Code: File → Open Folder → create a new folder called \`my-first-site\`. Right-click in the Explorer pane → New File → create three files:
+
+\`\`\`
+my-first-site/
+├── index.html
+├── styles.css
+└── script.js
+\`\`\`
+
+Open \`index.html\`, type \`!\`, press Tab. VS Code's Emmet shortcut expands into the full HTML5 boilerplate:
 
 \`\`\`html
 <!DOCTYPE html>
@@ -28,54 +47,237 @@ HTML is the skeleton of every web page. React generates HTML. Next.js generates 
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
+    <title>Document</title>
   </head>
   <body>
-    <!-- Visible content here -->
+
   </body>
 </html>
 \`\`\`
 
-### Semantic Elements
+Every HTML file starts with exactly this structure. \`<!DOCTYPE html>\` tells the browser to use HTML5 rules. \`lang="en"\` tells screen readers and search engines the page language. \`<meta charset="UTF-8">\` supports all characters including emoji and non-Latin text. The viewport meta is required for mobile — without it, phones display your page at ~980px wide and scale it down.
+
+### What HTML, CSS, and JavaScript Are
+
+Three languages, three completely separate jobs:
+
+- **HTML** is structure — the bones. Defines what is on the page: headings, paragraphs, images, forms, links.
+- **CSS** is style — the skin. Controls how elements look: colors, fonts, spacing, layout, animations.
+- **JavaScript** is behavior — the muscles. Makes things interactive: clicks, fetching data, DOM updates.
+
+They live in separate files on purpose. A designer can overhaul the entire visual look by rewriting CSS without touching HTML. An engineer can add features with JavaScript without changing the design. Separation keeps concerns isolated and teams parallel.
+
+### Connecting CSS and JavaScript to HTML
+
+The browser starts with your HTML file. You must explicitly tell it to load your other files:
 
 \`\`\`html
-<header>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-  </nav>
-</header>
-<main>
-  <article>
-    <h1>Main Heading</h1>
-    <p>Content.</p>
-  </article>
-  <aside><p>Sidebar</p></aside>
-</main>
-<footer><p>&copy; 2026 J Supreme</p></footer>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My First Site</title>
+    <!-- CSS link in head — styles load before rendering -->
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+
+    <!-- content here -->
+
+    <!-- JS before </body> — HTML is in the DOM by this point -->
+    <script src="script.js"></script>
+  </body>
+</html>
 \`\`\`
 
-Why semantics matter: screen readers announce landmarks; Google understands primary vs secondary content; heading hierarchy is indexed for search ranking.
+The \`<link>\` tag is a void element — no closing tag. \`rel="stylesheet"\` tells the browser this is CSS. The \`href\` is the file path relative to this HTML file. Same folder = just the filename.
 
-### Headings
+The \`<script>\` goes just before \`</body>\`. HTML elements exist in the browser's memory before JavaScript runs — no "element not found" errors.
 
-One h1 per page — the primary topic. h2 for major sections, h3 for subsections. Never skip levels for visual size — use CSS.
+### How the Browser Processes Your Page
 
-### Images
+Order matters:
+1. Browser reads \`<head>\` — not rendered. Downloads and applies CSS. Sets title. Loads fonts.
+2. Browser reads \`<body>\` top to bottom — renders visible content as it parses.
+3. At the bottom of \`<body>\`, downloads and runs JavaScript — all HTML elements are ready.
+
+CSS in \`<head>\` prevents flash of unstyled content. JavaScript at the bottom prevents errors from elements not yet parsed.
+
+### Semantic HTML — Write Meaning, Not Just Structure
+
+HTML5 introduced landmark elements that communicate what each region does:
 
 \`\`\`html
-<img src="/images/logo.png" alt="J Supreme Tech logo" width="200" height="60">
-<!-- Decorative: empty alt so screen reader skips it -->
-<img src="/divider.svg" alt="">
+<body>
+  <header>                          <!-- site-level header: branding, nav -->
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>                            <!-- primary content — one per page -->
+    <article>                       <!-- self-contained content piece -->
+      <h1>Main Page Heading</h1>
+      <p>One h1 per page — the topic. Use h2 for sections, h3 for subsections.</p>
+      <p>Never skip heading levels just for visual size — use CSS for that.</p>
+    </article>
+
+    <aside>                         <!-- supplementary content -->
+      <h2>Related</h2>
+      <ul>
+        <li><a href="/blog">Blog</a></li>
+      </ul>
+    </aside>
+  </main>
+
+  <footer>                          <!-- site-level footer -->
+    <p>&copy; 2026 My Site. All rights reserved.</p>
+  </footer>
+</body>
 \`\`\`
 
-alt is required. Describe the image purpose, not appearance.`,
+Visually, \`<header>\`, \`<main>\`, \`<nav>\` look and behave like \`<div>\`. The value is semantic: screen readers announce "navigation landmark" at \`<nav>\`. Google understands \`<main>\` is the primary content to index. You get accessibility and better SEO simply by using the right element names.
+
+### The Complete 3-File Starter
+
+**styles.css:**
+\`\`\`css
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+
+header {
+  background: #111;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 24px;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+footer {
+  text-align: center;
+  padding: 32px 24px;
+  border-top: 1px solid #e5e5e5;
+  color: #666;
+}
+\`\`\`
+
+**script.js:**
+\`\`\`js
+console.log('Page loaded.')
+\`\`\`
+
+Right-click \`index.html\` → Open with Live Server. Edit the CSS, hit save, and watch the browser update. This is the environment for every project in this course.`,
     quiz: [
-      { q: 'What is the purpose of semantic HTML?', options: ['Makes pages load faster', 'Uses elements that describe content meaning — improves accessibility and SEO', 'Required for CSS to work', 'Replaces JavaScript'], correct: 1, explanation: 'Semantic elements communicate structure and purpose to browsers, search engines, and screen readers.' },
-      { q: 'How many h1 elements should a page have?', options: ['As many as needed', 'One — the page primary topic', 'At least three', 'None — use CSS instead'], correct: 1, explanation: 'One h1 per page represents the primary topic. Use h2-h6 for sub-sections.' },
-      { q: 'What goes in the head element?', options: ['Visible page content', 'Navigation links', 'Metadata, title, CSS links — not visible to user', 'The footer'], correct: 2, explanation: 'The head contains metadata: title, charset, viewport, CSS links, meta tags for SEO.' },
-      { q: 'What should an alt attribute contain?', options: ['The image filename', 'A description of the image purpose, or empty string for decorative images', 'The image URL', 'CSS classes'], correct: 1, explanation: 'alt text is read aloud by screen readers. Describe what the image communicates. Use alt="" for purely decorative images.' },
+      { q: 'What does Live Server do?', options: ['Hosts your site on the internet', 'Reloads the browser automatically on every file save', 'Validates your HTML for errors', 'Compiles CSS to JavaScript'], correct: 1, explanation: 'Live Server watches your files and reloads the browser tab on save — no manual refreshing needed.' },
+      { q: 'Where should a <link> to a CSS file go?', options: ['At the bottom of <body>', 'Inside <head>', 'After <script>', 'Anywhere in the document'], correct: 1, explanation: 'CSS links go in <head> so styles load before the browser renders content — prevents flash of unstyled content.' },
+      { q: 'Why does <script> go before </body> instead of in <head>?', options: ['Style preference only', 'So HTML is fully parsed before JavaScript runs', 'Scripts do not work in <head>', 'Required by HTML5 spec'], correct: 1, explanation: 'JavaScript at the bottom ensures all HTML elements exist in memory before the script tries to interact with them.' },
+      { q: 'What is the purpose of semantic elements like <header>, <nav>, <main>?', options: ['They apply default styles', 'They communicate the role of each region to browsers, screen readers, and search engines', 'Required for CSS to work', 'Aliases for <div> with extra attributes'], correct: 1, explanation: 'Semantic elements carry meaning. Screen readers announce landmarks. Search engines understand content hierarchy.' },
     ],
+    ide: {
+      language: 'html',
+      task: 'Build a complete semantic web page. Requirements: (1) link styles.css in the <head>, (2) add a <header> with a <nav> containing Home, About, and Contact links, (3) add a <main> with an <h1> and two <p> paragraphs, (4) add a <footer> with copyright text, (5) link script.js just before </body>. In styles.css add a box-sizing reset, style the header with background #111 and white text, and give main a max-width of 900px centered with auto margins.',
+      files: [
+        {
+          name: 'index.html',
+          code: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <!-- TODO: Add <link rel="stylesheet" href="styles.css"> here -->
+  </head>
+  <body>
+
+    <!-- TODO: Add <header> containing <nav> with Home, About, Contact links -->
+
+    <!-- TODO: Add <main> containing <h1> and two <p> paragraphs -->
+
+    <!-- TODO: Add <footer> with &copy; copyright text -->
+
+    <!-- TODO: Add <script src="script.js"></script> here -->
+  </body>
+</html>`,
+          language: 'html'
+        },
+        {
+          name: 'styles.css',
+          code: `/* Add your styles below */
+
+/* 1. CSS Reset: *, *::before, *::after { box-sizing: border-box; } */
+
+/* 2. body { margin: 0; font-family: sans-serif; } */
+
+/* 3. header { background: #111; color: #fff; padding: 16px 24px; } */
+/*    nav a  { color: #fff; text-decoration: none; margin-right: 16px; } */
+
+/* 4. main { max-width: 900px; margin: 0 auto; padding: 24px; } */
+
+/* 5. footer { text-align: center; padding: 24px; color: #666; } */`,
+          language: 'css'
+        },
+        {
+          name: 'script.js',
+          code: `// Add: console.log('Page loaded.')`,
+          language: 'javascript'
+        }
+      ],
+      hints: [
+        'CSS link: <link rel="stylesheet" href="styles.css"> is a void element — no closing tag needed',
+        'JS script: <script src="script.js"></script> goes just before the </body> closing tag',
+        'Nav links: <a href="/">Home</a> — href is the destination path',
+        'Copyright HTML entity: &copy; renders as the © symbol',
+        'box-sizing reset: *, *::before, *::after { box-sizing: border-box; }'
+      ],
+      solution: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Welcome to My Portfolio</h1>
+      <p>I design and build web pages using HTML, CSS, and JavaScript.</p>
+      <p>Browse my projects to see examples of my work.</p>
+    </main>
+    <footer>
+      <p>&copy; 2026 My Portfolio. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>`
+    }
   },
   {
     id: 'cc-html-m02', track: 'crash', title: 'Forms & Interactive Elements',
@@ -225,6 +427,104 @@ overflow-x: auto;   /* horizontal scroll only */
       { q: 'Two block elements: margin-bottom 24px and margin-top 16px. What is the gap?', options: ['40px (sum)', '24px (larger)', '16px (smaller)', '0px'], correct: 1, explanation: 'Vertical margins between adjacent block elements collapse — the gap is the larger value, not the sum.' },
       { q: 'Which display value removes an element from layout entirely?', options: ['display: hidden', 'display: invisible', 'display: none', 'display: collapse'], correct: 2, explanation: 'display: none removes the element from layout entirely — no space, not visible.' },
     ],
+    ide: {
+      language: 'html',
+      task: 'Fix a card component that is overflowing. Without box-sizing: border-box, adding padding to a 320px-wide card makes it wider than 320px. Task: (1) add box-sizing: border-box to .card so width includes padding and border, (2) add padding: 24px inside the card, (3) add a 2px solid #ddd border, (4) add margin-bottom: 16px between cards, (5) add gap: 16px to .card-row. Observe how the card stays exactly 320px with border-box.',
+      files: [
+        {
+          name: 'index.html',
+          code: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Box Model Practice</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="card-row">
+      <div class="card">
+        <h2>Card One</h2>
+        <p>This card should be exactly 320px wide with 24px padding inside and a visible border.</p>
+      </div>
+      <div class="card">
+        <h2>Card Two</h2>
+        <p>There should be 16px space between the cards.</p>
+      </div>
+      <div class="card">
+        <h2>Card Three</h2>
+        <p>All cards stay the same width regardless of content.</p>
+      </div>
+    </div>
+  </body>
+</html>`,
+          language: 'html'
+        },
+        {
+          name: 'styles.css',
+          code: `body {
+  font-family: sans-serif;
+  padding: 24px;
+  background: #f5f5f5;
+}
+
+/* PROBLEM: without box-sizing: border-box,
+   width: 320px + padding: 24px = 368px total — cards overflow */
+.card {
+  /* TODO 1: add box-sizing: border-box */
+  width: 320px;
+  /* TODO 2: add padding: 24px */
+  /* TODO 3: add border: 2px solid #ddd */
+  /* TODO 4: add margin-bottom: 16px */
+  background: white;
+  border-radius: 8px;
+}
+
+.card h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+}
+
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  /* TODO 5: add gap: 16px */
+}`,
+          language: 'css'
+        }
+      ],
+      hints: [
+        'Without box-sizing: border-box, width adds to padding — so 320px + 24px padding on each side = 368px',
+        'With box-sizing: border-box, width: 320px is the total — padding carves into the 320px',
+        'Border also counts toward total width with content-box but NOT with border-box',
+        'gap on a flex container adds space between items without needing margin hacks'
+      ],
+      solution: `body {
+  font-family: sans-serif;
+  padding: 24px;
+  background: #f5f5f5;
+}
+
+.card {
+  box-sizing: border-box;
+  width: 320px;
+  padding: 24px;
+  border: 2px solid #ddd;
+  margin-bottom: 16px;
+  background: white;
+  border-radius: 8px;
+}
+
+.card h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+}
+
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}`
+    }
   },
   {
     id: 'cc-html-m04', track: 'crash', title: 'Flexbox Layout',
@@ -313,6 +613,151 @@ flex: 0 0 200px;  /* fixed 200px — no grow, no shrink */
       { q: 'What does flex: 1 mean?', options: ['The item is 1px wide', 'The item grows and shrinks to fill available space', 'The item is the first child', 'Fixed width 100px'], correct: 1, explanation: 'flex: 1 = flex-grow: 1, flex-shrink: 1, flex-basis: 0. Multiple flex: 1 siblings share space equally.' },
       { q: 'What does flex-wrap: wrap enable?', options: ['Reverses order', 'Allows items to wrap onto new lines when they do not fit', 'Wraps text inside items', 'Required for gap to work'], correct: 1, explanation: 'By default items stay on one line. flex-wrap: wrap allows items to move to new rows.' },
     ],
+    ide: {
+      language: 'html',
+      task: 'Build two Flexbox layouts: (1) a navigation bar with the logo on the left and nav links on the right — use justify-content: space-between and align-items: center, (2) a card row below it with three cards that use flex-wrap: wrap and gap: 24px. Each card should use flex: 1 1 240px so they grow to fill space but wrap below 240px.',
+      files: [
+        {
+          name: 'index.html',
+          code: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Flexbox Practice</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+
+    <!-- TODO: Build a nav with class="navbar" -->
+    <!-- Inside: a <span class="logo"> and a <div class="nav-links"> with 3 links -->
+    <nav class="navbar">
+      <span class="logo">MySite</span>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+      </div>
+    </nav>
+
+    <!-- TODO: Build a card row -->
+    <section class="card-row">
+      <div class="card">
+        <h3>Feature One</h3>
+        <p>Description of the first feature.</p>
+      </div>
+      <div class="card">
+        <h3>Feature Two</h3>
+        <p>Description of the second feature.</p>
+      </div>
+      <div class="card">
+        <h3>Feature Three</h3>
+        <p>Description of the third feature.</p>
+      </div>
+    </section>
+
+    <!-- TODO: Build a centered hero -->
+    <section class="hero">
+      <h1>Centered Hero</h1>
+      <p>This content should be perfectly centered both ways.</p>
+    </section>
+
+  </body>
+</html>`,
+          language: 'html'
+        },
+        {
+          name: 'styles.css',
+          code: `*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: sans-serif; }
+
+/* TODO: Style .navbar */
+/* display: flex; justify-content: space-between; align-items: center; */
+/* background: #111; padding: 0 24px; height: 64px; */
+.navbar {
+
+}
+
+.logo { color: #fff; font-weight: 700; font-size: 1.2rem; }
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+/* TODO: Style .card-row */
+/* display: flex; flex-wrap: wrap; gap: 24px; padding: 32px 24px; */
+.card-row {
+
+}
+
+/* TODO: Style .card */
+/* flex: 1 1 240px; background: white; border: 1px solid #e5e5e5; */
+/* border-radius: 8px; padding: 24px; */
+.card {
+
+}
+
+/* TODO: Style .hero */
+/* display: flex; flex-direction: column; justify-content: center; align-items: center; */
+/* height: 300px; background: #f0f4ff; text-align: center; */
+.hero {
+
+}`,
+          language: 'css'
+        }
+      ],
+      hints: [
+        'Navbar: display: flex on .navbar makes logo and nav-links into flex items side by side',
+        'justify-content: space-between pushes first item left, last item right',
+        'flex: 1 1 240px means grow=1, shrink=1, base=240px — cards share space but wrap below 240px',
+        'flex-direction: column on .hero makes children stack vertically before centering'
+      ],
+      solution: `*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: sans-serif; background: #f5f5f5; }
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 0 24px;
+  height: 64px;
+}
+
+.logo { color: #fff; font-weight: 700; font-size: 1.2rem; }
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 32px 24px;
+}
+
+.card {
+  flex: 1 1 240px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  background: #f0f4ff;
+  text-align: center;
+}`
+    }
   },
   {
     id: 'cc-html-m05', track: 'crash', title: 'CSS Grid Layout',

@@ -4,33 +4,106 @@ const CC_PAYLOAD_OBJ = 'Build content-managed full-stack applications with Paylo
 
 export const crashPayloadCourses: Course[] = [
   {
-    id: 'cc-payload-m01', track: 'crash', title: 'Payload CMS Introduction',
-    subtitle: 'Set up Payload CMS in a Next.js 15 project with TypeScript.',
-    moduleObjective: 'Install and configure Payload CMS in a Next.js project and access the admin panel.',
+    id: 'cc-payload-m01', track: 'crash', title: 'Environment, Setup & Your First Payload Collection',
+    subtitle: 'Install Payload CMS, explore the file structure, and define a real content type from scratch.',
+    moduleObjective: 'Set up Payload CMS in a new Next.js project, understand the headless CMS architecture, and create your first collection with fields.',
     courseObjective: CC_PAYLOAD_OBJ, crashId: 'cc-payload', crashTitle: 'Payload CMS', level: 'Basic',
-    xp: 150, duration: 10, module: 1, certArea: 'Payload CMS Crash Course',
+    xp: 150, duration: 12, module: 1, certArea: 'Payload CMS Crash Course',
     keyTerms: [
-      { term: 'Payload CMS', definition: 'TypeScript-native, self-hosted headless CMS built for Next.js. No vendor lock-in, full-stack control, MIT licensed.' },
-      { term: 'Headless CMS', definition: 'CMS that provides content management + API without handling the frontend. You build the frontend in any framework.' },
-      { term: 'payload.config.ts', definition: 'The main config file. Defines database, collections, globals, plugins, email, and CORS.' },
-      { term: 'Admin Panel', definition: 'Payload auto-generates a full admin UI at /admin from your collection config. No extra code required.' },
-      { term: 'Local API', definition: 'Payload exposes a Node.js API for direct database access in server components — no HTTP overhead.' },
+      { term: 'Headless CMS', definition: 'A CMS that manages content (the "body") but has no frontend (the "head"). Your Next.js app is the head — it fetches content and displays it however it wants.' },
+      { term: 'Payload CMS', definition: 'TypeScript-native, self-hosted headless CMS built for Next.js. Runs inside your project, auto-generates admin UI, REST API, GraphQL, and TypeScript types.' },
+      { term: 'payload.config.ts', definition: 'The single config file for the entire CMS. Defines database adapter, collections, globals, editor, auth, CORS, and plugins.' },
+      { term: 'Collection', definition: 'A content type — like a database table. Defines typed fields, access control, and hooks for one kind of content (Posts, Users, Media).' },
+      { term: 'Admin Panel', definition: 'Payload auto-generates a full CRUD admin interface at /admin from your collection config. Editors use it to manage content — no extra code needed.' },
+      { term: 'Local API', definition: 'Payload\'s server-side JS API — payload.find(), payload.create(), etc. Direct database access from server components with no HTTP overhead.' },
     ],
-    content: `## Payload CMS Introduction
+    content: `## Environment, Setup & Your First Payload Collection
 
-Payload is a TypeScript-native headless CMS that runs inside your Next.js project. It auto-generates the admin UI, REST API, GraphQL API, and TypeScript types from your collection definitions.
+### Step 1 — Set Up Your Environment
 
-### Install
+**What VS Code extensions do you need?**
 
+For Payload development, you're writing TypeScript in a Next.js project. Install these:
+
+1. **ESLint** — catches errors as you type
+2. **Prettier** — auto-formats code on save
+3. **TypeScript Error Lens** — inline TypeScript errors in the editor
+4. **Tailwind CSS IntelliSense** — if you're styling the frontend with Tailwind
+
+No Payload-specific extension exists — Payload is just TypeScript classes and config objects. VS Code's built-in TypeScript support handles IntelliSense on all Payload types.
+
+**Create a Payload project**
+
+The fastest path is the official CLI:
 \`\`\`bash
-# New project with Payload template
 npx create-payload-app@latest
-
-# Or add to existing Next.js project
-npx @payloadcms/next/create my-project
 \`\`\`
 
-### payload.config.ts
+The CLI asks:
+- **Project name** — becomes the folder name
+- **Template** — choose "website" (Next.js + Postgres) or "blank"
+- **Database** — choose Postgres (uses Supabase, Neon, Railway, or local)
+
+The CLI installs dependencies and creates a fully working project with example collections. Start it:
+\`\`\`bash
+cd your-project
+npm run dev
+\`\`\`
+
+Visit \`http://localhost:3000/admin\` — the first load creates the database tables and prompts you to create an admin user.
+
+### WHY Payload? — The Headless CMS Problem
+
+Before Payload, teams had two bad choices:
+
+**Traditional CMS (WordPress)**
+- Manages content AND renders the frontend (PHP templates)
+- Hard to build modern React frontends on top of it
+- Vendor-managed — can't customize the data structure freely
+
+**Hosted Headless CMS (Contentful, Sanity)**
+- API-only — you build the frontend
+- But you pay per seat, per API call, per content type
+- No code access — customizations happen in their UI
+
+**Payload's answer:** run the CMS inside your Next.js project. You own the database, the config is TypeScript code in your repo, and the admin UI is auto-generated.
+
+\`\`\`
+WordPress:        CMS owns frontend + data
+Contentful:       their servers → your frontend
+Payload:          your code + your DB → admin UI auto-generated
+\`\`\`
+
+### File Structure After Installation
+
+\`\`\`
+src/
+  app/
+    (payload)/              ← Payload admin route group
+      admin/
+        [[...segments]]/
+          page.tsx          ← Admin panel pages
+      api/
+        [...slug]/
+          route.ts          ← Payload REST API routes
+    (frontend)/             ← Your frontend routes
+      page.tsx
+      blog/
+        [slug]/
+          page.tsx
+  collections/
+    Posts.ts                ← Post content type
+    Users.ts                ← User content type (with auth)
+    Media.ts                ← File uploads
+  globals/
+    SiteSettings.ts         ← Singleton config (nav, footer)
+payload.config.ts           ← Main CMS configuration
+payload-types.ts            ← Auto-generated TypeScript types
+\`\`\`
+
+The key insight: your collections live as TypeScript files in your repo. They are source code — you version them with git, review them in PRs, deploy them with your app.
+
+### payload.config.ts — The Central Hub
 
 \`\`\`tsx
 import { buildConfig } from 'payload'
@@ -38,54 +111,241 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
+import { Media } from './collections/Media'
 
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET!,
+  secret: process.env.PAYLOAD_SECRET!,  // JWT signing key for admin sessions
 
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL! },
   }),
 
-  editor: lexicalEditor({}),
+  editor: lexicalEditor({}),  // rich text editor (Facebook's Lexical)
 
-  collections: [Posts, Users],
+  collections: [Posts, Users, Media],
 
   admin: {
-    user: 'users',  // which collection is the admin user
+    user: 'users',  // which collection handles admin authentication
   },
 
   cors: [process.env.NEXT_PUBLIC_APP_URL!],
+  // Allow your frontend origin for REST API calls
 })
 \`\`\`
 
-### File Structure
+Everything flows from this file. Add a collection here → it appears in the admin panel, REST API, and TypeScript types automatically.
 
+### Your First Real Collection — Posts
+
+Let's build a blog posts collection step-by-step:
+
+\`\`\`tsx
+// src/collections/Posts.ts
+import type { CollectionConfig } from 'payload'
+
+export const Posts: CollectionConfig = {
+  slug: 'posts',                  // → /api/posts in REST, payload.find('posts') in Local API
+
+  admin: {
+    useAsTitle: 'title',          // shows "My First Post" as the admin list title
+    defaultColumns: ['title', 'status', 'publishedAt'],
+  },
+
+  fields: [
+    // Text field — required, shows at top of form
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
+
+    // URL-safe identifier, auto-generated from title via a hook (later)
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      index: true,              // adds a DB index for fast slug lookups
+      admin: { position: 'sidebar' },
+    },
+
+    // Content state — editors can save drafts without publishing
+    {
+      name: 'status',
+      type: 'select',
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
+      defaultValue: 'draft',
+      required: true,
+      admin: { position: 'sidebar' },
+    },
+
+    // Relationship — references a document in the 'users' collection
+    {
+      name: 'author',
+      type: 'relationship',
+      relationTo: 'users',
+      required: true,
+      admin: { position: 'sidebar' },
+    },
+
+    // Rich text (Lexical editor — outputs structured JSON)
+    {
+      name: 'content',
+      type: 'richText',
+    },
+
+    // Metadata
+    {
+      name: 'publishedAt',
+      type: 'date',
+      admin: { position: 'sidebar' },
+    },
+  ],
+}
 \`\`\`
-app/
-  (payload)/          ← Payload admin route group
-    admin/
-      [[...segments]]/
-        page.tsx      ← Admin panel pages
-    api/
-      [...slug]/
-        route.ts      ← Payload REST API
-  (frontend)/         ← Your frontend routes
-    page.tsx
-payload.config.ts
-collections/
-  Posts.ts
-  Users.ts
-\`\`\`
 
-### Access Admin Panel
+After saving this file and restarting the dev server, visit \`/admin\` — the "Posts" menu appears. Click "Create New Post" and you'll see this form rendered automatically.
 
-Visit http://localhost:3000/admin — first visit prompts to create an admin user.`,
+What Payload just generated from this one file:
+- Admin form with all fields
+- REST endpoint: GET/POST \`/api/posts\`, GET/PATCH/DELETE \`/api/posts/:id\`
+- GraphQL queries and mutations
+- TypeScript type: \`import type { Post } from '@/payload-types'\`
+
+### Access the Auto-Generated REST API
+
+\`\`\`bash
+# List all published posts
+GET http://localhost:3000/api/posts?where[status][equals]=published
+
+# Get one post
+GET http://localhost:3000/api/posts/64abc123
+
+# Create (requires auth)
+POST http://localhost:3000/api/posts
+Authorization: Bearer <your-admin-jwt>
+Content-Type: application/json
+{
+  "title": "My First Post",
+  "slug": "my-first-post",
+  "status": "draft"
+}
+\`\`\``,
     quiz: [
-      { q: 'What does Payload CMS auto-generate from your config?', options: ['Only the database schema', 'Admin UI, REST API, GraphQL API, TypeScript types — all from collection definitions', 'Only an API', 'Only types'], correct: 1, explanation: 'Payload generates the full admin panel, REST + GraphQL APIs, and TypeScript type definitions from your collection config. No boilerplate needed.' },
-      { q: 'What is the Local API?', options: ['A localhost-only API', 'Payload\'s Node.js API for server-side access — direct DB queries without HTTP overhead', 'The REST API', 'GraphQL only'], correct: 1, explanation: 'The Local API calls payload.find(), payload.create() etc. in server components — no HTTP request, just direct database access with full type safety.' },
-      { q: 'What does payload.config.ts define?', options: ['Only routes', 'Database adapter, collections, globals, editor, auth, CORS — the entire CMS configuration', 'TypeScript settings', 'Next.js config'], correct: 1, explanation: 'payload.config.ts is the single source of truth for your CMS. Everything — DB, collections, plugins, email, CORS — is configured here.' },
-      { q: 'What is a headless CMS?', options: ['A CMS without a database', 'Provides content management and API but no frontend — you build the presentation layer separately', 'A static site generator', 'A database'], correct: 1, explanation: 'Headless = no head (frontend). Payload provides the admin UI, data, and APIs. Your Next.js app fetches and displays content however you choose.' },
+      { q: 'What makes Payload different from Contentful or Sanity?', options: ['It has more features', 'It runs inside your own codebase — your database, your code, no per-seat pricing or vendor lock-in', 'It is cheaper always', 'It requires no database'], correct: 1, explanation: 'Contentful/Sanity are hosted services — you depend on their servers and pricing. Payload deploys with your Next.js app against your own Postgres database. You own everything.' },
+      { q: 'What does Payload auto-generate from your collection config?', options: ['Only the database schema', 'Admin UI, REST API, GraphQL API, and TypeScript types — from one TypeScript config object', 'Only an API', 'Only types'], correct: 1, explanation: 'Define the fields once in your CollectionConfig object. Payload generates: admin form, REST endpoints, GraphQL schema, and TypeScript interfaces. No boilerplate.' },
+      { q: 'What is the Local API?', options: ['An API only accessible on localhost', 'payload.find/create/update — direct server-side calls to the database with no HTTP round-trip', 'The REST API served locally', 'GraphQL only'], correct: 1, explanation: 'The Local API calls Payload\'s query layer directly from server components — same process, no network. Faster than REST and fully typed with your generated types.' },
+      { q: 'What does the "slug" field in a CollectionConfig do?', options: ['URL slug for blog posts', 'Identifies the collection: used in REST path (/api/posts), Local API collection name, and relationship references', 'Required by Postgres', 'Sets the admin menu label'], correct: 1, explanation: 'The collection slug is its identifier. It sets the REST API path (/api/[slug]), the Local API collection string (payload.find({ collection: "posts" })), and how other collections reference it.' },
     ],
+    ide: {
+      language: 'javascript',
+      task: 'Simulate the Payload collection config pattern in plain JavaScript. Write a function defineCollection(config) that takes a collection config object and returns an enhanced version with: (1) an apiPath property ("/api/" + slug), (2) a getFields() method that returns the field names as a string array, (3) a getRequiredFields() method that returns only fields with required: true, and (4) a describe() method that returns a summary string. Test it with a Posts and Users collection config.',
+      starterCode: `// Payload Collection Config Simulator
+
+// Define a collection and return an enhanced config
+function defineCollection(config) {
+  // TODO: return an object that spreads config and adds:
+  // - apiPath: "/api/" + config.slug
+  // - getFields(): returns array of field name strings
+  // - getRequiredFields(): returns names of fields where required === true
+  // - describe(): returns "Collection: <slug> | Fields: <count> | Required: <count>"
+}
+
+// Test collections
+const Posts = defineCollection({
+  slug: 'posts',
+  fields: [
+    { name: 'title', type: 'text', required: true },
+    { name: 'slug', type: 'text', required: true },
+    { name: 'status', type: 'select', required: true },
+    { name: 'author', type: 'relationship' },
+    { name: 'content', type: 'richText' },
+    { name: 'publishedAt', type: 'date' },
+  ],
+})
+
+const Users = defineCollection({
+  slug: 'users',
+  fields: [
+    { name: 'email', type: 'email', required: true },
+    { name: 'name', type: 'text', required: true },
+    { name: 'role', type: 'select' },
+    { name: 'avatar', type: 'upload' },
+  ],
+})
+
+// Test output
+console.log('Posts API path:', Posts.apiPath)
+console.log('Posts fields:', Posts.getFields())
+console.log('Posts required:', Posts.getRequiredFields())
+console.log('Posts description:', Posts.describe())
+console.log('')
+console.log('Users API path:', Users.apiPath)
+console.log('Users fields:', Users.getFields())
+console.log('Users required:', Users.getRequiredFields())
+console.log('Users description:', Users.describe())
+`,
+      solution: `function defineCollection(config) {
+  return {
+    ...config,
+    apiPath: '/api/' + config.slug,
+    getFields() {
+      return config.fields.map(f => f.name)
+    },
+    getRequiredFields() {
+      return config.fields.filter(f => f.required === true).map(f => f.name)
+    },
+    describe() {
+      const total = config.fields.length
+      const required = config.fields.filter(f => f.required).length
+      return 'Collection: ' + config.slug + ' | Fields: ' + total + ' | Required: ' + required
+    },
+  }
+}
+
+const Posts = defineCollection({
+  slug: 'posts',
+  fields: [
+    { name: 'title', type: 'text', required: true },
+    { name: 'slug', type: 'text', required: true },
+    { name: 'status', type: 'select', required: true },
+    { name: 'author', type: 'relationship' },
+    { name: 'content', type: 'richText' },
+    { name: 'publishedAt', type: 'date' },
+  ],
+})
+
+const Users = defineCollection({
+  slug: 'users',
+  fields: [
+    { name: 'email', type: 'email', required: true },
+    { name: 'name', type: 'text', required: true },
+    { name: 'role', type: 'select' },
+    { name: 'avatar', type: 'upload' },
+  ],
+})
+
+console.log('Posts API path:', Posts.apiPath)
+console.log('Posts fields:', Posts.getFields())
+console.log('Posts required:', Posts.getRequiredFields())
+console.log('Posts description:', Posts.describe())
+console.log('')
+console.log('Users API path:', Users.apiPath)
+console.log('Users fields:', Users.getFields())
+console.log('Users required:', Users.getRequiredFields())
+console.log('Users description:', Users.describe())
+`,
+      hints: [
+        'Spread the config with ...config to copy all original properties',
+        'getFields: config.fields.map(f => f.name) — map over fields array, return name property',
+        'getRequiredFields: chain .filter(f => f.required === true) then .map(f => f.name)',
+        'describe: use string concatenation, not template literals, to avoid nesting issues',
+        'apiPath: "/api/" + config.slug — concatenate the slug onto the base path'
+      ]
+    }
   },
   {
     id: 'cc-payload-m02', track: 'crash', title: 'Collections & Fields',
@@ -291,6 +551,98 @@ export const Users: CollectionConfig = {
       { q: 'What is field-level access control?', options: ['Same as collection access', 'Controls read/write on individual fields — hide email from public while exposing name', 'Required for all fields', 'Adds validation'], correct: 1, explanation: 'Field access functions run per field. access: { read: isAdmin } on the email field hides it from non-admin responses while the rest of the document is readable.' },
       { q: 'How do you allow a user to only read their own documents?', options: ['Return user.id in access', 'Return { author: { equals: user.id } } — a where constraint filtering to owned docs', 'Use req.user.id === id', 'Not possible'], correct: 1, explanation: 'Returning a where constraint from access control filters the collection to matching documents. { author: { equals: user.id } } returns only the user\'s own posts.' },
     ],
+    ide: {
+      language: 'javascript',
+      task: 'Implement three access control functions that mirror Payload\'s real access control pattern. Each function receives { user, documentOwnerId } and returns true (allow), false (deny), or a filter object { owner: userId } (filter). Implement: (1) isAdmin — allow only if user.role === "admin". (2) isAdminOrSelf — allow admins or if user.id === documentOwnerId. (3) canReadOwnOrPublic — no user: return filter { status: "published" }; admin: return true; other: return filter combining own docs and published. Test each function with different user contexts.',
+      starterCode: `// Access Control Function Simulator
+
+// Returns true (allow), false (deny), or a filter object
+function isAdmin({ user }) {
+  // TODO: return true if user exists and role is 'admin', false otherwise
+}
+
+function isAdminOrSelf({ user, documentOwnerId }) {
+  // TODO: admins always allowed
+  // Non-admins only allowed if their id matches the document owner
+  // Return false if not authenticated
+}
+
+function canReadOwnOrPublic({ user }) {
+  // TODO: Three cases:
+  // 1. No user (unauthenticated) → return { status: 'published' }
+  // 2. Admin → return true
+  // 3. Regular user → return { or: [{ owner: user.id }, { status: 'published' }] }
+}
+
+// Test contexts
+const adminUser    = { id: 'u1', role: 'admin' }
+const regularUser  = { id: 'u2', role: 'user' }
+const anotherUser  = { id: 'u3', role: 'user' }
+const noUser       = null
+
+const docOwnerId = 'u2'  // regular user owns this document
+
+console.log('=== isAdmin ===')
+console.log('Admin:', isAdmin({ user: adminUser }))
+console.log('User:', isAdmin({ user: regularUser }))
+console.log('No user:', isAdmin({ user: noUser }))
+
+console.log('\\n=== isAdminOrSelf ===')
+console.log('Admin:', isAdminOrSelf({ user: adminUser, documentOwnerId }))
+console.log('Owner:', isAdminOrSelf({ user: regularUser, documentOwnerId }))
+console.log('Other:', isAdminOrSelf({ user: anotherUser, documentOwnerId }))
+console.log('No user:', isAdminOrSelf({ user: noUser, documentOwnerId }))
+
+console.log('\\n=== canReadOwnOrPublic ===')
+console.log('Admin:', canReadOwnOrPublic({ user: adminUser }))
+console.log('User:', canReadOwnOrPublic({ user: regularUser }))
+console.log('No user:', canReadOwnOrPublic({ user: noUser }))
+`,
+      solution: `function isAdmin({ user }) {
+  return user?.role === 'admin' ? true : false
+}
+
+function isAdminOrSelf({ user, documentOwnerId }) {
+  if (!user) return false
+  if (user.role === 'admin') return true
+  return user.id === documentOwnerId
+}
+
+function canReadOwnOrPublic({ user }) {
+  if (!user) return { status: 'published' }
+  if (user.role === 'admin') return true
+  return { or: [{ owner: user.id }, { status: 'published' }] }
+}
+
+const adminUser   = { id: 'u1', role: 'admin' }
+const regularUser = { id: 'u2', role: 'user' }
+const anotherUser = { id: 'u3', role: 'user' }
+const noUser      = null
+const docOwnerId  = 'u2'
+
+console.log('=== isAdmin ===')
+console.log('Admin:', isAdmin({ user: adminUser }))
+console.log('User:', isAdmin({ user: regularUser }))
+console.log('No user:', isAdmin({ user: noUser }))
+
+console.log('\\n=== isAdminOrSelf ===')
+console.log('Admin:', isAdminOrSelf({ user: adminUser, documentOwnerId: docOwnerId }))
+console.log('Owner:', isAdminOrSelf({ user: regularUser, documentOwnerId: docOwnerId }))
+console.log('Other:', isAdminOrSelf({ user: anotherUser, documentOwnerId: docOwnerId }))
+console.log('No user:', isAdminOrSelf({ user: noUser, documentOwnerId: docOwnerId }))
+
+console.log('\\n=== canReadOwnOrPublic ===')
+console.log('Admin:', canReadOwnOrPublic({ user: adminUser }))
+console.log('User:', canReadOwnOrPublic({ user: regularUser }))
+console.log('No user:', canReadOwnOrPublic({ user: noUser }))
+`,
+      hints: [
+        'Optional chaining: user?.role handles null users — returns undefined instead of throwing',
+        'isAdmin: check user?.role === "admin" — no user means false',
+        'isAdminOrSelf: guard with !user first, then check admin role, then compare ids',
+        'canReadOwnOrPublic: handle null user first (filter), then admin (true), then regular user (compound filter)'
+      ]
+    }
   },
   {
     id: 'cc-payload-m04', track: 'crash', title: 'Hooks',
@@ -390,6 +742,132 @@ hooks: {
       { q: 'How do you cancel an operation in a hook?', options: ['Return false', 'Throw an error — Payload catches it and returns a 400/500 response', 'Return undefined', 'Set data.cancel = true'], correct: 1, explanation: 'Throwing from a hook aborts the operation. The error message is returned to the client as a validation error.' },
       { q: 'What does a field afterRead hook returning undefined do?', options: ['Returns null', 'Removes the field from the response — useful for never exposing hashed passwords or secrets', 'Error', 'Returns the original value'], correct: 1, explanation: 'If afterRead returns undefined for a field, Payload omits that field from the response. Classic pattern for never returning hashed passwords.' },
     ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a hook pipeline simulator. Implement a runHooks(document, hooks) function that takes a document object and an array of hook functions, runs them in sequence (each receives the result of the previous), and returns the final document. Then write three hooks: (1) addTimestamp — adds createdAt if operation is "create". (2) generateSlug — generates a slug from title using simple lowercase + hyphen replacement. (3) maskEmail — replaces the middle characters of an email with asterisks. Run the pipeline for a "create" operation and a "update" operation, logging the result after each hook.',
+      starterCode: `// Hook Pipeline Simulator
+
+// Run hooks in sequence — each receives the result of the previous
+async function runHooks(document, hooks) {
+  // TODO: iterate over hooks array
+  // Pass document to first hook, pass result to next hook, etc.
+  // Each hook is an async function that receives doc and returns modified doc
+  // Return the final document
+}
+
+// Hook 1: Add timestamps on create
+function addTimestamp(doc) {
+  // TODO: if doc.operation === 'create', add createdAt: new Date().toISOString()
+  // Always add updatedAt: new Date().toISOString()
+  // Return modified doc
+}
+
+// Hook 2: Generate slug from title
+function generateSlug(doc) {
+  // TODO: if doc.data.title exists and operation is 'create'
+  // set doc.data.slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  // Return doc
+}
+
+// Hook 3: Mask email in response
+function maskEmail(doc) {
+  // TODO: if doc.data.email exists
+  // Keep first char + '***' + domain: "j***@gmail.com"
+  // Split on '@', mask the local part, rejoin
+  // Return doc
+}
+
+// Test: create operation
+const createDoc = {
+  operation: 'create',
+  data: {
+    title: 'My First Post About REST APIs',
+    email: 'jordan@gmail.com',
+    content: 'Some content here',
+  }
+}
+
+// Test: update operation
+const updateDoc = {
+  operation: 'update',
+  data: {
+    title: 'Updated Post Title',
+    email: 'jordan@gmail.com',
+  }
+}
+
+runHooks(createDoc, [addTimestamp, generateSlug, maskEmail])
+  .then(result => console.log('After create hooks:', result))
+
+runHooks(updateDoc, [addTimestamp, generateSlug, maskEmail])
+  .then(result => console.log('After update hooks:', result))
+`,
+      solution: `async function runHooks(document, hooks) {
+  let current = document
+  for (const hook of hooks) {
+    current = await hook(current)
+  }
+  return current
+}
+
+function addTimestamp(doc) {
+  const now = new Date().toISOString()
+  if (doc.operation === 'create') {
+    doc.data.createdAt = now
+  }
+  doc.data.updatedAt = now
+  return doc
+}
+
+function generateSlug(doc) {
+  if (doc.data.title && doc.operation === 'create') {
+    doc.data.slug = doc.data.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+  }
+  return doc
+}
+
+function maskEmail(doc) {
+  if (doc.data.email) {
+    const parts = doc.data.email.split('@')
+    const masked = parts[0][0] + '***'
+    doc.data.email = masked + '@' + parts[1]
+  }
+  return doc
+}
+
+const createDoc = {
+  operation: 'create',
+  data: {
+    title: 'My First Post About REST APIs',
+    email: 'jordan@gmail.com',
+    content: 'Some content here',
+  }
+}
+
+const updateDoc = {
+  operation: 'update',
+  data: {
+    title: 'Updated Post Title',
+    email: 'jordan@gmail.com',
+  }
+}
+
+runHooks(createDoc, [addTimestamp, generateSlug, maskEmail])
+  .then(result => console.log('After create hooks:', result))
+
+runHooks(updateDoc, [addTimestamp, generateSlug, maskEmail])
+  .then(result => console.log('After update hooks:', result))
+`,
+      hints: [
+        'runHooks: use a for...of loop with await on each hook call — accumulate result in a variable',
+        'generateSlug: chain .toLowerCase(), .replace(/[^a-z0-9]+/g, "-") to replace non-alphanum with hyphens',
+        'maskEmail: split on "@" to get local part and domain, mask local with first char + "***"',
+        'Each hook mutates and returns the doc — return doc at the end of each function'
+      ]
+    }
   },
   {
     id: 'cc-payload-m05', track: 'crash', title: 'Rich Text with Lexical',

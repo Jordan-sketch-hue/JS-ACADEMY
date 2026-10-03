@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "jst-academy-platform",
+      "name": "jst-academy-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "3005"],
-      "port": 3005
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
     }
   ]
 }

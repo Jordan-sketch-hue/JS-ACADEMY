@@ -8,21 +8,14 @@ import { ChevronLeft, Volume2, Loader2, Check, X, ChevronDown, ChevronUp, BookOp
 type Tab = 'vocab' | 'grammar' | 'dialogue' | 'drill' | 'chars' | 'quiz'
 
 function speak(text: string, voice: string, onStart: () => void, onEnd: () => void) {
-  onStart()
-  fetch('/api/tts', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, voice }),
-  })
-    .then(r => { if (!r.ok) throw new Error(); return r.blob() })
-    .then(blob => {
-      const url = URL.createObjectURL(blob)
-      const audio = new Audio(url)
-      audio.onended = () => { onEnd(); URL.revokeObjectURL(url) }
-      audio.onerror = () => onEnd()
-      audio.play()
-    })
-    .catch(() => onEnd())
+  if (typeof window === 'undefined' || !window.speechSynthesis) { onEnd(); return }
+  window.speechSynthesis.cancel()
+  const utter = new SpeechSynthesisUtterance(text)
+  utter.lang = voice.split('-').slice(0, 2).join('-')
+  utter.onstart = onStart
+  utter.onend = onEnd
+  utter.onerror = () => onEnd()
+  window.speechSynthesis.speak(utter)
 }
 
 function SpeakBtn({ text, voice, size = 'md' }: { text: string; voice: string; size?: 'sm' | 'md' }) {
@@ -133,22 +126,14 @@ function DialogueSection({
 
   const speakLine = (idx: number) => new Promise<void>(resolve => {
     const line = lines[idx]
+    if (typeof window === 'undefined' || !window.speechSynthesis) { resolve(); return }
+    window.speechSynthesis.cancel()
+    const utter = new SpeechSynthesisUtterance(line.native)
+    utter.lang = voice.split('-').slice(0, 2).join('-')
     setLoadingIdx(idx)
-    fetch('/api/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: line.native, voice }),
-    })
-      .then(r => r.blob())
-      .then(blob => {
-        setLoadingIdx(null)
-        const url = URL.createObjectURL(blob)
-        const audio = new Audio(url)
-        audio.onended = () => { URL.revokeObjectURL(url); resolve() }
-        audio.onerror = () => resolve()
-        audio.play()
-      })
-      .catch(() => { setLoadingIdx(null); resolve() })
+    utter.onend = () => { setLoadingIdx(null); resolve() }
+    utter.onerror = () => { setLoadingIdx(null); resolve() }
+    window.speechSynthesis.speak(utter)
   })
 
   const playAll = async () => {

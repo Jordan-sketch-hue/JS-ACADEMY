@@ -4,90 +4,324 @@ const CC_SUPABASE_OBJ = 'Build full-stack features with Supabase — authenticat
 
 export const crashSupabaseCourses: Course[] = [
   {
-    id: 'cc-supabase-m01', track: 'crash', title: 'Supabase Setup & Client',
-    subtitle: 'Initialize Supabase in a Next.js project with typed client and environment config.',
-    moduleObjective: 'Set up the Supabase client with TypeScript types and environment variables.',
+    id: 'cc-supabase-m01', track: 'crash', title: 'Environment, Setup & Your First Database Query',
+    subtitle: 'Understand what Supabase is, set up your project and VS Code environment, and write your first typed query.',
+    moduleObjective: 'Set up the Supabase project, install the SDK, configure environment variables, and execute a first query using the {data, error} pattern.',
     courseObjective: CC_SUPABASE_OBJ, crashId: 'cc-supabase', crashTitle: 'Supabase', level: 'Basic',
-    xp: 150, duration: 10, module: 1, certArea: 'Supabase Crash Course',
+    xp: 150, duration: 12, module: 1, certArea: 'Supabase Crash Course',
     keyTerms: [
-      { term: 'Supabase', definition: 'Open-source Firebase alternative. Postgres database, Auth, Storage, Edge Functions, and Realtime — all in one.' },
-      { term: 'anon key', definition: 'Public key for browser/client use. Safe to expose. RLS policies control what this key can access.' },
-      { term: 'service_role key', definition: 'Admin key — bypasses RLS. Server-only. Never expose in client code or commit to git.' },
-      { term: 'createBrowserClient', definition: '@supabase/ssr — creates a Supabase client for browser/client components. Reads cookies for session.' },
-      { term: 'createServerClient', definition: '@supabase/ssr — creates a Supabase client for server components. Reads cookies from headers.' },
+      { term: 'Supabase', definition: 'PostgreSQL database + Auth + Storage + Realtime + Edge Functions in one hosted platform. Not a Firebase clone — it is Postgres with a complete developer layer.' },
+      { term: 'anon key', definition: 'Public key safe to expose in browser code. Row Level Security policies control what this key can actually access.' },
+      { term: 'service_role key', definition: 'Admin key — bypasses all RLS policies. Server-only, never expose in client code or commit to git.' },
+      { term: '{data, error} pattern', definition: 'Every Supabase query returns { data, error }. If error is not null, data is null. Always check error before using data.' },
+      { term: 'PostgREST', definition: 'The REST API layer that translates Supabase JS client calls into SQL queries against your Postgres database.' },
     ],
-    content: `## Supabase Setup & Client
+    content: `## Environment, Setup & Your First Database Query
 
-Supabase wraps PostgreSQL with a REST API, Auth, Storage, and Realtime. The @supabase/ssr package provides session-aware clients for Next.js.
+### What is Supabase? First Principles
 
-### Install
+Supabase is often called an "open-source Firebase alternative." That's accurate but undersells it. At its core, Supabase is a **real PostgreSQL database** with a complete developer platform built on top of it.
+
+The architecture from your app to the database looks like this:
+
+\`\`\`
+Your App (Next.js / React / Mobile)
+         │
+         ▼
+@supabase/supabase-js (JS client)
+         │
+         ├── REST API (PostgREST) ──────► Postgres database
+         ├── Auth (GoTrue) ──────────────► auth.users table
+         ├── Storage ────────────────────► S3-compatible buckets
+         └── Realtime ───────────────────► WebSocket server
+\`\`\`
+
+The JS client translates \`.from('courses').select('*').eq('track', 'crash')\` into a REST API call, which PostgREST converts into SQL and executes against Postgres. You get back JSON. You never write raw SQL from the frontend.
+
+Every surface — REST API, Realtime, Storage — is protected by the **same Row Level Security policies** you write once in SQL. This is Supabase's core security primitive, and it's the reason you can query the database directly from the browser using the anon key.
+
+### VS Code Setup
+
+Install the **Supabase** extension for VS Code (publisher: Supabase). It provides SQL autocomplete in migration files, a database table explorer in the editor sidebar, and edge function tooling.
+
+1. Open VS Code → Extensions (Ctrl+Shift+X / Cmd+Shift+X)
+2. Search **"Supabase"** and install the official extension
+3. Connect it to your project from the extension panel
+
+### Creating a Supabase Project
+
+1. Go to [supabase.com/dashboard](https://supabase.com/dashboard) and sign in
+2. Click **New Project** — choose organization, name, database password, region
+3. Wait ~2 minutes for provisioning
+4. Go to **Settings → API** to find your Project URL and API keys
+
+### Installing the SDK
 
 \`\`\`bash
-npm install @supabase/supabase-js @supabase/ssr
+# Core SDK — works anywhere
+npm install @supabase/supabase-js
+
+# For Next.js App Router (handles cookie-based sessions)
+npm install @supabase/ssr
 \`\`\`
 
 ### Environment Variables
 
 \`\`\`bash
-# .env.local
-NEXT_PUBLIC_SUPABASE_URL=https://xyz.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-SUPABASE_SERVICE_ROLE_KEY=eyJ...  # server-only
+# .env.local — add to .gitignore, never commit
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 \`\`\`
 
-### Generate Types
+\`NEXT_PUBLIC_\` prefix exposes the variable to browser code. The service role key has **no** \`NEXT_PUBLIC_\` prefix — it must never reach the browser. It bypasses all RLS policies.
+
+### The Multi-File Pattern
+
+Real projects use three connected files that separate concerns cleanly:
+
+\`\`\`typescript
+// lib/supabase.ts — creates a typed client singleton
+import { createClient } from '@supabase/supabase-js'
+import type { Database } from '@/types/database'
+
+export const supabase = createClient<Database>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+\`\`\`
 
 \`\`\`bash
-npx supabase gen types typescript --project-id <your-project-id> > src/lib/database.types.ts
+# types/database.ts — generate TypeScript types from your live schema
+npx supabase gen types typescript --project-id <your-id> > src/types/database.ts
 \`\`\`
 
-### Browser Client
+\`\`\`typescript
+// app/page.tsx — uses the typed client
+import { supabase } from '@/lib/supabase'
 
-\`\`\`tsx
-// lib/supabase/client.ts
-import { createBrowserClient } from '@supabase/ssr'
-import type { Database } from '@/lib/database.types'
+export default async function Page() {
+  const { data: courses, error } = await supabase
+    .from('courses')
+    .select('*')
+    .eq('track', 'crash')
+    .order('module', { ascending: true })
 
-export function createClient() {
-  return createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  if (error) throw error
+  return <CourseList courses={courses} />
 }
 \`\`\`
 
-### Server Client (Server Components & Route Handlers)
+The \`Database\` generic makes every query type-safe. TypeScript knows the shape of every table and column — wrong column names and type mismatches become compile errors.
 
-\`\`\`tsx
-// lib/supabase/server.ts
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import type { Database } from '@/lib/database.types'
+### The {data, error} Pattern
 
-export async function createClient() {
-  const cookieStore = await cookies()
+Every Supabase operation returns a Promise resolving to \`{ data, error }\`. **Always check error before using data.** When error is not null, data is null.
 
-  return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return cookieStore.getAll() },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options))
-        },
-      },
-    }
-  )
+\`\`\`typescript
+const { data, error } = await supabase
+  .from('courses')
+  .select('id, title, xp')
+  .eq('track', 'crash')
+  .order('module', { ascending: true })
+
+if (error) {
+  console.error('Query failed:', error.message)
+  return
 }
-\`\`\``,
+
+// data is guaranteed to be non-null here
+console.log(\`Found \${data.length} courses\`)
+data.forEach(course => console.log(\`  \${course.title} — \${course.xp} XP\`))
+\`\`\`
+
+This pattern is consistent across every Supabase operation — queries, inserts, updates, deletes, auth, storage. Once you know it for one, you know it for all.
+
+### Generating TypeScript Types
+
+Your Supabase schema is the source of truth. Regenerate types whenever you change your database schema:
+
+\`\`\`bash
+npx supabase gen types typescript \\
+  --project-id abcdefghijklmnop \\
+  > src/types/database.ts
+\`\`\`
+
+Now \`supabase.from('courses')\` is fully typed — TypeScript enforces column names, filters, and return shapes at compile time.`,
     quiz: [
-      { q: 'What is the difference between the anon key and service_role key?', options: ['They are identical', 'anon is public/browser-safe, respects RLS; service_role bypasses RLS — server-only, never expose', 'service_role is for reading only', 'anon requires auth'], correct: 1, explanation: 'anon key is safe to expose — RLS policies limit what it can do. service_role bypasses all RLS — admin access, server-only, never ship to the client.' },
-      { q: 'Why use @supabase/ssr over @supabase/supabase-js directly?', options: ['It is newer', 'ssr provides session-aware clients for Next.js App Router — reads/writes cookies for auth session', 'Better types', 'Required for TypeScript'], correct: 1, explanation: '@supabase/ssr handles the App Router cookie-based session pattern. Direct supabase-js client in a server component loses auth context.' },
-      { q: 'What does supabase gen types do?', options: ['Generates API routes', 'Generates TypeScript types from your database schema — type-safe queries', 'Creates migrations', 'Required to use Supabase'], correct: 1, explanation: 'gen types generates a Database type from your live schema. Pass it as a generic to createClient() for fully typed queries.' },
-      { q: 'Where should SUPABASE_SERVICE_ROLE_KEY be used?', options: ['client components', 'Server-only code (route handlers, server actions, server components) — never in client-side code', 'Anywhere', 'In .env only'], correct: 1, explanation: 'service_role bypasses RLS and has admin access. It must never reach the browser. Use it only in server code.' },
+      { q: 'What converts Supabase JS client calls into SQL?', options: ['The JS client itself', 'PostgREST — translates the REST API calls from the JS client into SQL queries against Postgres', 'Edge Functions', 'The Supabase CLI'], correct: 1, explanation: 'PostgREST is the REST API layer between the JS client and Postgres. It converts .from("table").select("*").eq("col", "val") into SELECT * FROM table WHERE col = val.' },
+      { q: 'What is the difference between the anon key and service_role key?', options: ['They are identical', 'anon is public/browser-safe, respects RLS; service_role bypasses all RLS — server-only, never expose', 'service_role is for reading only', 'anon requires auth'], correct: 1, explanation: 'anon key is safe to expose — RLS policies limit what it can do. service_role bypasses all RLS — admin access, server-only, never ship to the client.' },
+      { q: 'What does the NEXT_PUBLIC_ prefix on an env var do?', options: ['Marks it as required', 'Exposes the variable to browser-side code — without it, the var is only accessible server-side', 'Encrypts the value', 'Required for Supabase keys'], correct: 1, explanation: 'Next.js only exposes env vars prefixed with NEXT_PUBLIC_ to the browser. The service_role key should never have this prefix — it must stay server-side only.' },
+      { q: 'What does every Supabase query return?', options: ['Data directly', '{ data, error } — always check error before using data; when error is non-null, data is null', 'A Promise<void>', 'An array always'], correct: 1, explanation: 'Every Supabase operation resolves to { data, error }. This consistent shape means one error-handling pattern works for all operations.' },
     ],
+    ide: {
+      language: 'javascript',
+      task: 'Practice the Supabase query pattern using a mock client. Complete two functions: (1) fetchCrashCourses — query the courses table, filter by track="crash", order by module ascending. (2) fetchCourseById — query for a single course by id using .single(). Both must destructure {data, error} and handle the error case.',
+      starterCode: `// Mock Supabase client — simulates the real @supabase/supabase-js API surface
+const mockCourses = [
+  { id: 'cc-tw-m01', title: 'Tailwind CSS', track: 'crash', module: 1, xp: 150 },
+  { id: 'cc-tw-m02', title: 'Responsive Design', track: 'crash', module: 2, xp: 150 },
+  { id: 'cc-js-m01', title: 'JavaScript', track: 'crash', module: 1, xp: 150 },
+  { id: 'cc-sb-m01', title: 'Supabase Setup', track: 'crash', module: 1, xp: 150 },
+  { id: 'pm-m01', title: 'Product Strategy', track: 'business', module: 1, xp: 175 },
+];
+
+function createClient() {
+  return {
+    from(table) {
+      let rows = table === 'courses' ? [...mockCourses] : [];
+      const q = {
+        select(cols) { return q; },
+        eq(col, val) { rows = rows.filter(r => r[col] === val); return q; },
+        order(col, opts) {
+          rows.sort((a, b) => opts && opts.ascending === false
+            ? (a[col] > b[col] ? -1 : 1)
+            : (a[col] > b[col] ? 1 : -1));
+          return q;
+        },
+        limit(n) { rows = rows.slice(0, n); return q; },
+        single() {
+          if (rows.length === 1) return Promise.resolve({ data: rows[0], error: null });
+          if (rows.length === 0) return Promise.resolve({ data: null, error: { message: 'Row not found', code: 'PGRST116' } });
+          return Promise.resolve({ data: null, error: { message: 'Multiple rows returned' } });
+        },
+        then(resolve) { return Promise.resolve({ data: rows, error: null }).then(resolve); },
+      };
+      return q;
+    }
+  };
+}
+
+const supabase = createClient();
+
+// TASK 1: Fetch all courses where track = 'crash', ordered by module ascending
+async function fetchCrashCourses() {
+  // Write your query here.
+  // Pattern: supabase.from('courses').select('*').eq(...).order(...)
+  // Then: const { data, error } = await ...
+  // Return: data array, or throw if error
+
+}
+
+// TASK 2: Fetch a single course by its id
+async function fetchCourseById(id) {
+  // Write your query here.
+  // Pattern: supabase.from('courses').select('*').eq('id', id).single()
+  // Return: the course object, or null if not found (check error.code === 'PGRST116')
+
+}
+
+// --- Test runner (do not edit) ---
+async function runTests() {
+  console.log('--- Test 1: fetchCrashCourses ---');
+  const courses = await fetchCrashCourses();
+  if (!courses) { console.log('FAIL: returned nothing'); }
+  else { console.log('PASS: found ' + courses.length + ' courses'); courses.forEach(c => console.log('  Module ' + c.module + ': ' + c.title)); }
+
+  console.log('');
+  console.log('--- Test 2: fetchCourseById ---');
+  const course = await fetchCourseById('cc-sb-m01');
+  if (!course) { console.log('FAIL: course not found'); }
+  else { console.log('PASS: ' + course.title + ' (' + course.xp + ' XP)'); }
+
+  console.log('');
+  console.log('--- Test 3: fetchCourseById not found ---');
+  const missing = await fetchCourseById('nonexistent');
+  if (missing === null) { console.log('PASS: correctly returned null for missing row'); }
+  else { console.log('FAIL: should return null for missing id'); }
+}
+
+runTests();`,
+      solution: `// Mock Supabase client — simulates the real @supabase/supabase-js API surface
+const mockCourses = [
+  { id: 'cc-tw-m01', title: 'Tailwind CSS', track: 'crash', module: 1, xp: 150 },
+  { id: 'cc-tw-m02', title: 'Responsive Design', track: 'crash', module: 2, xp: 150 },
+  { id: 'cc-js-m01', title: 'JavaScript', track: 'crash', module: 1, xp: 150 },
+  { id: 'cc-sb-m01', title: 'Supabase Setup', track: 'crash', module: 1, xp: 150 },
+  { id: 'pm-m01', title: 'Product Strategy', track: 'business', module: 1, xp: 175 },
+];
+
+function createClient() {
+  return {
+    from(table) {
+      let rows = table === 'courses' ? [...mockCourses] : [];
+      const q = {
+        select(cols) { return q; },
+        eq(col, val) { rows = rows.filter(r => r[col] === val); return q; },
+        order(col, opts) {
+          rows.sort((a, b) => opts && opts.ascending === false
+            ? (a[col] > b[col] ? -1 : 1)
+            : (a[col] > b[col] ? 1 : -1));
+          return q;
+        },
+        limit(n) { rows = rows.slice(0, n); return q; },
+        single() {
+          if (rows.length === 1) return Promise.resolve({ data: rows[0], error: null });
+          if (rows.length === 0) return Promise.resolve({ data: null, error: { message: 'Row not found', code: 'PGRST116' } });
+          return Promise.resolve({ data: null, error: { message: 'Multiple rows returned' } });
+        },
+        then(resolve) { return Promise.resolve({ data: rows, error: null }).then(resolve); },
+      };
+      return q;
+    }
+  };
+}
+
+const supabase = createClient();
+
+async function fetchCrashCourses() {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('*')
+    .eq('track', 'crash')
+    .order('module', { ascending: true });
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+async function fetchCourseById(id) {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') return null; // not found
+    throw new Error(error.message);
+  }
+  return data;
+}
+
+// --- Test runner ---
+async function runTests() {
+  console.log('--- Test 1: fetchCrashCourses ---');
+  const courses = await fetchCrashCourses();
+  if (!courses) { console.log('FAIL: returned nothing'); }
+  else { console.log('PASS: found ' + courses.length + ' courses'); courses.forEach(c => console.log('  Module ' + c.module + ': ' + c.title)); }
+
+  console.log('');
+  console.log('--- Test 2: fetchCourseById ---');
+  const course = await fetchCourseById('cc-sb-m01');
+  if (!course) { console.log('FAIL: course not found'); }
+  else { console.log('PASS: ' + course.title + ' (' + course.xp + ' XP)'); }
+
+  console.log('');
+  console.log('--- Test 3: fetchCourseById not found ---');
+  const missing = await fetchCourseById('nonexistent');
+  if (missing === null) { console.log('PASS: correctly returned null for missing row'); }
+  else { console.log('FAIL: should return null for missing id'); }
+}
+
+runTests();`,
+      hints: [
+        'Task 1: const { data, error } = await supabase.from("courses").select("*").eq("track", "crash").order("module", { ascending: true })',
+        'Task 1: if (error) throw new Error(error.message); return data;',
+        'Task 2: use .single() at the end of your chain — it returns {data, error} with one object instead of an array',
+        'Task 2: check error.code === "PGRST116" to distinguish "row not found" from other errors — return null for not found',
+      ],
+    },
   },
   {
     id: 'cc-supabase-m02', track: 'crash', title: 'Database Queries',
@@ -199,6 +433,217 @@ async function getCourse(id: string) {
       { q: 'How do you filter by a column value?', options: ['.where("col", "=", val)', '.eq("column", value)', '.filter("column = value")', '.match({ column: value })'], correct: 1, explanation: '.eq("column", value) adds a WHERE column = value clause. Supabase also has .neq(), .gt(), .lt(), .in(), .like(), etc.' },
       { q: 'How do you insert and return the new row?', options: ['.insert(data)', '.insert(data).select().single()', '.insert(data).return()', '.insert(data).get()'], correct: 1, explanation: 'Chain .select() after .insert() to return the inserted row. .single() unwraps it from an array.' },
     ],
+    ide: {
+      language: 'javascript',
+      task: 'Implement all four CRUD operations using the mock Supabase client. Complete: (1) getCourse(id) — fetch one course by id. (2) recordProgress(userId, courseId, xp) — insert a progress row and return it. (3) updateCourseXP(id, newXp) — update a course\'s xp field. (4) deleteProgress(userId, courseId) — delete the matching progress row. Each must handle {data, error} correctly.',
+      starterCode: `// Mock Supabase client with courses + progress tables
+const db = {
+  courses: [
+    { id: 'cc-tw-m01', title: 'Tailwind CSS', track: 'crash', module: 1, xp: 150 },
+    { id: 'cc-sb-m01', title: 'Supabase Setup', track: 'crash', module: 1, xp: 150 },
+  ],
+  progress: [],
+};
+
+function createClient() {
+  return {
+    from(table) {
+      let rows = db[table] ? [...db[table]] : [];
+      const q = {
+        select(c) { return q; },
+        eq(col, val) { rows = rows.filter(r => r[col] === val); return q; },
+        single() {
+          if (rows.length === 1) return Promise.resolve({ data: rows[0], error: null });
+          if (rows.length === 0) return Promise.resolve({ data: null, error: { code: 'PGRST116', message: 'Not found' } });
+          return Promise.resolve({ data: null, error: { message: 'Multiple rows' } });
+        },
+        insert(row) {
+          const newRow = Object.assign({ id: 'row_' + Date.now() }, row);
+          db[table].push(newRow);
+          rows = [newRow];
+          return q;
+        },
+        update(changes) {
+          db[table].forEach(r => { if (rows.find(x => x.id === r.id)) Object.assign(r, changes); });
+          rows = db[table].filter(r => rows.find(x => x.id === r.id));
+          return q;
+        },
+        delete() {
+          const ids = rows.map(r => r.id);
+          db[table] = db[table].filter(r => !ids.includes(r.id));
+          rows = [];
+          return q;
+        },
+        then(resolve) { return Promise.resolve({ data: rows, error: null }).then(resolve); },
+      };
+      return q;
+    }
+  };
+}
+
+const supabase = createClient();
+
+// TASK 1: Get a single course by id
+// Returns the course object or null if not found
+async function getCourse(id) {
+  // Your code here
+}
+
+// TASK 2: Record course completion progress
+// Returns the inserted progress row
+async function recordProgress(userId, courseId, xp) {
+  // Your code here
+  // Insert: { user_id, course_id, xp_earned, completed_at: new Date().toISOString() }
+  // Chain .select().single() to return the inserted row
+}
+
+// TASK 3: Update a course's XP value
+async function updateCourseXP(id, newXp) {
+  // Your code here
+  // Update { xp: newXp } where id matches
+  // Throw if error
+}
+
+// TASK 4: Delete a progress record
+async function deleteProgress(userId, courseId) {
+  // Your code here
+  // Delete from 'progress' where user_id = userId AND course_id = courseId
+}
+
+// --- Tests ---
+async function run() {
+  console.log('1. getCourse:');
+  const c = await getCourse('cc-tw-m01');
+  console.log(c ? 'PASS: ' + c.title : 'FAIL: not found');
+
+  console.log('2. recordProgress:');
+  const p = await recordProgress('user-1', 'cc-tw-m01', 150);
+  console.log(p ? 'PASS: progress id=' + p.id : 'FAIL');
+
+  console.log('3. updateCourseXP:');
+  await updateCourseXP('cc-sb-m01', 200);
+  const updated = await getCourse('cc-sb-m01');
+  console.log(updated && updated.xp === 200 ? 'PASS: xp=' + updated.xp : 'FAIL');
+
+  console.log('4. deleteProgress:');
+  await deleteProgress('user-1', 'cc-tw-m01');
+  console.log(db.progress.length === 0 ? 'PASS: progress deleted' : 'FAIL: still ' + db.progress.length + ' rows');
+}
+
+run();`,
+      solution: `const db = {
+  courses: [
+    { id: 'cc-tw-m01', title: 'Tailwind CSS', track: 'crash', module: 1, xp: 150 },
+    { id: 'cc-sb-m01', title: 'Supabase Setup', track: 'crash', module: 1, xp: 150 },
+  ],
+  progress: [],
+};
+
+function createClient() {
+  return {
+    from(table) {
+      let rows = db[table] ? [...db[table]] : [];
+      const q = {
+        select(c) { return q; },
+        eq(col, val) { rows = rows.filter(r => r[col] === val); return q; },
+        single() {
+          if (rows.length === 1) return Promise.resolve({ data: rows[0], error: null });
+          if (rows.length === 0) return Promise.resolve({ data: null, error: { code: 'PGRST116', message: 'Not found' } });
+          return Promise.resolve({ data: null, error: { message: 'Multiple rows' } });
+        },
+        insert(row) {
+          const newRow = Object.assign({ id: 'row_' + Date.now() }, row);
+          db[table].push(newRow);
+          rows = [newRow];
+          return q;
+        },
+        update(changes) {
+          db[table].forEach(r => { if (rows.find(x => x.id === r.id)) Object.assign(r, changes); });
+          rows = db[table].filter(r => rows.find(x => x.id === r.id));
+          return q;
+        },
+        delete() {
+          const ids = rows.map(r => r.id);
+          db[table] = db[table].filter(r => !ids.includes(r.id));
+          rows = [];
+          return q;
+        },
+        then(resolve) { return Promise.resolve({ data: rows, error: null }).then(resolve); },
+      };
+      return q;
+    }
+  };
+}
+
+const supabase = createClient();
+
+async function getCourse(id) {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) {
+    if (error.code === 'PGRST116') return null;
+    throw new Error(error.message);
+  }
+  return data;
+}
+
+async function recordProgress(userId, courseId, xp) {
+  const { data, error } = await supabase
+    .from('progress')
+    .insert({ user_id: userId, course_id: courseId, xp_earned: xp, completed_at: new Date().toISOString() })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+async function updateCourseXP(id, newXp) {
+  const { error } = await supabase
+    .from('courses')
+    .update({ xp: newXp })
+    .eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+async function deleteProgress(userId, courseId) {
+  const { error } = await supabase
+    .from('progress')
+    .delete()
+    .eq('user_id', userId)
+    .eq('course_id', courseId);
+  if (error) throw new Error(error.message);
+}
+
+async function run() {
+  console.log('1. getCourse:');
+  const c = await getCourse('cc-tw-m01');
+  console.log(c ? 'PASS: ' + c.title : 'FAIL: not found');
+
+  console.log('2. recordProgress:');
+  const p = await recordProgress('user-1', 'cc-tw-m01', 150);
+  console.log(p ? 'PASS: progress id=' + p.id : 'FAIL');
+
+  console.log('3. updateCourseXP:');
+  await updateCourseXP('cc-sb-m01', 200);
+  const updated = await getCourse('cc-sb-m01');
+  console.log(updated && updated.xp === 200 ? 'PASS: xp=' + updated.xp : 'FAIL');
+
+  console.log('4. deleteProgress:');
+  await deleteProgress('user-1', 'cc-tw-m01');
+  console.log(db.progress.length === 0 ? 'PASS: progress deleted' : 'FAIL: still ' + db.progress.length + ' rows');
+}
+
+run();`,
+      hints: [
+        'getCourse: use .from("courses").select("*").eq("id", id).single() — handle PGRST116 error code as "not found" → return null',
+        'recordProgress: .from("progress").insert({...}).select().single() — chain select() after insert() to return the new row',
+        'updateCourseXP: .from("courses").update({ xp: newXp }).eq("id", id) — update only needs the .eq() filter, no .single()',
+        'deleteProgress: .delete().eq("user_id", userId).eq("course_id", courseId) — chain multiple .eq() for compound WHERE conditions',
+      ],
+    },
   },
   {
     id: 'cc-supabase-m03', track: 'crash', title: 'Authentication',
@@ -298,6 +743,167 @@ export default async function DashboardPage() {
       { q: 'How do you protect a server-rendered page?', options: ['Client-side check only', 'Call supabase.auth.getUser() in the page, redirect to /login if no user', 'middleware only', 'Add auth prop'], correct: 1, explanation: 'In a server component: getUser(), check for null, redirect(). This is server-enforced — the page never renders for unauthenticated users.' },
       { q: 'What does supabase.auth.signOut() do?', options: ['Deletes the user account', 'Invalidates the session token and clears the auth cookie', 'Just clears localStorage', 'Requires a page reload'], correct: 1, explanation: 'signOut() invalidates the session on Supabase servers and clears the session cookie. The user must sign in again.' },
     ],
+    ide: {
+      language: 'javascript',
+      task: 'Implement three auth functions using the mock Supabase auth client: (1) handleSignUp(email, password) — create an account, return the new user object. (2) handleSignIn(email, password) — sign in and return the session. (3) handleSignOut() — sign out the current user. Each must check the error returned by the auth call and throw if there is one.',
+      starterCode: `// Mock Supabase auth — simulates the real supabase.auth API
+const mockUsers = [];
+let currentSession = null;
+
+const supabase = {
+  auth: {
+    async signUp({ email, password }) {
+      if (mockUsers.find(u => u.email === email)) {
+        return { data: null, error: { message: 'User already registered' } };
+      }
+      const user = { id: 'user_' + Date.now(), email, created_at: new Date().toISOString() };
+      mockUsers.push({ ...user, password });
+      return { data: { user, session: null }, error: null };
+    },
+    async signInWithPassword({ email, password }) {
+      const found = mockUsers.find(u => u.email === email && u.password === password);
+      if (!found) return { data: null, error: { message: 'Invalid login credentials' } };
+      currentSession = { access_token: 'tok_' + found.id, user: { id: found.id, email: found.email } };
+      return { data: { session: currentSession, user: currentSession.user }, error: null };
+    },
+    async signOut() {
+      currentSession = null;
+      return { error: null };
+    },
+    async getUser() {
+      if (!currentSession) return { data: { user: null }, error: null };
+      return { data: { user: currentSession.user }, error: null };
+    },
+  },
+};
+
+// TASK 1: Sign up a new user
+// Use supabase.auth.signUp({ email, password })
+// Check the error. If error exists, throw new Error(error.message)
+// Return data.user
+async function handleSignUp(email, password) {
+  // Your code here
+}
+
+// TASK 2: Sign in an existing user
+// Use supabase.auth.signInWithPassword({ email, password })
+// Check the error. If error exists, throw new Error(error.message)
+// Return data.session
+async function handleSignIn(email, password) {
+  // Your code here
+}
+
+// TASK 3: Sign out the current user
+// Use supabase.auth.signOut()
+// Check the error. If error exists, throw new Error(error.message)
+async function handleSignOut() {
+  // Your code here
+}
+
+// --- Tests ---
+async function run() {
+  console.log('1. Sign up:');
+  const user = await handleSignUp('jordan@jsupremetech.online', 'secure123');
+  console.log(user ? 'PASS: user=' + user.email : 'FAIL');
+
+  console.log('2. Sign in:');
+  const session = await handleSignIn('jordan@jsupremetech.online', 'secure123');
+  console.log(session ? 'PASS: token=' + session.access_token.substring(0, 12) + '...' : 'FAIL');
+
+  console.log('3. Sign in wrong password:');
+  try {
+    await handleSignIn('jordan@jsupremetech.online', 'wrong');
+    console.log('FAIL: should have thrown');
+  } catch (e) {
+    console.log('PASS: threw error: ' + e.message);
+  }
+
+  console.log('4. Sign out:');
+  await handleSignOut();
+  const { data } = await supabase.auth.getUser();
+  console.log(!data.user ? 'PASS: signed out' : 'FAIL: still logged in');
+}
+
+run();`,
+      solution: `const mockUsers = [];
+let currentSession = null;
+
+const supabase = {
+  auth: {
+    async signUp({ email, password }) {
+      if (mockUsers.find(u => u.email === email)) {
+        return { data: null, error: { message: 'User already registered' } };
+      }
+      const user = { id: 'user_' + Date.now(), email, created_at: new Date().toISOString() };
+      mockUsers.push({ ...user, password });
+      return { data: { user, session: null }, error: null };
+    },
+    async signInWithPassword({ email, password }) {
+      const found = mockUsers.find(u => u.email === email && u.password === password);
+      if (!found) return { data: null, error: { message: 'Invalid login credentials' } };
+      currentSession = { access_token: 'tok_' + found.id, user: { id: found.id, email: found.email } };
+      return { data: { session: currentSession, user: currentSession.user }, error: null };
+    },
+    async signOut() {
+      currentSession = null;
+      return { error: null };
+    },
+    async getUser() {
+      if (!currentSession) return { data: { user: null }, error: null };
+      return { data: { user: currentSession.user }, error: null };
+    },
+  },
+};
+
+async function handleSignUp(email, password) {
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if (error) throw new Error(error.message);
+  return data.user;
+}
+
+async function handleSignIn(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw new Error(error.message);
+  return data.session;
+}
+
+async function handleSignOut() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error(error.message);
+}
+
+async function run() {
+  console.log('1. Sign up:');
+  const user = await handleSignUp('jordan@jsupremetech.online', 'secure123');
+  console.log(user ? 'PASS: user=' + user.email : 'FAIL');
+
+  console.log('2. Sign in:');
+  const session = await handleSignIn('jordan@jsupremetech.online', 'secure123');
+  console.log(session ? 'PASS: token=' + session.access_token.substring(0, 12) + '...' : 'FAIL');
+
+  console.log('3. Sign in wrong password:');
+  try {
+    await handleSignIn('jordan@jsupremetech.online', 'wrong');
+    console.log('FAIL: should have thrown');
+  } catch (e) {
+    console.log('PASS: threw error: ' + e.message);
+  }
+
+  console.log('4. Sign out:');
+  await handleSignOut();
+  const { data } = await supabase.auth.getUser();
+  console.log(!data.user ? 'PASS: signed out' : 'FAIL: still logged in');
+}
+
+run();`,
+      hints: [
+        'All three auth methods follow the same shape: const { data, error } = await supabase.auth.methodName({...})',
+        'Always check error first: if (error) throw new Error(error.message)',
+        'signUp returns data.user (the created user object)',
+        'signInWithPassword returns data.session (contains access_token and user)',
+        'signOut only needs to check the error — no data to return',
+      ],
+    },
   },
   {
     id: 'cc-supabase-m04', track: 'crash', title: 'Row Level Security',

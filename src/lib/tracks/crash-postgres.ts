@@ -4,86 +4,280 @@ const CC_POSTGRES_OBJ = 'Write real PostgreSQL — queries, joins, indexes, tran
 
 export const crashPostgresCourses: Course[] = [
   {
-    id: 'cc-postgres-m01', track: 'crash', title: 'PostgreSQL Fundamentals',
-    subtitle: 'Write SELECT, INSERT, UPDATE, DELETE and understand Postgres data types.',
-    moduleObjective: 'Write all four DML statements with WHERE, ORDER BY, and LIMIT clauses.',
+    id: 'cc-postgres-m01', track: 'crash', title: 'Environment, SQL Fundamentals & Your First Real Schema',
+    subtitle: 'Set up VS Code for Postgres, understand relational databases from first principles, and design a 3-table schema with foreign keys.',
+    moduleObjective: 'Set up a PostgreSQL environment, write all four DML statements, and create a multi-table schema with proper foreign key constraints.',
     courseObjective: CC_POSTGRES_OBJ, crashId: 'cc-postgres', crashTitle: 'PostgreSQL', level: 'Basic',
-    xp: 150, duration: 10, module: 1, certArea: 'PostgreSQL Crash Course',
+    xp: 150, duration: 12, module: 1, certArea: 'PostgreSQL Crash Course',
     keyTerms: [
-      { term: 'DML', definition: 'Data Manipulation Language — SELECT, INSERT, UPDATE, DELETE. Operates on rows.' },
-      { term: 'DDL', definition: 'Data Definition Language — CREATE TABLE, ALTER TABLE, DROP TABLE. Operates on schema structure.' },
-      { term: 'NULL', definition: 'The absence of a value — not zero, not empty string. IS NULL / IS NOT NULL for comparison. NULL != NULL.' },
-      { term: 'RETURNING', definition: 'PostgreSQL extension to INSERT/UPDATE/DELETE — returns the affected rows. RETURNING id, created_at.' },
-      { term: 'Serial / Identity', definition: 'Auto-incrementing integer columns. GENERATED ALWAYS AS IDENTITY is the modern standard over SERIAL.' },
+      { term: 'Relational database', definition: 'A database organized into tables of rows and columns, with relationships enforced by foreign keys. Each table has a primary key uniquely identifying every row.' },
+      { term: 'Primary key', definition: 'A column (or set of columns) that uniquely identifies every row. No two rows share the same primary key. Often a UUID or auto-incrementing integer.' },
+      { term: 'Foreign key', definition: 'A column that references the primary key of another table, creating a relationship. Enforces referential integrity — you cannot reference a row that does not exist.' },
+      { term: 'DML', definition: 'Data Manipulation Language — SELECT, INSERT, UPDATE, DELETE. Operates on rows within tables.' },
+      { term: 'DDL', definition: 'Data Definition Language — CREATE TABLE, ALTER TABLE, DROP TABLE. Defines and modifies the structure of the database.' },
     ],
-    content: `## PostgreSQL Fundamentals
+    content: `## Environment, SQL Fundamentals & Your First Real Schema
 
-PostgreSQL is the world's most advanced open-source relational database. Supabase runs on Postgres — understanding SQL gives you full control.
+### Step 1 — Set Up Your Environment
 
-### SELECT
+**Option A: VS Code + Local PostgreSQL (recommended for learning)**
+
+1. Download **PostgreSQL 16** from postgresql.org/download. Run the installer with default options. Remember the password you set for the \`postgres\` user.
+2. In VS Code, install the **"PostgreSQL" extension by Chris Kolkman** (search "postgresql" in the Extensions panel).
+3. Click the PostgreSQL icon in the sidebar. Click "Add Connection". Enter: host \`localhost\`, port \`5432\`, user \`postgres\`, your password, database \`postgres\`.
+4. Click Connect — you now have a live SQL editor connected to a real Postgres database.
+
+**Option B: Supabase (free cloud Postgres, no install needed)**
+
+1. Create a free project at supabase.com. Wait ~2 minutes for provisioning.
+2. Install the same PostgreSQL VS Code extension. Your connection string is at: Settings → Database → Connection string (URI format).
+3. Paste that connection string into the extension. Done — you have a cloud Postgres database.
+
+Both options let you run SQL queries directly in VS Code. Write a query, press F5 (or click Run), see results instantly.
+
+### What IS a Relational Database? — First Principles
+
+Before writing SQL, understand *why* relational databases exist.
+
+**The problem they solve:** Imagine tracking student enrollments in a spreadsheet. If Jordan takes 10 courses, Jordan's name, email, and phone number appear 10 times across 10 rows. When Jordan's email changes, you update 10 rows — miss one and your data is inconsistent. This is *data redundancy*, and it causes *update anomalies*.
+
+**The relational solution:** Separate data into tables and link them by reference. Jordan's info lives in exactly one row in a \`users\` table. Enrollments live in an \`enrollments\` table that says "user ID abc123 enrolled in course ID cc-postgres-m01." Jordan's email is stored once. Change it once and it's updated everywhere.
+
+**Tables = Spreadsheets + Rules**
+
+A table is like a spreadsheet where:
+- **Columns** are typed fields: TEXT, INTEGER, BOOLEAN, UUID, TIMESTAMPTZ
+- **Rows** are individual records
+- **Constraints** enforce rules: NOT NULL (required field), UNIQUE (no duplicates), CHECK (must satisfy a condition)
+
+**Primary keys** uniquely identify each row. Common patterns:
+\`\`\`sql
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()  -- modern pattern
+id SERIAL PRIMARY KEY                           -- auto-increment integer
+\`\`\`
+
+**Foreign keys** create relationships between tables. A foreign key column in one table points to the primary key column in another. The database enforces this — you *cannot* insert a row with a foreign key referencing a non-existent parent row.
+
+### Design a Real 3-Table Schema
+
+A learning platform needs three tables: \`users\` (who), \`courses\` (what), and \`enrollments\` (who completed what). Here is the schema from scratch:
 
 \`\`\`sql
--- All columns
-SELECT * FROM courses;
+-- Create the foundation tables first (DDL)
 
--- Specific columns with alias
-SELECT id, title, xp AS experience_points FROM courses;
+CREATE TABLE users (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email        TEXT NOT NULL UNIQUE,
+  display_name TEXT NOT NULL,
+  total_xp     INT  NOT NULL DEFAULT 0 CHECK (total_xp >= 0),
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 
--- Filter
-SELECT * FROM courses WHERE track = 'crash' AND level = 'Basic';
+CREATE TABLE courses (
+  id       TEXT PRIMARY KEY,           -- e.g. 'cc-postgres-m01'
+  title    TEXT NOT NULL,
+  track    TEXT NOT NULL,
+  xp       INT  NOT NULL DEFAULT 0 CHECK (xp >= 0),
+  duration INT  NOT NULL CHECK (duration > 0),
+  level    TEXT NOT NULL CHECK (level IN ('Basic', 'Masters', 'PhD', 'Next-Gen AI')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 
--- Sort and limit
+-- Junction table — links users to courses
+CREATE TABLE enrollments (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  course_id   TEXT NOT NULL REFERENCES courses(id) ON DELETE RESTRICT,
+  xp_earned   INT  NOT NULL DEFAULT 0 CHECK (xp_earned >= 0),
+  quiz_score  INT  CHECK (quiz_score BETWEEN 0 AND 100),
+  completed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (user_id, course_id)    -- each user completes each course at most once
+);
+\`\`\`
+
+**Why the constraints matter:**
+- \`REFERENCES users(id) ON DELETE CASCADE\` — delete a user and their enrollments are automatically removed
+- \`REFERENCES courses(id) ON DELETE RESTRICT\` — prevents deleting a course that has enrollments
+- \`UNIQUE (user_id, course_id)\` — composite unique constraint; prevents duplicate completions
+
+### The Four DML Operations
+
+With the schema created, run the four CRUD operations:
+
+\`\`\`sql
+-- INSERT — add rows. RETURNING gives back generated values immediately.
+INSERT INTO users (email, display_name)
+VALUES ('jordan@example.com', 'Jordan')
+RETURNING id, created_at;
+
+INSERT INTO courses (id, title, track, xp, duration, level)
+VALUES ('cc-postgres-m01', 'SQL Fundamentals', 'crash', 150, 12, 'Basic');
+
+-- Use the UUID returned by the first INSERT here
+INSERT INTO enrollments (user_id, course_id, xp_earned, quiz_score)
+VALUES ('your-uuid-from-above', 'cc-postgres-m01', 150, 92)
+RETURNING id, completed_at;
+
+-- SELECT — query data
+SELECT * FROM users WHERE email = 'jordan@example.com';
+
 SELECT * FROM courses
+WHERE track = 'crash'
 ORDER BY xp DESC
 LIMIT 10;
 
--- Range
-SELECT * FROM courses WHERE xp BETWEEN 150 AND 200;
-
--- Pattern match
-SELECT * FROM courses WHERE title ILIKE '%react%';  -- case-insensitive
-\`\`\`
-
-### INSERT
-
-\`\`\`sql
--- Single row
-INSERT INTO progress (user_id, course_id, xp_earned)
-VALUES ('uuid-here', 'cc-js-m01', 150)
-RETURNING id, completed_at;
-
--- Multiple rows
-INSERT INTO progress (user_id, course_id, xp_earned) VALUES
-  ('uuid1', 'cc-js-m01', 150),
-  ('uuid1', 'cc-js-m02', 150);
-\`\`\`
-
-### UPDATE
-
-\`\`\`sql
-UPDATE profiles
-SET display_name = 'Jordan', updated_at = now()
-WHERE id = 'uuid-here'
+-- UPDATE — always use WHERE or you update every row
+UPDATE users
+SET display_name = 'Jordan Morris'
+WHERE id = 'your-uuid'
 RETURNING id, display_name;
+
+-- DELETE — always use WHERE
+DELETE FROM enrollments
+WHERE user_id = 'your-uuid' AND course_id = 'cc-postgres-m01'
+RETURNING id;
 \`\`\`
 
-### DELETE
+### The RETURNING Clause — PostgreSQL Superpower
+
+Unlike other databases, PostgreSQL lets you get modified rows back immediately after INSERT/UPDATE/DELETE without a separate SELECT query:
 
 \`\`\`sql
--- Delete with filter (always use WHERE)
-DELETE FROM sessions
-WHERE expires_at < now()
+-- Get the new user's auto-generated UUID instantly
+INSERT INTO users (email, display_name)
+VALUES ('alex@example.com', 'Alex')
 RETURNING id;
 
--- TRUNCATE — deletes all rows fast (no WHERE, not logged row by row)
-TRUNCATE TABLE temp_data;
-\`\`\``,
+-- Update and confirm what changed
+UPDATE users
+SET total_xp = total_xp + 150
+WHERE email = 'alex@example.com'
+RETURNING id, total_xp;
+\`\`\`
+
+This pattern appears in every production Postgres app — create a parent record, get its ID, use that ID to create child records in one atomic flow.`,
     quiz: [
-      { q: 'What does ILIKE do?', options: ['Exact match', 'Case-insensitive pattern match using % wildcard', 'Integer comparison', 'IS LIKE alternative'], correct: 1, explanation: 'ILIKE is PostgreSQL\'s case-insensitive LIKE. title ILIKE \'%react%\' matches "React", "react", "REACT". % matches any sequence of characters.' },
-      { q: 'What does RETURNING do?', options: ['Required for INSERT', 'Returns the affected rows — see generated IDs or timestamps without a second query', 'Rolls back the transaction', 'Same as SELECT after INSERT'], correct: 1, explanation: 'RETURNING is a PostgreSQL extension that returns the rows modified by INSERT/UPDATE/DELETE. No need for a separate SELECT to get the new ID.' },
-      { q: 'What is the difference between DELETE and TRUNCATE?', options: ['They are identical', 'DELETE removes rows with optional WHERE and fires triggers; TRUNCATE removes ALL rows instantly without logging each row', 'TRUNCATE is slower', 'DELETE requires a WHERE clause'], correct: 1, explanation: 'DELETE logs each row deletion and fires triggers. TRUNCATE is a DDL that removes all rows in one operation — faster, but no WHERE, no triggers, no RETURNING.' },
-      { q: 'How do you check for NULL values?', options: ['= NULL', 'IS NULL / IS NOT NULL — NULL = NULL is always false in SQL', '== null', 'NULL()'], correct: 1, explanation: 'NULL represents the absence of a value. NULL = NULL is always false — use IS NULL or IS NOT NULL to check for NULL.' },
+      { q: 'What problem does a relational database solve compared to a flat spreadsheet?', options: ['It is faster', 'Data redundancy — each fact is stored once and referenced by ID, preventing update anomalies', 'It stores images', 'It is easier to use'], correct: 1, explanation: 'Storing Jordan\'s email once per enrollment row means multiple places to update when it changes — and inconsistency when one is missed. Relational design stores it once in users and references it everywhere.' },
+      { q: 'What does ON DELETE CASCADE mean on a foreign key?', options: ['Prevents deletion of the parent row', 'When the parent row is deleted, automatically delete all child rows referencing it', 'Required for all foreign keys', 'Copies the parent row data'], correct: 1, explanation: 'CASCADE propagates deletion down the relationship. Delete user → their enrollments are deleted automatically. ON DELETE RESTRICT (default) prevents deletion if child rows exist.' },
+      { q: 'What does RETURNING do in an INSERT statement?', options: ['Required by PostgreSQL', 'Returns the inserted row including auto-generated values like UUID and timestamps — no extra SELECT needed', 'Rolls back on failure', 'Same as SELECT after INSERT'], correct: 1, explanation: 'RETURNING is a PostgreSQL extension. It returns the affected rows after INSERT/UPDATE/DELETE. Essential for getting generated UUIDs and timestamps immediately.' },
+      { q: 'Why use UNIQUE (user_id, course_id) on enrollments?', options: ['For faster JOINs', 'Prevents duplicate enrollments — the combination of user_id and course_id must be unique across the table', 'Required for foreign keys', 'Same as primary key'], correct: 1, explanation: 'Composite UNIQUE ensures each user-course pair appears at most once. A user can enroll in many courses; many users can enroll in the same course — but no user-course duplicate.' },
     ],
+    ide: {
+      language: 'sql',
+      task: 'Design a blog database. Create three tables: authors (id UUID, name, email unique, bio), posts (id UUID, title, body, status constrained to draft/published/archived, author_id foreign key, published_at nullable), and comments (id UUID, post_id foreign key, author_name, body, created_at). Then: (1) INSERT 2 authors, 3 posts (mix of statuses), 4 comments. (2) SELECT all published posts ordered by published_at descending. (3) SELECT all comments for one specific post.',
+      starterCode: `-- Blog Schema Exercise
+-- Build out each table with proper types, constraints, and foreign keys
+
+CREATE TABLE authors (
+  -- TODO: id UUID primary key with auto-generation
+  -- TODO: name NOT NULL
+  -- TODO: email NOT NULL UNIQUE
+  -- TODO: bio optional text
+  -- TODO: created_at with default
+);
+
+CREATE TABLE posts (
+  -- TODO: id UUID primary key
+  -- TODO: title NOT NULL
+  -- TODO: body NOT NULL
+  -- TODO: status with CHECK constraint (draft, published, archived)
+  -- TODO: author_id foreign key -> authors, ON DELETE CASCADE
+  -- TODO: published_at TIMESTAMPTZ (nullable)
+  -- TODO: created_at with default
+);
+
+CREATE TABLE comments (
+  -- TODO: id UUID primary key
+  -- TODO: post_id foreign key -> posts, ON DELETE CASCADE
+  -- TODO: author_name NOT NULL
+  -- TODO: body NOT NULL
+  -- TODO: created_at with default
+);
+
+-- INSERT 2 authors
+
+-- INSERT 3 posts (at least 1 published, 1 draft)
+
+-- INSERT 4 comments
+
+-- SELECT all published posts ordered by published_at DESC
+
+-- SELECT all comments for one specific post
+`,
+      solution: `CREATE TABLE authors (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name       TEXT NOT NULL,
+  email      TEXT NOT NULL UNIQUE,
+  bio        TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE posts (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title        TEXT NOT NULL,
+  body         TEXT NOT NULL,
+  status       TEXT NOT NULL DEFAULT 'draft'
+                 CHECK (status IN ('draft', 'published', 'archived')),
+  author_id    UUID NOT NULL REFERENCES authors(id) ON DELETE CASCADE,
+  published_at TIMESTAMPTZ,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE comments (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id     UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  author_name TEXT NOT NULL,
+  body        TEXT NOT NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+INSERT INTO authors (name, email, bio) VALUES
+  ('Jordan Morris', 'jordan@jst.com', 'Founder & full-stack developer'),
+  ('Alex Thompson', 'alex@example.com', 'Technical writer and educator')
+RETURNING id, name;
+
+-- Use actual UUIDs from above in a real run
+-- For demo purposes, subquery pattern:
+INSERT INTO posts (title, body, status, author_id, published_at)
+SELECT title, body, status, a.id, published_at
+FROM (VALUES
+  ('Getting Started with PostgreSQL', 'PostgreSQL is the most advanced open-source database.', 'published', 'jordan@jst.com', now()),
+  ('Advanced Query Patterns', 'Window functions change how you think about SQL.', 'published', 'jordan@jst.com', now() - interval '2 days'),
+  ('Draft: Performance Tuning', 'Work in progress on indexes and EXPLAIN ANALYZE.', 'draft', 'alex@example.com', NULL)
+) AS p(title, body, status, author_email, published_at)
+JOIN authors a ON a.email = p.author_email;
+
+INSERT INTO comments (post_id, author_name, body)
+SELECT p.id, c.name, c.body
+FROM (VALUES
+  ('Getting Started with PostgreSQL', 'Sam', 'Really helpful intro!'),
+  ('Getting Started with PostgreSQL', 'Maria', 'Foreign key explanation was clear'),
+  ('Advanced Query Patterns', 'Dev', 'PARTITION BY finally makes sense'),
+  ('Advanced Query Patterns', 'Jordan', 'Bookmarking this for reference')
+) AS c(post_title, name, body)
+JOIN posts p ON p.title = c.post_title;
+
+-- Published posts
+SELECT id, title, published_at
+FROM posts
+WHERE status = 'published'
+ORDER BY published_at DESC;
+
+-- Comments for a specific post
+SELECT c.author_name, c.body, c.created_at
+FROM comments c
+JOIN posts p ON p.id = c.post_id
+WHERE p.title = 'Getting Started with PostgreSQL'
+ORDER BY c.created_at;
+`,
+      hints: [
+        'UUID primary key: id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
+        'Constrain status with: CHECK (status IN (\'draft\', \'published\', \'archived\'))',
+        'Foreign key syntax: author_id UUID NOT NULL REFERENCES authors(id) ON DELETE CASCADE',
+        'Filter by status in SELECT: WHERE status = \'published\'',
+        'Join comments to posts: FROM comments c JOIN posts p ON p.id = c.post_id'
+      ]
+    }
   },
   {
     id: 'cc-postgres-m02', track: 'crash', title: 'Joins & Relationships',
@@ -102,68 +296,156 @@ TRUNCATE TABLE temp_data;
 
 Joins combine data from related tables. Understanding INNER vs LEFT JOIN is essential for any non-trivial query.
 
+### Why Joins Exist
+
+Data is split across tables to eliminate redundancy. But to display meaningful information — "Jordan completed PostgreSQL Fundamentals on Monday" — you need to pull Jordan's name from \`users\`, the course title from \`courses\`, and the completion date from \`enrollments\`. Joins combine these tables into a single result set.
+
 ### INNER JOIN (only matching rows)
 
 \`\`\`sql
 -- Users who have completed courses
 SELECT
   u.email,
-  p.course_id,
-  p.xp_earned,
-  p.completed_at
-FROM progress p
-INNER JOIN auth.users u ON u.id = p.user_id
-WHERE p.course_id LIKE 'cc-%'
-ORDER BY p.completed_at DESC;
+  e.course_id,
+  e.xp_earned,
+  e.completed_at
+FROM enrollments e
+INNER JOIN users u ON u.id = e.user_id
+WHERE e.course_id LIKE 'cc-%'
+ORDER BY e.completed_at DESC;
 \`\`\`
+
+INNER JOIN excludes rows that have no match. If a user has no enrollments, they do not appear in this result.
 
 ### LEFT JOIN (all left + matching right)
 
 \`\`\`sql
--- All users, with their progress (NULL if none)
+-- ALL users, with their enrollment counts (even users with zero completions)
 SELECT
   u.email,
-  COUNT(p.id) AS completed_courses,
-  COALESCE(SUM(p.xp_earned), 0) AS total_xp
-FROM auth.users u
-LEFT JOIN progress p ON p.user_id = u.id
+  COUNT(e.id) AS completed_courses,
+  COALESCE(SUM(e.xp_earned), 0) AS total_xp
+FROM users u
+LEFT JOIN enrollments e ON e.user_id = u.id
 GROUP BY u.id, u.email
 ORDER BY total_xp DESC;
 \`\`\`
 
+LEFT JOIN keeps every row from the left table (\`users\`). Users with no enrollments appear with NULL for the enrollment columns — COALESCE converts NULL to 0.
+
 ### Three-Table Join
 
 \`\`\`sql
--- Course details with user progress and profile
+-- Full enrollment details: course title, user name, completion date
 SELECT
   c.title,
   c.xp AS course_xp,
-  pr.display_name,
-  p.completed_at,
-  p.quiz_score
-FROM progress p
-INNER JOIN courses c ON c.id = p.course_id
-INNER JOIN profiles pr ON pr.id = p.user_id
-WHERE p.user_id = 'uuid-here'
-ORDER BY p.completed_at DESC;
+  u.display_name,
+  e.completed_at,
+  e.quiz_score
+FROM enrollments e
+INNER JOIN courses c ON c.id = e.course_id
+INNER JOIN users   u ON u.id = e.user_id
+WHERE u.email = 'jordan@example.com'
+ORDER BY e.completed_at DESC;
 \`\`\`
+
+Each JOIN adds another table. Chain as many as needed. Use table aliases (e, c, u) to keep the query readable.
 
 ### Self-Join
 
 \`\`\`sql
 -- Find users who completed the same course as a given user
 SELECT DISTINCT u2.email
-FROM progress p1
-INNER JOIN progress p2 ON p2.course_id = p1.course_id AND p2.user_id != p1.user_id
-INNER JOIN auth.users u2 ON u2.id = p2.user_id
-WHERE p1.user_id = 'uuid-here';
-\`\`\``,
+FROM enrollments e1
+INNER JOIN enrollments e2 ON e2.course_id = e1.course_id
+                          AND e2.user_id != e1.user_id
+INNER JOIN users u2 ON u2.id = e2.user_id
+WHERE e1.user_id = 'uuid-here';
+\`\`\`
+
+A self-join joins a table to itself using aliases. Here \`e1\` is the given user's enrollments; \`e2\` finds other users in the same courses.`,
     quiz: [
       { q: 'What does INNER JOIN return?', options: ['All rows from both tables', 'Only rows where the join condition matches in both tables', 'Left table only', 'NULL rows'], correct: 1, explanation: 'INNER JOIN filters to only rows where a match exists in both tables. Rows in either table without a match are excluded.' },
       { q: 'When do you use LEFT JOIN over INNER JOIN?', options: ['When tables are large', 'When you need ALL rows from the left table, even if there are no matching rows on the right', 'For better performance', 'Always'], correct: 1, explanation: 'LEFT JOIN keeps all left-table rows. Unmatched right-table columns become NULL. Use for "show all users and their (optional) progress."' },
-      { q: 'What does COALESCE do?', options: ['Joins tables', 'Returns the first non-NULL value from its arguments — COALESCE(sum, 0) = 0 if sum is NULL', 'Counts NULL values', 'Required for LEFT JOINs'], correct: 1, explanation: 'COALESCE(value, fallback) returns value if not NULL, otherwise fallback. Essential for handling NULLs from LEFT JOINs.' },
-      { q: 'What is a table alias?', options: ['A copy of the table', 'A short name for a table within a query — FROM progress p means p.column instead of progress.column', 'Required for JOINs', 'A view'], correct: 1, explanation: 'Table aliases (FROM progress p) shorten repeated table references. Required when joining a table to itself (self-join).' },
+      { q: 'What does COALESCE do?', options: ['Joins tables', 'Returns the first non-NULL value from its arguments — COALESCE(sum, 0) returns 0 if sum is NULL', 'Counts NULL values', 'Required for LEFT JOINs'], correct: 1, explanation: 'COALESCE(value, fallback) returns value if not NULL, otherwise fallback. Essential for handling NULLs from LEFT JOINs.' },
+      { q: 'What is a table alias?', options: ['A copy of the table', 'A short name for a table within a query — FROM enrollments e means e.column instead of enrollments.column', 'Required for JOINs', 'A view'], correct: 1, explanation: 'Table aliases shorten repeated table references. Required when joining a table to itself (self-join) so you can distinguish the two instances.' },
     ],
+    ide: {
+      language: 'sql',
+      task: 'Using the blog schema from Module 1 (authors, posts, comments), write three JOIN queries: (1) INNER JOIN — get all published posts with their author names and emails. (2) LEFT JOIN + GROUP BY — get all authors and their post counts (include authors with zero posts). (3) Three-table join — get all comments with the post title and the post\'s author name.',
+      starterCode: `-- JOIN Practice on Blog Schema
+-- Assume the authors, posts, comments tables exist from Module 1
+
+-- Query 1: INNER JOIN
+-- Get all published posts with author name and email
+-- Columns: post title, post status, author name, author email, published_at
+SELECT
+  -- TODO: write the SELECT columns
+FROM posts p
+-- TODO: JOIN to authors
+WHERE p.status = 'published'
+ORDER BY p.published_at DESC;
+
+-- Query 2: LEFT JOIN + GROUP BY
+-- Get ALL authors with their post counts (include authors with no posts)
+-- Columns: author name, total_posts
+SELECT
+  a.name,
+  -- TODO: count posts
+FROM authors a
+-- TODO: LEFT JOIN posts
+GROUP BY a.id, a.name
+ORDER BY total_posts DESC;
+
+-- Query 3: Three-table join
+-- Get all comments with post title and post's author name
+-- Columns: comment body, commenter name, post title, post author name
+SELECT
+  -- TODO: write columns
+FROM comments c
+-- TODO: JOIN posts, then JOIN authors
+ORDER BY c.created_at DESC;
+`,
+      solution: `-- Query 1: INNER JOIN
+SELECT
+  p.title AS post_title,
+  p.status,
+  a.name  AS author_name,
+  a.email AS author_email,
+  p.published_at
+FROM posts p
+INNER JOIN authors a ON a.id = p.author_id
+WHERE p.status = 'published'
+ORDER BY p.published_at DESC;
+
+-- Query 2: LEFT JOIN + GROUP BY
+SELECT
+  a.name,
+  COUNT(p.id) AS total_posts
+FROM authors a
+LEFT JOIN posts p ON p.author_id = a.id
+GROUP BY a.id, a.name
+ORDER BY total_posts DESC;
+
+-- Query 3: Three-table join
+SELECT
+  c.body         AS comment_body,
+  c.author_name  AS commenter_name,
+  p.title        AS post_title,
+  a.name         AS post_author_name
+FROM comments c
+INNER JOIN posts   p ON p.id = c.post_id
+INNER JOIN authors a ON a.id = p.author_id
+ORDER BY c.created_at DESC;
+`,
+      hints: [
+        'INNER JOIN: FROM posts p INNER JOIN authors a ON a.id = p.author_id',
+        'LEFT JOIN: FROM authors a LEFT JOIN posts p ON p.author_id = a.id (left table is authors)',
+        'COUNT(p.id) counts non-NULL post IDs — authors with no posts get COUNT = 0',
+        'For 3-table join: first JOIN posts, then JOIN authors from posts.author_id'
+      ]
+    }
   },
   {
     id: 'cc-postgres-m03', track: 'crash', title: 'Aggregates & Window Functions',
@@ -191,7 +473,7 @@ SELECT
   COUNT(*) AS completions,
   AVG(xp_earned) AS avg_xp,
   MAX(completed_at) AS last_completion
-FROM progress
+FROM enrollments
 GROUP BY LEFT(course_id, 8)
 ORDER BY completions DESC;
 
@@ -200,7 +482,7 @@ SELECT
   user_id,
   COUNT(*) AS completed_count,
   SUM(xp_earned) AS total_xp
-FROM progress
+FROM enrollments
 GROUP BY user_id
 HAVING SUM(xp_earned) > 500  -- only users with 500+ total XP
 ORDER BY total_xp DESC;
@@ -214,7 +496,7 @@ SELECT
   user_id,
   SUM(xp_earned) AS total_xp,
   DENSE_RANK() OVER (ORDER BY SUM(xp_earned) DESC) AS rank
-FROM progress
+FROM enrollments
 GROUP BY user_id;
 
 -- Row number within each track
@@ -226,7 +508,7 @@ SELECT
     PARTITION BY LEFT(course_id, 8)  -- reset per crash course
     ORDER BY xp_earned DESC
   ) AS rank_in_course
-FROM progress;
+FROM enrollments;
 \`\`\`
 
 ### Running Total
@@ -236,7 +518,7 @@ SELECT
   completed_at::date AS day,
   COUNT(*) AS daily_completions,
   SUM(COUNT(*)) OVER (ORDER BY completed_at::date) AS cumulative
-FROM progress
+FROM enrollments
 GROUP BY completed_at::date
 ORDER BY day;
 \`\`\``,
@@ -264,65 +546,149 @@ ORDER BY day;
 
 Indexes are the primary performance tool in PostgreSQL. EXPLAIN ANALYZE shows you where time is actually spent.
 
+### Why Indexes Matter
+
+Without an index, PostgreSQL reads *every row* in the table to find matches — a "sequential scan." On a table with 1 million rows, finding one record might require reading all 1 million rows. An index is a sorted data structure (a B-tree) that lets Postgres jump directly to matching rows, like using a book's index instead of reading every page.
+
 ### Creating Indexes
 
 \`\`\`sql
 -- Single column (most common)
-CREATE INDEX progress_user_id_idx ON progress (user_id);
+CREATE INDEX enrollments_user_id_idx ON enrollments (user_id);
 
 -- Composite index (column order matters)
-CREATE INDEX progress_user_course_idx ON progress (user_id, course_id);
+CREATE INDEX enrollments_user_course_idx ON enrollments (user_id, course_id);
 
--- Partial index (only index relevant rows)
+-- Partial index (only index relevant rows — smaller and faster)
 CREATE INDEX active_users_idx ON users (id)
 WHERE deleted_at IS NULL;
 
 -- Unique index (also enforces uniqueness)
-CREATE UNIQUE INDEX progress_unique_idx ON progress (user_id, course_id);
+CREATE UNIQUE INDEX enrollments_unique_idx ON enrollments (user_id, course_id);
 
 -- Index on expression
-CREATE INDEX course_track_idx ON progress (LEFT(course_id, 8));
+CREATE INDEX course_track_idx ON enrollments (LEFT(course_id, 8));
 \`\`\`
 
 ### EXPLAIN ANALYZE
 
 \`\`\`sql
+-- Run before creating an index
 EXPLAIN ANALYZE
-SELECT * FROM progress WHERE user_id = 'uuid-here';
+SELECT * FROM enrollments WHERE user_id = 'uuid-here';
 
--- Output:
--- Index Scan using progress_user_id_idx on progress  (cost=0.29..8.31 rows=5)
---   Index Cond: (user_id = 'uuid-here'::uuid)
--- Planning Time: 0.1 ms
--- Execution Time: 0.2 ms
-
--- Without index (seq scan on large table):
--- Seq Scan on progress  (cost=0.00..5432.00 rows=5)
---   Filter: (user_id = 'uuid-here'::uuid)
+-- Without index output:
+-- Seq Scan on enrollments  (cost=0.00..5432.00 rows=5 width=80)
+--   Filter: (user_id = 'uuid-here')
 -- Execution Time: 187 ms
+
+-- After: CREATE INDEX enrollments_user_id_idx ON enrollments (user_id);
+EXPLAIN ANALYZE
+SELECT * FROM enrollments WHERE user_id = 'uuid-here';
+
+-- With index output:
+-- Index Scan using enrollments_user_id_idx on enrollments  (cost=0.29..8.31 rows=5 width=80)
+--   Index Cond: (user_id = 'uuid-here')
+-- Execution Time: 0.2 ms
 \`\`\`
+
+The difference: 187ms → 0.2ms. That is a 935x speedup on a 100k-row table.
 
 ### When NOT to Index
 
 \`\`\`sql
--- Don't index:
--- 1. Small tables (seq scan is faster)
--- 2. Low-cardinality columns (boolean, status with 3 values)
--- 3. Columns rarely used in WHERE/JOIN/ORDER BY
--- 4. Tables with very high write volume (indexes slow down writes)
+-- Do NOT index:
+-- 1. Small tables (< 10k rows) — seq scan is faster than index overhead
+-- 2. Low-cardinality columns (boolean, status with 3 options)
+-- 3. Columns rarely used in WHERE / JOIN / ORDER BY
+-- 4. Write-heavy tables — every index slows INSERT/UPDATE/DELETE
 
--- Do index:
--- 1. Foreign keys (user_id, order_id)
+-- DO index:
+-- 1. Foreign key columns (user_id, post_id) — always
 -- 2. Frequently filtered columns
--- 3. Columns used in ORDER BY on large tables
--- 4. Unique constraints
-\`\`\``,
+-- 3. Columns in ORDER BY on large tables
+-- 4. Columns used in unique constraints
+\`\`\`
+
+### Reading EXPLAIN Output
+
+Key terms to look for:
+- **Seq Scan** — reading the whole table. Bad on large tables.
+- **Index Scan** — using an index. Good.
+- **cost=X..Y** — X is startup cost, Y is total cost (higher = slower)
+- **rows=N** — estimated matching rows
+- **actual time=X..Y** — real execution time in ms
+- **Execution Time** — total query time at the bottom`,
     quiz: [
       { q: 'What is a Seq Scan in EXPLAIN output?', options: ['Fast scan of an index', 'Full table scan — reads every row. Usually means a missing or unused index', 'Parallel query', 'Normal for small tables'], correct: 1, explanation: 'Seq Scan means PostgreSQL read every row in the table looking for matches. On large tables this is slow. Create an index on the WHERE column to get an Index Scan instead.' },
       { q: 'What is a composite index and why does column order matter?', options: ['An index with two copies', 'An index on multiple columns. (user_id, course_id) efficiently supports WHERE user_id=? AND course_id=? but not WHERE course_id=? alone', 'Faster than single index', 'Same order always'], correct: 1, explanation: 'Composite indexes support queries using the leftmost columns. (user_id, course_id) helps filter by user_id or by both columns — but not course_id alone.' },
       { q: 'When is a partial index useful?', options: ['For partial data only', 'When you frequently query a subset of rows — index only active records, undeleted items. Smaller index = faster', 'Required for NULL columns', 'Postgres-only feature'], correct: 1, explanation: 'WHERE deleted_at IS NULL in the index skips soft-deleted rows. The index is smaller and faster since it only covers the active subset.' },
       { q: 'What is the cost of adding indexes?', options: ['None — always add more', 'Indexes speed up reads but slow down writes (INSERT/UPDATE/DELETE must update every index)', 'Only disk space', 'Only for large tables'], correct: 1, explanation: 'Every index must be maintained on INSERT, UPDATE, DELETE. Over-indexing a write-heavy table degrades write performance. Index purposefully.' },
     ],
+    ide: {
+      language: 'sql',
+      task: 'Practice EXPLAIN ANALYZE and index creation. (1) Run EXPLAIN ANALYZE on a SELECT query filtering enrollments by user_id — observe the Seq Scan. (2) CREATE an index on enrollments(user_id). (3) Run EXPLAIN ANALYZE again — observe the Index Scan. (4) Create a composite index on enrollments(user_id, course_id). (5) Create a partial index on posts(author_id) WHERE status = \'published\'.',
+      starterCode: `-- Index & EXPLAIN Practice
+
+-- Step 1: EXPLAIN ANALYZE before any index
+-- What scan type does PostgreSQL use?
+EXPLAIN ANALYZE
+SELECT * FROM enrollments WHERE user_id = 'some-uuid-here';
+
+-- Step 2: Create a single-column index on user_id
+-- TODO: CREATE INDEX enrollments_user_id_idx ON ...
+
+-- Step 3: Run EXPLAIN ANALYZE again after the index
+-- Observe the change from Seq Scan to Index Scan
+EXPLAIN ANALYZE
+SELECT * FROM enrollments WHERE user_id = 'some-uuid-here';
+
+-- Step 4: Create a composite index for queries filtering both columns
+-- TODO: CREATE INDEX enrollments_user_course_idx ON ...
+
+-- Step 5: Create a partial index (only published posts)
+-- This index only covers rows where status = 'published'
+-- TODO: CREATE INDEX posts_published_author_idx ON posts ...
+-- Hint: add WHERE status = 'published' at the end
+
+-- Step 6: List all indexes on the enrollments table
+SELECT indexname, indexdef
+FROM pg_indexes
+WHERE tablename = 'enrollments';
+`,
+      solution: `-- Step 1: EXPLAIN before index (will show Seq Scan)
+EXPLAIN ANALYZE
+SELECT * FROM enrollments WHERE user_id = 'some-uuid-here';
+-- Output: Seq Scan on enrollments ...
+
+-- Step 2: Create single-column index
+CREATE INDEX enrollments_user_id_idx ON enrollments (user_id);
+
+-- Step 3: EXPLAIN after index (should show Index Scan)
+EXPLAIN ANALYZE
+SELECT * FROM enrollments WHERE user_id = 'some-uuid-here';
+-- Output: Index Scan using enrollments_user_id_idx ...
+
+-- Step 4: Composite index
+CREATE INDEX enrollments_user_course_idx ON enrollments (user_id, course_id);
+
+-- Step 5: Partial index
+CREATE INDEX posts_published_author_idx ON posts (author_id)
+WHERE status = 'published';
+
+-- Step 6: List indexes
+SELECT indexname, indexdef
+FROM pg_indexes
+WHERE tablename = 'enrollments';
+`,
+      hints: [
+        'CREATE INDEX syntax: CREATE INDEX name ON table (column)',
+        'Composite index: CREATE INDEX name ON table (col1, col2)',
+        'Partial index adds WHERE clause: CREATE INDEX name ON table (column) WHERE condition',
+        'EXPLAIN ANALYZE actually runs the query — use on a table with real data for meaningful output',
+        'Look for "Seq Scan" vs "Index Scan" in EXPLAIN output to confirm the index is being used'
+      ]
+    }
   },
   {
     id: 'cc-postgres-m05', track: 'crash', title: 'Transactions & Constraints',
@@ -347,7 +713,7 @@ Transactions make multiple operations atomic. Constraints enforce data rules at 
 -- Transfer XP between users atomically
 BEGIN;
 
-UPDATE profiles
+UPDATE users
 SET total_xp = total_xp - 100
 WHERE id = 'sender-uuid'
   AND total_xp >= 100;  -- check balance
@@ -355,7 +721,7 @@ WHERE id = 'sender-uuid'
 -- If first update affected 0 rows, something's wrong
 -- Application code checks RETURNING and rolls back if needed
 
-UPDATE profiles
+UPDATE users
 SET total_xp = total_xp + 100
 WHERE id = 'receiver-uuid';
 
@@ -381,9 +747,9 @@ CREATE TABLE courses (
 ### Foreign Keys
 
 \`\`\`sql
-CREATE TABLE progress (
+CREATE TABLE enrollments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   course_id TEXT NOT NULL REFERENCES courses(id) ON DELETE RESTRICT,
   xp_earned INT NOT NULL CHECK (xp_earned >= 0),
   completed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -437,7 +803,7 @@ WITH crash_completions AS (
     user_id,
     LEFT(course_id, 8) AS crash_id,
     COUNT(*) AS modules_done
-  FROM progress
+  FROM enrollments
   WHERE course_id LIKE 'cc-%'
   GROUP BY user_id, LEFT(course_id, 8)
 ),
@@ -451,19 +817,19 @@ SELECT
   c.crash_id,
   now() AS certified_at
 FROM certified_users c
-INNER JOIN auth.users u ON u.id = c.user_id
+INNER JOIN users u ON u.id = c.user_id
 ORDER BY c.crash_id, u.email;
 \`\`\`
 
 ### DISTINCT ON (PostgreSQL-specific)
 
 \`\`\`sql
--- Latest progress entry per user
+-- Latest enrollment entry per user
 SELECT DISTINCT ON (user_id)
   user_id,
   course_id,
   completed_at
-FROM progress
+FROM enrollments
 ORDER BY user_id, completed_at DESC;
 \`\`\`
 
@@ -583,7 +949,7 @@ WHERE deleted_at IS NULL;
       { q: 'What is normalization?', options: ['Making tables faster', 'Organizing schema to eliminate redundancy — each fact stored once', 'Adding indexes', 'Splitting large tables'], correct: 1, explanation: 'Normalization eliminates redundant data by ensuring each piece of information is stored in one place. Prevents update anomalies.' },
       { q: 'When should you denormalize?', options: ['Never — always normalize', 'When a computed value is read far more often than it changes — cache total_xp to avoid SUM() on every page load', 'For all user-facing tables', 'When the schema is complex'], correct: 1, explanation: 'Denormalization trades write complexity for read performance. Cache total_xp when it\'s shown on every page, even if it means updating it on every completion.' },
       { q: 'What is the benefit of a soft delete over DELETE?', options: ['Faster deletion', 'Preserves history, enables undo, maintains foreign key integrity, allows audit trails', 'Required for RLS', 'Less disk space'], correct: 1, explanation: 'Hard deletes are permanent and cascade to related data. Soft deletes preserve the row — you can restore it, audit it, and see historical state.' },
-      { q: 'Why use PostgreSQL enum types?', options: ['Required for indexes', 'Type-safe column values — database rejects inserts with invalid values; also documents the allowed values in the schema', 'Faster than TEXT', 'Same as CHECK constraint'], correct: 1, explanation: 'Enum types are self-documenting and enforced at the DB level. More semantic than CHECK constraints — PostgreSQL shows the type in \d table output.' },
+      { q: 'Why use PostgreSQL enum types?', options: ['Required for indexes', 'Type-safe column values — database rejects inserts with invalid values; also documents the allowed values in the schema', 'Faster than TEXT', 'Same as CHECK constraint'], correct: 1, explanation: 'Enum types are self-documenting and enforced at the DB level. More semantic than CHECK constraints — PostgreSQL shows the type in \\d table output.' },
     ],
   },
   {
@@ -618,21 +984,21 @@ LANGUAGE plpgsql
 SECURITY INVOKER
 AS \$\$
 DECLARE
-  v_existing progress;
+  v_existing enrollments;
 BEGIN
   -- Prevent duplicate completion
   SELECT * INTO v_existing
-  FROM progress
+  FROM enrollments
   WHERE user_id = p_user_id AND course_id = p_course_id;
 
   IF FOUND THEN
     RETURN json_build_object('success', false, 'reason', 'already_completed');
   END IF;
 
-  INSERT INTO progress (user_id, course_id, xp_earned, quiz_score)
+  INSERT INTO enrollments (user_id, course_id, xp_earned, quiz_score)
   VALUES (p_user_id, p_course_id, p_xp, p_quiz_score);
 
-  UPDATE profiles
+  UPDATE users
   SET total_xp = total_xp + p_xp
   WHERE id = p_user_id;
 
@@ -640,7 +1006,7 @@ BEGIN
 END;
 \$\$;
 
--- Call from Supabase client
+-- Call from Supabase client:
 -- const { data } = await supabase.rpc('complete_course', { p_user_id, p_course_id, p_xp: 150 })
 \`\`\`
 
@@ -655,7 +1021,7 @@ SECURITY DEFINER  -- run as owner, bypasses RLS
 SET search_path = public
 AS \$\$
 BEGIN
-  INSERT INTO public.profiles (id, email, display_name)
+  INSERT INTO public.users (id, email, display_name)
   VALUES (NEW.id, NEW.email, SPLIT_PART(NEW.email, '@', 1));
   RETURN NEW;
 END;
@@ -673,8 +1039,8 @@ CREATE TRIGGER on_auth_user_created
 -- authenticated: signed-in users
 
 GRANT SELECT ON courses TO anon;
-GRANT SELECT, INSERT, UPDATE ON progress TO authenticated;
-REVOKE ALL ON progress FROM anon;
+GRANT SELECT, INSERT, UPDATE ON enrollments TO authenticated;
+REVOKE ALL ON enrollments FROM anon;
 \`\`\``,
     quiz: [
       { q: 'What is the advantage of a stored function over application code?', options: ['Easier to write', 'Runs inside the database — atomic with other DB operations, no extra network round-trip, always enforced', 'Faster to deploy', 'TypeScript types'], correct: 1, explanation: 'Stored functions run server-side in Postgres. They\'re atomic with surrounding queries, avoid extra round-trips, and execute regardless of which client calls them.' },

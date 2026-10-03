@@ -4,95 +4,287 @@ const CC_TS_OBJ = 'Write production TypeScript — typed components, generics, u
 
 export const crashTsCourses: Course[] = [
   {
-    id: 'cc-ts-m01', track: 'crash', title: 'TypeScript Fundamentals — Types & Inference',
-    subtitle: 'Understand static typing, type inference, and why TypeScript catches bugs before runtime.',
-    moduleObjective: 'Declare typed variables, functions, and parameters using TypeScript primitives and inference.',
+    id: 'cc-ts-m01', track: 'crash', title: 'Environment, Types & Why TypeScript Exists',
+    subtitle: 'See the JS bug TypeScript prevents, set up your project, and understand the type system from zero.',
+    moduleObjective: 'Set up a TypeScript project with tsconfig.json, understand why TypeScript exists, and write typed variables and functions across multiple files.',
     courseObjective: CC_TS_OBJ, crashId: 'cc-ts', crashTitle: 'TypeScript', level: 'Basic',
-    xp: 150, duration: 10, module: 1, certArea: 'TypeScript Crash Course',
+    xp: 150, duration: 12, module: 1, certArea: 'TypeScript Crash Course',
     keyTerms: [
-      { term: 'Static Typing', definition: 'Types are checked at compile time. TypeScript catches type errors before your code runs.' },
-      { term: 'Type Inference', definition: 'TypeScript infers the type from the assigned value: const x = 5 makes x a number automatically.' },
-      { term: 'Primitive Types', definition: 'string, number, boolean, null, undefined, symbol, bigint — the seven TypeScript primitive types.' },
-      { term: 'Type Annotation', definition: 'Explicit type: const name: string = "Jordan". Preferred for function parameters and return types.' },
-      { term: 'any vs unknown', definition: 'any disables type checking — avoid it. unknown is safe: you must narrow before use.' },
+      { term: 'Static Typing', definition: 'Types checked at compile time. TypeScript catches errors before your code ever runs in a browser or Node.' },
+      { term: 'Type Inference', definition: 'TypeScript figures out the type from the assigned value: const x = 5 automatically makes x a number.' },
+      { term: 'tsconfig.json', definition: 'TypeScript compiler configuration file. Created by tsc --init. Controls strictness, output target, and path aliases.' },
+      { term: 'tsc', definition: 'The TypeScript compiler CLI. tsc --noEmit checks types without producing output files. tsc compiles to JavaScript.' },
+      { term: 'strict mode', definition: '"strict": true in tsconfig enables strictNullChecks, noImplicitAny, and other safety checks. Always enable in new projects.' },
     ],
-    content: `## TypeScript Fundamentals
+    content: `## Environment, Types & Why TypeScript Exists
 
-TypeScript is JavaScript with types. It catches bugs at compile time, provides autocomplete, and makes large codebases maintainable.
+TypeScript is JavaScript with a compiler. It catches entire categories of bugs before your code runs, gives you autocomplete on every object, and makes large codebases maintainable.
 
-### Primitive Types
+### The Bug TypeScript Prevents
 
-\`\`\`typescript
-const name: string = 'Jordan'
-const age: number = 28
-const active: boolean = true
+Here is a real JavaScript problem:
 
-// Inference — TypeScript figures out the type
-const score = 100     // inferred: number
-const label = 'Pro'   // inferred: string
-\`\`\`
-
-### Function Types
-
-\`\`\`typescript
-function greet(name: string): string {
-  return \`Hello, \${name}\`
+\`\`\`javascript
+// JavaScript — no errors until runtime
+function getUser(id) {
+  return fetch('/api/users/' + id).then(r => r.json())
 }
 
-const add = (a: number, b: number): number => a + b
+const user = getUser(123)
+console.log(user.name.toUpperCase())  // Crashes at runtime: Cannot read properties of undefined
+\`\`\`
 
-function logError(msg: string): void {
-  console.error(msg)
+The issue: \`fetch\` is async — \`user\` is a Promise, not a User object. JavaScript says nothing. Your app crashes in production.
+
+TypeScript version:
+
+\`\`\`typescript
+interface User { id: number; name: string }
+
+async function getUser(id: number): Promise<User> {
+  return fetch('/api/users/' + id).then(r => r.json())
+}
+
+const user = getUser(123)
+// TypeScript Error: Property 'name' does not exist on type 'Promise<User>'
+// You must await the function first
+\`\`\`
+
+TypeScript catches this before you ever run the code. That is the entire value proposition: move runtime errors to compile time.
+
+### VS Code Setup
+
+TypeScript language support is built directly into VS Code — you get syntax highlighting, hover types, and error underlining immediately for any \`.ts\` file.
+
+Install one additional extension: **ESLint** (by Microsoft). Then in your terminal, install the TypeScript ESLint rules for your project:
+
+\`\`\`bash
+npm install --save-dev eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser
+\`\`\`
+
+### Create a TypeScript Project
+
+In VS Code, open a new folder. Open the integrated terminal (Ctrl+\`) and run:
+
+\`\`\`bash
+npm init -y
+npm install --save-dev typescript
+npx tsc --init
+\`\`\`
+
+\`tsc --init\` creates a \`tsconfig.json\` with all compiler options. Most are commented out — the defaults are sensible.
+
+### tsconfig.json — Key Settings
+
+Open \`tsconfig.json\`. The most important options:
+
+\`\`\`json
+{
+  "compilerOptions": {
+    "target": "ES2020",          // compiled JS version — ES2020 for Node 14+
+    "module": "commonjs",        // module system — commonjs for Node, esnext for bundlers
+    "strict": true,              // enables all strict checks — ALWAYS true
+    "outDir": "./dist",          // compiled JS goes here
+    "rootDir": "./src",          // TypeScript source files are here
+    "esModuleInterop": true,     // makes import/export work cleanly
+    "skipLibCheck": true         // skip type-checking node_modules
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+\`\`\`
+
+The single most important setting is \`"strict": true\`. It enables \`strictNullChecks\` (null is separate from other types), \`noImplicitAny\` (parameters must have types), and several other checks. Always enable it.
+
+### A Multi-File TypeScript Project
+
+Real TypeScript code splits concerns across files. Create this structure:
+
+\`\`\`
+src/
+├── types.ts       -- shared interfaces and type aliases
+├── utils.ts       -- typed utility functions (imports from types.ts)
+└── main.ts        -- entry point (imports from both)
+\`\`\`
+
+**src/types.ts:**
+\`\`\`typescript
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: 'admin' | 'student'
+}
+
+export type Status = 'active' | 'inactive' | 'pending'
+\`\`\`
+
+**src/utils.ts:**
+\`\`\`typescript
+import type { User } from './types'
+
+export function formatUser(user: User): string {
+  return user.name + ' (' + user.email + ')'
+}
+
+export function isAdmin(user: User): boolean {
+  return user.role === 'admin'
+}
+\`\`\`
+
+**src/main.ts:**
+\`\`\`typescript
+import type { User } from './types'
+import { formatUser, isAdmin } from './utils'
+
+const user: User = {
+  id: 'u_001',
+  name: 'Jordan Morris',
+  email: 'jordan@jsupremetech.com',
+  role: 'admin',
+}
+
+console.log(formatUser(user))   // Jordan Morris (jordan@jsupremetech.com)
+console.log(isAdmin(user))      // true
+\`\`\`
+
+The \`import type\` syntax imports only the type — zero JavaScript emitted. Use it for interfaces and type aliases.
+
+### Primitive Types and Inference
+
+\`\`\`typescript
+// Inference — TypeScript figures out the type from the value
+const score = 100         // number
+const label = 'Pro'       // string
+const active = true       // boolean
+
+// Explicit annotations — required for function parameters
+const name: string = 'Jordan'
+const age: number = 28
+
+function greet(name: string): string {
+  return 'Hello, ' + name
 }
 
 // Optional parameter
 function greetUser(name: string, title?: string): string {
-  return title ? \`\${title} \${name}\` : name
+  return title ? title + ' ' + name : name
 }
 \`\`\`
 
-### Arrays and Tuples
+Annotate function parameters and return types. Let TypeScript infer variable types from assignment.
 
-\`\`\`typescript
-const names: string[] = ['Jordan', 'Owen']
-const ids: number[] = [1, 2, 3]
+### Compile and Type Check
 
-// Generic syntax
-const tags: Array<string> = ['react', 'typescript']
+\`\`\`bash
+# Check types — no output files
+npx tsc --noEmit
 
-// Tuple — fixed positions and types
-const coord: [number, number] = [12.5, -77.0]
+# Compile TypeScript to JavaScript
+npx tsc
+
+# Watch mode for development
+npx tsc --watch
 \`\`\`
 
-### any vs unknown
-
-\`\`\`typescript
-// any — disables type checking, avoid
-let bad: any = 'hello'
-bad.toUpperCase()   // no error even if bad is a number
-
-// unknown — safe, must narrow before use
-let input: unknown = getInput()
-if (typeof input === 'string') {
-  console.log(input.toUpperCase())  // OK after narrowing
-}
-\`\`\`
-
-### Type Aliases
-
-\`\`\`typescript
-type UserId = string
-type Status = 'active' | 'inactive' | 'pending'
-
-const status: Status = 'active'
-// const bad: Status = 'deleted'  // Error — not in union
-\`\`\``,
+Empty \`tsc --noEmit\` output means zero type errors. Use this in CI to block deployments when types break.`,
     quiz: [
-      { q: 'What does TypeScript type inference do?', options: ['Requires explicit types everywhere', 'Automatically determines the type from the assigned value', 'Makes code slower', 'Only works with primitives'], correct: 1, explanation: 'TypeScript infers types from assigned values. const x = 5 — x is number without writing : number.' },
-      { q: 'What is the difference between any and unknown?', options: ['They are identical', 'any disables type checking; unknown is safe — you must narrow it before use', 'unknown is an error type', 'any is for arrays only'], correct: 1, explanation: 'any turns off TypeScript for that variable. unknown keeps type safety — you must check the type before calling methods.' },
-      { q: 'What is a tuple?', options: ['An array with any types', 'A fixed-length array with specific types at each position', 'Same as a generic array', 'An object type'], correct: 1, explanation: 'A tuple is a fixed-length array where each position has a specific type: [string, number].' },
-      { q: 'When should you add explicit type annotations?', options: ['Never — inference is always better', 'Always', 'For function parameters and return types; let inference handle variables', 'Only in .tsx files'], correct: 2, explanation: 'Annotate function parameters and return types. Let TypeScript infer variable types from assignment.' },
+      { q: 'What core problem does TypeScript solve?', options: ['Makes JavaScript faster', 'Catches type errors at compile time before code runs', 'Replaces JavaScript entirely', 'Adds class-based OOP'], correct: 1, explanation: 'TypeScript moves runtime errors to compile time — you see the bug in your editor before running a single line.' },
+      { q: 'What does "strict": true enable in tsconfig?', options: ['Linting only', 'strictNullChecks, noImplicitAny, strictFunctionTypes — always enable in new projects', 'Prevents using any type', 'Only applies in production'], correct: 1, explanation: 'strict is a shorthand for multiple strictness flags. Most importantly strictNullChecks (null safety) and noImplicitAny.' },
+      { q: 'What does npx tsc --noEmit do?', options: ['Deletes compiled files', 'Type-checks your code without generating JavaScript output', 'Resets tsconfig', 'Installs TypeScript'], correct: 1, explanation: 'noEmit runs the type checker without writing any output — ideal for CI checks and pre-commit hooks.' },
+      { q: 'What is import type used for?', options: ['Importing values at runtime', 'Importing only type definitions — zero JavaScript emitted', 'Conditional imports', 'Dynamic imports'], correct: 1, explanation: 'import type imports interfaces and type aliases. They are erased entirely from compiled output — no runtime overhead.' },
     ],
+    ide: {
+      language: 'typescript',
+      task: 'Build a typed multi-file system. In types.ts: (1) define a User interface with id (string), name (string), email (string), and role as a union "admin" | "student", (2) define a type Status = "active" | "inactive" | "pending". In utils.ts: (3) write a function formatUser(user: User): string that returns name + " <" + email + ">", (4) write function isAdmin(user: User): boolean. In main.ts: (5) create a User object and call both functions, logging the results.',
+      files: [
+        {
+          name: 'types.ts',
+          code: `// Define your types here
+
+// TODO: export interface User {
+//   id: string
+//   name: string
+//   email: string
+//   role: 'admin' | 'student'
+// }
+
+// TODO: export type Status = 'active' | 'inactive' | 'pending'
+`,
+          language: 'typescript'
+        },
+        {
+          name: 'utils.ts',
+          code: `// Import types and write typed utility functions
+// import type { User } from './types'
+
+// TODO: export function formatUser(user: User): string {
+//   return user.name + ' <' + user.email + '>'
+// }
+
+// TODO: export function isAdmin(user: User): boolean {
+//   return user.role === 'admin'
+// }
+`,
+          language: 'typescript'
+        },
+        {
+          name: 'main.ts',
+          code: `// Import and use your types and utilities
+// import type { User } from './types'
+// import { formatUser, isAdmin } from './utils'
+
+// TODO: Create a User object (fill in all required fields)
+// const user: User = { ... }
+
+// TODO: Call formatUser(user) and log the result
+// TODO: Call isAdmin(user) and log the result
+
+// Expected output:
+// Jordan Morris <jordan@jst.com>
+// true
+`,
+          language: 'typescript'
+        }
+      ],
+      hints: [
+        'Interface syntax: export interface Name { property: type }',
+        'Union type for role: role: "admin" | "student" — value must be exactly one of these strings',
+        'Function with typed param: function name(param: InterfaceName): ReturnType { }',
+        'Trying to set role: "manager" on a User object will give a TypeScript error — not in the union'
+      ],
+      solution: `// types.ts
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: 'admin' | 'student'
+}
+
+export type Status = 'active' | 'inactive' | 'pending'
+
+// utils.ts
+// import type { User } from './types'
+
+function formatUser(user: User): string {
+  return user.name + ' <' + user.email + '>'
+}
+
+function isAdmin(user: User): boolean {
+  return user.role === 'admin'
+}
+
+// main.ts
+const user: User = {
+  id: 'u_001',
+  name: 'Jordan Morris',
+  email: 'jordan@jst.com',
+  role: 'admin',
+}
+
+console.log(formatUser(user))  // Jordan Morris <jordan@jst.com>
+console.log(isAdmin(user))     // true`
+    }
   },
   {
     id: 'cc-ts-m02', track: 'crash', title: 'Interfaces & Type Aliases',
@@ -182,6 +374,108 @@ type BaseEntity = { id: string } & { createdAt: Date }
       { q: 'What does readonly do to a property?', options: ['Makes it private', 'Prevents reassignment after object creation', 'Makes it optional', 'Only works on class properties'], correct: 1, explanation: 'readonly marks a property as immutable after the object is created. Reassignment is a TypeScript error.' },
       { q: 'How do you combine two types with all properties of both?', options: ['interface merge', 'Intersection type with &', 'Union type with |', 'extends keyword'], correct: 1, explanation: 'Intersection type T & U — result has all properties of both T and U.' },
     ],
+    ide: {
+      language: 'typescript',
+      task: 'Define interfaces for a blog system. (1) Create a BaseEntity interface with id: string and createdAt: Date. (2) Create a User interface with name, email, and optional bio. (3) Create a Post interface that extends BaseEntity and adds title: string, body: string, authorId: string. (4) Write a function getAuthorName(post: Post, users: User[]): string that finds the user whose id matches post.authorId and returns their name, or "Unknown" if not found.',
+      files: [
+        {
+          name: 'types.ts',
+          code: `// Define your interfaces here
+
+// TODO: interface BaseEntity {
+//   id: string
+//   createdAt: Date
+// }
+
+// TODO: interface User {
+//   id: string
+//   name: string
+//   email: string
+//   bio?: string  // optional
+// }
+
+// TODO: interface Post extends BaseEntity {
+//   title: string
+//   body: string
+//   authorId: string
+// }
+`,
+          language: 'typescript'
+        },
+        {
+          name: 'main.ts',
+          code: `// Write your function and test it
+
+// TODO: function getAuthorName(post: Post, users: User[]): string {
+//   find the user with id === post.authorId
+//   return the user's name, or 'Unknown' if not found
+// }
+
+// Test data
+const users: User[] = [
+  { id: 'u1', name: 'Jordan Morris', email: 'jordan@jst.com' },
+  { id: 'u2', name: 'Owen Ferguson', email: 'owen@ferg.com', bio: 'Attorney at Law' },
+]
+
+const post: Post = {
+  id: 'p1',
+  createdAt: new Date(),
+  title: 'TypeScript Interfaces',
+  body: 'Interfaces define object shapes...',
+  authorId: 'u1',
+}
+
+// console.log(getAuthorName(post, users))  // Should log: Jordan Morris
+`,
+          language: 'typescript'
+        }
+      ],
+      hints: [
+        'interface Post extends BaseEntity — Post inherits id and createdAt, then adds its own fields',
+        'Optional property: bio?: string means bio can be a string OR undefined',
+        'users.find(u => u.id === post.authorId) returns the User or undefined',
+        'Handle the undefined case: const author = users.find(...); return author ? author.name : "Unknown"'
+      ],
+      solution: `// types.ts
+interface BaseEntity {
+  id: string
+  createdAt: Date
+}
+
+interface User {
+  id: string
+  name: string
+  email: string
+  bio?: string
+}
+
+interface Post extends BaseEntity {
+  title: string
+  body: string
+  authorId: string
+}
+
+// main.ts
+function getAuthorName(post: Post, users: User[]): string {
+  const author = users.find(u => u.id === post.authorId)
+  return author ? author.name : 'Unknown'
+}
+
+const users: User[] = [
+  { id: 'u1', name: 'Jordan Morris', email: 'jordan@jst.com' },
+  { id: 'u2', name: 'Owen Ferguson', email: 'owen@ferg.com', bio: 'Attorney at Law' },
+]
+
+const post: Post = {
+  id: 'p1',
+  createdAt: new Date(),
+  title: 'TypeScript Interfaces',
+  body: 'Interfaces define object shapes...',
+  authorId: 'u1',
+}
+
+console.log(getAuthorName(post, users))  // Jordan Morris`
+    }
   },
   {
     id: 'cc-ts-m03', track: 'crash', title: 'Generics',
@@ -232,7 +526,7 @@ interface Paginated<T> {
 }
 
 async function fetchUser(id: string): Promise<ApiResponse<User>> {
-  const res = await fetch(\`/api/users/\${id}\`)
+  const res = await fetch('/api/users/' + id)
   return res.json()
 }
 \`\`\`
@@ -275,6 +569,92 @@ function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
       { q: 'What is the return type of merge<T, U>(a: T, b: U)?', options: ['T', 'U', 'T & U (intersection)', 'T | U (union)'], correct: 2, explanation: 'T & U is an intersection — the result has all properties of both T and U.' },
       { q: 'Where is the generic type T resolved?', options: ['When the interface is defined', 'At the call site — each use can have a different T', 'At compile time globally', 'Only in .tsx files'], correct: 1, explanation: 'T is filled in when the function or interface is actually used — each call site can provide a different T.' },
     ],
+    ide: {
+      language: 'typescript',
+      task: 'Write generic utility code. (1) Write function getFirst<T>(arr: T[]): T | undefined that returns the first element of any typed array. (2) Define interface ApiResponse<T> with fields: data: T, error: string | null, status: number. (3) Write function wrapSuccess<T>(data: T): ApiResponse<T> that returns a success response object. (4) Write function wrapError<T>(message: string): ApiResponse<T> that returns an error response with null data. Test all four with concrete types.',
+      files: [
+        {
+          name: 'generics.ts',
+          code: `// Write your generic functions and interfaces below
+
+// TODO 1: function getFirst<T>(arr: T[]): T | undefined
+// Returns the first element, or undefined if empty
+
+// TODO 2: interface ApiResponse<T>
+// Fields: data: T, error: string | null, status: number
+
+// TODO 3: function wrapSuccess<T>(data: T): ApiResponse<T>
+// Returns: { data, error: null, status: 200 }
+
+// TODO 4: function wrapError<T>(message: string): ApiResponse<T>
+// Hint: what is the value of data when there is an error?
+// Returns: { data: null as unknown as T, error: message, status: 500 }
+
+// --- Tests ---
+
+// getFirst should work on strings AND numbers without separate functions
+// const firstStr = getFirst(['hello', 'world', 'test'])
+// console.log(firstStr)                // 'hello'
+
+// const firstNum = getFirst([10, 20, 30])
+// console.log(firstNum)               // 10
+
+// const empty = getFirst([])
+// console.log(empty)                  // undefined
+
+// wrapSuccess should preserve the type of data
+// const response = wrapSuccess({ id: '1', name: 'Jordan' })
+// console.log(response.data.name)     // 'Jordan'
+// console.log(response.error)         // null
+// console.log(response.status)        // 200
+
+// const errResponse = wrapError('Not found')
+// console.log(errResponse.error)      // 'Not found'
+// console.log(errResponse.status)     // 500
+`,
+          language: 'typescript'
+        }
+      ],
+      hints: [
+        'Generic syntax: function name<T>(param: T[]): T | undefined { return param[0] }',
+        'TypeScript infers T from the argument — getFirst(["a","b"]) infers T as string automatically',
+        'interface ApiResponse<T> — T is used as the type for the data field',
+        'wrapSuccess<T>(data: T) returns an object literal: { data, error: null, status: 200 }'
+      ],
+      solution: `function getFirst<T>(arr: T[]): T | undefined {
+  return arr[0]
+}
+
+interface ApiResponse<T> {
+  data: T
+  error: string | null
+  status: number
+}
+
+function wrapSuccess<T>(data: T): ApiResponse<T> {
+  return { data, error: null, status: 200 }
+}
+
+function wrapError<T>(message: string): ApiResponse<T> {
+  return { data: null as unknown as T, error: message, status: 500 }
+}
+
+// Tests
+const firstStr = getFirst(['hello', 'world'])
+console.log(firstStr)                // 'hello'
+
+const firstNum = getFirst([10, 20, 30])
+console.log(firstNum)               // 10
+
+const response = wrapSuccess({ id: '1', name: 'Jordan' })
+console.log(response.data.name)     // 'Jordan'
+console.log(response.error)         // null
+console.log(response.status)        // 200
+
+const errResponse = wrapError('Not found')
+console.log(errResponse.error)      // 'Not found'
+console.log(errResponse.status)     // 500`
+    }
   },
   {
     id: 'cc-ts-m04', track: 'crash', title: 'Union, Literal & Discriminated Union Types',
@@ -331,10 +711,10 @@ type LoadingState =
 
 function renderState(state: LoadingState) {
   switch (state.status) {
-    case 'idle':    return <div>Ready</div>
-    case 'loading': return <Spinner />
-    case 'success': return <UserList users={state.data} />   // state.data typed
-    case 'error':   return <Error msg={state.message} />     // state.message typed
+    case 'idle':    return 'Ready'
+    case 'loading': return 'Loading...'
+    case 'success': return 'Users: ' + state.data.length   // state.data typed
+    case 'error':   return 'Error: ' + state.message        // state.message typed
   }
 }
 \`\`\`
@@ -392,7 +772,7 @@ type UserUpdate = Partial<User>
 // { id?: string; name?: string; email?: string; bio?: string }
 
 async function updateUser(id: string, data: Partial<User>): Promise<User> {
-  return fetch(\`/api/users/\${id}\`, {
+  return fetch('/api/users/' + id, {
     method: 'PATCH',
     body: JSON.stringify(data),
   }).then(r => r.json())
@@ -483,7 +863,7 @@ interface ButtonProps {
 
 export function Button({ label, onClick, variant = 'primary', disabled }: ButtonProps) {
   return (
-    <button className={\`btn btn-\${variant}\`} onClick={onClick} disabled={disabled}>
+    <button className={'btn btn-' + variant} onClick={onClick} disabled={disabled}>
       {label}
     </button>
   )
@@ -588,7 +968,7 @@ try {
   return await res.text()
 } catch (err) {
   if (err instanceof Error) {
-    return \`Error: \${err.message}\`  // err.message is typed
+    return 'Error: ' + err.message  // err.message is typed
   }
   return 'Unknown error'
 }
@@ -631,7 +1011,7 @@ function processResponse(data: unknown) {
 
 \`\`\`typescript
 function assertDefined<T>(val: T | null | undefined, name: string): asserts val is T {
-  if (val == null) throw new Error(\`\${name} is required\`)
+  if (val == null) throw new Error(name + ' is required')
 }
 
 function render(userId: string | null) {
