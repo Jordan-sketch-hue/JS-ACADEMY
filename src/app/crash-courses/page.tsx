@@ -38,6 +38,12 @@ const LEARNING_PATH: PathSection[] = [
     courses: ['cc-python', 'cc-r', 'cc-java', 'cc-go', 'cc-swift', 'cc-rust', 'cc-cpp'],
   },
   {
+    label: 'Degree Add-Ons',
+    sublabel: 'Theory and strategy that web dev courses skip — fills the degree gap',
+    color: '#64748b',
+    courses: ['cc-mktg-degree', 'cc-cs-degree'],
+  },
+  {
     label: 'Interview Prep',
     sublabel: 'Complete the relevant foundation courses before starting these',
     color: '#0f172a',
@@ -60,6 +66,8 @@ const COMING_SOON_LABELS: Record<string, string> = {
   'cc-interview-qa':      'QA Engineer Interview Prep',
   'cc-interview-data':    'Data Analyst Interview Prep',
   'cc-interview-security':'Cybersecurity Interview Prep',
+  'cc-mktg-degree':       'Marketing Degree Add-On',
+  'cc-cs-degree':         'CS Degree Add-On',
 }
 
 type CrashGroup = {

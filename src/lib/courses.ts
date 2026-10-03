@@ -272,6 +272,9 @@ import { crashCppCourses } from './tracks/crash-cpp'
 import { crashJavaCourses } from './tracks/crash-java'
 import { crashSwiftCourses } from './tracks/crash-swift'
 import { crashRCourses } from './tracks/crash-r'
+// Degree add-on crash courses
+import { crashMarketingDegreeCourses } from './tracks/crash-marketing-degree'
+import { crashCsDegreeCourses } from './tracks/crash-cs-degree'
 // Interview prep crash courses
 import { crashInterviewFrontendCourses } from './tracks/crash-interview-frontend'
 import { crashInterviewBackendCourses } from './tracks/crash-interview-backend'
@@ -391,6 +394,9 @@ export const COURSES: Course[] = [
   ...crashJavaCourses,
   ...crashSwiftCourses,
   ...crashRCourses,
+  // Degree add-ons
+  ...crashMarketingDegreeCourses,
+  ...crashCsDegreeCourses,
   // Interview prep
   ...crashInterviewFrontendCourses,
   ...crashInterviewBackendCourses,
