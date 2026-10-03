@@ -1782,7 +1782,7 @@ fun String.isPalindrome(): Boolean = this == this.reversed()
 
 // Add a toCurrency() to Double
 fun Double.toCurrency(symbol: String = "$"): String =
-    "$symbol${"%.2f".format(this)}"
+    "$symbol\${"%.2f".format(this)}"
 
 // Extension on a data class
 fun Product.isExpensive(): Boolean = price > 500.0
