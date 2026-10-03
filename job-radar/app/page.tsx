@@ -68,7 +68,9 @@ export default function JobRadar() {
       .select('*')
       .order('match_score', { ascending: false })
       .limit(200)
-    setJobs(data ?? [])
+    // filter out any fake seed jobs (non-numeric IDs like remotive-qa-001)
+    const real = (data ?? []).filter(j => /^(remotive|remoteok)-\d+$/.test(j.external_id))
+    setJobs(real)
     setLoading(false)
   }, [])
 
