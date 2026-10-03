@@ -286,18 +286,17 @@ export default function JobRadar() {
         {tab === 'dream' && (
           <div>
             <p className="text-xs text-slate-500 mb-4">
-              Top stable tech companies scraped via their public job boards. Jobs matching your profile are highlighted.
+              Top stable tech companies with active openings matching your profile — scraped live from their job boards.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {Object.keys(DREAM_COMPANIES).map(company => {
-                const companyJobs = jobs.filter(j =>
-                  j.company?.toLowerCase() === company.toLowerCase() && !dismissed.has(j.id)
-                )
-                const topMatch = companyJobs.sort((a, b) => (b.match_score ?? 0) - (a.match_score ?? 0))[0]
+                const companyJobs = jobs
+                  .filter(j => j.company?.toLowerCase() === company.toLowerCase() && !dismissed.has(j.id))
+                  .sort((a, b) => (b.match_score ?? 0) - (a.match_score ?? 0))
+                if (companyJobs.length === 0) return null
+                const topMatch = companyJobs[0]
                 return (
-                  <div key={company} className={`bg-slate-900/60 border rounded-xl p-4 transition ${
-                    topMatch ? 'border-slate-600 hover:border-slate-500' : 'border-slate-800 opacity-60'
-                  }`}>
+                  <div key={company} className="bg-slate-900/60 border border-slate-600 hover:border-slate-500 rounded-xl p-4 transition">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Building2 size={14} className="text-blue-400" />
@@ -311,27 +310,23 @@ export default function JobRadar() {
                         <span className="text-xs text-slate-600">No matches yet</span>
                       )}
                     </div>
-                    {companyJobs.length > 0 ? (
-                      <div className="space-y-1">
-                        {companyJobs.slice(0, 3).map(j => (
-                          <a
-                            key={j.id}
-                            href={j.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-between gap-2 text-xs text-slate-300 hover:text-white py-1 border-t border-slate-800 first:border-0"
-                          >
-                            <span className="truncate">{j.title}</span>
-                            <ExternalLink size={10} className="text-slate-500 shrink-0" />
-                          </a>
-                        ))}
-                        {companyJobs.length > 3 && (
-                          <p className="text-xs text-slate-600 pt-1">+{companyJobs.length - 3} more</p>
-                        )}
-                      </div>
-                    ) : (
-                      <p className="text-xs text-slate-600">Hit Refresh to scrape their board</p>
-                    )}
+                    <div className="space-y-1">
+                      {companyJobs.slice(0, 3).map(j => (
+                        <a
+                          key={j.id}
+                          href={j.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between gap-2 text-xs text-slate-300 hover:text-white py-1 border-t border-slate-800 first:border-0"
+                        >
+                          <span className="truncate">{j.title}</span>
+                          <ExternalLink size={10} className="text-slate-500 shrink-0" />
+                        </a>
+                      ))}
+                      {companyJobs.length > 3 && (
+                        <p className="text-xs text-slate-500 pt-1 border-t border-slate-800">+{companyJobs.length - 3} more open roles</p>
+                      )}
+                    </div>
                   </div>
                 )
               })}
