@@ -250,7 +250,7 @@ export default function JobRadar() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-slate-100 font-sans" style={{ overscrollBehavior: 'none' }}>
+    <div className="min-h-screen bg-[#0a0a0f] text-slate-100 font-sans">
 
       {/* ── Sticky glassmorphism header ──────────────────────────────────── */}
       <header
@@ -344,7 +344,7 @@ export default function JobRadar() {
         </div>
 
         {/* Category pills — horizontal scroll, no wrap */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide scroll-touch pb-1 mb-3">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide scroll-touch pb-1 mb-3" style={{ touchAction: 'pan-x' }}>
           {JOB_CATEGORIES.map(cat => {
             const Icon = cat === 'All' ? Briefcase : (CAT_ICONS[cat] ?? Briefcase)
             return (
@@ -511,7 +511,7 @@ export default function JobRadar() {
 
                       {/* Match tags */}
                       {(job.match_reasons ?? []).length > 0 && (
-                        <div className="flex gap-1.5 mt-2.5 overflow-x-auto scrollbar-hide scroll-touch">
+                        <div className="flex gap-1.5 mt-2.5 overflow-x-auto scrollbar-hide scroll-touch" style={{ touchAction: 'pan-x' }}>
                           {(job.match_reasons ?? []).slice(0, 5).map((r: string) => (
                             <span
                               key={r}
