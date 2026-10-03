@@ -1407,7 +1407,7 @@ For a full Next.js app with auth: **ECS Fargate**.
 
 **2. Database sizing**
 
-Start with `db.t3.micro` (2 vCPU, 1 GB RAM) for dev/staging. Production: `db.t3.medium` minimum, scale up based on query latency (target < 10ms p99 for simple queries). Enable Multi-AZ on day one.
+Start with \`db.t3.micro\` (2 vCPU, 1 GB RAM) for dev/staging. Production: \`db.t3.medium\` minimum, scale up based on query latency (target < 10ms p99 for simple queries). Enable Multi-AZ on day one.
 
 **3. File uploads**
 
