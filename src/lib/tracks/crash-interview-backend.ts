@@ -2631,4 +2631,188 @@ console.log(JSON.stringify(securityAuditBackend(routes), null, 2))`,
       hints: ['Sort findings by severity — CRITICAL issues should appear first', 'A route can have multiple findings — check all categories for each route', 'Missing auth check and SQL injection are always CRITICAL; mass assignment and missing role check are HIGH'],
     },
   },
+  {
+    id: 'cc-interview-be-m08',
+    track: 'crash',
+    crashId: 'cc-interview-backend',
+    crashTitle: 'Backend Interview Prep',
+    title: 'Cloud & AWS — Production Backend Questions',
+    subtitle: 'Lambda vs ECS, SQS queuing, IAM least-privilege, and the cloud tradeoffs backend engineers get asked in senior interviews.',
+    module: 8,
+    xp: 220,
+    level: 'PhD' as const,
+    moduleObjective: 'Explain when to use Lambda vs ECS vs EC2, design an async job queue with SQS, apply IAM least-privilege, and answer the cloud cost and observability questions that senior interviewers ask.',
+    courseObjective: 'Interview-ready on backend patterns from REST and databases to distributed systems, security, CI/CD, and cloud deployment.',
+    keyTerms: [
+      { term: 'Lambda Cold Start', definition: 'Latency on the first invocation (or after idle) while AWS initializes the execution environment. Mitigated with Provisioned Concurrency or keeping functions warm with EventBridge pings. Critical trade-off vs always-on ECS.' },
+      { term: 'SQS Visibility Timeout', definition: 'After a consumer picks up a message, SQS hides it for N seconds. If the consumer doesn\'t delete it in time, the message reappears. Set it slightly longer than your max processing time to avoid duplicate processing.' },
+      { term: 'IAM Least Privilege', definition: 'Grant only the exact permissions a service needs — nothing more. A Lambda that reads from S3 should have s3:GetObject on that specific bucket ARN, not s3:* on "*". Scope by action and resource.' },
+      { term: 'Dead Letter Queue (DLQ)', definition: 'An SQS queue that receives messages after N failed processing attempts. Prevents poison-pill messages from blocking the main queue forever. Always attach a DLQ to production queues and alert on it.' },
+      { term: 'Reserved Concurrency', definition: 'A hard cap on the number of Lambda instances that can run simultaneously. Protects downstream databases from being overwhelmed during traffic spikes — limits Lambda but shields RDS.' },
+      { term: 'VPC NAT Gateway', definition: 'Allows resources in private subnets (like RDS) to initiate outbound internet connections while remaining unreachable from the internet. Required when Lambda in a VPC needs to call external APIs.' },
+    ],
+    content: `## Cloud & AWS — Production Backend Questions
+
+### Why Backend Engineers Need to Know AWS
+
+Cloud questions appear in backend interviews because where your code runs is as important as what it runs. Senior interviewers test whether you can choose the right compute model, design for failure, and reason about cost and observability — not just write clean handlers.
+
+---
+
+### Lambda vs ECS vs EC2 — The Decision Framework
+
+This is the most common cloud question in backend interviews. Know the three axes:
+
+**Lambda (Serverless)**
+- Best for: event-driven, spiky workloads, short-duration tasks (< 15 min), API Gateway integrations
+- Strengths: zero provisioning, pay-per-invocation, auto-scales to thousands in seconds
+- Weaknesses: cold starts (10ms–2s), 15-min max, stateless (no persistent connections), VPC adds latency
+- Use it for: webhooks, image processing, scheduled jobs, API endpoints with variable traffic
+
+**ECS / Fargate (Containers)**
+- Best for: long-running services, persistent database connections, predictable traffic
+- Strengths: no cold starts, any runtime, connection pooling, up to hours per task
+- Weaknesses: you manage container definitions, task sizing, and service scaling rules
+- Use it for: the main API service of a production app, background workers, microservices with steady load
+
+**EC2 (Virtual Machines)**
+- Best for: when you need full OS control, specific hardware (GPU), or maximum cost optimization at scale
+- Avoid by default — ECS/Fargate gives you containers without OS maintenance
+
+**The interview answer framework:**
+> "I default to Lambda for event-driven or spiky workloads — it scales to zero and I pay nothing at idle. I switch to ECS when I need persistent DB connections, long processing time, or predictable traffic where always-on is cheaper. EC2 only when I need OS-level control or can commit to Reserved Instances for major cost savings."
+
+---
+
+### Async Job Queues with SQS
+
+When an interviewer asks "how would you handle a time-consuming task without blocking the API response?" — SQS is the answer.
+
+**Pattern:**
+\`\`\`
+POST /api/process-video
+  → API validates request, writes job to SQS, returns 202 Accepted
+  → Lambda (or ECS worker) polls SQS, processes video, updates DB
+  → Client polls GET /api/jobs/:id or receives webhook on completion
+\`\`\`
+
+**Why this pattern:**
+- API response time stays fast (<100ms) regardless of job duration
+- SQS retries automatically on failure (with exponential backoff)
+- Scales consumers independently from API servers
+- DLQ captures jobs that fail repeatedly without losing them
+
+**Key configuration:**
+- \`VisibilityTimeout\` = 2× your max processing time (prevents false redelivery)
+- \`MessageRetentionPeriod\` = 4 days (default) — long enough to investigate DLQ failures
+- \`MaxReceiveCount\` = 3–5 before routing to DLQ
+
+---
+
+### IAM Least-Privilege in Practice
+
+**The principle:** every service (Lambda, ECS task, EC2 instance) gets its own IAM role with the minimum permissions to do its job.
+
+**Example — Lambda that reads from S3 and writes to DynamoDB:**
+\`\`\`json
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "arn:aws:s3:::my-uploads-bucket/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["dynamodb:PutItem", "dynamodb:UpdateItem"],
+      "Resource": "arn:aws:dynamodb:us-east-1:123456789:table/ProcessingJobs"
+    }
+  ]
+}
+\`\`\`
+
+**What interviewers are testing:**
+- Do you scope by specific Action (not \`*\`)
+- Do you scope by specific Resource ARN (not \`"*"\`)
+- Do you use separate roles per service (not one mega-role)
+- Do you know the difference between identity-based and resource-based policies
+
+**Red flag answer:** "I just give it AdministratorAccess so it doesn't fail." That's an immediate no at any senior-level company.
+
+---
+
+### CloudWatch — Observability Basics
+
+Every production backend needs metrics, logs, and alarms. CloudWatch is the AWS-native answer.
+
+**The three pillars:**
+1. **Logs** — Lambda auto-sends stdout/stderr to CloudWatch Logs. Query with CloudWatch Insights.
+2. **Metrics** — Lambda publishes Invocations, Errors, Duration, Throttles automatically. Add custom metrics for business KPIs.
+3. **Alarms** — alert on error rate > 1%, p99 latency > 2s, DLQ message count > 0.
+
+**The interview answer on observability:**
+> "I set up CloudWatch alarms on error rate and p99 latency with SNS → PagerDuty for on-call. I always alarm on DLQ message count > 0 because that means jobs are failing silently. For debugging I use CloudWatch Insights to query structured JSON logs — I log every request with a requestId, userId, and duration so I can trace a specific user's failure."
+
+---
+
+### RDS in a VPC — The Connection Problem
+
+Putting RDS in a private VPC subnet is correct. But Lambda needs special configuration to reach it:
+
+**Without VPC:** Lambda can't reach RDS (it's private).
+**With VPC:** Lambda gets a VPC network interface — cold starts increase, NAT Gateway needed for internet access.
+
+**The production pattern:**
+- Lambda in the same VPC + private subnet as RDS
+- RDS Proxy in front of RDS to handle connection pooling (Lambda creates a new connection on every cold start — RDS Proxy buffers this)
+- NAT Gateway in a public subnet for Lambda to call external APIs
+
+**Interview answer:** "Lambda in a VPC adds 100–200ms cold start overhead from ENI attachment. I accept that trade-off for database access, but I add RDS Proxy to prevent connection exhaustion at scale."`,
+    quiz: [
+      {
+        q: 'Your API endpoint receives a video upload. Processing takes 3–8 minutes. What architecture do you use?',
+        options: [
+          'Increase Lambda timeout to 15 minutes and process synchronously',
+          'Return 202 Accepted, write a job to SQS, process asynchronously in a worker, let the client poll for status',
+          'Process in the Next.js API route — server-side processing is fine',
+          'Use a WebSocket to keep the connection open during processing',
+        ],
+        correct: 1,
+        explanation: 'Synchronous processing blocks the API response and ties up resources. SQS decouples the API (fast 202) from the worker (slow processing). The client polls or receives a webhook. This is the standard pattern for any task that takes longer than a few seconds.',
+      },
+      {
+        q: 'A Lambda function is overwhelming your RDS database with too many simultaneous connections during traffic spikes. What is the correct fix?',
+        options: [
+          'Increase RDS instance size',
+          'Add Reserved Concurrency to Lambda to cap simultaneous executions',
+          'Add RDS Proxy to pool and manage connections between Lambda and RDS',
+          'Switch Lambda to ECS',
+        ],
+        correct: 2,
+        explanation: 'RDS Proxy maintains a connection pool and multiplexes many Lambda invocations over fewer database connections. Reserved Concurrency caps Lambda but doesn\'t fix the connection-per-invocation problem. RDS Proxy is the right tool — it handles bursts without changing your Lambda or application code.',
+      },
+      {
+        q: 'You need a Lambda to read from an S3 bucket. How do you grant it access?',
+        options: [
+          'Hardcode AWS credentials in environment variables',
+          'Attach an IAM role to the Lambda with s3:GetObject on that specific bucket ARN',
+          'Make the S3 bucket public',
+          'Add the Lambda\'s account ID to the bucket policy with full access',
+        ],
+        correct: 1,
+        explanation: 'IAM roles are the correct way — no credentials to rotate or leak, automatically assumed at runtime. Scope to s3:GetObject (not s3:*) on the specific bucket ARN (not "*"). Hardcoded credentials are a critical security vulnerability and will be caught immediately in a security audit.',
+      },
+      {
+        q: 'Jobs are being processed twice. Your SQS consumer deletes the message after processing finishes, which takes 45 seconds. The VisibilityTimeout is 30 seconds. What happens?',
+        options: [
+          'Nothing — SQS waits until the consumer deletes the message regardless of timeout',
+          'After 30 seconds, SQS makes the message visible again and another consumer picks it up, causing duplicate processing',
+          'The consumer gets an error after 30 seconds and the message is sent to the DLQ',
+          'SQS extends the visibility timeout automatically when the consumer is active',
+        ],
+        correct: 1,
+        explanation: 'VisibilityTimeout must be longer than your maximum processing time. At 30s, SQS assumes the first consumer failed and redelivers to a second consumer — both finish, both delete, you get duplicate side effects. Fix: set VisibilityTimeout to 90–120s (2× max processing time). Alternatively, extend the timeout programmatically mid-processing.',
+      },
+    ],
+  },
 ]
