@@ -1974,4 +1974,661 @@ app.post('/users', (req, res) => res.statusCode(201).json({ created: req.body })
       hints: ['Create a handlers array: [...middlewares, ...routeHandlers]', 'Use index + next = () => runNext(index+1) pattern', 'If no route matched, return {status: 404, body: {error: "not found"}}'],
     },
   },
+  {
+    id: 'cc-interview-be-m09', track: 'crash', title: 'Behavioral STAR Stories for Backend Devs',
+    subtitle: 'Turn your backend work into compelling interview answers — shipping APIs, fixing production bugs, and optimizing slow queries as STAR stories.',
+    courseObjective: CC_BE_OBJ, crashId: 'cc-interview-backend', crashTitle: 'Backend Interview Prep',
+    level: 'PhD', xp: 240, duration: 16, module: 9, certArea: 'Backend Interview Prep',
+    content: `Backend behavioral questions focus on ownership, reliability, and systematic thinking. Interviewers want to know if you can ship and maintain systems under real-world conditions — not just write code that passes tests.
+
+## STAR for Backend Roles
+
+The STAR framework applies directly: Situation (one sentence of context), Task (your specific scope), Action (3–5 concrete steps with tool and metric names), Result (a number that shows impact).
+
+Backend results that impress: query time reduced from X ms to Y ms, API response time P99 from Xs to Ys, number of daily errors reduced by N%, concurrent users supported increased from X to Y.
+
+## Five Key Backend Behavioral Questions
+
+**1. "Tell me about a time you fixed a production performance issue."**
+Story structure: what was slow, how you measured it (EXPLAIN ANALYZE, APM, logs), root cause (N+1, missing index, no connection pool), the fix, and the measured improvement.
+
+Example: "Our job listings endpoint was taking 4.2 seconds at P99. I ran EXPLAIN ANALYZE and found a sequential scan on a 500K-row table filtering by status and created_at. I added a compound index (status, created_at DESC). Query time dropped from 4.2s to 18ms — a 230× improvement."
+
+**2. "Describe a time you designed an API that others consumed."**
+Focus on design decisions: REST vs RPC, versioning strategy, error response shape, pagination design, auth scheme. Show you thought about the consumer's experience.
+
+**3. "Tell me about a race condition or concurrency bug you fixed."**
+This tests deep systems understanding. Describe the symptom, how you isolated it (load testing, logs showing duplicate entries), and the fix (database-level unique constraint + ON CONFLICT, optimistic locking, transaction isolation level).
+
+**4. "Give an example of a time you improved reliability."**
+Error rates, retry logic, circuit breakers, graceful degradation, healthcheck endpoints. Numbers: error rate before and after, uptime improvement.
+
+**5. "Tell me about a time you had to learn a new backend technology quickly."**
+Timeline + approach + outcome. Supabase, Drizzle ORM, Zod, a new auth library — describe the learning method and what you shipped with it.
+
+## Building Backend STAR Stories from Your Projects
+
+Your job board backend is a complete project. Map your backend work to these questions:
+- Performance: any slow Supabase query you debugged
+- API design: the REST endpoints you built (job listings, applications, auth)
+- Reliability: error handling in your API routes
+- Security: RLS policies, auth middleware, input validation with Zod`,
+    keyTerms: [
+      { term: 'P99 Latency', definition: 'The 99th percentile response time — the slowest 1% of requests. A meaningful production metric because average latency hides tail performance.' },
+      { term: 'EXPLAIN ANALYZE', definition: 'Postgres command that shows the execution plan and actual timing for a query — used to find sequential scans, missing indexes, and join inefficiencies.' },
+      { term: 'Compound Index', definition: 'A database index on multiple columns in a specific order — the column order matters and should match the most common query filter pattern.' },
+      { term: 'Race Condition', definition: 'A bug where two concurrent operations produce incorrect results because they both read state before either writes — prevented with transactions, locks, or UNIQUE constraints.' },
+      { term: 'Graceful Degradation', definition: 'Designing a system to serve a degraded but functional response when a dependency fails, rather than returning an error — e.g., showing cached data when the DB is slow.' },
+    ],
+    quiz: [
+      { q: 'Your API endpoint has a P99 of 4 seconds. Before changing anything, the most important first step is:', options: ['Add a cache layer', 'Run EXPLAIN ANALYZE on the slowest queries to find the bottleneck', 'Scale up the server', 'Rewrite the endpoint in a faster language'], correct: 1, explanation: 'Measuring before optimizing is the senior engineer differentiator. EXPLAIN ANALYZE shows exactly what the database is doing — sequential scan, join strategy, estimated vs actual rows — telling you where to apply effort.' },
+      { q: 'In a STAR story about fixing a race condition, the most important element of the Action is:', options: ['Listing all the code files changed', 'Describing the exact isolation mechanism used (UNIQUE constraint, transaction, SELECT FOR UPDATE) and why it prevents the race', 'Explaining how you found the documentation for the fix', 'Describing how many retries were needed'], correct: 1, explanation: 'Race condition fixes require explaining the mechanism: why does a UNIQUE constraint + ON CONFLICT prevent duplicate inserts? Why does SELECT FOR UPDATE serialize access? The interviewer is testing your understanding of concurrency primitives.' },
+      { q: 'A strong backend performance result in a STAR story includes:', options: ['The number of code lines changed', 'Specific before/after metrics: query time from 4.2s to 18ms, error rate from 2.1% to 0.03%', 'The complexity rating of the fix', 'The number of engineers who reviewed the PR'], correct: 1, explanation: 'Backend performance stories need measurement numbers — before and after. "Much faster" is meaningless. "230× faster — from 4.2s to 18ms" is memorable and demonstrates engineering rigor.' },
+      { q: 'For the behavioral question "describe an API you designed for others to use," the strongest answer focuses on:', options: ['The HTTP methods used', 'Design decisions: versioning strategy, error response shape, auth scheme, pagination — and what tradeoffs you made', 'The number of endpoints in the API', 'The language and framework used'], correct: 1, explanation: 'API design questions test product thinking on the backend — did you think about the consumer? Versioning, error shapes, and auth scheme decisions show you designed for long-term usability, not just for your own use.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a STAR answer object for a backend performance improvement story. Include a realistic situation (slow endpoint), your specific task (scope + ownership), action (3+ specific steps with tool names and what you found), and a quantified result. Use real numbers.',
+      starterCode: `const backendPerformanceSTAR = {
+  question: 'Tell me about a time you fixed a production performance issue.',
+  situation: '',  // What was slow and what was the user impact?
+  task: '',       // Your specific scope — what were you responsible for?
+  action: '',     // 3+ steps: how did you diagnose it, what did you find, what did you change?
+  result: ''      // Before/after numbers
+}
+
+console.log(JSON.stringify(backendPerformanceSTAR, null, 2))`,
+      solution: `const backendPerformanceSTAR = {
+  question: 'Tell me about a time you fixed a production performance issue.',
+  situation: 'Our job board listings endpoint was responding in 4.2 seconds at P99, causing users to see a loading spinner for several seconds before any jobs appeared. Mobile bounce rate was 68% on that page.',
+  task: 'I owned the backend performance sprint solo — no other engineers were assigned. I had one week to reduce the endpoint latency to under 500ms.',
+  action: '1) Added logging to measure per-query time inside the endpoint — found 90% of the time was spent in one Supabase query. 2) Ran EXPLAIN ANALYZE on that query — found a full sequential scan on 500K rows, filtering by status and created_at with no index. 3) Added a compound index on (status, created_at DESC) to match the query pattern. 4) Added a 5-minute server-side cache with stale-while-revalidate for the listings page since jobs don\'t change by the second. 5) Verified with a load test (k6, 100 concurrent users) before and after.',
+  result: 'Query time dropped from 4.2s to 18ms — a 230× improvement. P99 endpoint latency went from 4.2s to 95ms total. Mobile bounce rate on the listings page dropped from 68% to 31% in the following week.'
+}
+
+console.log(JSON.stringify(backendPerformanceSTAR, null, 2))`,
+      hints: ['Name specific tools in the Action: EXPLAIN ANALYZE, k6, Supabase Studio, APM dashboard', 'The Result must be before/after numbers — P99 latency, error rate, bounce rate, or throughput', 'Own the work: say "I" not "we" — the interviewer wants your specific contribution'],
+    },
+  },
+  {
+    id: 'cc-interview-be-m10', track: 'crash', title: 'Trade-off Articulation for Backend Architecture',
+    subtitle: 'REST vs GraphQL, SQL vs NoSQL, monolith vs microservices — the framework for defending every backend decision in an interview.',
+    courseObjective: CC_BE_OBJ, crashId: 'cc-interview-backend', crashTitle: 'Backend Interview Prep',
+    level: 'PhD', xp: 240, duration: 15, module: 10, certArea: 'Backend Interview Prep',
+    content: `Backend trade-off questions test whether you choose tools based on fit or familiarity. A senior backend engineer doesn't just know how to use REST — they know when REST is wrong and can articulate why.
+
+## The Backend Trade-off Framework
+
+Every answer: **What were you building → What did you need → Alternatives considered → What you chose → What you gave up**.
+
+## The 7 Critical Backend Trade-off Questions
+
+**1. REST vs GraphQL vs tRPC**
+REST: simple, HTTP-native, broad tooling. GraphQL: flexible client queries, avoids over-fetching — worth the complexity when multiple clients need different data shapes. tRPC: type-safe between TS server and client, no schema files — ideal for Next.js monorepos. For a simple CRUD API with 1–2 clients, REST wins. GraphQL is justified at scale with heterogeneous clients.
+
+**2. SQL vs NoSQL**
+PostgreSQL wins for: relational data with foreign keys, transactions, complex queries, row-level security. MongoDB/DynamoDB win for: flexible schemas that change frequently, horizontal scaling of simple document reads, or when you need geographic distribution. For most web applications with user-generated structured data, SQL is correct.
+
+**3. Monolith vs Microservices**
+Under 20 engineers and 100K DAU: monolith wins every time. The coordination overhead of microservices (distributed transactions, service discovery, network latency) is only justified by scale. Starting with microservices is an architectural debt bomb for small teams.
+
+**4. JWT vs Session Cookies**
+JWT: stateless, portable across domains, great for mobile. Downside: can't revoke a token before expiry without extra infrastructure. Session cookies: stateful (DB lookup per request), but instantly revocable. For a web app with a single domain and security requirements: session cookies or JWTs stored in httpOnly SameSite cookies.
+
+**5. Synchronous vs Asynchronous Processing**
+Email sending, PDF generation, webhooks, image processing: always async (job queue). User auth, page data, CRUD: synchronous. Mixing sync and async without a queue leads to slow APIs and unhandled failures.
+
+**6. ORM vs Raw SQL**
+Drizzle/Prisma: type safety, migrations, schema-as-code. Overhead for simple queries is negligible. Raw SQL: maximum control, no abstraction — necessary for complex queries an ORM generates poorly. Use ORM by default, drop to raw SQL for complex aggregations.
+
+**7. Vertical vs Horizontal Scaling**
+Vertical (bigger server): simpler, no code changes, finite limit. Horizontal (more servers): stateless design required, needs load balancer, scales infinitely. Start vertical; move horizontal when vertical hits its ceiling.`,
+    keyTerms: [
+      { term: 'Over-fetching', definition: 'An API returning more data than the client needs — waste of bandwidth and a motivation for GraphQL\'s flexible field selection.' },
+      { term: 'Distributed Transaction', definition: 'A transaction spanning multiple services in a microservices architecture — much harder than a single-service DB transaction and a key cost of microservices.' },
+      { term: 'Stateless Design', definition: 'Server processes that don\'t store session state between requests — required for horizontal scaling since any server can handle any request.' },
+      { term: 'Job Queue', definition: 'A system for processing work asynchronously: tasks are added to a queue and workers process them — prevents slow background work from blocking API responses.' },
+      { term: 'Schema-as-Code', definition: 'Defining database schema in application code (Drizzle, Prisma) with version-controlled migrations — provides type safety and reproducible deployments.' },
+    ],
+    quiz: [
+      { q: 'A startup with 3 engineers is building their first product. They propose microservices for scalability. Your response should be:', options: ['Agree — scalability is always important', 'Recommend a monolith — the overhead of microservices will slow the team more than it helps at this stage, and they can split later when scale demands it', 'Suggest serverless functions instead of microservices', 'Ask if they have a DevOps engineer first'], correct: 1, explanation: 'Microservices are a solution to scale problems. Before you have the scale problems, you only have the costs (distributed tracing, service mesh, independent deployments). Start as a monolith, extract services when a specific bottleneck demands it.' },
+      { q: 'When is GraphQL worth the added complexity over REST?', options: ['Always — GraphQL is strictly better', 'When multiple heterogeneous clients need different data shapes from the same endpoint, and over-fetching is a real performance problem', 'When the team prefers schemas to URL routes', 'For any API with more than 10 endpoints'], correct: 1, explanation: 'GraphQL\'s flexibility is its justification. If all clients need the same data shape, REST is simpler and equally effective. GraphQL pays for itself when mobile needs fewer fields than web, and you want one API to serve both efficiently.' },
+      { q: 'Why is JWT chosen over session cookies for a mobile API?', options: ['JWTs are more secure than cookies', 'JWTs are stateless and can be sent in Authorization headers — mobile apps don\'t have the same cookie infrastructure as browsers', 'Cookies are deprecated in mobile apps', 'JWTs automatically refresh on expiry'], correct: 1, explanation: 'Mobile apps don\'t benefit from the browser\'s automatic cookie handling. JWTs stored in secure storage and sent via Authorization headers work naturally in mobile HTTP clients. The stateless nature also means no server-side session lookup per request.' },
+      { q: 'When should you use a job queue instead of synchronous processing?', options: ['For all operations that take more than 100ms', 'For operations that don\'t need to complete before the HTTP response: email, PDF generation, webhooks, image processing', 'Only for operations that might fail', 'Always — queues improve reliability for all operations'], correct: 1, explanation: 'Job queues are for work that doesn\'t block the user\'s current request. Sending a welcome email, generating a report, or processing a payment webhook can all happen asynchronously — the API responds immediately and the work happens in the background.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `backendDecision(scenario, criteria, options, chosen, tradeoffAccepted)` that formats a backend architecture decision. Then document two backend decisions from a job board project: one about the data layer (SQL vs other) and one about API design (REST vs alternatives).',
+      starterCode: `function backendDecision(scenario, criteria, options, chosen, tradeoffAccepted) {
+  return \`SCENARIO: \${scenario}\\nCRITERIA: \${criteria}\\nOPTIONS: \${options.join(' vs ')}\\nCHOSEN: \${chosen}\\nTRADEOFF ACCEPTED: \${tradeoffAccepted}\`
+}
+
+const dataLayerDecision = backendDecision(
+  'Data layer for a job board with users, companies, jobs, and applications',
+  '...', ['...', '...'], '...', '...'
+)
+
+const apiDesignDecision = backendDecision(
+  'API design for public and authenticated job board endpoints',
+  '...', ['...', '...'], '...', '...'
+)
+
+console.log(dataLayerDecision)
+console.log('---')
+console.log(apiDesignDecision)`,
+      solution: `function backendDecision(scenario, criteria, options, chosen, tradeoffAccepted) {
+  return \`SCENARIO: \${scenario}\\nCRITERIA: \${criteria}\\nOPTIONS: \${options.join(' vs ')}\\nCHOSEN: \${chosen}\\nTRADEOFF ACCEPTED: \${tradeoffAccepted}\`
+}
+
+const dataLayerDecision = backendDecision(
+  'Data layer for a job board with users, companies, jobs, and applications',
+  'Relational data model (users → applications → jobs → companies require FK relationships), row-level security for user data isolation, strong querying for filtering/sorting job listings',
+  ['PostgreSQL via Supabase', 'MongoDB Atlas', 'Firebase Firestore'],
+  'PostgreSQL via Supabase — foreign keys enforce relational integrity, Row Level Security handles data isolation at the DB level, Postgres full-text search handles job listing search, and Supabase adds auth/realtime on top.',
+  'Vendor dependency on Supabase. Accepted because the time-to-ship benefit was ~3 weeks vs a custom Postgres setup, and migrating to raw Postgres later is straightforward since the underlying DB is standard Postgres.'
+)
+
+const apiDesignDecision = backendDecision(
+  'API design for public and authenticated job board endpoints',
+  'Public job listings need SEO (no auth wall), authenticated endpoints need user-scoped data, type safety between client and server, simple to maintain solo',
+  ['REST with Next.js API routes', 'GraphQL with Apollo', 'tRPC'],
+  'REST with Next.js API routes and Zod validation — well-understood HTTP semantics, easy to document, Next.js API routes co-locate with the frontend in the same repo, Zod validates input at the boundary.',
+  'No built-in type sharing between API and client (unlike tRPC). Mitigated by exporting Zod schemas as the source of truth and inferring TypeScript types from them.'
+)
+
+console.log(dataLayerDecision)
+console.log('---')
+console.log(apiDesignDecision)`,
+      hints: ['Criteria should describe what the solution needed to do well — not what you wanted to learn', 'The tradeoff accepted shows honesty and senior-level thinking — name what you gave up', 'Use real technology names and explain why they fit your specific constraints'],
+    },
+  },
+  {
+    id: 'cc-interview-be-m11', track: 'crash', title: '3am Backend Incident — Debug Under Pressure',
+    subtitle: 'API returning 500s, database unreachable, memory leak at 3am. Systematic backend diagnosis, safe resolution, and clear communication.',
+    courseObjective: CC_BE_OBJ, crashId: 'cc-interview-backend', crashTitle: 'Backend Interview Prep',
+    level: 'PhD', xp: 260, duration: 17, module: 11, certArea: 'Backend Interview Prep',
+    content: `Backend 3am incidents are the most common form of this interview question for backend roles. The answer reveals how systematic you are, whether you prioritize service restoration over root-cause analysis, and how you communicate under pressure.
+
+## Backend Incident Framework
+
+**Phase 1 — Assess**: Check uptime monitor, server health (CPU, memory, disk), and error monitoring (Sentry). Determine: is the whole service down, or one endpoint? Is it all users or specific ones?
+
+**Phase 2 — Hypothesize**: What changed recently? Last deployment? Config change? Traffic spike? Third-party API dependency?
+
+**Phase 3 — Isolate**: Test the smallest possible unit. Can you reproduce the error with a direct API call? Is the DB reachable? Is the error in logs or just in user reports?
+
+**Phase 4 — Fix or Rollback**: Rollback if a deployment caused it. Fix only if rollback isn't possible and the fix is one-line safe.
+
+**Phase 5 — Post-mortem**: Root cause, detection gap, prevention.
+
+## Backend Scenario Walk-Through
+
+**Scenario**: "Your API is returning 500s on all authenticated endpoints. It started 20 minutes ago. Walk me through your response."
+
+**Assess**: Check Sentry — 100% of errors are "JWT verification failed: invalid signature." Started exactly when the new deployment went live 22 minutes ago.
+
+**Hypothesize**: The deployment changed something in the JWT verification path. Check the diff — a developer changed the JWT_SECRET environment variable name from \`JWT_SECRET\` to \`JWT_SIGNING_SECRET\` in the code but didn't update the environment variable in production.
+
+**Isolate**: Confirm by checking the production environment variables — \`JWT_SECRET\` is set but the code now reads \`process.env.JWT_SIGNING_SECRET\` which is undefined. \`jwt.verify(token, undefined)\` throws "invalid signature" on all tokens.
+
+**Fix or Rollback**: Rollback the deployment first (30 seconds). 500s stop immediately. Post-mortem action: add an environment variable validation check at server startup that throws a clear error if required vars are missing — fail fast on startup rather than silently at runtime.
+
+## Common Backend Production Incidents
+
+- **Database connection pool exhausted**: All requests hang waiting for a connection. Symptom: requests time out, no DB errors until pool timeout. Fix: tune pool size, add connection timeout error handling.
+- **Memory leak**: Server memory climbs over hours until OOM kill. Symptom: gradual slowdown then sudden restart. Fix: profile with \`--inspect\`, look for growing arrays or unclosed streams.
+- **Third-party API timeout**: External service is slow — your API blocks waiting. Fix: add timeout (AbortController), return cached response or graceful degradation.
+- **Environment variable missing in production**: Code deploys fine in staging but crashes in production because a secret isn't set. Fix: validate all required env vars at startup.`,
+    keyTerms: [
+      { term: 'Connection Pool Exhaustion', definition: 'All database connections in the pool are in use — new requests block until a connection is freed. Caused by slow queries, long transactions, or too many concurrent requests.' },
+      { term: 'Memory Leak', definition: 'A process that gradually consumes more memory without releasing it — common causes include unbounded arrays, unclosed streams, or event listeners never removed.' },
+      { term: 'Fail Fast', definition: 'A design principle where a system immediately errors on invalid configuration at startup rather than discovering it at runtime under load.' },
+      { term: 'Graceful Degradation', definition: 'Returning a cached or partial response when a dependency fails rather than returning a 500 error — preserves user experience during partial outages.' },
+      { term: 'OOM Kill', definition: 'Operating system forcefully kills a process that consumes too much memory — a Node.js server with a memory leak will eventually get OOM killed, causing downtime.' },
+    ],
+    quiz: [
+      { q: 'All authenticated API endpoints are returning 500 errors. Your first action should be:', options: ['Push a hotfix to production', 'Check error monitoring to find the error message, then correlate with recent deployments', 'Restart the server', 'Notify users immediately'], correct: 1, explanation: 'Assess before acting. Error monitoring (Sentry, logs) gives the exact error message in seconds. Correlating with deployment time immediately narrows the search to what changed.' },
+      { q: 'Server memory has grown from 200MB to 1.8GB over 6 hours and the OOM kill is imminent. The safest immediate action is:', options: ['Restart the server, then investigate the memory leak root cause', 'Add more RAM to the server immediately', 'Disable the endpoints that use the most memory', 'Keep running and profile in production to catch the leak live'], correct: 0, explanation: 'Restart restores service immediately — critical at 3am. The root cause investigation (heap snapshot, --inspect profiling) happens in a non-production environment after service is restored.' },
+      { q: 'A required environment variable is missing in production, causing crashes. How do you prevent this class of incident?', options: ['Use default values for all environment variables', 'Add startup validation that throws a clear error if any required variable is missing or empty', 'Document which variables are required in the README', 'Use a try/catch around every process.env access'], correct: 1, explanation: 'Fail fast on startup: validate all required env vars before the server begins accepting requests. A clear error "Missing required env: JWT_SECRET" at startup is infinitely better than a cryptic runtime error under load.' },
+      { q: 'A third-party payment API is timing out, causing your checkout endpoint to hang for 30 seconds. The correct backend fix is:', options: ['Increase the timeout to 60 seconds so it doesn\'t fail', 'Add an AbortController timeout, return a 503 with a retry-after header, and alert on the payment provider\'s status page', 'Switch payment providers immediately', 'Queue checkout requests until the provider recovers'], correct: 1, explanation: 'Timeouts prevent your server from hanging. A 503 with retry-after tells the client the problem is temporary. Alerting on the provider\'s status page distinguishes their outage from your code bug.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `startupEnvCheck(requiredVars)` that validates all required environment variables at server startup. It should: throw a descriptive error listing ALL missing vars (not just the first one), include the env var name and a hint about where to find it. Test it with a mix of present and missing variables.',
+      starterCode: `function startupEnvCheck(requiredVars) {
+  // requiredVars: [{ name: string, hint: string }]
+  // Check all required env vars
+  // If ANY are missing, throw ONE error listing ALL missing vars with hints
+  // If all present, return true (startup can continue)
+}
+
+// Simulate: JWT_SECRET is set, SUPABASE_SERVICE_ROLE_KEY is missing
+process.env.JWT_SECRET = 'my-secret-key'
+// process.env.SUPABASE_SERVICE_ROLE_KEY is not set
+// process.env.STRIPE_SECRET_KEY is not set
+
+try {
+  startupEnvCheck([
+    { name: 'JWT_SECRET', hint: 'Generate with: openssl rand -base64 32' },
+    { name: 'SUPABASE_SERVICE_ROLE_KEY', hint: 'Found in Supabase dashboard → Settings → API' },
+    { name: 'STRIPE_SECRET_KEY', hint: 'Found in Stripe dashboard → Developers → API keys' },
+  ])
+  console.log('All env vars present — server starting')
+} catch (e) {
+  console.error(e.message)
+}`,
+      solution: `function startupEnvCheck(requiredVars) {
+  const missing = requiredVars.filter(v => !process.env[v.name])
+
+  if (missing.length > 0) {
+    const details = missing.map(v => \`  - \${v.name}: \${v.hint}\`).join('\\n')
+    throw new Error(\`Server startup failed — \${missing.length} required environment variable\${missing.length > 1 ? 's are' : ' is'} missing:\\n\${details}\\n\\nSet these in your .env file or deployment environment.\`)
+  }
+
+  return true
+}
+
+process.env.JWT_SECRET = 'my-secret-key'
+
+try {
+  startupEnvCheck([
+    { name: 'JWT_SECRET', hint: 'Generate with: openssl rand -base64 32' },
+    { name: 'SUPABASE_SERVICE_ROLE_KEY', hint: 'Found in Supabase dashboard → Settings → API' },
+    { name: 'STRIPE_SECRET_KEY', hint: 'Found in Stripe dashboard → Developers → API keys' },
+  ])
+  console.log('All env vars present — server starting')
+} catch (e) {
+  console.error(e.message)
+}`,
+      hints: ['Collect ALL missing vars first, then throw one error — don\'t throw on the first missing var', 'Include the hint in the error message so the developer knows exactly where to find the value', 'A clear startup error is far better than a cryptic runtime error under production load'],
+    },
+  },
+  {
+    id: 'cc-interview-be-m12', track: 'crash', title: 'Product Thinking for Backend Engineers',
+    subtitle: 'Backend engineers who design APIs users love — not just APIs that work — get the offer. Connect every endpoint and schema decision to user outcomes.',
+    courseObjective: CC_BE_OBJ, crashId: 'cc-interview-backend', crashTitle: 'Backend Interview Prep',
+    level: 'PhD', xp: 260, duration: 15, module: 12, certArea: 'Backend Interview Prep',
+    content: `Backend engineers make decisions every day that directly affect user experience: API response shape, error messages, pagination design, webhook reliability. Product thinking for a backend engineer is asking "how will the consumer of this API feel when they use it?" before writing the handler.
+
+## Product Thinking at the API Layer
+
+**Error messages are product decisions.** A 400 response that says \`{"error": "invalid_input"}\` is a bad product. A 400 that says \`{"error": "validation_failed", "fields": {"email": "must be a valid email address", "password": "must be at least 8 characters"}}\` is a good product — the frontend can display field-level errors without custom parsing.
+
+**Pagination design is a product decision.** Offset pagination breaks when items are inserted between pages — users miss records. Cursor-based pagination is correct for real-time data. Choosing the wrong one creates bugs users experience directly.
+
+**Webhook reliability is a product decision.** If your webhook fires and the receiver is down, do you retry? If not, the receiver's integration breaks silently. Adding exponential backoff retry with a dead-letter queue is invisible infrastructure but it directly determines whether integrations are reliable.
+
+## The API Consumer Question
+
+For every endpoint you design, ask: "If I were a frontend engineer consuming this API, what would I need and what would annoy me?"
+
+- Am I making the frontend do work that the API could do? (Sorting, filtering, formatting)
+- Am I over-fetching (returning 50 fields when the UI needs 5)?
+- Is my error response specific enough for the frontend to show a user-friendly message?
+- Is my pagination design correct for the data's access pattern?
+
+## Backend Product Narrative
+
+Weak: "I built a REST API with CRUD endpoints for jobs, applications, and users."
+
+Strong: "I designed the job listings API around the frontend's specific needs: a single endpoint returns jobs with company name and location pre-joined (so the frontend doesn't need a second request), supports cursor-based pagination (so new listings don't cause users to see duplicates as they scroll), and validates all input with Zod (so API errors are field-specific and the frontend can render them directly). The schema was designed around the query patterns the product needed, not textbook normalization."`,
+    keyTerms: [
+      { term: 'API Consumer Empathy', definition: 'Designing API endpoints from the perspective of the developer consuming them — error messages, response shape, and pagination that reduce frontend work.' },
+      { term: 'Cursor Pagination', definition: 'Pagination using a pointer to the last seen item instead of an offset — prevents duplicates and missed records when data is inserted between pages.' },
+      { term: 'Field-Level Error Response', definition: 'An API error response that maps each invalid field to a specific error message — enables frontends to display validation errors directly without custom parsing.' },
+      { term: 'Dead Letter Queue', definition: 'A queue holding failed webhook deliveries that exceeded retry attempts — allows manual inspection and reprocessing rather than silent data loss.' },
+      { term: 'Schema for Query Patterns', definition: 'Designing the database schema around how the product will actually query data, not just around normalization theory — avoids N+1 and slow joins at runtime.' },
+    ],
+    quiz: [
+      { q: 'Your API returns \`{"error": "bad request"}\` for all validation failures. What product problem does this create?', options: ['It causes security vulnerabilities', 'The frontend can\'t show field-specific error messages — users see a generic error with no guidance on what to fix', 'It increases API response time', 'It causes CORS errors'], correct: 1, explanation: 'Generic error messages force frontends to guess what failed and show useless messages like "Something went wrong." Field-level errors like {"fields": {"email": "invalid format"}} let the frontend render inline validation directly.' },
+      { q: 'A job board uses offset pagination (LIMIT 20 OFFSET 40). A new job is posted while a user is on page 3. When the user loads page 4:', options: ['The new job appears at the top of page 4', 'The user misses the job that shifted positions — a record they would have seen is skipped', 'The pagination automatically adjusts', 'The API returns an error'], correct: 1, explanation: 'Offset pagination breaks when rows are inserted mid-session: every new row shifts all subsequent offsets by 1. Cursor pagination (AFTER jobId=xyz) is stable because it references a specific record, not a position.' },
+      { q: 'Backend product thinking means:', options: ['Following REST conventions strictly', 'Designing every API, schema, and error response from the consumer\'s perspective — making the frontend\'s job easier, not just making the backend work', 'Writing more comprehensive documentation', 'Adding more endpoints for flexibility'], correct: 1, explanation: 'Product thinking on the backend is asking "what does the consumer need?" at every decision — response shape, error format, pagination design, field selection. The backend serves the product, not abstract engineering principles.' },
+      { q: 'What does exponential backoff retry for webhook delivery prevent?', options: ['SQL injection attacks on the webhook handler', 'Silent data loss when a webhook receiver is temporarily unavailable', 'Rate limiting by the receiving server', 'CORS errors on the webhook endpoint'], correct: 1, explanation: 'Without retry, a webhook that fires when the receiver is down (e.g., during their deployment) is silently lost. Exponential backoff retry (1s, 2s, 4s, 8s...) handles transient failures and makes integrations reliable without requiring the receiver to be available at the exact moment of the event.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `validateAndRespond(input, schema)` that validates API input using a simple schema definition and returns a product-quality error response with field-level messages when validation fails. Test it with both valid and invalid inputs.',
+      starterCode: `function validateAndRespond(input, schema) {
+  // schema: { fieldName: { required: bool, type: string, minLength?: number } }
+  // If valid: return { success: true, data: input }
+  // If invalid: return { success: false, error: 'validation_failed', fields: { fieldName: 'error message' } }
+}
+
+const schema = {
+  email: { required: true, type: 'string', pattern: /@/ },
+  password: { required: true, type: 'string', minLength: 8 },
+  name: { required: false, type: 'string' }
+}
+
+console.log(validateAndRespond({ email: 'not-an-email', password: 'short' }, schema))
+console.log(validateAndRespond({ email: 'user@example.com', password: 'securepassword123' }, schema))`,
+      solution: `function validateAndRespond(input, schema) {
+  const fieldErrors = {}
+
+  for (const [field, rules] of Object.entries(schema)) {
+    const value = input[field]
+
+    if (rules.required && (value === undefined || value === null || value === '')) {
+      fieldErrors[field] = \`\${field} is required\`
+      continue
+    }
+
+    if (value !== undefined && value !== null) {
+      if (rules.type && typeof value !== rules.type) {
+        fieldErrors[field] = \`\${field} must be a \${rules.type}\`
+      } else if (rules.minLength && value.length < rules.minLength) {
+        fieldErrors[field] = \`\${field} must be at least \${rules.minLength} characters\`
+      } else if (rules.pattern && !rules.pattern.test(value)) {
+        fieldErrors[field] = \`\${field} format is invalid\`
+      }
+    }
+  }
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return { success: false, error: 'validation_failed', fields: fieldErrors }
+  }
+
+  return { success: true, data: input }
+}
+
+const schema = {
+  email: { required: true, type: 'string', pattern: /@/ },
+  password: { required: true, type: 'string', minLength: 8 },
+  name: { required: false, type: 'string' }
+}
+
+console.log(validateAndRespond({ email: 'not-an-email', password: 'short' }, schema))
+// { success: false, error: 'validation_failed', fields: { email: 'email format is invalid', password: 'password must be at least 8 characters' } }
+
+console.log(validateAndRespond({ email: 'user@example.com', password: 'securepassword123' }, schema))
+// { success: true, data: { email: 'user@example.com', password: 'securepassword123' } }`,
+      hints: ['Collect ALL field errors, not just the first one', 'Field error messages should be specific enough to display directly to users', 'Pattern check should only run if the value is present and the right type'],
+    },
+  },
+  {
+    id: 'cc-interview-be-m13', track: 'crash', title: 'Performance Awareness — Backend 10× Optimization',
+    subtitle: '"How would you make this API 10x faster?" — the systematic backend performance framework: profile, isolate, fix, verify.',
+    courseObjective: CC_BE_OBJ, crashId: 'cc-interview-backend', crashTitle: 'Backend Interview Prep',
+    level: 'PhD', xp: 260, duration: 17, module: 13, certArea: 'Backend Interview Prep',
+    content: `Backend performance questions test whether you understand where time is actually spent in a server request. Most API latency is in the database — not the application code. The engineer who knows this and measures it first wins the interview.
+
+## Where Backend Time Goes
+
+A typical slow API request spends its time:
+- **60–90%**: Database queries (especially N+1, missing indexes, full table scans)
+- **5–20%**: External API calls (payment, email, SMS providers)
+- **2–10%**: JSON serialization of large payloads
+- **<1%**: Application logic (the code you write)
+
+This means almost every backend performance problem is a database problem or a dependency problem — not a Node.js optimization problem.
+
+## The Backend Performance Stack
+
+**Level 1 — Measure the query** (EXPLAIN ANALYZE)
+\`\`\`sql
+EXPLAIN ANALYZE
+SELECT j.*, c.name as company_name
+FROM jobs j JOIN companies c ON j.company_id = c.id
+WHERE j.status = 'active'
+ORDER BY j.created_at DESC
+LIMIT 20;
+-- Look for: Seq Scan on large tables, high actual rows vs estimated rows, slow sort operations
+\`\`\`
+
+**Level 2 — Add the right indexes**
+\`\`\`sql
+-- For the query above:
+CREATE INDEX jobs_status_created_idx ON jobs(status, created_at DESC);
+-- Compound index: left-to-right prefix rule — status first (equality filter), created_at second (sort)
+\`\`\`
+
+**Level 3 — Eliminate N+1 queries** (most common backend bug)
+\`\`\`js
+// BAD: 1 query for jobs + N queries for each company
+const jobs = await db.select().from(jobs)
+const withCompanies = await Promise.all(jobs.map(j => getCompany(j.companyId)))
+
+// GOOD: 1 JOIN
+const jobsWithCompanies = await db
+  .select({ ...jobs, companyName: companies.name })
+  .from(jobs).innerJoin(companies, eq(jobs.companyId, companies.id))
+\`\`\`
+
+**Level 4 — Add caching for expensive repeated operations**
+\`\`\`ts
+// Cache the result of an expensive aggregation
+const cacheKey = \`job-stats:\${new Date().toISOString().slice(0,10)}\`
+const cached = await redis.get(cacheKey)
+if (cached) return JSON.parse(cached)
+
+const stats = await db.select(/* expensive aggregation */)
+await redis.setex(cacheKey, 3600, JSON.stringify(stats))
+return stats
+\`\`\`
+
+**Level 5 — Move slow work out of the request path**
+Email sending, PDF generation, webhook delivery: these don't belong in a synchronous API response. Queue them and respond immediately.
+
+## Answering "How Would You Make This 10× Faster?"
+
+1. "I would measure — add query timing logs or use APM to find the slowest operations"
+2. "I would look at the DB: EXPLAIN ANALYZE on the slowest queries"
+3. "I would check for N+1 queries in the data layer"
+4. "I would add indexes targeting the WHERE and ORDER BY columns"
+5. "I would add caching for hot, expensive queries that return the same data frequently"
+6. "I would verify each optimization with a load test before and after"`,
+    keyTerms: [
+      { term: 'EXPLAIN ANALYZE', definition: 'Postgres command showing query execution plan and actual timing — reveals sequential scans, join strategies, and where query time is actually spent.' },
+      { term: 'Compound Index', definition: 'Index on multiple columns — column order follows the query\'s filter and sort pattern (equality filters first, range/sort columns last).' },
+      { term: 'Query Result Cache', definition: 'Storing expensive query results in Redis or in-memory with a TTL — eliminates repeated DB computation for data that doesn\'t change frequently.' },
+      { term: 'APM (Application Performance Monitoring)', definition: 'Tools like Datadog, New Relic, or Sentry Performance that show per-request traces with timing breakdowns — identifies slow operations in production.' },
+      { term: 'Asynchronous Processing', definition: 'Moving slow work (email, PDF, webhooks) out of the synchronous request-response cycle into a background job queue — keeps API response time fast regardless of background work duration.' },
+    ],
+    quiz: [
+      { q: 'A backend API endpoint takes 3.8 seconds to respond. Before changing any code, you should:', options: ['Add a cache layer', 'Measure: add timing logs or run EXPLAIN ANALYZE to find where those 3.8 seconds are actually spent', 'Increase server RAM', 'Switch from Node.js to Go'], correct: 1, explanation: 'Most latency is in the database. Measure first to confirm — maybe it\'s one 3.7s query, or maybe it\'s 200 small queries totaling 3.8s. The fix is completely different in each case.' },
+      { q: 'EXPLAIN ANALYZE shows "Seq Scan" on a 600,000-row jobs table with the filter WHERE status = \'active\' ORDER BY created_at DESC. The correct fix is:', options: ['Partition the table by status', 'Add a compound index on (status, created_at DESC)', 'Increase Postgres shared_buffers', 'Cache the entire jobs table in Redis'], correct: 1, explanation: 'A compound index on (status, created_at DESC) lets Postgres use an Index Scan: it filters by status using the index and retrieves rows already sorted by created_at — no sequential scan, no full sort.' },
+      { q: 'Your API sends a welcome email synchronously inside the POST /register handler. Why is this a performance problem?', options: ['Email APIs don\'t work inside HTTP handlers', 'If the email provider is slow (1–3s) or down, the registration endpoint is slow or broken — user waits for email confirmation before seeing success', 'Emails can\'t be sent from Node.js', 'The email will be sent twice if the request retries'], correct: 1, explanation: 'External API calls in a synchronous handler make your API\'s latency hostage to the external service\'s latency. Move email sending to a background job: register succeeds instantly, email sends asynchronously.' },
+      { q: 'You have a dashboard that aggregates 6 months of job application data, taking 4 seconds to compute. The data updates nightly. The correct optimization is:', options: ['Run the computation on every request but with a faster algorithm', 'Cache the result with a 24-hour TTL — recompute nightly, serve from cache', 'Denormalize the schema to pre-compute the aggregate', 'Use GraphQL to request fewer fields'], correct: 1, explanation: 'Data that updates nightly doesn\'t need to be recomputed per request. Cache the expensive aggregate with a 24-hour TTL, recompute as a scheduled job each night. Response goes from 4s to milliseconds.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `analyzeQueryPerformance(queryName, executionMs, rowsScanned, rowsReturned, hasIndex)` that evaluates query performance and returns specific optimization recommendations. Test it with realistic scenarios.',
+      starterCode: `function analyzeQueryPerformance({ queryName, executionMs, rowsScanned, rowsReturned, hasIndex }) {
+  const recommendations = []
+  // Add recommendations based on:
+  // - executionMs > threshold
+  // - rowsScanned >> rowsReturned (low selectivity)
+  // - hasIndex === false on slow queries
+  return { queryName, executionMs, analysis: recommendations }
+}
+
+const scenarios = [
+  { queryName: 'get_active_jobs', executionMs: 4200, rowsScanned: 580000, rowsReturned: 20, hasIndex: false },
+  { queryName: 'get_user_profile', executionMs: 3, rowsScanned: 1, rowsReturned: 1, hasIndex: true },
+  { queryName: 'get_application_stats', executionMs: 1800, rowsScanned: 45000, rowsReturned: 1, hasIndex: false },
+]
+
+scenarios.forEach(s => console.log(JSON.stringify(analyzeQueryPerformance(s), null, 2)))`,
+      solution: `function analyzeQueryPerformance({ queryName, executionMs, rowsScanned, rowsReturned, hasIndex }) {
+  const recommendations = []
+
+  const selectivity = rowsReturned / rowsScanned
+
+  if (!hasIndex && rowsScanned > 10000) {
+    recommendations.push('CRITICAL: Add an index — sequential scan on ' + rowsScanned.toLocaleString() + ' rows. Check your WHERE and ORDER BY columns and create a compound index matching the query pattern.')
+  }
+
+  if (selectivity < 0.001) {
+    recommendations.push('HIGH: Very low selectivity (' + (selectivity * 100).toFixed(3) + '%) — scanning ' + rowsScanned.toLocaleString() + ' rows to return ' + rowsReturned + '. An index on the filter column would eliminate most of this scan.')
+  }
+
+  if (executionMs > 1000 && rowsReturned === 1) {
+    recommendations.push('HIGH: Returning 1 row in ' + executionMs + 'ms suggests a missing index on the lookup column (likely an ID or unique field) — should be sub-millisecond.')
+  }
+
+  if (executionMs > 500) {
+    recommendations.push('CONSIDER: For queries taking ' + executionMs + 'ms, evaluate caching the result if the data doesn\'t change frequently — especially for aggregations and reports.')
+  }
+
+  return {
+    queryName,
+    executionMs,
+    severity: executionMs > 1000 ? 'CRITICAL' : executionMs > 200 ? 'HIGH' : 'OK',
+    analysis: recommendations.length ? recommendations : ['Query looks healthy — no obvious optimizations needed.']
+  }
+}
+
+const scenarios = [
+  { queryName: 'get_active_jobs', executionMs: 4200, rowsScanned: 580000, rowsReturned: 20, hasIndex: false },
+  { queryName: 'get_user_profile', executionMs: 3, rowsScanned: 1, rowsReturned: 1, hasIndex: true },
+  { queryName: 'get_application_stats', executionMs: 1800, rowsScanned: 45000, rowsReturned: 1, hasIndex: false },
+]
+
+scenarios.forEach(s => console.log(JSON.stringify(analyzeQueryPerformance(s), null, 2)))`,
+      hints: ['Selectivity = rowsReturned / rowsScanned — low selectivity with no index is always a red flag', 'A single-row result taking >100ms always means a missing index on the lookup column', 'Caching is appropriate for aggregations (rowsReturned === 1) with high execution time'],
+    },
+  },
+  {
+    id: 'cc-interview-be-m14', track: 'crash', title: 'Security Instincts for Backend Engineers',
+    subtitle: 'SQL injection, auth bypass, missing input validation, exposed secrets — spot backend vulnerabilities in code review without being told to look.',
+    courseObjective: CC_BE_OBJ, crashId: 'cc-interview-backend', crashTitle: 'Backend Interview Prep',
+    level: 'PhD', xp: 260, duration: 17, module: 14, certArea: 'Backend Interview Prep',
+    content: `Backend security instincts mean reading any API route, database query, or auth middleware and immediately seeing the exploitation path. The most critical backend vulnerabilities are: SQL injection, auth bypass, missing input validation, and exposed credentials.
+
+## SQL Injection — The Classic Backend Vulnerability
+
+\`\`\`ts
+// VULNERABLE — string interpolation in SQL
+const query = \`SELECT * FROM users WHERE email = '\${email}'\`
+// If email = "' OR '1'='1" → returns all users
+// If email = "'; DROP TABLE users; --" → destroys the database
+
+// FIX — parameterized queries (always)
+const { data } = await supabase.from('users').select('*').eq('email', email)
+// OR with raw SQL:
+const result = await db.execute(sql\`SELECT * FROM users WHERE email = \${email}\`)
+// The DB driver separates data from the query — injection is impossible
+\`\`\`
+
+## API Route Auth Bypass
+
+\`\`\`ts
+// VULNERABLE — no authentication check
+export async function DELETE(req: Request, { params }) {
+  await db.delete(jobs).where(eq(jobs.id, params.id))
+  return new Response('OK')
+}
+// Any user who knows a job ID can delete it — no auth required
+
+// FIX — verify session first
+export async function DELETE(req: Request, { params }) {
+  const session = await getServerSession()
+  if (!session) return new Response('Unauthorized', { status: 401 })
+  if (session.user.role !== 'admin') return new Response('Forbidden', { status: 403 })
+  await db.delete(jobs).where(eq(jobs.id, params.id))
+  return new Response('OK')
+}
+\`\`\`
+
+## Mass Assignment (Missing Input Allowlist)
+
+\`\`\`ts
+// VULNERABLE — accepting all request body fields
+const updates = await req.json()
+await db.update(users).set(updates).where(eq(users.id, session.user.id))
+// If body = { role: 'admin', verified: true } → user promotes themselves to admin
+
+// FIX — allowlist only the fields users are permitted to update
+const { displayName, bio } = await req.json()
+await db.update(users).set({ displayName, bio }).where(eq(users.id, session.user.id))
+\`\`\`
+
+## Timing Attacks on Auth
+
+\`\`\`ts
+// VULNERABLE — fast failure leaks user existence
+if (!user) return Response.json({ error: 'User not found' }, { status: 401 })
+// If checking the user takes 2ms but the password takes 50ms:
+// 2ms response = no user exists, 52ms response = user exists but wrong password
+
+// FIX — constant-time comparison
+import { timingSafeEqual } from 'crypto'
+// Use bcrypt.compare() for passwords — it's constant-time by design
+// Return the same generic error regardless of whether user exists
+return Response.json({ error: 'Invalid email or password' }, { status: 401 })
+\`\`\`
+
+## The Backend Security Code Review Checklist
+
+1. Any raw SQL with string interpolation? → parameterize
+2. API routes with no auth check? → add session verification
+3. Request body spread directly into DB update? → allowlist fields
+4. Error messages that reveal whether a user exists? → generic errors
+5. Admin/privileged actions without role check? → add authorization
+6. Secrets in code comments or hardcoded strings? → env vars only`,
+    keyTerms: [
+      { term: 'SQL Injection', definition: 'Inserting SQL code via user input that gets executed as a query — prevented entirely by parameterized queries (never interpolate user input into SQL strings).' },
+      { term: 'Mass Assignment', definition: 'Accepting all request body fields into a DB update without allowlisting — attackers can set fields like `role: "admin"` that they shouldn\'t control.' },
+      { term: 'Timing Attack', definition: 'An attack that uses response time differences to infer information — a faster response means "user doesn\'t exist", a slower one means "wrong password". Prevent with constant-time comparisons.' },
+      { term: 'Allowlist', definition: 'Explicitly listing which fields are permitted in an operation — safer than a blocklist because new fields default to denied rather than permitted.' },
+      { term: 'Authorization vs Authentication', definition: 'Authentication: verifying who you are (is this a valid session?). Authorization: verifying what you can do (is this user allowed to perform this action?).' },
+    ],
+    quiz: [
+      { q: 'A user submits `{ "role": "admin", "displayName": "Jordan" }` to `PATCH /api/users/me`. The handler does `db.update(users).set(body)`. What is the vulnerability?', options: ['CSRF attack', 'SQL injection', 'Mass assignment — the user promoted themselves to admin by including role in the request body', 'XSS via the displayName field'], correct: 2, explanation: 'Mass assignment allows attackers to set any field that exists in the schema. Fix: destructure only `{ displayName }` from the body and explicitly set only that field in the update.' },
+      { q: 'Why should password verification errors always say "Invalid email or password" rather than "User not found" vs "Wrong password"?', options: ['It\'s friendlier UX', 'Specific errors leak whether an email is registered — attackers use this to enumerate user accounts', 'It reduces server load', 'Authentication errors are regulated by GDPR'], correct: 1, explanation: 'User enumeration lets attackers build a list of valid emails for phishing, credential stuffing, or targeted attacks. Generic "invalid email or password" prevents them from knowing whether the email even exists.' },
+      { q: 'The safest way to include user input in a database query is:', options: ['Sanitize the input with a regex before interpolating it', 'Use parameterized queries or an ORM that parameterizes automatically', 'Escape special characters manually', 'Limit input to alphanumeric characters only'], correct: 1, explanation: 'Parameterized queries pass user input as data, not as part of the SQL string — the database driver ensures it can never be interpreted as SQL code. Manual sanitization and escaping have edge cases that attackers can exploit.' },
+      { q: 'An API route deletes a record by ID but only checks that the user is authenticated (not that they own the record). This is:', options: ['An authentication bug — the user should not be authenticated', 'An authorization bug — the user is authenticated but not authorized to delete other users\' records', 'An input validation bug', 'A CORS misconfiguration'], correct: 1, explanation: 'Authentication ("are you logged in?") and authorization ("can you do this specific thing?") are separate. Checking only authentication allows any authenticated user to perform privileged actions on any record. Always verify ownership.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `securityAuditBackend(routes)` that checks an array of API route descriptions for 4 backend security issues: missing auth check, mass assignment, SQL string interpolation, and missing role check on admin routes. Return severity-ranked findings.',
+      starterCode: `function securityAuditBackend(routes) {
+  // routes: [{ path, method, hasAuthCheck, bodyHandling, hasSqlInterpolation, requiresAdminRole, checksRole }]
+  // Check for: missing auth, mass assignment, SQL injection, missing role check
+  // Return findings sorted by severity
+}
+
+const routes = [
+  { path: 'DELETE /api/jobs/:id', method: 'DELETE', hasAuthCheck: false, requiresAdminRole: true, checksRole: false },
+  { path: 'PATCH /api/users/me', method: 'PATCH', hasAuthCheck: true, bodyHandling: 'spread_all_fields', hasSqlInterpolation: false },
+  { path: 'GET /api/users?email=', method: 'GET', hasAuthCheck: true, hasSqlInterpolation: true },
+  { path: 'POST /api/applications', method: 'POST', hasAuthCheck: true, bodyHandling: 'allowlist', hasSqlInterpolation: false },
+]
+
+console.log(JSON.stringify(securityAuditBackend(routes), null, 2))`,
+      solution: `function securityAuditBackend(routes) {
+  const findings = []
+
+  routes.forEach(route => {
+    if (!route.hasAuthCheck) {
+      findings.push({ severity: 'CRITICAL', route: route.path, type: 'Missing Auth Check', fix: 'Verify session before any data operation — return 401 if no valid session.' })
+    }
+
+    if (route.bodyHandling === 'spread_all_fields') {
+      findings.push({ severity: 'HIGH', route: route.path, type: 'Mass Assignment', fix: 'Destructure only the specific fields users are allowed to update. Never spread the entire request body into a DB operation.' })
+    }
+
+    if (route.hasSqlInterpolation) {
+      findings.push({ severity: 'CRITICAL', route: route.path, type: 'SQL Injection', fix: 'Use parameterized queries or ORM. Never interpolate user input into SQL strings.' })
+    }
+
+    if (route.requiresAdminRole && route.hasAuthCheck && !route.checksRole) {
+      findings.push({ severity: 'HIGH', route: route.path, type: 'Missing Authorization', fix: 'Check session.user.role === "admin" after authenticating — being logged in does not mean being authorized for admin actions.' })
+    }
+  })
+
+  return findings.sort((a, b) => (a.severity === 'CRITICAL' ? -1 : 1))
+}
+
+const routes = [
+  { path: 'DELETE /api/jobs/:id', method: 'DELETE', hasAuthCheck: false, requiresAdminRole: true, checksRole: false },
+  { path: 'PATCH /api/users/me', method: 'PATCH', hasAuthCheck: true, bodyHandling: 'spread_all_fields', hasSqlInterpolation: false },
+  { path: 'GET /api/users?email=', method: 'GET', hasAuthCheck: true, hasSqlInterpolation: true },
+  { path: 'POST /api/applications', method: 'POST', hasAuthCheck: true, bodyHandling: 'allowlist', hasSqlInterpolation: false },
+]
+
+console.log(JSON.stringify(securityAuditBackend(routes), null, 2))`,
+      hints: ['Sort findings by severity — CRITICAL issues should appear first', 'A route can have multiple findings — check all categories for each route', 'Missing auth check and SQL injection are always CRITICAL; mass assignment and missing role check are HIGH'],
+    },
+  },
 ]

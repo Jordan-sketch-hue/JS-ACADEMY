@@ -32,6 +32,12 @@ const LEARNING_PATH: PathSection[] = [
     courses: ['cc-restapi', 'cc-postgres', 'cc-supabase', 'cc-payload'],
   },
   {
+    label: 'Ship It',
+    sublabel: 'After the web dev stack — wire everything together and deploy to production',
+    color: '#059669',
+    courses: ['cc-ship-it'],
+  },
+  {
     label: 'Programming Languages',
     sublabel: 'Python first — highest ROI for data, AI, and automation',
     color: '#b45309',

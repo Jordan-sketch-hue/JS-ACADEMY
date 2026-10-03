@@ -1738,4 +1738,1229 @@ function assert(cond, msg) {
       ],
     },
   },
+  {
+    id: 'cc-interview-qa-m09', track: 'crash', title: 'Behavioral STAR Stories for QA Engineers',
+    subtitle: 'Turn your testing wins into memorable interview stories using the STAR framework.',
+    moduleObjective: 'Build a bank of compelling STAR stories that demonstrate testing strategy, bug advocacy, and quality ownership.',
+    courseObjective: CC_QA_OBJ, crashId: 'cc-interview-qa', crashTitle: 'QA Interview Prep',
+    level: 'PhD', xp: 240, duration: 13, module: 9, certArea: 'QA Interview Prep',
+    keyTerms: [
+      { term: 'STAR Framework', definition: 'Situation, Task, Action, Result — the structure for answering behavioral interview questions with clarity and impact.' },
+      { term: 'Bug Advocacy', definition: 'The skill of communicating a bug\'s severity and business impact to non-technical stakeholders to prioritize fixing it.' },
+      { term: 'Quality Gate', definition: 'A defined threshold a build must meet before it can proceed to the next stage (e.g., 80% coverage, zero P0 failures).' },
+      { term: 'Regression Risk', definition: 'The probability that a new change will break existing functionality — drives test prioritization decisions.' },
+      { term: 'Story Bank', definition: 'A prepared set of 6–8 STAR stories covering different competencies, ready to adapt to any behavioral question.' },
+    ],
+    content: `## Behavioral STAR Stories for QA Engineers
+
+### Why STAR matters for QA interviews
+
+QA interviews ask behavioral questions more than any other engineering role because quality is fundamentally about process, communication, and judgment — not just code. "Tell me about a time you…" questions test whether you can influence without authority, push back on ship decisions, and balance speed with quality.
+
+### STAR Framework for QA
+
+\`\`\`
+S — Situation: Set the scene in 1–2 sentences. What was the product, the team size, the stakes?
+T — Task:      What was YOUR specific responsibility? (Not "we" — "I")
+A — Action:    What 3-4 concrete steps did YOU take? This is the meat.
+R — Result:    Quantified outcome. What improved? What was saved? What was learned?
+\`\`\`
+
+### The 7 QA competencies interviewers probe
+
+1. **Bug advocacy** — Did you push back when a P0 was labeled P2?
+2. **Test strategy ownership** — Did you design the test plan or just execute it?
+3. **Cross-functional collaboration** — How did you work with devs, PMs, support?
+4. **Handling deadline pressure** — What did you cut, and how did you decide?
+5. **Automation judgment** — When did you automate vs stay manual, and why?
+6. **Incident response** — What did you do when a bug escaped to production?
+7. **Process improvement** — What did you change that made the team faster or safer?
+
+### Story 1: Catching a critical bug before launch
+
+> "Three days before a major e-commerce launch, I was doing exploratory testing on the checkout flow with an unexpected payment method combination — a store credit applied to a subscription product. The system allowed the purchase but never charged the card, effectively giving away a free subscription indefinitely. The issue was in an untested edge case at the intersection of two billing systems that had never needed to talk before.
+>
+> I documented it with a screen recording, estimated revenue impact (potentially $40K/month in lost subscriptions), and escalated directly to the engineering lead and PM — skipping the normal ticket queue given the launch timeline. Dev fixed it in 6 hours. The launch proceeded on schedule. The PM later told me I'd saved the quarter."
+
+**STAR breakdown:**
+- **S:** Three days before launch, e-commerce platform
+- **T:** Exploratory testing of checkout edge cases
+- **A:** Found race condition, documented with recording, quantified impact, escalated directly
+- **R:** Fixed before launch, no revenue loss, on-time ship
+
+### Story 2: Pushing back on a ship decision
+
+> "The product team wanted to ship a redesigned onboarding flow that had a 12% increase in drop-off rate in our UAT cohort. The PM framed it as 'within acceptable variance.' I pulled the historical data showing our existing flow had a 4% drop-off rate, meaning the new design would cost roughly 350 sign-ups per week at current traffic. I presented this at the sprint review with a one-page summary. The team agreed to delay one sprint to fix the two screens with the highest drop-off. Post-launch, the redesign actually improved sign-ups by 8%."
+
+**Key lesson:** Never say "this shouldn't ship." Say "here is the cost of shipping now vs. fixing this one thing."
+
+### Story 3: Improving test suite reliability
+
+> "Our E2E suite was failing 30% of CI runs due to flaky tests, causing developers to re-run pipelines routinely. I audited 3 months of failure logs, categorized every failure, and found 80% came from 12 tests with timing-dependent assertions. I rewrote those 12 tests using explicit wait conditions instead of hardcoded sleeps, and added retry logic for network-dependent steps. Within two weeks, the flake rate dropped from 30% to under 2%, saving the team an estimated 4 hours of re-run time per day."
+
+### The 5 questions you MUST have stories for
+
+\`\`\`
+1. "Tell me about a time you found a critical bug right before launch."
+   → Use Story 1 above or adapt it to your experience.
+
+2. "Describe a time you disagreed with a product decision about quality."
+   → Use Story 2. Lead with data, not opinion.
+
+3. "How have you improved a broken or slow test process?"
+   → Use Story 3. Quantify the before/after.
+
+4. "Tell me about a bug that escaped to production and what you did."
+   → Key: own your role, describe the post-mortem, explain what changed.
+
+5. "How do you balance test coverage with shipping speed?"
+   → Show you understand risk-based testing, not 100% coverage at all costs.
+\`\`\`
+
+### Building your personal story bank
+
+Before your interview, write out 6–8 stories in STAR format. Tag each with the competencies it demonstrates. During the interview, you're just selecting the right story for the question — not improvising.
+
+\`\`\`
+Story A: [Caught critical bug]     → bug advocacy, exploratory testing
+Story B: [Pushed back on ship]     → cross-functional, data-driven
+Story C: [Fixed flaky suite]       → process improvement, automation
+Story D: [Led test strategy]       → strategy ownership, planning
+Story E: [Production incident]     → incident response, communication
+Story F: [Mentored a developer]    → collaboration, test culture
+\`\`\`
+
+The interviewer will remember the story, not your resume bullet. Make it specific.`,
+    quiz: [
+      {
+        q: 'In a STAR story, what should you emphasize most when describing the Action?',
+        options: ['The team\'s collective effort', 'Your specific, individual steps', 'The technology stack used', 'The timeline of events'],
+        correct: 1,
+        explanation: 'The Action is YOUR story — use "I" not "we." Interviewers want to assess your specific contribution, judgment, and skills.',
+      },
+      {
+        q: 'A PM dismisses a P1 bug as "acceptable variance." What\'s the most effective QA response?',
+        options: ['Escalate to the VP immediately', 'Accept the decision since the PM owns the product', 'Quantify the business impact in the PM\'s language (revenue, users affected)', 'File the bug and move on'],
+        correct: 2,
+        explanation: 'QA professionals influence without authority. Translating bugs into business impact (revenue lost, users affected) is far more persuasive than technical severity alone.',
+      },
+      {
+        q: 'What makes a Result section of a STAR story strong?',
+        options: ['It describes all team members\' contributions', 'It includes quantified outcomes (%, $, hours saved)', 'It explains the technical solution in detail', 'It lists lessons learned'],
+        correct: 1,
+        explanation: 'Quantified results are memorable and credible. "Flake rate dropped from 30% to 2%" is far stronger than "the tests became more reliable."',
+      },
+      {
+        q: 'Which QA competency is most important to demonstrate with behavioral stories?',
+        options: ['Memorizing all testing frameworks', 'Influence without authority — driving quality without direct control', 'Writing perfect test code', 'Knowing every bug tracking tool'],
+        correct: 1,
+        explanation: 'QA engineers rarely have direct authority to block a ship. The ability to influence PMs, devs, and leadership through data and communication is the defining senior QA skill.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a STAR story scorer. Given a STAR story object, score it 0–100 based on: has quantified result (+30), uses "I" not just "we" (+20), names specific tools/actions (+20), mentions business impact (+20), is under 250 words (+10). Return the score and an array of feedback strings.',
+      starterCode: `function scoreStarStory(story) {
+  // story = { situation, task, action, result }
+  // Return { score: number, feedback: string[] }
+
+  const feedback = []
+  let score = 0
+
+  const fullText = [story.situation, story.task, story.action, story.result].join(' ')
+  const wordCount = fullText.split(/\\s+/).length
+
+  // TODO: Check for quantified result (%, $, number, hours, ms)
+  // TODO: Check for first-person "I" usage
+  // TODO: Check for specific tool mentions (common ones: Jest, Playwright, Cypress, etc.)
+  // TODO: Check for business impact keywords (revenue, users, conversion, retention)
+  // TODO: Check word count <= 250
+
+  return { score, feedback }
+}
+
+// Test it:
+const myStory = {
+  situation: "Three days before launch on our e-commerce platform",
+  task: "I was responsible for exploratory testing of the checkout flow",
+  action: "I found a race condition where store credits bypassed card charging, documented it with a screen recording, estimated $40K/month impact, and escalated directly to the engineering lead",
+  result: "Dev fixed it in 6 hours, we shipped on time, no revenue loss"
+}
+
+console.log(scoreStarStory(myStory))`,
+      solution: `function scoreStarStory(story) {
+  const feedback = []
+  let score = 0
+
+  const fullText = [story.situation, story.task, story.action, story.result].join(' ')
+  const wordCount = fullText.split(/\\s+/).length
+
+  // Quantified result
+  if (/[\\d]+%|\\$[\\d]+|[\\d]+ (hours?|users?|ms|minutes?|days?)/.test(story.result)) {
+    score += 30
+    feedback.push('✓ Result is quantified')
+  } else {
+    feedback.push('✗ Add a number to the result (%, $, hours saved, users affected)')
+  }
+
+  // First person
+  const iCount = (fullText.match(/\\bI\\b/g) || []).length
+  if (iCount >= 3) {
+    score += 20
+    feedback.push('✓ Uses first person clearly')
+  } else {
+    feedback.push('✗ Use "I" more — describe YOUR actions, not the team\'s')
+  }
+
+  // Specific tools
+  const tools = ['jest', 'playwright', 'cypress', 'selenium', 'postman', 'jira', 'github', 'ci', 'pipeline']
+  const mentionedTools = tools.filter(t => fullText.toLowerCase().includes(t))
+  if (mentionedTools.length >= 1) {
+    score += 20
+    feedback.push(\`✓ Mentions specific tools: \${mentionedTools.join(', ')}\`)
+  } else {
+    feedback.push('✗ Name specific tools — "a screen recording" is better than "documented it"')
+  }
+
+  // Business impact
+  if (/revenue|user|conversion|retention|customer|cost|save|ship|launch/.test(fullText.toLowerCase())) {
+    score += 20
+    feedback.push('✓ Connects to business impact')
+  } else {
+    feedback.push('✗ Add business context — why did this matter to the company?')
+  }
+
+  // Word count
+  if (wordCount <= 250) {
+    score += 10
+    feedback.push(\`✓ Concise (\${wordCount} words)\`)
+  } else {
+    feedback.push(\`✗ Too long (\${wordCount} words) — trim to under 250\`)
+  }
+
+  return { score, feedback }
+}
+
+const myStory = {
+  situation: "Three days before launch on our e-commerce platform",
+  task: "I was responsible for exploratory testing of the checkout flow",
+  action: "I found a race condition where store credits bypassed card charging, documented it with a screen recording, estimated $40K/month impact, and escalated directly to the engineering lead",
+  result: "Dev fixed it in 6 hours, we shipped on time, no revenue loss"
+}
+
+console.log(scoreStarStory(myStory))`,
+      hints: [
+        'Use a regex like /[\\d]+%|\\$[\\d]+/ to detect quantified results',
+        'Count occurrences of \\bI\\b (word boundary ensures you match "I" not "It")',
+        'Check for tool names with fullText.toLowerCase().includes(toolName)',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-qa-m10', track: 'crash', title: 'Trade-off Articulation for QA Engineers',
+    subtitle: 'How to frame testing tool and strategy decisions as principled trade-offs, not preferences.',
+    moduleObjective: 'Articulate 5 key QA trade-offs — automation vs manual, E2E vs unit, Playwright vs Cypress, shift-left vs shift-right, coverage vs speed — with a structured framework.',
+    courseObjective: CC_QA_OBJ, crashId: 'cc-interview-qa', crashTitle: 'QA Interview Prep',
+    level: 'PhD', xp: 245, duration: 13, module: 10, certArea: 'QA Interview Prep',
+    keyTerms: [
+      { term: 'Shift-Left Testing', definition: 'Moving testing earlier in the development cycle — developers write tests before or during development, not after.' },
+      { term: 'Shift-Right Testing', definition: 'Testing in production using feature flags, canary releases, and observability to catch issues that tests miss.' },
+      { term: 'Test Flakiness', definition: 'Non-deterministic test behavior — a test that sometimes passes and sometimes fails without code changes.' },
+      { term: 'Risk-Based Testing', definition: 'Allocating test effort proportionally to the risk and impact of each feature — not equal coverage everywhere.' },
+      { term: 'Contract Testing', definition: 'Tests that verify the interface between two services matches both sides\' expectations (e.g., Pact framework).' },
+    ],
+    content: `## Trade-off Articulation for QA Engineers
+
+### The Trade-off Framework
+
+Every trade-off question has the same structure:
+
+\`\`\`
+1. Context  — what constraints matter here? (team size, release cadence, tech stack, risk tolerance)
+2. Criteria — what are we optimizing for? (speed, confidence, maintainability, cost)
+3. Options  — what are the realistic choices?
+4. Decision — which fits best given context + criteria?
+5. Trade-offs Accepted — what are you giving up, and why is that okay here?
+\`\`\`
+
+### Trade-off 1: Automated vs Manual Testing
+
+**The wrong answer:** "We should automate everything."
+
+**The right answer:**
+
+\`\`\`
+Automate when:
+  ✓ Test runs repeatedly in CI on every PR
+  ✓ Deterministic inputs and outputs
+  ✓ Low visual/UX judgment required
+  ✓ Automation ROI: (runs × time_saved) > (write_time + maintenance_time)
+
+Keep manual when:
+  ✓ Exploratory testing — finding bugs that aren't in requirements
+  ✓ Usability assessment — "does this FEEL right?"
+  ✓ One-time migration validation
+  ✓ Complex visual checks (layout, responsive design)
+  ✓ Newly specced features that will change
+\`\`\`
+
+**One-liner for interviews:** "I automate anything that runs more than 10 times and has a clear pass/fail condition. I keep manual testing for exploration and judgment calls."
+
+### Trade-off 2: Playwright vs Cypress
+
+| Factor | Playwright | Cypress |
+|--------|-----------|---------|
+| Browser support | Chromium, Firefox, Safari (WebKit) | Chromium only (Firefox beta) |
+| Multi-tab / iframes | Native support | Limited |
+| Speed | Faster (parallel by default) | Slower (serial by default in free tier) |
+| Learning curve | Steeper | Gentler |
+| API style | async/await | Chainable (Cypress-specific) |
+| Best for | Complex multi-browser flows, CI | Simple SPAs, developer-run tests |
+
+**Interview frame:** "For a team with a React SPA that needs quick developer adoption, I'd start with Cypress. For a checkout flow that must pass on Safari and involves multiple tabs, Playwright is the right call."
+
+### Trade-off 3: E2E vs Unit Test Coverage
+
+**The trap:** Reaching for E2E tests because "they test what users actually do."
+
+**The cost:** E2E tests are 10–100× slower, 5–10× more expensive to write and maintain, and flake more.
+
+\`\`\`
+Rule of thumb — if it can be a unit test, it should be:
+
+✓ Business logic → unit test (fast, precise, zero flake risk)
+✓ API contract → integration test (real DB, mock external services)
+✓ Critical user journey → E2E test (checkout, onboarding, auth)
+✗ Every UI interaction → E2E test (this kills CI speed)
+\`\`\`
+
+### Trade-off 4: Shift-Left vs Shift-Right Testing
+
+**Shift-Left:** Write tests during development, TDD, pair with devs during design
+- Pro: Catches bugs cheapest (before they're shipped)
+- Con: Requires developer buy-in, slows initial feature development
+
+**Shift-Right:** Canary releases, feature flags, production monitoring, chaos engineering
+- Pro: Catches issues real traffic exposes (edge cases, scale)
+- Con: Real users experience bugs; requires good rollback capability
+
+**Best answer:** "Both — shift-left for correctness, shift-right for resilience. For a mature team, I'd prioritize shift-left for new features and invest in observability for existing ones."
+
+### Trade-off 5: 100% Coverage vs Shipping Speed
+
+**The reality:** 100% coverage is a vanity metric if the wrong things are tested.
+
+\`\`\`
+Better metrics than code coverage:
+  - Defect escape rate (bugs found in production vs QA)
+  - Mean time to detect (MTTD) — how fast do you catch regressions?
+  - Test suite reliability (% of CI runs that are non-flaky)
+  - Business-critical path coverage (are checkout/login/auth fully covered?)
+\`\`\`
+
+**Interview frame:** "I'd rather have 60% coverage on the right 60% — all the business logic, edge cases, and integrations — than 95% coverage that's mostly getters/setters and trivial code paths."`,
+    quiz: [
+      {
+        q: 'When should you choose Playwright over Cypress?',
+        options: ['When the team is new to E2E testing', 'When you need multi-browser support including Safari', 'When you want the gentlest learning curve', 'When tests are running locally, not in CI'],
+        correct: 1,
+        explanation: 'Playwright supports Chromium, Firefox, and WebKit (Safari). Cypress has limited multi-browser support. For cross-browser or multi-tab flows, Playwright is the correct choice.',
+      },
+      {
+        q: 'A PM asks why you\'re not aiming for 100% test coverage. What\'s the best response?',
+        options: ['100% coverage would slow us down too much', 'Coverage percentage doesn\'t measure what matters — defect escape rate and business-critical path coverage do', 'Our team doesn\'t have the budget for it', '100% coverage is impossible'],
+        correct: 1,
+        explanation: 'The strongest QA engineers shift from coverage percentage to outcome metrics: how many bugs escaped to production, and is the critical user path fully protected?',
+      },
+      {
+        q: 'What is "shift-right testing"?',
+        options: ['Moving unit tests to integration level', 'Testing in production using feature flags, canaries, and monitoring', 'Shifting test writing responsibility to developers', 'Delaying testing until after launch'],
+        correct: 1,
+        explanation: 'Shift-right testing catches what traditional testing misses — real production traffic, unexpected edge cases at scale, and subtle issues that only appear under real load.',
+      },
+      {
+        q: 'When is a manual test the correct choice over automation?',
+        options: ['When you don\'t have time to write the automated test', 'For exploratory testing and usability assessment requiring human judgment', 'Always — automated tests aren\'t reliable', 'When the feature is very complex'],
+        correct: 1,
+        explanation: 'Exploratory testing, usability assessment, and visual design review require human judgment that automation cannot replicate. Automating these adds maintenance burden without improving confidence.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a test ROI calculator. Given a test\'s write time (hours), maintenance time per month (hours), time saved per run (minutes), and number of runs per month, calculate: total cost over 12 months, total savings over 12 months, ROI percentage, and whether it\'s worth automating (ROI > 0).',
+      starterCode: `function calculateTestROI(params) {
+  const { writeTimeHours, maintenancePerMonth, timeSavedMinutes, runsPerMonth } = params
+  const HOURLY_RATE = 100 // $/hour engineering time
+
+  // TODO: Calculate total cost over 12 months
+  // Total cost = writeTime + (maintenancePerMonth * 12)
+
+  // TODO: Calculate total savings over 12 months
+  // Each run saves timeSavedMinutes (convert to hours for cost)
+  // Total savings = (timeSavedMinutes / 60) * HOURLY_RATE * runsPerMonth * 12
+
+  // TODO: Calculate ROI = (savings - cost) / cost * 100
+
+  // TODO: Determine if worth automating
+
+  return {
+    totalCostDollars: 0,
+    totalSavingsDollars: 0,
+    roiPercent: 0,
+    worthAutomating: false,
+    summary: ''
+  }
+}
+
+console.log(calculateTestROI({ writeTimeHours: 4, maintenancePerMonth: 0.5, timeSavedMinutes: 15, runsPerMonth: 60 }))
+// Should show positive ROI — 60 runs/month × 15min saved = 900min = 15h × $100 × 12 = $18,000 savings`,
+      solution: `function calculateTestROI(params) {
+  const { writeTimeHours, maintenancePerMonth, timeSavedMinutes, runsPerMonth } = params
+  const HOURLY_RATE = 100
+
+  const totalCostDollars = (writeTimeHours + maintenancePerMonth * 12) * HOURLY_RATE
+  const totalSavingsDollars = (timeSavedMinutes / 60) * HOURLY_RATE * runsPerMonth * 12
+  const roiPercent = Math.round((totalSavingsDollars - totalCostDollars) / totalCostDollars * 100)
+  const worthAutomating = roiPercent > 0
+
+  return {
+    totalCostDollars,
+    totalSavingsDollars,
+    roiPercent,
+    worthAutomating,
+    summary: worthAutomating
+      ? \`Worth automating: saves $\${totalSavingsDollars - totalCostDollars} net over 12 months (\${roiPercent}% ROI)\`
+      : \`Not worth automating: costs $\${totalCostDollars - totalSavingsDollars} more than it saves\`
+  }
+}
+
+console.log(calculateTestROI({ writeTimeHours: 4, maintenancePerMonth: 0.5, timeSavedMinutes: 15, runsPerMonth: 60 }))`,
+      hints: [
+        'Convert timeSavedMinutes to hours by dividing by 60 before multiplying by HOURLY_RATE',
+        'Total cost includes both initial write time and ongoing maintenance (12 months)',
+        'ROI = (savings - cost) / cost * 100',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-qa-m11', track: 'crash', title: '3am Production Incident — QA Edition',
+    subtitle: 'How to diagnose and resolve a critical test failure or escaped bug under pressure.',
+    moduleObjective: 'Apply the Incident Response Framework to a production quality failure: diagnose root cause, communicate clearly, and drive a post-mortem that prevents recurrence.',
+    courseObjective: CC_QA_OBJ, crashId: 'cc-interview-qa', crashTitle: 'QA Interview Prep',
+    level: 'PhD', xp: 250, duration: 14, module: 11, certArea: 'QA Interview Prep',
+    keyTerms: [
+      { term: 'Incident Response Framework', definition: 'A structured process: Assess → Hypothesis → Isolate → Fix/Rollback → Post-mortem for diagnosing and resolving production issues.' },
+      { term: 'Escaped Defect', definition: 'A bug that passed through the QA process and reached production users — the most expensive type of defect.' },
+      { term: 'Post-mortem', definition: 'A blameless analysis conducted after an incident to identify root causes and preventive measures.' },
+      { term: 'Rollback', definition: 'Reverting a deployment to a previous known-good version to stop user impact while root cause is investigated.' },
+      { term: 'Canary Release', definition: 'Deploying a change to a small percentage of users to detect issues before full rollout.' },
+    ],
+    content: `## 3am Production Incident — QA Edition
+
+### The scenario
+
+> **2:47am.** PagerDuty wakes you. The on-call engineer confirms: checkout success rate dropped from 98% to 61% 30 minutes after the 2am deployment. Payment provider logs show successful charges but the app isn't recording orders. Support is already fielding angry customers.
+
+This is the most common production QA failure pattern: **everything tested passes, but the integration between two systems broke.**
+
+### Incident Response Framework (IRF) for QA
+
+\`\`\`
+Phase 1 — ASSESS (5 min)
+  What is the user impact? (% affected, feature, geography)
+  What changed recently? (deployment, config, dependency)
+  Do we have a rollback option?
+
+Phase 2 — HYPOTHESIS (10 min)
+  Form 2–3 hypotheses ordered by likelihood
+  What would prove/disprove each hypothesis fastest?
+
+Phase 3 — ISOLATE (15 min)
+  Run the fastest test that confirms or rules out each hypothesis
+  Don't fix yet — understand first
+
+Phase 4 — FIX OR ROLLBACK (varies)
+  If root cause is clear and fix is safe → fix forward
+  If root cause unclear or fix is risky → rollback immediately
+  Rollback + post-mortem beats a second incident
+
+Phase 5 — POST-MORTEM (24–72h later)
+  Blameless — focus on systems, not people
+  5 Whys to find root cause
+  Action items with owners and deadlines
+\`\`\`
+
+### Working the checkout scenario
+
+**Assess:**
+- Impact: 37% of checkout attempts failing, all payment methods
+- Changed: 2am deployment added a new webhook handler for payment events
+- Rollback: Yes, last deployment was 48h ago and was stable
+
+**Hypotheses (ordered by probability):**
+1. Webhook handler is throwing an error before recording the order
+2. Database migration in the deployment changed the orders table schema
+3. Payment provider changed their webhook signature format
+
+**Isolate:**
+\`\`\`
+Hypothesis 1 → Check application error logs for webhook handler errors
+  → CONFIRMED: "TypeError: Cannot read property 'orderId' of undefined"
+  → Payment provider sends 'order_id', handler expects 'orderId' (camelCase vs snake_case)
+
+Hypothesis 2 → Not needed (H1 confirmed)
+\`\`\`
+
+**Fix forward** (root cause is clear, safe to fix):
+\`\`\`javascript
+// Before (broken)
+async function handlePaymentWebhook(payload) {
+  const order = await db.orders.update({ id: payload.orderId }) // undefined
+
+// After (fixed)
+async function handlePaymentWebhook(payload) {
+  const orderId = payload.order_id || payload.orderId  // handle both
+  const order = await db.orders.update({ id: orderId })
+\`\`\`
+
+**Post-mortem (the QA angle):**
+\`\`\`
+Root cause: Webhook handler used camelCase field name; payment provider sends snake_case.
+Why did testing miss it? The integration test mocked the webhook payload using our own
+format, not the actual provider's format.
+
+5 Whys:
+  Why did checkout fail? → Webhook handler threw on undefined orderId
+  Why was orderId undefined? → Handler used camelCase, payload used snake_case
+  Why was the mismatch not caught? → Test used a fake payload we wrote ourselves
+  Why did we write our own fake? → No contract test against the real webhook format
+  Why no contract test? → We didn't know to verify provider payload format
+
+Action items:
+  1. Add contract test using real webhook payload captured from provider sandbox
+  2. Add integration smoke test in staging that fires a real (test) payment
+  3. Add field validation at webhook entry point — log and alert on unknown fields
+\`\`\`
+
+### Why QA owns post-mortems
+
+Developers fix the bug. QA fixes the **process that let the bug through**. The most valuable question in any post-mortem: "What test would have caught this?" If you can answer that and ensure it gets written, you've turned an incident into a permanent improvement.
+
+### What interviewers want to hear
+
+When asked about a production incident:
+1. Don't blame the developer who wrote the code
+2. Own the testing gap — what should QA have caught?
+3. Explain the process improvement you drove
+4. Quantify the before/after if possible`,
+    quiz: [
+      {
+        q: 'In the checkout incident, the bug was a field naming mismatch (camelCase vs snake_case). What type of test would have caught this?',
+        options: ['A unit test of the order creation function', 'A contract test using the actual payment provider webhook payload format', 'An E2E test of the checkout flow', 'A load test of the payment API'],
+        correct: 1,
+        explanation: 'A contract test verifies that the interface between two systems matches both sides\' expectations. Testing with the real provider payload format would have caught the field naming mismatch before production.',
+      },
+      {
+        q: 'At 3am with checkout failing, should you fix forward or rollback first?',
+        options: ['Always rollback first to stop user impact', 'Fix forward if root cause is clear and fix is safe; rollback if uncertain', 'Always fix forward — rollbacks confuse the codebase', 'Wait for the full team to be available before deciding'],
+        correct: 1,
+        explanation: 'The decision depends on clarity and risk. A clear, low-risk fix (rename a field) can go forward immediately. An unclear root cause with complex changes warrants rollback while you investigate properly.',
+      },
+      {
+        q: 'What is the QA engineer\'s primary responsibility in a post-mortem?',
+        options: ['Identifying which developer introduced the bug', 'Determining what test would have caught this and ensuring it gets written', 'Documenting the timeline of events', 'Calculating the financial impact'],
+        correct: 1,
+        explanation: 'Developers fix the bug; QA fixes the process. The post-mortem action item owned by QA is always: what test should exist that would catch this class of bug going forward.',
+      },
+      {
+        q: 'What does "blameless post-mortem" mean in practice?',
+        options: ['No one is accountable for the incident', 'Focus analysis on systems and processes, not individual mistakes', 'Post-mortems are optional if the team resolves the incident', 'Only senior engineers participate'],
+        correct: 1,
+        explanation: 'Blameless means the analysis focuses on why the system allowed the mistake, not who made it. This creates psychological safety for honest root cause analysis and prevents hiding information.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a webhook payload validator. Given an expected schema (object with field names and types) and an incoming payload, return { valid: boolean, errors: string[] }. This is the kind of validation that would have caught the orderId/order_id mismatch in the incident above.',
+      starterCode: `function validateWebhookPayload(schema, payload) {
+  // schema = { fieldName: 'string' | 'number' | 'boolean', ... }
+  // payload = the actual incoming data
+  // Return { valid: boolean, errors: string[] }
+
+  const errors = []
+
+  // TODO: Check for each required field in schema
+  //   - If field is missing in payload, add error: "Missing required field: X"
+  //   - If field exists but wrong type, add error: "Field X: expected string, got number"
+
+  // TODO: Check for unexpected fields in payload (warn, don't fail)
+  //   - If payload has fields not in schema, add warning: "Unexpected field: X"
+
+  return { valid: errors.filter(e => !e.startsWith('Warning')).length === 0, errors }
+}
+
+// The schema we expected (our camelCase format)
+const expectedSchema = {
+  orderId: 'string',
+  amount: 'number',
+  currency: 'string',
+  status: 'string'
+}
+
+// What the payment provider actually sends (snake_case)
+const actualPayload = {
+  order_id: 'ord_123',  // snake_case!
+  amount: 9999,
+  currency: 'usd',
+  status: 'succeeded',
+  created: 1700000000  // extra field
+}
+
+console.log(validateWebhookPayload(expectedSchema, actualPayload))`,
+      solution: `function validateWebhookPayload(schema, payload) {
+  const errors = []
+
+  // Check required fields
+  for (const [field, expectedType] of Object.entries(schema)) {
+    if (!(field in payload)) {
+      errors.push(\`Missing required field: \${field}\`)
+    } else if (typeof payload[field] !== expectedType) {
+      errors.push(\`Field \${field}: expected \${expectedType}, got \${typeof payload[field]}\`)
+    }
+  }
+
+  // Warn on unexpected fields
+  for (const field of Object.keys(payload)) {
+    if (!(field in schema)) {
+      errors.push(\`Warning: Unexpected field: \${field}\`)
+    }
+  }
+
+  return { valid: errors.filter(e => !e.startsWith('Warning')).length === 0, errors }
+}
+
+const expectedSchema = { orderId: 'string', amount: 'number', currency: 'string', status: 'string' }
+const actualPayload = { order_id: 'ord_123', amount: 9999, currency: 'usd', status: 'succeeded', created: 1700000000 }
+
+console.log(validateWebhookPayload(expectedSchema, actualPayload))
+// { valid: false, errors: ['Missing required field: orderId', 'Warning: Unexpected field: order_id', 'Warning: Unexpected field: created'] }`,
+      hints: [
+        'Use Object.entries(schema) to iterate over [fieldName, expectedType] pairs',
+        'Check if a field exists with: field in payload (not payload[field] — which fails for falsy values)',
+        'typeof payload[field] returns "string", "number", "boolean", etc.',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-qa-m12', track: 'crash', title: 'Product Thinking for QA Engineers',
+    subtitle: 'How great QA engineers think about quality as a product feature, not a gate.',
+    moduleObjective: 'Articulate quality as a business investment, make risk-based testing decisions, and communicate testing value in product language.',
+    courseObjective: CC_QA_OBJ, crashId: 'cc-interview-qa', crashTitle: 'QA Interview Prep',
+    level: 'PhD', xp: 245, duration: 13, module: 12, certArea: 'QA Interview Prep',
+    keyTerms: [
+      { term: 'Quality as a Feature', definition: 'The mindset that reliability, performance, and absence of defects are features that users value and pay for — not just overhead.' },
+      { term: 'Risk-Based Testing', definition: 'Allocating test effort by the probability and impact of failure — not equal coverage everywhere.' },
+      { term: 'Defect Cost Curve', definition: 'The principle that fixing a bug in production costs 10–100× more than catching it in development.' },
+      { term: 'Quality Metrics', definition: 'Outcome-based measures: defect escape rate, MTTD, test suite reliability — not vanity metrics like coverage %.' },
+      { term: 'Jobs To Be Done', definition: 'A framework focusing on what outcome a user is trying to achieve, not just what they click or do.' },
+    ],
+    content: `## Product Thinking for QA Engineers
+
+### The old QA mindset vs the new one
+
+\`\`\`
+Old: "My job is to find bugs before they ship."
+New: "My job is to ensure users get the outcomes they came for."
+\`\`\`
+
+The difference matters in interviews. "I find bugs" is a task. "I protect user outcomes" is a product responsibility.
+
+### Quality as a product investment
+
+**The Defect Cost Curve:**
+\`\`\`
+Stage               Cost to fix   Example
+─────────────────────────────────────────────
+Requirements phase  $1            Wrong acceptance criteria
+Development         $5            Unit test catches it
+QA                  $20           Found in test cycle
+Production          $100–$500     User reports it; hotfix; support tickets; refunds
+\`\`\`
+
+This is why shift-left testing ROI is so high. A QA engineer who catches bugs in requirements review saves 100x compared to finding them in production.
+
+### Risk-Based Testing — where to focus
+
+Not all features carry equal risk. Before writing a single test, ask:
+
+\`\`\`
+1. Impact: If this breaks, how many users are affected? What business function stops?
+2. Probability: How complex is this code? Does it touch multiple systems?
+3. Reversibility: Can we rollback? Do we have feature flags?
+
+Risk = Impact × Probability
+
+High risk + irreversible → exhaustive testing + staged rollout
+High risk + reversible   → solid testing + feature flag
+Low risk + reversible    → smoke test + monitoring
+Low risk + irreversible  → medium testing + rollback plan
+\`\`\`
+
+**Example:** An A/B test on button color → low risk, low testing needed. The checkout flow → maximum risk, maximum testing.
+
+### Talking to PMs about quality
+
+**Don't say:** "We need more time to test."
+**Do say:** "The checkout flow has 3 untested edge cases. Two of them could cause failed payments. I need 4 hours to cover those. Here's my estimate of the risk if we skip them."
+
+Always translate testing needs into business outcomes:
+- "4 hours of testing" → "protecting 100 checkout transactions per hour"
+- "Fixing this flaky test" → "saving 2 hours of CI re-runs per day = $10K/year in engineering time"
+
+### The 4 product questions QA should always ask
+
+\`\`\`
+1. "What does success look like for the user?"
+   → Don't just test the spec — test the user's intended outcome.
+
+2. "What's the worst thing that could go wrong?"
+   → Risk-first thinking drives better test prioritization than coverage metrics.
+
+3. "How will we know if this is broken in production?"
+   → Every feature needs a health check, not just QA coverage.
+
+4. "What's the minimum test confidence to ship responsibly?"
+   → This prevents the false choice between "100% tested" and "untested."
+\`\`\`
+
+### When to say "ship it anyway"
+
+Great QA engineers understand when to accept risk:
+- The bug affects 0.01% of users and the fix is risky
+- The release is a hotfix for a worse existing bug
+- The feature is behind a feature flag for 1% of users
+- A rollback takes 5 minutes and you have monitoring
+
+Saying "we can ship this if we add a feature flag and monitor metric X" is more valuable than "we can't ship until everything is perfect."`,
+    quiz: [
+      {
+        q: 'According to the Defect Cost Curve, when is the cheapest time to fix a bug?',
+        options: ['In QA testing', 'In production', 'During requirements/design phase', 'During code review'],
+        correct: 2,
+        explanation: 'Fixing a bug during requirements or design costs approximately $1; fixing it in production costs $100–$500. This is the core ROI argument for shift-left testing and requirements review.',
+      },
+      {
+        q: 'A PM asks you to skip testing a low-risk styling change to meet a deadline. What\'s the right response?',
+        options: ['Refuse to ship without testing', 'Agree — styling changes are always safe', 'Assess risk: is it truly low risk? If so, a smoke test + feature flag may be sufficient', 'Ask for more time to do full testing'],
+        correct: 2,
+        explanation: 'Risk-based testing means proportional effort. A truly low-risk change may need only a smoke test. The key is making the risk assessment explicit so the PM can decide with full information.',
+      },
+      {
+        q: 'What\'s the strongest way to explain to a PM why fixing a flaky test is worth prioritizing?',
+        options: ['Flaky tests are unprofessional', 'Translate it to cost: "This flaky test costs 2 CI re-runs per day × $50/hour = $10K/year in lost engineering time"', 'Tell them it\'s a QA best practice', 'Show them the test code'],
+        correct: 1,
+        explanation: 'PMs make decisions based on business impact. Converting flaky test overhead to dollar cost makes the prioritization case compelling and objective.',
+      },
+      {
+        q: 'What does "quality as a feature" mean for a QA engineer\'s role?',
+        options: ['Writing more tests to increase coverage', 'Treating reliability and absence of defects as user value delivered, not overhead', 'Adding quality-related features to the product', 'Writing the QA section of the product requirements'],
+        correct: 1,
+        explanation: 'Quality as a feature means advocating for reliability, performance, and correctness as things users explicitly value and pay for — making the QA role a product investment, not a cost center.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Build a test priority calculator. Given an array of features, each with { name, userImpact (1-10), bugProbability (1-10), isReversible (boolean) }, calculate a risk score for each and return them sorted highest-risk first. Risk = userImpact × bugProbability × (isReversible ? 0.7 : 1.0).',
+      starterCode: `function prioritizeTests(features) {
+  // Each feature: { name, userImpact, bugProbability, isReversible }
+  // Return features sorted by riskScore descending
+  // riskScore = userImpact × bugProbability × (isReversible ? 0.7 : 1.0)
+
+  return features
+    .map(f => ({
+      ...f,
+      riskScore: 0 // TODO: calculate
+    }))
+    .sort((a, b) => 0) // TODO: sort by riskScore descending
+}
+
+const features = [
+  { name: 'Button color A/B test',    userImpact: 2,  bugProbability: 1,  isReversible: true },
+  { name: 'Checkout payment flow',    userImpact: 10, bugProbability: 7,  isReversible: false },
+  { name: 'User profile avatar',      userImpact: 3,  bugProbability: 3,  isReversible: true },
+  { name: 'Password reset email',     userImpact: 8,  bugProbability: 5,  isReversible: false },
+  { name: 'Analytics event tracking', userImpact: 4,  bugProbability: 4,  isReversible: true },
+]
+
+prioritizeTests(features).forEach(f =>
+  console.log(\`\${f.name}: risk=\${f.riskScore.toFixed(1)}\`)
+)`,
+      solution: `function prioritizeTests(features) {
+  return features
+    .map(f => ({
+      ...f,
+      riskScore: f.userImpact * f.bugProbability * (f.isReversible ? 0.7 : 1.0)
+    }))
+    .sort((a, b) => b.riskScore - a.riskScore)
+}
+
+const features = [
+  { name: 'Button color A/B test',    userImpact: 2,  bugProbability: 1,  isReversible: true },
+  { name: 'Checkout payment flow',    userImpact: 10, bugProbability: 7,  isReversible: false },
+  { name: 'User profile avatar',      userImpact: 3,  bugProbability: 3,  isReversible: true },
+  { name: 'Password reset email',     userImpact: 8,  bugProbability: 5,  isReversible: false },
+  { name: 'Analytics event tracking', userImpact: 4,  bugProbability: 4,  isReversible: true },
+]
+
+prioritizeTests(features).forEach(f =>
+  console.log(\`\${f.name}: risk=\${f.riskScore.toFixed(1)}\`)
+)
+// Checkout: 70.0, Password reset: 40.0, Analytics: 11.2, Avatar: 6.3, Button: 1.4`,
+      hints: [
+        'riskScore = userImpact * bugProbability * (isReversible ? 0.7 : 1.0)',
+        'Use .map() to add riskScore to each feature object with spread: { ...f, riskScore: ... }',
+        'Sort descending: (a, b) => b.riskScore - a.riskScore',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-qa-m13', track: 'crash', title: 'Performance Awareness for QA Engineers',
+    subtitle: 'Testing performance: suite speed, application benchmarks, and knowing when performance is a quality issue.',
+    moduleObjective: 'Optimize test suite performance, write performance assertions, and articulate the QA role in application performance monitoring.',
+    courseObjective: CC_QA_OBJ, crashId: 'cc-interview-qa', crashTitle: 'QA Interview Prep',
+    level: 'PhD', xp: 250, duration: 14, module: 13, certArea: 'QA Interview Prep',
+    keyTerms: [
+      { term: 'Test Suite Performance', definition: 'How fast your test suite runs — directly impacts CI feedback loop speed and developer productivity.' },
+      { term: 'Parallel Test Execution', definition: 'Running multiple test files or suites simultaneously to reduce total wall-clock time.' },
+      { term: 'Performance Assertion', definition: 'A test that fails if a response time or resource usage exceeds a defined threshold.' },
+      { term: 'Load Testing', definition: 'Simulating concurrent users to find performance degradation and breaking points under realistic traffic.' },
+      { term: 'Performance Budget', definition: 'A threshold for performance metrics (e.g., LCP < 2.5s, API p99 < 200ms) that the team commits to maintaining.' },
+    ],
+    content: `## Performance Awareness for QA Engineers
+
+### Two types of performance QA engineers own
+
+1. **Test suite performance** — how fast your tests run
+2. **Application performance testing** — how fast your app runs
+
+Both matter. A test suite that takes 45 minutes to run is a quality problem.
+
+### Test Suite Performance
+
+**The benchmark:** A unit test suite for a mid-size app should run in under 30 seconds. If it doesn't, it won't be run often.
+
+\`\`\`
+Common causes of slow test suites:
+
+1. Too many E2E tests (fix: convert to unit/integration where possible)
+2. No test parallelism (fix: enable --maxWorkers in Jest, parallel mode in Playwright)
+3. Database not reset efficiently (fix: use transactions that rollback, not DELETE + INSERT)
+4. Slow test doubles — real HTTP calls in unit tests (fix: mock external services)
+5. No test caching — rebuilding the app on every test run (fix: cached builds)
+\`\`\`
+
+**Jest performance tuning:**
+\`\`\`javascript
+// jest.config.js
+module.exports = {
+  maxWorkers: '50%',          // Use half available CPUs
+  testTimeout: 5000,          // Fail fast — 5s max per test
+  coverageThreshold: { global: { lines: 80 } },
+  // Bail on first failure in CI (don't waste time on known-broken suite)
+  bail: process.env.CI ? 1 : 0,
+}
+\`\`\`
+
+### Application Performance Testing
+
+**The performance testing pyramid:**
+\`\`\`
+         /\\
+        /Load\\           ← Peak traffic simulation (k6, Artillery)
+       /────────\\
+      / Stress   \\       ← Find breaking point
+     /────────────\\
+    / Soak         \\     ← Sustained load (memory leaks, connection pool)
+   /────────────────\\
+  / Smoke Performance\\ ← API p95 assertions in CI (fast, always runs)
+ /────────────────────\\
+\`\`\`
+
+**Smoke performance assertion in CI:**
+\`\`\`javascript
+// In your integration tests — run this on every PR
+test('checkout API responds under 500ms', async () => {
+  const start = Date.now()
+  await fetch('/api/checkout', { method: 'POST', body: JSON.stringify(testOrder) })
+  const duration = Date.now() - start
+  expect(duration).toBeLessThan(500) // Performance budget: 500ms p95
+})
+\`\`\`
+
+### What interviewers mean by "performance awareness"
+
+They want to know if you think about performance proactively:
+- "When I add a new E2E test, I check if it duplicates coverage we could get cheaper with a unit test"
+- "I track CI runtime trending — if it grows 20% in a sprint, I investigate"
+- "For our checkout feature I added a performance assertion that fails CI if the endpoint exceeds 500ms"
+
+**The standout answer:** Show you've moved from reactive ("I ran a load test before launch") to proactive ("I have performance budgets in CI that alert before we ship a regression").`,
+    quiz: [
+      {
+        q: 'Your Jest test suite went from 8 minutes to 18 minutes over 3 sprints. What\'s the first thing to check?',
+        options: ['Buy faster CI machines', 'Check if parallelism is configured and if new slow E2E tests were added', 'Delete redundant tests', 'Increase test timeout values'],
+        correct: 1,
+        explanation: 'The first step is diagnosis: is parallelism enabled? (--maxWorkers). Did new slow E2E tests get added? Are any tests making real HTTP calls? These are the common causes of gradual suite slowdown.',
+      },
+      {
+        q: 'What is a "performance assertion" in the context of integration tests?',
+        options: ['A test that checks performance configuration settings', 'A test that fails if response time or resource usage exceeds a defined threshold', 'A performance review of the test suite code quality', 'A manual performance check done before launch'],
+        correct: 1,
+        explanation: 'A performance assertion is code like `expect(duration).toBeLessThan(500)` — it makes your CI pipeline catch performance regressions automatically, the same way a unit test catches logic regressions.',
+      },
+      {
+        q: 'What is "soak testing" and what does it catch?',
+        options: ['Testing under very high load to find the breaking point', 'Sustained load testing over hours to find memory leaks and connection pool exhaustion', 'Testing the database under write-heavy loads', 'Running tests in a water-resistant environment'],
+        correct: 1,
+        explanation: 'Soak testing runs moderate load over a long period (hours or days) to expose memory leaks, connection pool exhaustion, and slow degradation that only appears over time.',
+      },
+      {
+        q: 'What does "performance budget" mean in a QA context?',
+        options: ['The budget allocated for performance testing tools', 'A committed threshold (e.g., API p99 < 200ms) that CI enforces — failing if exceeded', 'An estimate of how long performance testing will take', 'The maximum test suite size allowed'],
+        correct: 1,
+        explanation: 'A performance budget is a contract the team makes with themselves: "this metric must stay under this threshold." CI enforces it automatically, preventing performance regressions from shipping unnoticed.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a test suite performance analyzer. Given an array of test results with { name, durationMs, type } where type is "unit", "integration", or "e2e", return: totalDuration, slowestTests (top 5), averageByType, and a recommendation string if total duration exceeds 60 seconds.',
+      starterCode: `function analyzeTestSuite(testResults) {
+  // testResults: [{ name, durationMs, type }]
+  // Return: { totalDuration, slowestTests, averageByType, recommendation }
+
+  const totalDuration = 0 // TODO: sum all durationMs
+
+  const slowestTests = [] // TODO: top 5 by durationMs descending
+
+  const averageByType = {} // TODO: { unit: avg, integration: avg, e2e: avg }
+
+  const recommendation = '' // TODO: if totalDuration > 60000, suggest top culprit
+
+  return { totalDuration, slowestTests, averageByType, recommendation }
+}
+
+const results = [
+  { name: 'Login unit test', durationMs: 12, type: 'unit' },
+  { name: 'Checkout E2E', durationMs: 15000, type: 'e2e' },
+  { name: 'User API integration', durationMs: 800, type: 'integration' },
+  { name: 'Email unit test', durationMs: 8, type: 'unit' },
+  { name: 'Payment flow E2E', durationMs: 22000, type: 'e2e' },
+  { name: 'Auth integration', durationMs: 1200, type: 'integration' },
+]
+
+console.log(analyzeTestSuite(results))`,
+      solution: `function analyzeTestSuite(testResults) {
+  const totalDuration = testResults.reduce((sum, t) => sum + t.durationMs, 0)
+
+  const slowestTests = [...testResults]
+    .sort((a, b) => b.durationMs - a.durationMs)
+    .slice(0, 5)
+
+  const byType = {}
+  for (const t of testResults) {
+    if (!byType[t.type]) byType[t.type] = []
+    byType[t.type].push(t.durationMs)
+  }
+  const averageByType = {}
+  for (const [type, durations] of Object.entries(byType)) {
+    averageByType[type] = Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
+  }
+
+  let recommendation = ''
+  if (totalDuration > 60000) {
+    const topCulprit = slowestTests[0]
+    recommendation = \`Suite too slow (\${(totalDuration/1000).toFixed(1)}s). Investigate "\${topCulprit.name}" (\${(topCulprit.durationMs/1000).toFixed(1)}s). Consider converting slow E2E tests to integration tests.\`
+  }
+
+  return { totalDuration, slowestTests, averageByType, recommendation }
+}
+
+const results = [
+  { name: 'Login unit test', durationMs: 12, type: 'unit' },
+  { name: 'Checkout E2E', durationMs: 15000, type: 'e2e' },
+  { name: 'User API integration', durationMs: 800, type: 'integration' },
+  { name: 'Email unit test', durationMs: 8, type: 'unit' },
+  { name: 'Payment flow E2E', durationMs: 22000, type: 'e2e' },
+  { name: 'Auth integration', durationMs: 1200, type: 'integration' },
+]
+
+console.log(analyzeTestSuite(results))`,
+      hints: [
+        'Use reduce to sum totalDuration: testResults.reduce((sum, t) => sum + t.durationMs, 0)',
+        'Sort a copy of the array with [...testResults].sort(...) to avoid mutating the input',
+        'Group by type with a loop: if (!byType[t.type]) byType[t.type] = []; byType[t.type].push(t.durationMs)',
+      ],
+    },
+  },
+  {
+    id: 'cc-interview-qa-m14', track: 'crash', title: 'Security Instincts for QA Engineers',
+    subtitle: 'How QA engineers spot security vulnerabilities through testing — before attackers do.',
+    moduleObjective: 'Apply security testing techniques to find authentication bypasses, injection flaws, and broken access control through the lens of a QA engineer.',
+    courseObjective: CC_QA_OBJ, crashId: 'cc-interview-qa', crashTitle: 'QA Interview Prep',
+    level: 'PhD', xp: 255, duration: 14, module: 14, certArea: 'QA Interview Prep',
+    keyTerms: [
+      { term: 'Security Testing', definition: 'Testing that actively tries to bypass authentication, inject malicious input, and access unauthorized resources.' },
+      { term: 'IDOR', definition: 'Insecure Direct Object Reference — a vulnerability where changing an ID in a URL gives access to another user\'s data.' },
+      { term: 'Input Validation Testing', definition: 'Testing that the application correctly rejects, escapes, or sanitizes unexpected or malicious input.' },
+      { term: 'Authentication Bypass', definition: 'A vulnerability where an attacker can access protected resources without valid credentials.' },
+      { term: 'Boundary Testing', definition: 'Testing at the edges of valid input ranges — a security and correctness technique combined.' },
+    ],
+    content: `## Security Instincts for QA Engineers
+
+### Why security is a QA responsibility
+
+Security vulnerabilities are bugs. OWASP A01 (Broken Access Control) is the #1 web vulnerability — and it's caused by missing tests, not missing features. Every QA engineer should have a security testing mindset.
+
+### The 5 security test categories QA should cover
+
+\`\`\`
+1. Authentication tests     — Can I access this without logging in?
+2. Authorization tests      — Can I access data that belongs to another user?
+3. Input validation tests   — What happens with malicious input?
+4. Session management       — Can I reuse an expired token?
+5. Error message leakage    — Do errors reveal internal structure?
+\`\`\`
+
+### Test 1: Authentication bypass
+
+\`\`\`javascript
+// Test: protected endpoint returns 401 without auth token
+test('GET /api/orders requires authentication', async () => {
+  const res = await fetch('/api/orders')  // no Authorization header
+  expect(res.status).toBe(401)
+})
+
+// Test: endpoint returns 401 with invalid token
+test('GET /api/orders rejects invalid token', async () => {
+  const res = await fetch('/api/orders', {
+    headers: { Authorization: 'Bearer fake-token-12345' }
+  })
+  expect(res.status).toBe(401)
+})
+\`\`\`
+
+### Test 2: Insecure Direct Object Reference (IDOR)
+
+This is the most common access control bug. Always test it.
+
+\`\`\`javascript
+// Setup: User A owns order #100, User B owns order #200
+// Test: User B cannot read User A's order
+test('cannot read another user\'s order (IDOR)', async () => {
+  const userBToken = await loginAs('user-b@example.com')
+  const res = await fetch('/api/orders/100', {  // User A's order
+    headers: { Authorization: \`Bearer \${userBToken}\` }
+  })
+  expect(res.status).toBe(403)  // Not 200, not 404 (which would leak existence)
+})
+
+// Test: User B cannot modify User A's order
+test('cannot modify another user\'s order (IDOR write)', async () => {
+  const userBToken = await loginAs('user-b@example.com')
+  const res = await fetch('/api/orders/100', {
+    method: 'PATCH',
+    headers: { Authorization: \`Bearer \${userBToken}\`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'cancelled' })
+  })
+  expect(res.status).toBe(403)
+})
+\`\`\`
+
+### Test 3: Input validation — XSS and injection
+
+\`\`\`javascript
+const maliciousInputs = [
+  '<script>alert("xss")</script>',
+  '"; DROP TABLE users; --',
+  '../../../etc/passwd',
+  '\${7*7}',  // template injection
+  'a'.repeat(10000),  // buffer overflow
+]
+
+test.each(maliciousInputs)('user name field rejects malicious input: %s', async (input) => {
+  const res = await fetch('/api/users/profile', {
+    method: 'PUT',
+    body: JSON.stringify({ name: input })
+  })
+  // Should either reject (400) or sanitize — never store raw
+  if (res.ok) {
+    const saved = await res.json()
+    // If accepted, verify it was sanitized
+    expect(saved.name).not.toContain('<script>')
+    expect(saved.name).not.toContain('DROP TABLE')
+  } else {
+    expect(res.status).toBe(400)
+  }
+})
+\`\`\`
+
+### Test 4: Error message leakage
+
+\`\`\`javascript
+// Bad: error reveals internal structure
+// { error: "PG::UndefinedTable: ERROR: relation 'users' does not exist" }
+// Good: generic error only
+// { error: "An unexpected error occurred" }
+
+test('errors do not leak database or stack information', async () => {
+  const res = await fetch('/api/users/999999')  // non-existent ID
+  const body = await res.json()
+
+  expect(JSON.stringify(body)).not.toMatch(/postgres|pg::|stack:|at Object|\.ts:\d/)
+  expect(JSON.stringify(body)).not.toMatch(/SELECT|FROM|WHERE|INSERT/)
+})
+\`\`\`
+
+### Security regression tests — add these after every incident
+
+Every security bug you fix should generate a regression test. If a user found they could access admin routes without being an admin, add:
+
+\`\`\`javascript
+test('non-admin cannot access admin routes (regression: CVE-2024-001)', async () => {
+  const userToken = await loginAs('regular-user@example.com')
+  const res = await fetch('/api/admin/users', {
+    headers: { Authorization: \`Bearer \${userToken}\` }
+  })
+  expect(res.status).toBe(403)
+})
+\`\`\`
+
+### The security test mindset for interviews
+
+When asked "how do you approach security in your testing?", show:
+1. You have a systematic checklist (auth, IDOR, input, sessions, errors)
+2. You test from the perspective of a malicious user, not a cooperative one
+3. You add regression tests after every security fix
+4. You catch security issues in the QA cycle, not after a breach`,
+    quiz: [
+      {
+        q: 'What is an IDOR vulnerability and how does a QA engineer test for it?',
+        options: ['An injection attack tested with SQL payloads', 'Accessing another user\'s resource by changing an ID — tested by logging in as User B and requesting User A\'s resource ID', 'An incorrect database record found through boundary testing', 'A redirect vulnerability tested with URL manipulation'],
+        correct: 1,
+        explanation: 'IDOR (Insecure Direct Object Reference) is the most common access control bug. Test it by authenticating as one user and requesting resource IDs that belong to another user. Expect 403, not 200.',
+      },
+      {
+        q: 'Why should a non-existent user\'s API response return 403 instead of 404?',
+        options: ['403 is more user-friendly', '404 leaks that the resource exists (or doesn\'t), which can be exploited for user enumeration', '403 is the standard for all missing resources', 'There is no practical difference'],
+        correct: 1,
+        explanation: 'Returning 404 for "you don\'t have access to this" leaks the existence of the resource. An attacker enumerating user IDs can distinguish between "user exists but you can\'t access them" (403) and "user doesn\'t exist" (404). Always 403.',
+      },
+      {
+        q: 'What should you do after finding and fixing a security vulnerability?',
+        options: ['Document it in the changelog', 'Add a regression test that verifies the specific vulnerability is fixed — so it can never silently re-appear', 'Increase the overall test coverage percentage', 'Notify the security team only'],
+        correct: 1,
+        explanation: 'Security regression tests are the most important type of security test — they prevent a fixed vulnerability from quietly reappearing in a future refactor. Always write the test after the fix.',
+      },
+      {
+        q: 'You find that your API returns detailed database error messages in production. What severity is this?',
+        options: ['Low — just cosmetic', 'Medium — confusing but not dangerous', 'High — reveals internal structure, table names, and query patterns that help attackers craft targeted attacks', 'Critical — causes immediate data breach'],
+        correct: 2,
+        explanation: 'Verbose error messages revealing database structure (table names, column names, SQL queries) are a significant information disclosure vulnerability. They help attackers craft more targeted SQL injection and enumeration attacks. This is OWASP A05: Security Misconfiguration.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write an IDOR test helper. Given a list of resources (each with ownerId and resourceId) and a function getResource(resourceId, requestingUserId) that returns a resource or throws, write a test that verifies: the owner CAN access their own resources, and other users CANNOT (should throw or return null).',
+      starterCode: `// Simulated resource store
+const resources = [
+  { resourceId: 'res-001', ownerId: 'user-alice', data: { secret: 'alice_data' } },
+  { resourceId: 'res-002', ownerId: 'user-alice', data: { secret: 'more_alice_data' } },
+  { resourceId: 'res-003', ownerId: 'user-bob',   data: { secret: 'bob_data' } },
+]
+
+// This is the function under test (simulates your API)
+function getResource(resourceId, requestingUserId) {
+  const resource = resources.find(r => r.resourceId === resourceId)
+  if (!resource) throw new Error('Not found')
+  // BUG: Missing authorization check! Returns resource to anyone.
+  // Fix: if (resource.ownerId !== requestingUserId) throw new Error('Forbidden')
+  return resource.data
+}
+
+function runIdorTests(getResourceFn, testResources) {
+  let passed = 0, failed = 0
+
+  // TODO: For each resource, verify:
+  // 1. The owner CAN access it (should NOT throw)
+  // 2. A different user CANNOT access it (SHOULD throw)
+
+  // Test users to try as the "other user"
+  const allUserIds = [...new Set(testResources.map(r => r.ownerId))]
+
+  for (const resource of testResources) {
+    // Test owner access
+    // Test non-owner access for each other user
+  }
+
+  console.log(\`IDOR Test Results: \${passed} passed, \${failed} failed\`)
+  return failed === 0
+}
+
+console.log('Running IDOR tests on vulnerable function:')
+runIdorTests(getResource, resources)`,
+      solution: `const resources = [
+  { resourceId: 'res-001', ownerId: 'user-alice', data: { secret: 'alice_data' } },
+  { resourceId: 'res-002', ownerId: 'user-alice', data: { secret: 'more_alice_data' } },
+  { resourceId: 'res-003', ownerId: 'user-bob',   data: { secret: 'bob_data' } },
+]
+
+function getResource(resourceId, requestingUserId) {
+  const resource = resources.find(r => r.resourceId === resourceId)
+  if (!resource) throw new Error('Not found')
+  // BUG: Missing authorization check
+  return resource.data
+}
+
+function runIdorTests(getResourceFn, testResources) {
+  let passed = 0, failed = 0
+  const allUserIds = [...new Set(testResources.map(r => r.ownerId))]
+
+  for (const resource of testResources) {
+    // Test 1: owner can access
+    try {
+      getResourceFn(resource.resourceId, resource.ownerId)
+      console.log(\`✓ Owner \${resource.ownerId} can access \${resource.resourceId}\`)
+      passed++
+    } catch (e) {
+      console.log(\`✗ FAIL: Owner \${resource.ownerId} cannot access own resource \${resource.resourceId}\`)
+      failed++
+    }
+
+    // Test 2: non-owners cannot access
+    for (const userId of allUserIds) {
+      if (userId === resource.ownerId) continue
+      try {
+        getResourceFn(resource.resourceId, userId)
+        console.log(\`✗ IDOR VULNERABILITY: \${userId} accessed \${resource.resourceId} owned by \${resource.ownerId}\`)
+        failed++
+      } catch (e) {
+        console.log(\`✓ \${userId} correctly denied access to \${resource.resourceId}\`)
+        passed++
+      }
+    }
+  }
+
+  console.log(\`\\nIDOR Test Results: \${passed} passed, \${failed} failed\`)
+  return failed === 0
+}
+
+console.log('Running IDOR tests on vulnerable function:')
+runIdorTests(getResource, resources)`,
+      hints: [
+        'Owner access: try { getResourceFn(id, ownerId); passed++ } catch { failed++ }',
+        'Non-owner access: try { getResourceFn(id, otherId); failed++ } catch { passed++ } — success means IDOR found',
+        'Get all unique user IDs with: [...new Set(resources.map(r => r.ownerId))]',
+      ],
+    },
+  },
 ]

