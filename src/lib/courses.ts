@@ -264,6 +264,21 @@ import { languageCoursesFull } from './tracks/language'
 import { hciCourses } from './tracks/hci'
 import { pmCourses } from './tracks/product-mgmt'
 import { salesCourses } from './tracks/sales-mgmt'
+// Language crash courses
+import { crashPythonCourses } from './tracks/crash-python'
+import { crashGoCourses } from './tracks/crash-go'
+import { crashRustCourses } from './tracks/crash-rust'
+import { crashCppCourses } from './tracks/crash-cpp'
+import { crashJavaCourses } from './tracks/crash-java'
+import { crashSwiftCourses } from './tracks/crash-swift'
+import { crashRCourses } from './tracks/crash-r'
+// Interview prep crash courses
+import { crashInterviewFrontendCourses } from './tracks/crash-interview-frontend'
+import { crashInterviewBackendCourses } from './tracks/crash-interview-backend'
+import { crashInterviewFullstackCourses } from './tracks/crash-interview-fullstack'
+import { crashInterviewQaCourses } from './tracks/crash-interview-qa'
+import { crashInterviewDataCourses } from './tracks/crash-interview-data'
+import { crashInterviewSecurityCourses } from './tracks/crash-interview-security'
 
 const languageCourses: Course[] = [
   {
@@ -368,6 +383,21 @@ export const COURSES: Course[] = [
   ...hciCourses,
   ...pmCourses,
   ...salesCourses,
+  // Language crash courses
+  ...crashPythonCourses,
+  ...crashGoCourses,
+  ...crashRustCourses,
+  ...crashCppCourses,
+  ...crashJavaCourses,
+  ...crashSwiftCourses,
+  ...crashRCourses,
+  // Interview prep
+  ...crashInterviewFrontendCourses,
+  ...crashInterviewBackendCourses,
+  ...crashInterviewFullstackCourses,
+  ...crashInterviewQaCourses,
+  ...crashInterviewDataCourses,
+  ...crashInterviewSecurityCourses,
 ]
 
 
