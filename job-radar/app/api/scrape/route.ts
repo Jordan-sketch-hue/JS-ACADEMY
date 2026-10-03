@@ -7,14 +7,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 )
 
-export async function POST(req: NextRequest) {
-  // Protect the cron endpoint
-  const secret = req.headers.get('x-cron-secret')
-  if (secret !== process.env.CRON_SECRET) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  try {
+async function runScrape() {
     // Scrape all sources in parallel
     const [remotive, remoteok] = await Promise.all([
       scrapeRemotive(),
@@ -77,7 +70,14 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Allow GET for manual trigger in dev
-export async function GET(req: NextRequest) {
-  return POST(req)
+export async function POST(req: NextRequest) {
+  const secret = req.headers.get('x-cron-secret')
+  if (secret !== process.env.CRON_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  return runScrape()
+}
+
+export async function GET() {
+  return runScrape()
 }
