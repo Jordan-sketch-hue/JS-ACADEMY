@@ -1,4 +1,4 @@
-import type { Course } from '../courses'
+﻿import type { Course } from '../courses'
 
 export const salesCourses: Course[] = [
   {
@@ -366,7 +366,7 @@ Pipeline reviews should identify deals that are stalled, deals at risk of dying,
       { term: 'Talk/Listen Ratio', definition: 'The proportion of a sales call spent by the salesperson speaking vs listening — top-performing reps typically speak 43% and listen 57% of the time according to Gong research on call recordings.' },
       { term: 'Compelling Event', definition: 'A specific business reason why the prospect must make a decision by a particular date — "why now?" The presence of a compelling event predicts whether a deal will close or stall indefinitely.' },
     ],
-    content: \`## The Discovery Call
+    content: `## The Discovery Call
 
 The discovery call is the most misunderstood and most consequential conversation in a sale. Most salespeople treat it as a prerequisite — something to get through on the way to the demo. The best salespeople treat it as the primary event: if discovery is done right, the demo is almost redundant, because the prospect has already articulated the exact problem the product solves.
 
@@ -583,7 +583,7 @@ Often means: a concern hasn't been surfaced yet. "That makes sense. In my experi
       { term: 'Concession Strategy', definition: 'A planned approach to what the salesperson will and will not trade in negotiation — knowing in advance what can be conceded, at what price, in exchange for what value.' },
       { term: 'Procurement', definition: 'The organisational function responsible for managing external vendor relationships and contracts — understanding procurement\'s role and process is critical to not being surprised in the late stages of an enterprise sale.' },
     ],
-    content: \`## Closing & Negotiation
+    content: `## Closing & Negotiation
 
 "Always Be Closing" — the famous mantra from Glengarry Glen Ross — is, in practice, counterproductive advice. Closing pressure applied before the prospect is ready destroys trust and kills deals. The better principle: closing is the natural consequence of a well-executed sales process. If discovery uncovered real pain, if the demo addressed that pain precisely, if objections were handled honestly, and if a compelling event creates urgency — the close follows naturally.
 
@@ -914,7 +914,7 @@ Compensation plan mistakes:
       { term: 'Account Plan', definition: 'A documented strategy for a key account: current business, relationship map, growth opportunities, competitive threats, and action plans for deepening the relationship and expanding revenue.' },
       { term: 'Whitespace', definition: 'The untapped revenue opportunity within an existing account — additional products not yet purchased, additional teams not yet served, additional use cases not yet adopted.' },
     ],
-    content: \`## Account-Based Sales & Key Account Management
+    content: `## Account-Based Sales & Key Account Management
 
 Not all accounts are equal. The top 20% of accounts often produce 80% of revenue. Key Account Management (KAM) and Account-Based approaches recognise this asymmetry and invest disproportionately in the highest-value relationships.
 
@@ -1272,7 +1272,7 @@ The best forecasters in sales are not the most optimistic — they are the most 
       { term: 'Playbook', definition: 'A documented collection of the sales process, messaging frameworks, objection handling scripts, competitive positioning, and best practices — the operationalised knowledge of the sales team.' },
       { term: 'Sales Enablement', definition: 'The function responsible for equipping salespeople with the knowledge, content, and tools to effectively engage buyers — training, onboarding, content creation, and coaching infrastructure.' },
     ],
-    content: \`## Building a Scalable Sales Culture
+    content: `## Building a Scalable Sales Culture
 
 Every process, every framework, every tool in this curriculum operates within a culture. A culture where salespeople are afraid to lose pipeline — and therefore never disqualify bad deals — undermines pipeline accuracy. A culture where quotas are changed mid-year when they become hard — undermines trust and planning. A culture where top performers are treated as magical rather than as learners — prevents the system from improving.
 

@@ -1,4 +1,4 @@
-import type { Course } from '../courses'
+﻿import type { Course } from '../courses'
 
 export const pmCourses: Course[] = [
   {
@@ -231,7 +231,7 @@ Continuous discovery prevents the organisation from going months or years betwee
       { term: 'Now-Next-Later Roadmap', definition: 'A roadmap format organising work into three horizons without specific dates — "Now" (in progress), "Next" (validated and ready to start), "Later" (direction but not yet planned) — acknowledging uncertainty.' },
       { term: 'Opportunity Cost', definition: 'The value of the next-best alternative foregone by choosing a course of action — every item on a roadmap represents the decision NOT to build everything else; strategy is as much about what not to do.' },
     ],
-    content: \`## Product Strategy & Roadmapping
+    content: `## Product Strategy & Roadmapping
 
 Strategy is the answer to "how will we win?" For products, this means: which users, which problems, which capabilities, and in what sequence — given limited resources and an uncertain future. Most product "strategies" are actually lists of features, which is planning, not strategy.
 
@@ -431,7 +431,7 @@ The discipline: staying close enough to real users that the pivot is informed by
       { term: 'Edge Case', definition: 'A scenario that occurs at the boundaries of a feature\'s design space — rare inputs, unusual user states, system failures. Well-written requirements address edge cases before they become production bugs.' },
       { term: 'Non-Functional Requirements', definition: 'Requirements that define system quality attributes — performance, security, scalability, reliability — rather than feature behaviour. Often unstated and later discovered as production problems.' },
     ],
-    content: \`## Defining Requirements
+    content: `## Defining Requirements
 
 A requirement is a specification of what must be true for a feature to be considered complete and correct. Poor requirements produce features that don't match user needs, don't meet stakeholder expectations, and surprise engineers with edge cases mid-development. Good requirements align everyone on what is being built and why before the first line of code is written.
 
@@ -676,7 +676,7 @@ The best argument for debt repayment: frame it in user and business terms. "If w
       { term: 'Definition of Done', definition: 'A shared team agreement on what must be true for a feature to be considered complete — code written, tests passing, code reviewed, documentation updated, QA verified, and accessible.' },
       { term: 'Velocity', definition: 'The average number of story points a team completes per sprint — used for capacity planning and release date estimation, not as a performance metric.' },
     ],
-    content: \`## Working with Engineering
+    content: `## Working with Engineering
 
 The PM-engineer relationship is one of the most consequential dynamics in software development. When it works well: the team builds the right things at a sustainable pace, engineers are creative participants in problem-solving, and technical reality shapes product decisions constructively. When it breaks down: feature factories ship code nobody uses, engineers feel like ticket-closers rather than craftspeople, and product direction is disconnected from technical reality.
 
@@ -895,7 +895,7 @@ Activation improvement levers:
       { term: 'LTV:CAC Ratio', definition: 'Customer Lifetime Value divided by Customer Acquisition Cost — a measure of unit economics health. A ratio above 3:1 is generally considered viable for a sustainable business.' },
       { term: 'Feature Adoption Rate', definition: 'The percentage of eligible users who actively use a feature within a defined period — low adoption on a recently shipped feature is a signal the feature was not what users needed.' },
     ],
-    content: \`## Product Metrics & Analytics
+    content: `## Product Metrics & Analytics
 
 "If you can't measure it, you can't improve it." But the more common failure in product management is measuring the wrong things, or measuring things correctly but drawing the wrong conclusions.
 
