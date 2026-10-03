@@ -2,10 +2,11 @@
 import { useEffect, useState, useCallback } from 'react'
 import { supabase, type Job } from '@/lib/supabase'
 import { JOB_CATEGORIES, type JobCategory } from '@/lib/resume'
+import { DREAM_COMPANIES } from '@/lib/scraper'
 import {
   Briefcase, BookmarkCheck, CheckCircle, Search, Bell, BellOff,
   ExternalLink, RefreshCw, ChevronDown, Zap, Shield, Code2,
-  Database, Cloud, Wrench, Bot, Megaphone, Settings, Star, X
+  Database, Cloud, Wrench, Bot, Megaphone, Settings, Star, X, Building2, Send
 } from 'lucide-react'
 
 const CAT_ICONS: Record<string, any> = {
@@ -55,7 +56,9 @@ export default function JobRadar() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<JobCategory>('All')
-  const [tab, setTab] = useState<'discover' | 'saved' | 'applied'>('discover')
+  const [tab, setTab] = useState<'discover' | 'saved' | 'applied' | 'dream'>('discover')
+  const [testingPush, setTestingPush] = useState(false)
+  const [pushTestResult, setPushTestResult] = useState<string | null>(null)
   const [expanding, setExpanding] = useState<string | null>(null)
   const [applying, setApplying] = useState<string | null>(null)
   const [coverLetter, setCoverLetter] = useState<{ id: string; text: string } | null>(null)
@@ -144,6 +147,21 @@ export default function JobRadar() {
     setRefreshing(false)
   }
 
+  async function testPush() {
+    setTestingPush(true)
+    setPushTestResult(null)
+    try {
+      const res = await fetch('/api/push-test')
+      const data = await res.json()
+      if (data.error) setPushTestResult(`❌ ${data.error}`)
+      else setPushTestResult(`✅ Sent to ${data.sent} device(s)`)
+    } catch {
+      setPushTestResult('❌ Failed')
+    } finally {
+      setTestingPush(false)
+    }
+  }
+
   const stats = {
     total: jobs.length,
     highMatch: jobs.filter(j => (j.match_score ?? 0) >= 70).length,
@@ -203,14 +221,17 @@ export default function JobRadar() {
         {/* Tabs + Search */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="flex gap-1 bg-slate-900 border border-slate-800 rounded-lg p-1">
-            {(['discover', 'saved', 'applied'] as const).map(t => (
+            {(['discover', 'saved', 'applied', 'dream'] as const).map(t => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium capitalize transition ${
+                className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition flex items-center gap-1 ${
                   tab === t ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-slate-200'
                 }`}
-              >{t}</button>
+              >
+                {t === 'dream' && <Building2 size={11} />}
+                {t === 'dream' ? 'Dream Co.' : t}
+              </button>
             ))}
           </div>
           <div className="relative flex-1">
@@ -246,14 +267,85 @@ export default function JobRadar() {
           })}
         </div>
 
-        {/* Job list */}
-        {loading ? (
+        {/* Push test button — shown when alerts enabled */}
+        {pushEnabled && (
+          <div className="flex items-center gap-3 mb-4">
+            <button
+              onClick={testPush}
+              disabled={testingPush}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs transition disabled:opacity-50"
+            >
+              <Send size={11} className={testingPush ? 'animate-pulse' : ''} />
+              {testingPush ? 'Sending…' : 'Test Alert'}
+            </button>
+            {pushTestResult && <span className="text-xs text-slate-400">{pushTestResult}</span>}
+          </div>
+        )}
+
+        {/* Dream Companies tab */}
+        {tab === 'dream' && (
+          <div>
+            <p className="text-xs text-slate-500 mb-4">
+              Top stable tech companies scraped via their public job boards. Jobs matching your profile are highlighted.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {Object.keys(DREAM_COMPANIES).map(company => {
+                const companyJobs = jobs.filter(j =>
+                  j.company?.toLowerCase() === company.toLowerCase() && !dismissed.has(j.id)
+                )
+                const topMatch = companyJobs.sort((a, b) => (b.match_score ?? 0) - (a.match_score ?? 0))[0]
+                return (
+                  <div key={company} className={`bg-slate-900/60 border rounded-xl p-4 transition ${
+                    topMatch ? 'border-slate-600 hover:border-slate-500' : 'border-slate-800 opacity-60'
+                  }`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Building2 size={14} className="text-blue-400" />
+                        <span className="font-semibold text-sm">{company}</span>
+                      </div>
+                      {topMatch ? (
+                        <span className={`text-xs font-bold tabular-nums ${scoreColor(topMatch.match_score ?? 0)}`}>
+                          {topMatch.match_score}% match
+                        </span>
+                      ) : (
+                        <span className="text-xs text-slate-600">No matches yet</span>
+                      )}
+                    </div>
+                    {companyJobs.length > 0 ? (
+                      <div className="space-y-1">
+                        {companyJobs.slice(0, 3).map(j => (
+                          <a
+                            key={j.id}
+                            href={j.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between gap-2 text-xs text-slate-300 hover:text-white py-1 border-t border-slate-800 first:border-0"
+                          >
+                            <span className="truncate">{j.title}</span>
+                            <ExternalLink size={10} className="text-slate-500 shrink-0" />
+                          </a>
+                        ))}
+                        {companyJobs.length > 3 && (
+                          <p className="text-xs text-slate-600 pt-1">+{companyJobs.length - 3} more</p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-slate-600">Hit Refresh to scrape their board</p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {tab !== 'dream' && loading ? (
           <div className="text-center py-20 text-slate-500">Loading jobs…</div>
-        ) : filtered.length === 0 ? (
+        ) : tab !== 'dream' && filtered.length === 0 ? (
           <div className="text-center py-20 text-slate-500">
             {jobs.length === 0 ? 'No jobs yet — click Refresh to scrape.' : 'No jobs match this filter.'}
           </div>
-        ) : (
+        ) : tab !== 'dream' ? (
           <div className="space-y-3">
             {filtered.map(job => (
               <div
@@ -350,7 +442,7 @@ export default function JobRadar() {
               </div>
             ))}
           </div>
-        )}
+        ) : null}
       </main>
     </div>
   )

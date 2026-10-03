@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import {
   scrapeRemotive, scrapeRemoteOK, scrapeJobicy,
   scrapeArbeitnow, scrapeWorkingNomads, scrapeGetOnBoard,
-  scrapeTorre, enrichJobs,
+  scrapeTorre, scrapeGreenhouse, enrichJobs,
 } from '@/lib/scraper'
 
 const supabase = createClient(
@@ -14,7 +14,7 @@ const supabase = createClient(
 async function runScrape() {
   try {
     // Scrape all sources in parallel
-    const [remotive, remoteok, jobicy, arbeitnow, workingnomads, getonboard, torre] = await Promise.all([
+    const [remotive, remoteok, jobicy, arbeitnow, workingnomads, getonboard, torre, greenhouse] = await Promise.all([
       scrapeRemotive(),
       scrapeRemoteOK(),
       scrapeJobicy(),
@@ -22,9 +22,10 @@ async function runScrape() {
       scrapeWorkingNomads(),
       scrapeGetOnBoard(),
       scrapeTorre(),
+      scrapeGreenhouse(),
     ])
 
-    const allRaw = [...remotive, ...remoteok, ...jobicy, ...arbeitnow, ...workingnomads, ...getonboard, ...torre]
+    const allRaw = [...remotive, ...remoteok, ...jobicy, ...arbeitnow, ...workingnomads, ...getonboard, ...torre, ...greenhouse]
     const scored = enrichJobs(allRaw)
 
     if (scored.length === 0) {
@@ -84,6 +85,7 @@ async function runScrape() {
         workingnomads: workingnomads.length,
         getonboard: getonboard.length,
         torre: torre.length,
+        greenhouse: greenhouse.length,
       }
     })
   } catch (err: any) {

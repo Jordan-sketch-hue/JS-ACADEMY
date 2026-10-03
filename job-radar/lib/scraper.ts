@@ -217,6 +217,72 @@ export async function scrapeTorre(): Promise<RawJob[]> {
   } catch (_) { return [] }
 }
 
+// ── Dream Companies — Greenhouse ATS (free public API) ───────────────────────
+// Top stable Fortune 500 / major tech companies that use Greenhouse
+export const DREAM_COMPANIES: Record<string, string> = {
+  'Stripe':        'stripe',
+  'Cloudflare':    'cloudflare',
+  'HubSpot':       'hubspot',
+  'Twilio':        'twilio',
+  'MongoDB':       'mongodb',
+  'GitLab':        'gitlab',
+  'Datadog':       'datadoghq',
+  'Figma':         'figma',
+  'Notion':        'notion',
+  'Coinbase':      'coinbase',
+  'Dropbox':       'dropbox',
+  'Squarespace':   'squarespace',
+  'Duolingo':      'duolingo',
+  'Brex':          'brex',
+  'Plaid':         'plaid',
+  'DoorDash':      'doordash',
+  'Robinhood':     'robinhood',
+  'Intercom':      'intercom',
+  'Zendesk':       'zendesk',
+  'PagerDuty':     'pagerduty',
+  'Fastly':        'fastly',
+  'Yelp':          'yelp',
+  'Discord':       'discord',
+  'Reddit':        'reddit',
+  'Canva':         'canva',
+  'Grammarly':     'grammarly',
+  'Asana':         'asana',
+  'Gusto':         'gusto',
+  'Benchling':     'benchling',
+  'Scale AI':      'scaleai',
+}
+
+export async function scrapeGreenhouse(): Promise<RawJob[]> {
+  const all: RawJob[] = []
+  await Promise.allSettled(
+    Object.entries(DREAM_COMPANIES).map(async ([companyName, slug]) => {
+      try {
+        const res = await fetch(`https://boards-api.greenhouse.io/v1/boards/${slug}/jobs?content=true`, {
+          headers: { 'User-Agent': 'JobRadar/1.0 (jordanroad631@gmail.com)' }
+        })
+        if (!res.ok) return
+        const { jobs } = await res.json()
+        for (const j of (jobs ?? []).slice(0, 20)) {
+          all.push({
+            external_id: `greenhouse-${j.id}`,
+            title: j.title ?? '',
+            company: companyName,
+            location: j.location?.name ?? 'Remote',
+            url: j.absolute_url ?? '',
+            description: j.content ?? '',
+            tags: (j.departments ?? []).map((d: any) => d.name),
+            salary_min: null, salary_max: null, currency: null,
+            job_type: (j.location?.name ?? '').toLowerCase().includes('remote') ? 'remote' : 'hybrid',
+            source: 'greenhouse',
+            posted_at: j.updated_at ?? new Date().toISOString(),
+          })
+        }
+      } catch (_) { /* skip company */ }
+    })
+  )
+  return all
+}
+
 // ── Score and filter ─────────────────────────────────────────────────────────
 export function enrichJobs(jobs: RawJob[]) {
   return jobs.map(job => {
