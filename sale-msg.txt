@@ -1,0 +1,7 @@
+feat: add property_sale tile to booking/type-select page
+
+"Sell property in Jamaica" was missing from the public booking page.
+Added it after "Buy property in Jamaica" with matching icon + desc.
+Also added property_sale to MATTER_TYPE_LABELS in booking/page.tsx.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

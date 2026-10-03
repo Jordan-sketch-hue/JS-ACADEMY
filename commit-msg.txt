@@ -1,0 +1,15 @@
+feat: expand workflow types to all 11 in client portal + admin
+
+Add the 7 new workflow types (lease_agreement, title_search, transfer,
+power_of_attorney, power_of_attorney_limited, lost_title, first_registration,
+adverse_possession, subdivision) to the 4 locations that were previously
+capped at 2-3 types:
+
+- src/app/api/client/start-matter/route.ts — intent type union
+- src/app/directory/client-login/page.tsx — signup intent state + dropdown
+- src/app/directory/client/page.tsx — start-matter state + dropdown
+- src/components/admin/AdminDashboard.tsx — WorkflowTemplatesTab dropdown
+
+tsc --noEmit exits 0.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

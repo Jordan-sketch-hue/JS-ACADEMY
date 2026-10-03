@@ -1,0 +1,11 @@
+feat(workflows): seed milestones for all 7 new types + edit-mode gate
+
+Expanded fl_workflow_templates type constraint to include all 11 types.
+Seeded full milestone templates for all 7 new types with proper Jamaican
+conveyancing phases (lease_agreement, transfer, power_of_attorney,
+power_of_attorney_limited, lost_title, first_registration, adverse_possession,
+subdivision). Added fl_admin_workflow_update_step RPC for inline rename.
+WorkflowTemplatesTab: edit/remove/add now gated behind Edit Template button.
+Inline milestone rename via pencil icon, saves via new RPC.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

@@ -1,0 +1,11 @@
+fix: revert workflow types from booking page — should only be in admin/client portal
+
+The 7 new workflow types (transfer, power_of_attorney, lost_title, etc.)
+were wrongly added to the public booking/type-select consultation page.
+They belong only in admin WorkflowTemplatesTab and client portal matter creation.
+
+Restoring booking/type-select/page.tsx and booking/page.tsx to their
+pre-a5b8440 state (4 consultation categories: property_purchase, diaspora,
+estate_will, general).
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

@@ -1,0 +1,204 @@
+<title>Master Task List</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #f5f5f5;
+    --card: #ffffff;
+    --border: #e8e8e8;
+    --fg: #111111;
+    --fg-sub: #666666;
+    --done: #22c55e;
+    --done-bg: #f0fdf4;
+    --open: #f59e0b;
+    --open-bg: #fffbeb;
+    --verify: #3b82f6;
+    --verify-bg: #eff6ff;
+    --critical: #ef4444;
+    --critical-bg: #fef2f2;
+    --header-bg: #fafafa;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a0a0a; --card: #161616; --border: #2a2a2a;
+      --fg: #f0f0f0; --fg-sub: #888888;
+      --done-bg: #052e16; --open-bg: #1c1207;
+      --verify: #60a5fa; --verify-bg: #0c1a2e;
+      --critical: #f87171; --critical-bg: #1c0505;
+      --header-bg: #111111; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a0a0a; --card: #161616; --border: #2a2a2a;
+    --fg: #f0f0f0; --fg-sub: #888888;
+    --done-bg: #052e16; --open-bg: #1c1207;
+    --verify: #60a5fa; --verify-bg: #0c1a2e;
+    --critical: #f87171; --critical-bg: #1c0505;
+    --header-bg: #111111; color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--fg); padding: 24px 16px; }
+  .page-header { max-width: 900px; margin: 0 auto 16px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .page-title { font-size: 20px; font-weight: 700; letter-spacing: -0.4px; }
+  .page-date { font-size: 13px; color: var(--fg-sub); }
+  .legend { max-width: 900px; margin: 0 auto 16px; display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--fg-sub); }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .card { max-width: 900px; margin: 0 auto 20px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .section-label { padding: 13px 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-sub); background: var(--header-bg); border-bottom: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  thead th { padding: 9px 16px; text-align: left; font-size: 11px; font-weight: 600; color: var(--fg-sub); letter-spacing: 0.05em; text-transform: uppercase; background: var(--header-bg); border-bottom: 1px solid var(--border); }
+  thead th:first-child { width: 44px; }
+  thead th:last-child { width: 120px; }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--header-bg); }
+  td { padding: 11px 16px; font-size: 14px; line-height: 1.4; vertical-align: middle; }
+  .td-num { color: var(--fg-sub); font-size: 13px; font-weight: 500; text-align: center; }
+  .td-task { font-weight: 500; }
+  .sub { display: block; font-size: 12px; font-weight: 400; color: var(--fg-sub); margin-top: 2px; }
+  .td-status { white-space: nowrap; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 5px; font-size: 11px; font-weight: 600; line-height: 1; }
+  .done   { background: var(--done-bg);     color: var(--done);     }
+  .open   { background: var(--open-bg);     color: var(--open);     }
+  .verify { background: var(--verify-bg);   color: var(--verify);   }
+  .crit   { background: var(--critical-bg); color: var(--critical); }
+  @media (max-width: 600px) {
+    thead th:last-child, .td-status { display: none; }
+    .mob { display: inline-flex !important; margin-top: 4px; }
+  }
+  .mob { display: none; }
+</style>
+
+<div class="page-header">
+  <span class="page-title">Master Task List</span>
+  <span class="page-date">Oct 5, 2026 · J Supreme Tech</span>
+</div>
+<div class="legend">
+  <span><span class="dot" style="background:#22c55e"></span> Done</span>
+  <span><span class="dot" style="background:#f59e0b"></span> Open</span>
+  <span><span class="dot" style="background:#3b82f6"></span> Verify live</span>
+  <span><span class="dot" style="background:#ef4444"></span> Critical</span>
+</div>
+
+<div class="card">
+  <div class="section-label">Ferguson Law — Owen's Requests (Oct 1–5)</div>
+  <table>
+    <thead><tr><th>#</th><th>Task</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="td-num">1</td>
+        <td class="td-task">Fix mobile PWA push notifications<span class="sub">Desktop works — mobile silent — Owen missed 2 meetings</span><span class="badge crit mob">Critical</span></td>
+        <td class="td-status"><span class="badge crit">Critical</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">2</td>
+        <td class="td-task">Fix WhatsApp "Chat with Us" button<span class="sub">Opens Jordan's number not client's — no fix commit in git</span><span class="badge crit mob">Critical</span></td>
+        <td class="td-status"><span class="badge crit">Critical</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">3</td>
+        <td class="td-task">Verify: Attendance confirmation email ×10 spam fix<span class="sub">Commit 3e28d99 exists — test live to confirm</span><span class="badge verify mob">Verify live</span></td>
+        <td class="td-status"><span class="badge verify">Verify live</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">4</td>
+        <td class="td-task">Verify: Email body "(no content available)" fix<span class="sub">Commit 761b0c5 exists — test admin email panel</span><span class="badge verify mob">Verify live</span></td>
+        <td class="td-status"><span class="badge verify">Verify live</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">5</td>
+        <td class="td-task">Verify: Create Matter FK database error fix<span class="sub">Commit 21c29dd exists — test Create Matter modal</span><span class="badge verify mob">Verify live</span></td>
+        <td class="td-status"><span class="badge verify">Verify live</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">6</td>
+        <td class="td-task">Revert Referral/Partnership Invitation page text<span class="sub">Commit d61fc6c rewrote copy — Owen wants previous version</span><span class="badge open mob">Open</span></td>
+        <td class="td-status"><span class="badge open">Open</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">7</td>
+        <td class="td-task">Hide past blocked calendar time slots<span class="sub">Past slots still showing in booking list</span><span class="badge open mob">Open</span></td>
+        <td class="td-status"><span class="badge open">Open</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">8</td>
+        <td class="td-task">Post Buyer's Guide ad<span class="sub">Owen asked Sun Oct 4 — Jordan reviewing</span><span class="badge open mob">Open</span></td>
+        <td class="td-status"><span class="badge open">Open</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">9</td>
+        <td class="td-task">7 new property intake workflows<span class="sub">✓ All 11 types coded · type-select/page.tsx + booking/page.tsx — awaiting push</span><span class="badge verify mob">Verify live</span></td>
+        <td class="td-status"><span class="badge verify">Verify live</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">10</td>
+        <td class="td-task">Post-consultation automated actions<span class="sub">✓ 1-click Create Client + matter dropdown + fl_open_matter RPC — awaiting push</span><span class="badge verify mob">Verify live</span></td>
+        <td class="td-status"><span class="badge verify">Verify live</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">11</td>
+        <td class="td-task">Video consultation join flow improvement<span class="sub">✓ Provider-aware label: Jitsi/Daily = browser link, Zoom = Zoom link — awaiting push</span><span class="badge verify mob">Verify live</span></td>
+        <td class="td-status"><span class="badge verify">Verify live</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">12</td>
+        <td class="td-task">JamProp — cancelled<span class="sub">Owen not paying or using it · not integrated · nothing to remove</span><span class="badge done mob">Done</span></td>
+        <td class="td-status"><span class="badge done">Done</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">13</td>
+        <td class="td-task">Invoice settlement follow-up<span class="sub">Owen has outstanding balance</span><span class="badge open mob">Open</span></td>
+        <td class="td-status"><span class="badge open">Open</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">14</td>
+        <td class="td-task">Community feature (scope TBD)<span class="sub">Owen: "Including the community would help"</span><span class="badge open mob">Open</span></td>
+        <td class="td-status"><span class="badge open">Open</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">—</td>
+        <td class="td-task">Property Value Estimator<span class="sub">LIVE at fergusonlawja.com/value-estimator</span><span class="badge done mob">Done</span></td>
+        <td class="td-status"><span class="badge done">Done</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">—</td>
+        <td class="td-task">Site Content Editor (inline + backend)<span class="sub">LIVE — ?edit_mode=1 or /admin → Site Content tab</span><span class="badge done mob">Done</span></td>
+        <td class="td-status"><span class="badge done">Done</span></td>
+      </tr>
+      <tr>
+        <td class="td-num">—</td>
+        <td class="td-task">Desktop PWA push notifications<span class="sub">Owen confirmed working Thu Oct 1 7:16 PM</span><span class="badge done mob">Done</span></td>
+        <td class="td-status"><span class="badge done">Done</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <div class="section-label">J Supreme Conglomerate — /todos</div>
+  <table>
+    <thead><tr><th>#</th><th>Task</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="td-num">1</td><td class="td-task">Build sales bot<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">2</td><td class="td-task">Fix task page scroll issue<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">3</td><td class="td-task">Build out QA system<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">4</td><td class="td-task">Build out design lab<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">5</td><td class="td-task">Provide Owen WhatsApp bot breakdown<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">6</td><td class="td-task">Submit-a-ticket via WhatsApp<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">7</td><td class="td-task">Do contracts for mommy<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">8</td><td class="td-task">Fix Discord join link (TestLoop)<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">9</td><td class="td-task">Resume course studies (language)<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">10</td><td class="td-task">Continue trading bot<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">11</td><td class="td-task">Work in marketing SaaS + Mandate + J tech + J Marketing<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">12</td><td class="td-task">Update newsletter to use API<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">13</td><td class="td-task">Finish house of isabelle<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">14</td><td class="td-task">Create Mandate (societal platform)<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">15</td><td class="td-task">Create plan for marketing Supreme Suite<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">16</td><td class="td-task">Work on eBay store<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">17</td><td class="td-task">Review App Store + Play Store apps<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">18</td><td class="td-task">Work on Trella website<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">19</td><td class="td-task">Connect Supreme Suite to WiPay payment<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+      <tr><td class="td-num">20</td><td class="td-task">Add JST products/services to Supreme Suite marketplace<span class="badge open mob">Open</span></td><td class="td-status"><span class="badge open">Open</span></td></tr>
+    </tbody>
+  </table>
+</div>

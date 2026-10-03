@@ -1,0 +1,6 @@
+docs: update AGENT-STATUS — workflow types gap fixed + Item 14 scope
+
+Records commit 15ca04c (all 11 types in 4 locations) and clarifies
+Item 14 community feature scope.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
