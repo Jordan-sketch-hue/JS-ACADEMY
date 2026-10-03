@@ -11,7 +11,7 @@ export interface QuizQuestion {
 export interface IdeExercise {
   language: 'javascript' | 'typescript' | 'html' | 'css' | 'python' | 'bash' | 'sql'
   task: string
-  starterCode: string
+  starterCode?: string
   solution?: string
   hints?: string[]
   files?: Array<{ name: string; code: string; language: string }>

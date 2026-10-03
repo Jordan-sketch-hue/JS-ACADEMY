@@ -72,7 +72,7 @@ export default function IdeExercise({ exercise, onComplete }: Props) {
   const [activeTab, setActiveTab] = useState<'editor' | 'output'>('editor')
   const [activeFile, setActiveFile] = useState(0)
 
-  const files = exercise.files ?? [{ name: exercise.language === 'html' ? 'index.html' : exercise.language === 'css' ? 'styles.css' : 'main.js', code: exercise.starterCode, language: exercise.language }]
+  const files = exercise.files ?? [{ name: exercise.language === 'html' ? 'index.html' : exercise.language === 'css' ? 'styles.css' : 'main.js', code: exercise.starterCode ?? '', language: exercise.language }]
 
   const [codes, setCodes] = useState<string[]>(files.map(f => f.code))
 
