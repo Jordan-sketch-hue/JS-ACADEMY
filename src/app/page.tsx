@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Shell from '@/components/Shell'
 import { COURSES, TRACKS, LEVEL_COLORS, type Course, type Track } from '@/lib/courses'
 import { getProgress, useCompletedCourseIds, levelName, xpToNextLevel, type UserProgress } from '@/lib/progress'
-import { Clock, Play, CheckCircle, Flame, Trophy, BookOpen, Star, ChevronRight } from 'lucide-react'
+import { Clock, Play, CheckCircle, Flame, Trophy, BookOpen, Star, ChevronRight, Zap } from 'lucide-react'
 
 function getTimeOfDay() {
   const h = new Date().getHours()
@@ -102,9 +102,14 @@ export default function Dashboard() {
   const level = progress?.level ?? 1
   const { pct } = xpToNextLevel(xp)
 
+  // Ordered by priority — crash courses + tech first, then business, then everything else
   const trackOrder: Track[] = [
-    'marketing', 'tech', 'business', 'design', 'mindset',
-    'creative', 'trading', 'culture', 'knowledge', 'future', 'psychology', 'higher', 'gamedev', 'terms',
+    'tech', 'cs-foundations', 'software-eng', 'networks-os', 'hci',
+    'marketing', 'consumer-psych', 'marketing-science', 'brand-strategy',
+    'business', 'product-mgmt', 'sales-mgmt',
+    'design', 'creative', 'gamedev',
+    'mindset', 'psychology', 'higher', 'culture', 'knowledge', 'future',
+    'trading',
   ]
 
   const trackCourses = trackOrder.map(track => ({
@@ -163,9 +168,23 @@ export default function Dashboard() {
           <span className="text-[10px] text-neutral-400 flex-shrink-0">{pct}% → L{level + 1}</span>
         </div>
 
+        {/* Start Here — Crash Courses */}
+        <Link href="/crash-courses"
+          className="flex items-center gap-3 bg-[#0a0a0a] rounded-xl px-4 py-3.5 hover:bg-neutral-900 transition-colors"
+        >
+          <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0">
+            <Zap size={14} className="text-black" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-white text-[13px] font-medium">Start Here — Crash Courses</div>
+            <div className="text-[11px] text-neutral-500 mt-0.5">20 courses · numbered learning path · Basic → PhD + Interview Prep</div>
+          </div>
+          <ChevronRight size={14} className="text-neutral-600 flex-shrink-0" />
+        </Link>
+
         {/* Track cards */}
         <div className="space-y-3">
-          <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-400 px-0.5">Your tracks</div>
+          <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-400 px-0.5">All tracks — in order</div>
           {trackCourses.map(({ track, courses }) => (
             <TrackCard key={track} track={track} courses={courses} />
           ))}

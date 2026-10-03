@@ -9,7 +9,8 @@ export interface QuizQuestion {
 }
 
 export interface IdeExercise {
-  language: 'javascript' | 'typescript' | 'html' | 'css' | 'python' | 'bash' | 'sql'
+  language: 'javascript' | 'typescript' | 'html' | 'css' | 'python' | 'sql'
+          | 'cpp' | 'rust' | 'go' | 'java' | 'kotlin' | 'swift' | 'r'
   task: string
   starterCode?: string
   solution?: string
