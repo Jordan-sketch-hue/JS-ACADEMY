@@ -74,9 +74,9 @@ export default function JobRadar() {
       .from('jobs')
       .select('*')
       .order('match_score', { ascending: false })
-      .limit(200)
+      .limit(500)
     // filter out fake seed jobs (non-numeric IDs) and dismissed jobs
-    const real = (data ?? []).filter(j => /^(remotive|remoteok|jobicy|arbeitnow|workingnomads|getonboard|torre)-/.test(j.external_id))
+    const real = (data ?? []).filter(j => /^(remotive|remoteok|jobicy|arbeitnow|workingnomads|getonboard|torre|greenhouse)-/.test(j.external_id))
     setJobs(real)
     setLoading(false)
   }, [])
