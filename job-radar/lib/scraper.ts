@@ -319,7 +319,7 @@ export async function scrapeWeWorkRemotely(): Promise<RawJob[]> {
         const companyName = colonIdx > 0 ? title.slice(0, colonIdx).trim() : company
         const jobTitle = colonIdx > 0 ? title.slice(colonIdx + 1).trim() : title
         all.push({
-          external_id: `wwr-${Buffer.from(guid).toString('base64').slice(0, 24)}`,
+          external_id: `wwr-${Buffer.from(guid).toString('base64url')}`,
           title: jobTitle,
           company: companyName,
           location: 'Remote / Worldwide',
@@ -382,7 +382,7 @@ export async function scrapeJobspresso(): Promise<RawJob[]> {
       const guid = get('guid') || link
       if (!guid) continue
       all.push({
-        external_id: `jobspresso-${Buffer.from(guid).toString('base64').slice(0, 24)}`,
+        external_id: `jobspresso-${Buffer.from(guid).toString('base64url')}`,
         title: get('title'),
         company: get('creator') || get('author') || '',
         location: 'Remote',

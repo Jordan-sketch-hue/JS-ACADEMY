@@ -30,7 +30,10 @@ async function runScrape() {
       scrapeJobspresso(),
     ])
 
-    const allRaw = [...remotive, ...remoteok, ...jobicy, ...arbeitnow, ...workingnomads, ...getonboard, ...torre, ...greenhouse, ...wwr, ...himalayas, ...jobspresso]
+    const merged = [...remotive, ...remoteok, ...jobicy, ...arbeitnow, ...workingnomads, ...getonboard, ...torre, ...greenhouse, ...wwr, ...himalayas, ...jobspresso]
+    // deduplicate by external_id before upsert (duplicate ids in same batch cause Postgres error)
+    const seenIds = new Set<string>()
+    const allRaw = merged.filter(j => { if (seenIds.has(j.external_id)) return false; seenIds.add(j.external_id); return true })
     const scored = enrichJobs(allRaw)
 
     if (scored.length === 0) {
