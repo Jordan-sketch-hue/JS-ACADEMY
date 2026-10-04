@@ -17,12 +17,20 @@ export interface DialogueLine {
   english: string
 }
 
+export interface PhoneticRule {
+  sound: string        // e.g. "The letter R"
+  description: string  // how to produce it
+  example: string      // native word example + English approximation
+}
+
 export interface LangLevel {
   level: ProfLevel
   label: string
   description: string
   cefr: string
   azureVoice: string
+  objectives?: string[]
+  phonetics?: PhoneticRule[]
   vocab: VocabItem[]
   grammar: string[]
   drillSentences: { native: string; english: string }[]
@@ -72,6 +80,19 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Greetings, numbers, colours, basic survival phrases. You can introduce yourself and understand very slow speech.',
         azureVoice: 'zh-CN-XiaoxiaoNeural',
+        objectives: [
+          'Greet someone formally and informally at different times of day',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Tone 1 (ā)', description: 'High, flat and sustained — like a musical note held at the top of your range.', example: '"māo" (cat). "fēng" (wind). Imagine a doctor asking you to say "ahh" and hold it.' },
+          { sound: 'Tone 2 (á)', description: 'Rising — like asking a question in English: "Really?"', example: '"máng" (busy). "lái" (come). The pitch rises from mid to high.' },
+          { sound: 'Tone 3 (ǎ)', description: 'Dip-and-rise — goes down then up, like a hesitant "well..." But before another 3rd tone it becomes a 2nd tone.', example: '"nǐ" (you) → before hǎo becomes "ní hǎo". "wǒ" (I).' },
+          { sound: 'Tone 4 (à)', description: 'Sharp falling — confident, like a command or "Yes!" of agreement.', example: '"shì" (is/yes). "kàn" (look). Firm and quick downward drop.' },
+          { sound: 'X, Q, ZH sounds', description: 'X = "sh" with tongue behind lower teeth (not the roof). Q = "ch" same position. ZH = "j" with tongue curled back.', example: '"xiè" (thank) ≈ SHYEH. "qǐng" (please) ≈ CHING. "zhōng" (middle) ≈ JONG.' },
+        ],
         vocab: [
           { word: '你好', romanization: 'nǐ hǎo', translation: 'Hello', partOfSpeech: 'greeting', scenario: 'You walk into a business meeting in Shenzhen — the first word out of your mouth sets the tone.', exampleNative: '你好！我是Jordan。', exampleEnglish: 'Hello! I am Jordan.' },
           { word: '谢谢', romanization: 'xiè xie', translation: 'Thank you', partOfSpeech: 'phrase', scenario: 'A client hands you their business card with both hands — you receive it respectfully and say this.', exampleNative: '谢谢你的帮助。', exampleEnglish: 'Thank you for your help.' },
@@ -113,6 +134,12 @@ export const LANGUAGES: Language[] = [
         level: 'A2', label: 'Elementary', cefr: 'A2',
         description: 'Simple transactions, directions, talking about family and work. Navigating daily life with confidence.',
         azureVoice: 'zh-CN-XiaoxiaoNeural',
+        objectives: [
+          'Talk about daily routines, food preferences, and getting around by transport',
+          'Handle transactions — shopping, booking accommodation, ordering food',
+          'Describe people, places, and things using basic adjectives',
+          'Use past and future time expressions to discuss plans and recent events',
+        ],
         vocab: [
           { word: '工作', romanization: 'gōng zuò', translation: 'Work / job', partOfSpeech: 'noun/verb', scenario: 'Networking at a Shanghai conference — "what do you do?" is the first real question.', exampleNative: '你做什么工作？', exampleEnglish: 'What work do you do?' },
           { word: '公司', romanization: 'gōng sī', translation: 'Company', partOfSpeech: 'noun', scenario: 'Pitching your services to a Chinese manufacturer.', exampleNative: '我的公司专注于科技解决方案。', exampleEnglish: 'My company focuses on tech solutions.' },
@@ -152,6 +179,12 @@ export const LANGUAGES: Language[] = [
         level: 'B1', label: 'Intermediate', cefr: 'B1',
         description: 'Handle most travel, work and social situations. Discuss plans, opinions, and experiences.',
         azureVoice: 'zh-CN-YunxiNeural',
+        objectives: [
+          'Express and justify opinions on familiar topics in Mandarin',
+          'Handle most professional and travel situations confidently',
+          'Describe experiences, events, and future plans with detail',
+          'Understand the main points of native-speed media on familiar topics',
+        ],
         vocab: [
           { word: '谈判', romanization: 'tán pàn', translation: 'Negotiation', partOfSpeech: 'noun/verb', scenario: 'A serious business negotiation in a Chinese boardroom — tone matters as much as words.', exampleNative: '我们需要继续谈判。', exampleEnglish: 'We need to continue the negotiation.' },
           { word: '市场', romanization: 'shì chǎng', translation: 'Market', partOfSpeech: 'noun', scenario: 'Discussing market entry strategy with a Chinese partner.', exampleNative: '中国市场非常有潜力。', exampleEnglish: 'The Chinese market has enormous potential.' },
@@ -188,6 +221,12 @@ export const LANGUAGES: Language[] = [
         level: 'B2', label: 'Upper Intermediate', cefr: 'B2',
         description: 'Complex topics, nuanced opinion, professional writing, understanding native speakers at natural speed.',
         azureVoice: 'zh-CN-YunxiNeural',
+        objectives: [
+          'Engage in spontaneous conversation with native Mandarin speakers without strain',
+          'Produce clear, detailed written Chinese on a wide range of subjects',
+          'Understand complex arguments and technical vocabulary in your professional field',
+          'Navigate business negotiations and formal presentations in Mandarin',
+        ],
         vocab: [
           { word: '供应链', romanization: 'gōng yìng liàn', translation: 'Supply chain', partOfSpeech: 'noun', scenario: 'Discussing global logistics disruptions with a manufacturing partner.', exampleNative: '全球供应链受到了严重冲击。', exampleEnglish: 'The global supply chain suffered severe disruption.' },
           { word: '知识产权', romanization: 'zhī shi chǎn quán', translation: 'Intellectual property', partOfSpeech: 'noun', scenario: 'Protecting your tech IP before sharing designs with a Chinese factory.', exampleNative: '我们需要保护知识产权。', exampleEnglish: 'We need to protect intellectual property.' },
@@ -217,6 +256,12 @@ export const LANGUAGES: Language[] = [
         level: 'C1', label: 'Advanced', cefr: 'C1',
         description: 'Spontaneous, fluent, precise expression. You understand implicit meaning, humor and cultural references.',
         azureVoice: 'zh-CN-YunxiNeural',
+        objectives: [
+          'Use Mandarin flexibly and effectively for social, academic, and professional purposes',
+          'Produce well-structured, detailed text on complex subjects in Chinese characters',
+          'Express yourself fluently and spontaneously with minimal searching for words',
+          'Understand extended speech and implicit meaning, including chengyu and cultural allusions',
+        ],
         vocab: [
           { word: '宏观经济', romanization: 'hóng guān jīng jì', translation: 'Macroeconomics', partOfSpeech: 'noun', scenario: 'Conference panel discussion on global financial policy.', exampleNative: '宏观经济政策对汇率有重大影响。', exampleEnglish: 'Macroeconomic policy has a major impact on exchange rates.' },
           { word: '辩证法', romanization: 'biàn zhèng fǎ', translation: 'Dialectics', partOfSpeech: 'noun', scenario: 'Academic debate — Marxist dialectics is referenced often in Chinese elite discourse.', exampleNative: '我们用辩证法分析这个问题。', exampleEnglish: 'We analyse this problem using dialectics.' },
@@ -244,6 +289,12 @@ export const LANGUAGES: Language[] = [
         level: 'C2', label: 'Mastery', cefr: 'C2',
         description: 'Near-native precision, idiomatic command, ability to write formal documents and persuade native speakers.',
         azureVoice: 'zh-CN-YunxiNeural',
+        objectives: [
+          'Express yourself spontaneously with great fluency and precision in any register',
+          'Differentiate finer shades of meaning even in the most complex situations',
+          'Write formal documents, classical-influenced text, and nuanced diplomatic analysis',
+          'Understand virtually everything you hear or read at native speed, including dialects',
+        ],
         vocab: [
           { word: '精髓', romanization: 'jīng suǐ', translation: 'Essence / quintessence', partOfSpeech: 'noun', scenario: 'Literary essay or keynote — capturing the soul of an idea.', exampleNative: '这正是中华文化的精髓所在。', exampleEnglish: 'This is precisely the essence of Chinese culture.' },
           { word: '韬光养晦', romanization: 'tāo guāng yǎng huì', translation: 'Bide your time, build strength quietly', partOfSpeech: 'chengyu', scenario: 'Geopolitical strategy discussion — Deng Xiaoping\'s famous doctrine.', exampleNative: '韬光养晦是一种长远战略。', exampleEnglish: 'Biding one\'s time and building strength is a long-term strategy.' },
@@ -268,6 +319,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'zh-CN-YunxiNeural',
+        objectives: [
+          'Produce original academic work that contributes to the Sinology literature',
+          'Analyse and critique complex theoretical frameworks in Classical and Modern Chinese',
+          'Deliver keynotes and participate in expert panel discussions entirely in Mandarin',
+          'Navigate Classical Chinese, bureaucratic, and literary registers alongside modern usage',
+        ],
         vocab: [
           { word: '话语权', romanization: 'huà yǔ quán', translation: 'Discursive power / right to define narrative', partOfSpeech: 'noun', scenario: 'Academic paper on media and geopolitical influence — Foucauldian analysis in Chinese.', exampleNative: '在国际秩序中争夺话语权是当代大国博弈的核心。', exampleEnglish: 'Competing for discursive power within the international order is the core of contemporary great-power competition.' },
         ],
@@ -313,6 +370,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Introduce yourself, basic numbers, days, greetings. Survive in any Spanish-speaking country.',
         azureVoice: 'es-ES-ElviraNeural',
+        objectives: [
+          'Greet someone formally and informally at different times of day',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Vowels (A, E, I, O, U)', description: 'Always pure, never diphthonged. Each vowel has exactly ONE sound regardless of position.', example: '"casa" = KAH-sah (never KAY-sah). "libre" = LEE-breh.' },
+          { sound: 'The letter R', description: 'Single R is a light tap (like the D in American "butter"). Double RR is a full trill — tongue vibrates rapidly against the ridge behind upper teeth.', example: '"pero" (but) = soft tap. "perro" (dog) = full trill.' },
+          { sound: 'The letter J', description: 'Like a strong English H, produced deep in the throat. Never like the English J sound.', example: '"Juan" = HWAHN. "jardin" = har-DEEN.' },
+          { sound: 'Ll and Y', description: 'In most Spanish dialects, both sound like English Y. In Spain (Castilian), Ll = "ly" sound.', example: '"llamo" = YAH-moh (Latin America) or LYAH-moh (Spain).' },
+        ],
         vocab: [
           { word: 'Hola', translation: 'Hello', partOfSpeech: 'greeting', scenario: 'Walking into any business in Latin America — warmth first, business second.', exampleNative: '¡Hola! ¿Cómo está usted?', exampleEnglish: 'Hello! How are you?' },
           { word: 'Gracias', translation: 'Thank you', partOfSpeech: 'phrase', scenario: 'A Colombian client brings you coffee — your response sets the relational tone.', exampleNative: 'Muchas gracias por su tiempo.', exampleEnglish: 'Thank you very much for your time.' },
@@ -352,6 +421,12 @@ export const LANGUAGES: Language[] = [
         level: 'A2', label: 'Elementary', cefr: 'A2',
         description: 'Daily life, shopping, work basics, navigating cities across 21 Spanish-speaking countries.',
         azureVoice: 'es-ES-ElviraNeural',
+        objectives: [
+          'Talk about daily routines, food preferences, and getting around by transport',
+          'Handle transactions — shopping, booking accommodation, ordering food',
+          'Describe people, places, and things using basic adjectives',
+          'Use past and future time expressions to discuss plans and recent events',
+        ],
         vocab: [
           { word: 'Negocio', translation: 'Business', partOfSpeech: 'noun', scenario: 'Pitching your services at a conference in Bogotá.', exampleNative: 'Tengo un negocio de tecnología en Jamaica.', exampleEnglish: 'I have a technology business in Jamaica.' },
           { word: 'Reunión', translation: 'Meeting', partOfSpeech: 'noun', scenario: 'Scheduling with a Mexican client across time zones.', exampleNative: '¿Podemos tener una reunión el lunes?', exampleEnglish: 'Can we have a meeting on Monday?' },
@@ -375,6 +450,12 @@ export const LANGUAGES: Language[] = [
         level: 'B1', label: 'Intermediate', cefr: 'B1',
         description: 'Handle most professional situations, discuss opinions, follow native TV and podcasts.',
         azureVoice: 'es-MX-DaliaNeural',
+        objectives: [
+          'Express and justify opinions on familiar topics in Spanish',
+          'Handle most professional situations and travel across 21 Spanish-speaking countries',
+          'Describe experiences, events, and future plans in detail',
+          'Understand the main points of native-speed podcasts and TV on familiar topics',
+        ],
         vocab: [
           { word: 'Propuesta', translation: 'Proposal', partOfSpeech: 'noun', scenario: 'Submitting a formal business proposal to a Spanish-speaking government agency.', exampleNative: 'He preparado una propuesta detallada para su consideración.', exampleEnglish: 'I have prepared a detailed proposal for your consideration.' },
           { word: 'Acuerdo', translation: 'Agreement', partOfSpeech: 'noun', scenario: 'Closing a deal — this word seals it.', exampleNative: 'Hemos llegado a un acuerdo beneficioso para ambas partes.', exampleEnglish: 'We have reached an agreement beneficial to both parties.' },
@@ -402,6 +483,12 @@ export const LANGUAGES: Language[] = [
         level: 'B2', label: 'Upper Intermediate', cefr: 'B2',
         description: 'Complex professional communication, understanding regional dialects, persuasive writing.',
         azureVoice: 'es-MX-DaliaNeural',
+        objectives: [
+          'Engage in spontaneous conversation with native Spanish speakers without strain',
+          'Produce clear, detailed written Spanish on a wide range of subjects',
+          'Understand complex arguments across multiple regional dialects',
+          'Navigate professional negotiations and formal presentations in Spanish',
+        ],
         vocab: [
           { word: 'Rentabilidad', translation: 'Profitability / ROI', partOfSpeech: 'noun', scenario: 'Financial reporting to Spanish-speaking board members.', exampleNative: 'La rentabilidad ha mejorado un 23% este trimestre.', exampleEnglish: 'Profitability has improved 23% this quarter.' },
         ],
@@ -418,6 +505,12 @@ export const LANGUAGES: Language[] = [
         level: 'C1', label: 'Advanced', cefr: 'C1',
         description: 'Spontaneous fluency, nuanced humor, idioms, regional register shifts.',
         azureVoice: 'es-ES-ElviraNeural',
+        objectives: [
+          'Use Spanish flexibly and effectively for social, academic, and professional purposes',
+          'Produce well-structured, detailed text including formal reports and persuasive essays',
+          'Express yourself fluently and spontaneously with minimal searching for words',
+          'Understand extended speech and implicit meaning including regional humor and idioms',
+        ],
         vocab: [
           { word: 'Elocuencia', translation: 'Eloquence', partOfSpeech: 'noun', scenario: 'Complimenting a speaker after a keynote in Madrid.', exampleNative: 'Su elocuencia ha cautivado a toda la audiencia.', exampleEnglish: 'Your eloquence captivated the entire audience.' },
         ],
@@ -433,6 +526,12 @@ export const LANGUAGES: Language[] = [
         level: 'C2', label: 'Mastery', cefr: 'C2',
         description: 'Near-native command — write contracts, deliver keynotes, debate politics in any Spanish-speaking country.',
         azureVoice: 'es-ES-ElviraNeural',
+        objectives: [
+          'Express yourself spontaneously with great fluency and precision in any Spanish register',
+          'Differentiate finer shades of meaning even in the most complex situations',
+          'Write contracts, keynote speeches, and literary analysis with near-native command',
+          'Understand virtually everything you hear or read, including archaic literary Spanish',
+        ],
         vocab: [
           { word: 'Preponderancia', translation: 'Preponderance / dominance', partOfSpeech: 'noun', scenario: 'Academic paper on economic dominance in the Latin American region.', exampleNative: 'La preponderancia del dólar sigue siendo un factor determinante.', exampleEnglish: 'The preponderance of the dollar remains a determining factor.' },
         ],
@@ -443,6 +542,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'es-ES-ElviraNeural',
+        objectives: [
+          'Produce original academic work in Spanish that meets RAE style standards',
+          'Analyse and critique complex theoretical frameworks across Hispanophone contexts',
+          'Deliver keynotes and chair expert panels entirely in Spanish',
+          'Navigate classical Golden Age Spanish and contemporary academic register',
+        ],
         vocab: [
           { word: 'Hegemonía', translation: 'Hegemony', partOfSpeech: 'noun', scenario: 'Political science dissertation on US influence in Latin America.', exampleNative: 'La hegemonía cultural se manifiesta a través de múltiples mecanismos discursivos.', exampleEnglish: 'Cultural hegemony manifests through multiple discursive mechanisms.' },
         ],
@@ -481,6 +586,19 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Survive in Paris, greet clients, order food, count money. French opens doors across Africa, the Caribbean, and Europe.',
         azureVoice: 'fr-FR-DeniseNeural',
+        objectives: [
+          'Greet someone formally and informally at different times of day',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Nasal vowels', description: 'Four nasal sounds: -on (like "bong" without G), -an/en (like "song" + nasality), -in/ain (like "ban" nasalized), -un (rounded nasal). The N/M is NOT pronounced separately.', example: '"bon" = bɔ̃. "vin" = vɛ̃. "blanc" = blɑ̃.' },
+          { sound: 'The French R', description: 'Produced at the back of the throat, almost a gentle gargling sound. The tongue stays flat.', example: '"rouge" = ROOZH. "merci" = mair-SEE. Practice by gargling silently.' },
+          { sound: 'Silent final consonants', description: 'Most final consonants are silent. Exception: final C, R, F, L are usually pronounced (think "CaReFuL").', example: '"vous" = VOO (s silent). "avec" = ah-VEK (c sounded).' },
+          { sound: 'Liaison', description: 'When a word ending in a silent consonant meets a word starting with a vowel, the consonant is sounded and links them.', example: '"vous êtes" = voo-ZEH-tuh. "les amis" = lay-ZAH-mee.' },
+          { sound: 'U sound', description: 'Unique French sound — say "ee" then round your lips to say "oo" without moving your tongue. Not the English "oo".', example: '"tu" = tü. "sur" = sür. No English equivalent.' },
+        ],
         vocab: [
           { word: 'Bonjour', translation: 'Good day / Hello', partOfSpeech: 'greeting', scenario: 'Walking into ANY French establishment — skipping this is considered rude, not efficient.', exampleNative: 'Bonjour ! Comment puis-je vous aider ?', exampleEnglish: 'Good day! How can I help you?' },
           { word: 'Merci', translation: 'Thank you', partOfSpeech: 'phrase', scenario: 'A Parisian colleague holds the door — this plus a slight nod is all you need.', exampleNative: 'Merci beaucoup pour votre aide.', exampleEnglish: 'Thank you very much for your help.' },
@@ -516,6 +634,12 @@ export const LANGUAGES: Language[] = [
         level: 'B1', label: 'Intermediate', cefr: 'B1',
         description: 'Business correspondence, opinion expression, African and Caribbean French contexts.',
         azureVoice: 'fr-FR-DeniseNeural',
+        objectives: [
+          'Express and justify opinions on familiar topics in French',
+          'Handle most professional situations in France and Francophone Africa',
+          'Write clear business correspondence and formal emails in French',
+          'Understand the main points of native-speed media on familiar topics',
+        ],
         vocab: [
           { word: 'Partenariat', translation: 'Partnership', partOfSpeech: 'noun', scenario: 'Proposal to a Côte d\'Ivoire investor for a joint venture.', exampleNative: 'Nous proposons un partenariat stratégique à long terme.', exampleEnglish: 'We propose a long-term strategic partnership.' },
           { word: 'Marché', translation: 'Market', partOfSpeech: 'noun', scenario: 'Pitching expansion into Francophone West Africa.', exampleNative: 'Le marché africain francophone est en pleine expansion.', exampleEnglish: 'The Francophone African market is in full expansion.' },
@@ -534,6 +658,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'fr-FR-DeniseNeural',
+        objectives: [
+          'Produce original academic work in French meeting the standards of Francophone academia',
+          'Analyse and critique complex theoretical frameworks across postcolonial Francophone contexts',
+          'Deliver keynotes and participate in expert panels entirely in French',
+          'Navigate classical literary French and contemporary academic register with equal ease',
+        ],
         vocab: [
           { word: 'Épistémologie', translation: 'Epistemology', partOfSpeech: 'noun', scenario: 'Academic philosophy paper — French academia loves epistemological framing.', exampleNative: "L'épistémologie de Foucault remet en question les fondements du savoir occidental.", exampleEnglish: "Foucault's epistemology calls into question the foundations of Western knowledge." },
         ],
@@ -565,6 +695,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Greetings, numbers, basic questions. German precision starts here.',
         azureVoice: 'de-DE-KatjaNeural',
+        objectives: [
+          'Greet someone formally and informally at different times of day',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Umlauts ä, ö, ü', description: 'Three extra vowels. ä = "air" sound. ö = say "ay" then round lips (like French eu). ü = say "ee" then round lips (like French u).', example: '"schön" (beautiful) = SHERN (rounded E). "über" (over) = Ü-bur. "Mädchen" (girl) = MAYD-khen.' },
+          { sound: 'The CH sound', description: 'Two variants: after A/O/U = throaty KH (like Scottish "loch"). After E/I/Y = soft hissing SH-like sound (further forward in mouth).', example: '"Bach" = BAHKH (throaty). "ich" (I) = ikh (soft). "China" in German = KHI-nah.' },
+          { sound: 'W and V reversed', description: 'German W is pronounced like English V. German V is usually pronounced like English F.', example: '"was" (what) = VAHS. "Wasser" (water) = VAH-ser. "Vater" (father) = FAH-ter.' },
+          { sound: 'Final devoicing', description: 'Voiced consonants (B, D, G) become unvoiced (P, T, K) at the end of a word.', example: '"Rad" (wheel/bicycle) = RAHT (not RAD). "Hund" (dog) = HOONT.' },
+        ],
         vocab: [
           { word: 'Guten Tag', translation: 'Good day', partOfSpeech: 'greeting', scenario: 'Professional greeting in any German business context — Hallo is too casual for first meetings.', exampleNative: 'Guten Tag! Mein Name ist Jordan.', exampleEnglish: 'Good day! My name is Jordan.' },
           { word: 'Danke', translation: 'Thank you', partOfSpeech: 'phrase', scenario: 'Any act of service — German directness means no need to over-embellish.', exampleNative: 'Danke schön für Ihre Hilfe.', exampleEnglish: 'Thank you very much for your help.' },
@@ -600,6 +742,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'de-DE-KatjaNeural',
+        objectives: [
+          'Produce original academic work in German meeting Germanophone scholarly standards',
+          'Analyse and critique complex theoretical frameworks in the German philosophical tradition',
+          'Deliver keynotes and participate in expert panels entirely in German',
+          'Navigate classical philosophical German (Kant, Hegel) alongside modern academic prose',
+        ],
         vocab: [
           { word: 'Weltanschauung', translation: 'World view / comprehensive philosophy', partOfSpeech: 'noun', scenario: 'Philosophy seminar — this untranslatable German concept appears in English academic texts too.', exampleNative: 'Hegels Weltanschauung bildet die Grundlage des deutschen Idealismus.', exampleEnglish: "Hegel's Weltanschauung forms the foundation of German Idealism." },
         ],
@@ -656,6 +804,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Master the Cyrillic alphabet first, then basic survival phrases.',
         azureVoice: 'ru-RU-SvetlanaNeural',
+        objectives: [
+          'Read and write the Cyrillic alphabet with confidence',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Hard vs Soft consonants', description: 'Every Russian consonant has a "hard" and "soft" (palatalised) version. Soft consonants are followed by ь (soft sign) or е/ё/и/ю/я. They sound like the consonant + brief Y.', example: '"брат" (brother) hard B vs "брить" (to shave) soft B. "мать" (mother) — soft T.' },
+          { sound: 'Vowel reduction', description: 'Unstressed О sounds like А. Unstressed Е/Я sound like И. Only stressed vowels are fully pronounced.', example: '"молоко" (milk) = mah-lah-KO (only last O is full O). "говорить" (to speak) = gah-vah-REET\'' },
+          { sound: 'The Ы vowel', description: 'No English equivalent. Back of tongue raised, lips slightly spread. Like trying to say "ee" while pressing tongue back.', example: '"ты" (you) = tih. "мы" (we) = mih. "рыба" (fish) = RIH-bah.' },
+          { sound: 'Rolled R (р)', description: 'Russian Р is a full tongue-tip trill — multiple vibrations against the ridge behind upper teeth.', example: '"рыба" (fish). "река" (river). Similar to Spanish RR but required everywhere.' },
+        ],
         vocab: [
           { word: 'Привет', romanization: 'Privet', translation: 'Hi (informal)', partOfSpeech: 'greeting', scenario: 'Greeting a Russian tech contact your age at a startup event.', exampleNative: 'Привет! Меня зовут Джордан.', exampleEnglish: 'Hi! My name is Jordan.' },
           { word: 'Здравствуйте', romanization: 'Zdravstvuyte', translation: 'Hello (formal)', partOfSpeech: 'greeting', scenario: 'Meeting a Russian business partner for the first time — formal respect is non-negotiable.', exampleNative: 'Здравствуйте! Рад познакомиться.', exampleEnglish: 'Hello! Pleased to meet you.' },
@@ -681,6 +841,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'ru-RU-SvetlanaNeural',
+        objectives: [
+          'Produce original academic work in Russian meeting scholarly standards',
+          'Analyse and critique complex theoretical frameworks in the Russian intellectual tradition',
+          'Deliver keynotes and participate in expert panels entirely in Russian',
+          'Navigate Church Slavonic influences, Soviet academic register, and contemporary prose',
+        ],
         vocab: [
           { word: 'Онтология', romanization: 'Ontologiya', translation: 'Ontology', partOfSpeech: 'noun', scenario: 'Philosophy dissertation — Russian academic tradition is deeply rooted in German Idealism and Soviet dialectical materialism.', exampleNative: 'Онтологические основания марксистской диалектики остаются предметом дискуссий.', exampleEnglish: 'The ontological foundations of Marxist dialectics remain a subject of debate.' },
         ],
@@ -711,6 +877,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Dutch is the closest major language to English — you already know more than you think.',
         azureVoice: 'nl-NL-ColetteNeural',
+        objectives: [
+          'Greet someone formally and informally at different times of day',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'The G and CH', description: 'Both are the throaty guttural sound — like gargling or clearing your throat gently. Stronger than German CH.', example: '"goed" (good) = KHOOT. "lacht" (laughs) = LAKHT. Amsterdam accent especially strong.' },
+          { sound: 'The UI sound', description: 'No English equivalent. Tongue position for "uh" but lips rounded forward like for "oo".', example: '"huis" (house) = roughly HOWS but with that rounded quality. "tuin" (garden) = TOWN-ish.' },
+          { sound: 'Long vs short vowels', description: 'Single vowel in closed syllable = short. Double vowel (or single in open syllable) = long.', example: '"man" (man) short A vs "maan" (moon) long A. "weg" (way) short E vs "wee" (woe) long E.' },
+          { sound: 'Final N deletion', description: 'In informal Dutch speech, the final -n of -en endings is often not pronounced.', example: '"lopen" (to walk) → "lope" informally. "kopen" (to buy) → "kope".' },
+        ],
         vocab: [
           { word: 'Hallo', translation: 'Hello', partOfSpeech: 'greeting', scenario: 'Amsterdam business meeting or Rotterdam port logistics partner.', exampleNative: 'Hallo! Mijn naam is Jordan.', exampleEnglish: 'Hello! My name is Jordan.' },
           { word: 'Dank je wel', translation: 'Thank you', partOfSpeech: 'phrase', scenario: 'Informal thanks — use dank u wel (formal) in business contexts.', exampleNative: 'Dank u wel voor uw tijd.', exampleEnglish: 'Thank you for your time.' },
@@ -733,6 +911,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'nl-NL-ColetteNeural',
+        objectives: [
+          'Produce original academic work in Dutch meeting Dutch and Flemish scholarly standards',
+          'Analyse and critique complex theoretical frameworks in the Dutch academic tradition',
+          'Deliver keynotes and participate in expert panels entirely in Dutch',
+          'Navigate legal, bureaucratic, and classical Dutch registers alongside modern usage',
+        ],
         vocab: [
           { word: 'Rechtsstatelijkheid', translation: 'Rule of law / constitutional democracy', partOfSpeech: 'noun', scenario: 'Legal or political science paper on Dutch constitutional law.', exampleNative: 'Rechtsstatelijkheid vormt de kern van de Nederlandse democratische traditie.', exampleEnglish: 'The rule of law forms the core of the Dutch democratic tradition.' },
         ],
@@ -769,6 +953,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Hiragana alphabet (46 chars), katakana alphabet, basic phrases. Japan is a top-5 global economy.',
         azureVoice: 'ja-JP-NanamiNeural',
+        objectives: [
+          'Read and write Hiragana (46 characters) with confidence',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Pitch accent (not tones)', description: 'Japanese uses pitch accent — syllables are either High or Low pitch. Different from Mandarin tones: pitch changes meaning in some words but most words are clear from context.', example: '"hashi" (chopsticks) H-L vs "hashi" (bridge) L-H vs "hashi" (edge) L-H-H.' },
+          { sound: 'Long vowels', description: 'Japanese long vowels (ō, ū, ā, ē, ī) are held for double the duration. They change word meaning.', example: '"ojisan" (uncle) vs "ojiisan" (grandfather). Duration matters.' },
+          { sound: 'The R sound', description: 'Japanese R is a light flap — tongue briefly touches the ridge behind upper teeth. Neither English R nor L. Closer to a soft D or Spanish single-R tap.', example: '"ringo" (apple). "sore" (that). Somewhere between R, L, and D.' },
+          { sound: 'Double consonants (っ)', description: 'The small っ creates a pause/hold before the next consonant — like a brief stop.', example: '"itte" (go) — pause before the T. "kitte" (stamp) — pause before the T.' },
+        ],
         vocab: [
           { word: 'こんにちは', romanization: 'Konnichiwa', translation: 'Hello (daytime)', partOfSpeech: 'greeting', scenario: 'Meeting a Japanese tech partner at a Tokyo conference.', exampleNative: 'こんにちは！ジョーダンと申します。', exampleEnglish: 'Hello! My name is Jordan (humble form).' },
           { word: 'ありがとうございます', romanization: 'Arigatou gozaimasu', translation: 'Thank you (formal)', partOfSpeech: 'phrase', scenario: 'After receiving anything — a card, a gift, an introduction — always bow slightly.', exampleNative: 'ありがとうございます。大変助かりました。', exampleEnglish: 'Thank you very much. You helped me greatly.' },
@@ -793,6 +989,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'ja-JP-NanamiNeural',
+        objectives: [
+          'Produce original academic work in Japanese meeting scholarly standards',
+          'Analyse and critique complex theoretical frameworks in Japanese academic writing',
+          'Deliver keynotes and participate in expert panels entirely in Japanese',
+          'Navigate classical Japanese (文語), keigo honorific system, and contemporary academic prose',
+        ],
         vocab: [
           { word: '言語相対論', romanization: 'Gengo sōtairon', translation: 'Linguistic relativity (Sapir-Whorf hypothesis)', partOfSpeech: 'noun', scenario: 'Academic linguistics paper at Kyoto University.', exampleNative: '言語相対論は言語が思考を規定するか否かという問いに答えようとする。', exampleEnglish: 'Linguistic relativity attempts to answer whether language determines thought.' },
         ],
@@ -845,6 +1047,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Right-to-left script, Arabic alphabet, Modern Standard Arabic (MSA) basics.',
         azureVoice: 'ar-SA-ZariyahNeural',
+        objectives: [
+          'Read and write the Arabic alphabet (right-to-left) with confidence',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Emphatic consonants', description: 'Arabic has "emphatic" versions of S, D, T, Z (ص، ض، ط، ظ) — produced with the back of the tongue raised and pressed toward the throat, making nearby vowels darker.', example: '"saff" (class) with regular S vs "Saff" (row) with emphatic S — the whole vowel sounds darker.' },
+          { sound: 'The ع (Ayn)', description: 'A voiced pharyngeal consonant — produced deep in the throat by constricting the pharynx. No English equivalent.', example: '"عربي" (Arabic) = \'Arabī — the ع is like squeezing your throat to let air through while vocalising.' },
+          { sound: 'The خ and غ', description: 'خ (kh) = like German CH or Scottish "loch." غ (gh) = voiced version, like French R or a soft gargling.', example: '"خبز" (bread) = KHubz. "غد" (tomorrow) = GHad.' },
+          { sound: 'Short vs long vowels', description: 'Arabic has 3 short (a, i, u — written as diacritics, often omitted) and 3 long (ā, ī, ū). Long vowels are genuinely longer in duration.', example: '"kitāb" (book) — long ā. "bayt" (house) — short vowels. Long vowels held ~2x.' },
+        ],
         vocab: [
           { word: 'مرحبا', romanization: 'Marhaba', translation: 'Hello', partOfSpeech: 'greeting', scenario: 'Universal greeting across the Arab world — opens every door.', exampleNative: 'مرحبا! اسمي جوردان.', exampleEnglish: 'Hello! My name is Jordan.' },
           { word: 'شكراً', romanization: 'Shukran', translation: 'Thank you', partOfSpeech: 'phrase', scenario: 'Any act of generosity — Arab hospitality culture expects warm acknowledgment.', exampleNative: 'شكراً جزيلاً على كرمكم.', exampleEnglish: 'Thank you very much for your generosity.' },
@@ -868,6 +1082,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'ar-SA-ZariyahNeural',
+        objectives: [
+          'Produce original academic work in Arabic meeting standards of Arab scholarly institutions',
+          'Analyse classical Arabic rhetoric (سجع، طباق) and apply it in original writing',
+          'Deliver keynotes and participate in expert panels entirely in Modern Standard Arabic',
+          'Navigate Classical Quranic Arabic, legal fiqh texts, and contemporary academic prose',
+        ],
         vocab: [
           { word: 'الهيمنة الثقافية', romanization: "Al-haymana al-thaqafiyya", translation: 'Cultural hegemony', partOfSpeech: 'noun', scenario: 'Post-colonial studies dissertation at Cairo University.', exampleNative: 'تُحلِّل هذه الدراسة مفهوم الهيمنة الثقافية في سياق الخطاب الإعلامي العربي.', exampleEnglish: 'This study analyses the concept of cultural hegemony in the context of Arab media discourse.' },
         ],
@@ -904,6 +1124,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Brazil is top-10 GDP. Portuguese unlocks Brazil, Portugal, Angola, Mozambique, Cape Verde.',
         azureVoice: 'pt-BR-FranciscaNeural',
+        objectives: [
+          'Greet someone formally and informally at different times of day',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Nasal vowels', description: 'Stronger nasalisation than French. Words ending in -ão, -em, -ão are heavily nasal.', example: '"pão" (bread) = pɐ̃w̃. "bem" = bẽ.' },
+          { sound: 'European vs Brazilian vowel reduction', description: 'European Portuguese drops unstressed vowels almost entirely. Brazilian Portuguese keeps them open and clear.', example: 'EP: "professor" sounds like "pruh-FSOR". BP: "pro-fes-SOR".' },
+          { sound: 'The LH and NH', description: 'LH = Spanish/Italian LL (palatal L, like "ly"). NH = Spanish Ñ (palatal N, like "ny").', example: '"filho" (son) = FEE-lyoo. "vinho" (wine) = VEE-nyoo.' },
+          { sound: 'S and Z between vowels', description: 'S between vowels = Z sound. At end of word in EP = SH.', example: '"casa" = KAH-zah. EP "estás" = esh-TASH.' },
+        ],
         vocab: [
           { word: 'Olá', translation: 'Hello', partOfSpeech: 'greeting', scenario: 'Universal greeting — same in Brazilian (olá / oi) and European Portuguese.', exampleNative: 'Olá! Meu nome é Jordan.', exampleEnglish: 'Hello! My name is Jordan.' },
           { word: 'Obrigado/a', translation: 'Thank you (m/f)', partOfSpeech: 'phrase', scenario: 'Gender agreement in thanks — male speaker says obrigado, female says obrigada.', exampleNative: 'Muito obrigado pela sua atenção.', exampleEnglish: 'Thank you very much for your attention.' },
@@ -925,6 +1157,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'pt-BR-FranciscaNeural',
+        objectives: [
+          'Produce original academic work in Portuguese across the Lusophone world',
+          'Analyse and critique complex theoretical frameworks in Portuguese and Brazilian contexts',
+          'Deliver keynotes and participate in expert panels entirely in Portuguese',
+          'Navigate the future subjunctive, classical Camões-era syntax, and contemporary academic prose',
+        ],
         vocab: [
           { word: 'Lusofonia', translation: 'Lusosphere / Portuguese-speaking world', partOfSpeech: 'noun', scenario: 'Academic paper on post-colonial relations across the Portuguese-speaking world.', exampleNative: 'A lusofonia como projeto identitário pós-colonial merece análise crítica aprofundada.', exampleEnglish: 'The Lusosphere as a post-colonial identity project deserves thorough critical analysis.' },
         ],
@@ -956,6 +1194,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Music, fashion, food, luxury, finance — Italian is the language of culture and style.',
         azureVoice: 'it-IT-ElsaNeural',
+        objectives: [
+          'Greet someone formally and informally at different times of day',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'C and G rules', description: 'C + E/I = CH sound (chiesa = church). C + A/O/U = K sound (casa = house). G + E/I = J sound (gelato). G + A/O/U = hard G (gatto = cat).', example: '"ciao" = CHOW. "cosa" = KOH-zah. "gelato" = jeh-LAH-toh. "gatto" = GAH-toh.' },
+          { sound: 'Double consonants', description: 'Italian double consonants are genuinely longer — hold the sound for a beat. This changes word meaning.', example: '"pala" (shovel) vs "palla" (ball). "nono" (ninth) vs "nonno" (grandfather).' },
+          { sound: 'Open vs closed E and O', description: 'Italian has both open (è, ò) and closed (é, ó) versions of E and O.', example: '"è" (is) = open E like in "bed". "é" in some words = closed E like in "they".' },
+          { sound: 'GLI', description: 'Pronounced like "LY" in "million" — a palatal L. No English equivalent. Tongue presses roof of mouth.', example: '"gli" (the, plural masc.) = LYEE. "figlio" (son) = FEE-lyoh.' },
+        ],
         vocab: [
           { word: 'Ciao', translation: 'Hi / Bye (informal)', partOfSpeech: 'greeting', scenario: 'Casual greeting — also used as goodbye. Use "Buongiorno" in formal/business contexts.', exampleNative: 'Ciao! Come stai?', exampleEnglish: 'Hi! How are you?' },
           { word: 'Grazie', translation: 'Thank you', partOfSpeech: 'phrase', scenario: 'Italian warmth is expressive — grazie mille (a thousand thanks) is common.', exampleNative: 'Grazie mille per il suo aiuto.', exampleEnglish: 'A thousand thanks for your help.' },
@@ -977,6 +1227,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'it-IT-ElsaNeural',
+        objectives: [
+          'Produce original academic work in Italian meeting the standards of Italian academia',
+          'Analyse Dante-era Tuscan, Risorgimento-era Italian, and contemporary academic prose',
+          'Deliver keynotes and participate in expert panels entirely in Italian',
+          'Master all four congiuntivo tenses as a marker of educated Italian register',
+        ],
         vocab: [
           { word: 'Risorgimento', translation: 'Italian unification movement (19th c.)', partOfSpeech: 'noun', scenario: 'Historical analysis dissertation at La Sapienza University.', exampleNative: 'Il Risorgimento ha profondamente ridefinito l\'identità nazionale italiana.', exampleEnglish: 'The Risorgimento profoundly redefined Italian national identity.' },
         ],
@@ -1013,6 +1269,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Hangul (Korean alphabet) takes 1 day to learn — most logical writing system on earth.',
         azureVoice: 'ko-KR-SunHiNeural',
+        objectives: [
+          'Read and write Hangul (Korean alphabet) with confidence',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Aspirated vs Unaspirated stops', description: 'Korean has three-way consonant distinction: plain (ㅂ/ㄷ/ㄱ), aspirated (ㅍ/ㅌ/ㅋ), and tense (ㅃ/ㄸ/ㄲ). English only has two.', example: '"bal" (foot) vs "pal" (arm) vs "ppal" (suck). The H-puff of air distinguishes them.' },
+          { sound: 'Final consonants (받침)', description: 'Consonants at the end of syllable blocks are pronounced differently — softer and not fully released.', example: '"닭" (chicken) — the k is unreleased. "밥" (rice/meal) — b becomes a soft M-like sound.' },
+          { sound: 'The ㅡ vowel', description: 'No English equivalent. Unrounded back vowel — like saying "uh" with lips spread flat (not rounded).', example: '"그" (he/she) = geu. "크다" (big) = keu-da.' },
+          { sound: 'Consonant assimilation', description: 'When consonants meet across syllable boundaries, they influence each other — pronunciation changes in connected speech.', example: '"국물" (broth) — ㄱ + ㅁ → sounds like "gungmul" (the k nasalises).' },
+        ],
         vocab: [
           { word: '안녕하세요', romanization: 'Annyeonghaseyo', translation: 'Hello (formal)', partOfSpeech: 'greeting', scenario: 'Meeting a Korean business partner — slight bow is expected.', exampleNative: '안녕하세요! 저는 Jordan입니다.', exampleEnglish: 'Hello! I am Jordan.' },
           { word: '감사합니다', romanization: 'Gamsahamnida', translation: 'Thank you (formal)', partOfSpeech: 'phrase', scenario: 'After any service in a professional Korean context.', exampleNative: '도움 주셔서 감사합니다.', exampleEnglish: 'Thank you for your help.' },
@@ -1035,6 +1303,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'ko-KR-SunHiNeural',
+        objectives: [
+          'Produce original academic work in Korean meeting Korean scholarly standards',
+          'Analyse and critique complex theoretical frameworks in Korean academic writing',
+          'Deliver keynotes and participate in expert panels entirely in Korean',
+          'Navigate the full honorific system (경어법) and hanja-based academic vocabulary',
+        ],
         vocab: [
           { word: '담론', romanization: 'Damron', translation: 'Discourse (Foucauldian)', partOfSpeech: 'noun', scenario: 'Critical theory dissertation at Seoul National University.', exampleNative: '미디어 담론은 권력 관계를 재생산하는 핵심 기제이다.', exampleEnglish: 'Media discourse is a key mechanism for reproducing power relations.' },
         ],
@@ -1075,6 +1349,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Devanagari script, basic phrases. Hindi opens India — 1.4 billion people, top-5 economy.',
         azureVoice: 'hi-IN-SwaraNeural',
+        objectives: [
+          'Read and write Devanagari script with confidence',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Aspirated consonants', description: 'Hindi distinguishes aspirated (with puff of air: ख, घ, छ, झ, ठ, ढ, थ, ध, फ, भ) from unaspirated (क, ग, च, ज, ट, ड, त, द, प, ब). English does not.', example: '"pal" (moment) क vs "phal" (fruit) फ. Hold your hand in front of your mouth — aspirated should feel a puff of air.' },
+          { sound: 'Retroflex consonants', description: 'Tongue curls back to touch the roof of the mouth: ट, ठ, ड, ढ, ण, ड़, ढ़. These are "hard" versions of dental T, D, N.', example: '"ṭīkā" (vaccine) = retroflex T. "ḍibbā" (box) = retroflex D. Curl tongue back.' },
+          { sound: 'Short vs long vowels', description: 'अ/आ (a/ā), इ/ई (i/ī), उ/ऊ (u/ū) — long vowels are held approximately twice as long and change word meaning.', example: '"pal" (moment) vs "pāl" (nurture). "din" (day) vs "dīn" (religion).' },
+          { sound: 'Nasalisation (chandrabindu)', description: 'Vowels can be nasalised — the ँ symbol (chandrabindu) means the vowel is spoken through the nose too.', example: '"hāँ" (yes) — nasalised. "maँ" (mom) — nasalised A.' },
+        ],
         vocab: [
           { word: 'नमस्ते', romanization: 'Namaste', translation: 'Hello / I bow to you', partOfSpeech: 'greeting', scenario: 'Universal Indian greeting — hands together (anjali mudra) adds cultural respect.', exampleNative: 'नमस्ते! मेरा नाम Jordan है।', exampleEnglish: 'Namaste! My name is Jordan.' },
           { word: 'धन्यवाद', romanization: 'Dhanyavaad', translation: 'Thank you', partOfSpeech: 'phrase', scenario: 'Formal thanks — शुक्रिया (shukriya) is more colloquial, from Urdu.', exampleNative: 'आपकी मदद के लिए बहुत धन्यवाद।', exampleEnglish: 'Thank you very much for your help.' },
@@ -1097,6 +1383,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'hi-IN-SwaraNeural',
+        objectives: [
+          'Produce original academic work in Hindi meeting the standards of JNU and Indian scholarly institutions',
+          'Distinguish and deploy Sanskrit-origin (तत्सम) and Hindustani (तद्भव) vocabulary appropriately',
+          'Deliver keynotes and participate in expert panels entirely in Hindi',
+          'Navigate post-colonial discourse, classical Sanskrit influences, and contemporary academic Hindi',
+        ],
         vocab: [
           { word: 'उत्तर-औपनिवेशिकता', romanization: 'Uttar-aupniveshikata', translation: 'Post-colonialism', partOfSpeech: 'noun', scenario: 'Academic paper at JNU on post-colonial Indian identity.', exampleNative: 'उत्तर-औपनिवेशिक विमर्श भारतीय साहित्य में किस प्रकार प्रतिफलित होता है?', exampleEnglish: 'How is post-colonial discourse reflected in Indian literature?' },
         ],
@@ -1127,6 +1419,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'Swahili uses Roman alphabet — arguably the easiest major language to begin. East African economic powerhouse language.',
         azureVoice: 'sw-KE-RafikiNeural',
+        objectives: [
+          'Greet someone formally and informally at different times of day',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'Vowels are pure', description: 'Swahili vowels (A, E, I, O, U) are always the same — no diphthongs, no reduced vowels. Like Spanish/Italian vowels.', example: '"habari" = ha-BA-ri (each vowel clear). "asante" = a-SAN-te.' },
+          { sound: 'The NG\' (prenasalised G)', description: 'NG\' is a single sound — like the NG in "sing" but at the START of a syllable. Unusual for English ears.', example: '"ng\'ombe" (cow). "ng\'api" (how many). Practice "singing" then try to start a syllable with that sound.' },
+          { sound: 'Stress always on second-to-last syllable', description: 'Stress in Swahili is completely regular — always the penultimate (second-to-last) syllable.', example: '"habari" = ha-BA-ri. "asante" = a-SAN-te. "ninasimama" = ni-na-si-MA-ma.' },
+          { sound: 'MB, ND, NG — prenasalised stops', description: 'These combinations start with a nasal then a stop, both in the same syllable onset. English treats them as two syllables; Swahili treats them as one.', example: '"mbwa" (dog) = one syllable: M+BWA. "ndio" (yes) = N+DIO. "ngoja" (wait).' },
+        ],
         vocab: [
           { word: 'Habari', translation: 'Hello / How are you? (news?)', partOfSpeech: 'greeting', scenario: 'East African greeting — the response is "nzuri" (good) or "salama" (peaceful).', exampleNative: 'Habari za asubuhi?', exampleEnglish: 'How is the morning? (Good morning)' },
           { word: 'Asante', translation: 'Thank you', partOfSpeech: 'phrase', scenario: 'Any act of help — asante sana (thank you very much) is the standard warm upgrade.', exampleNative: 'Asante sana kwa msaada wako.', exampleEnglish: 'Thank you very much for your help.' },
@@ -1152,6 +1456,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: SHARED_PHD_NOTE,
         azureVoice: 'sw-KE-RafikiNeural',
+        objectives: [
+          'Produce original academic work in Swahili meeting East African scholarly standards',
+          'Master all 18 noun class prefixes and their concordance in formal academic writing',
+          'Deliver keynotes and participate in expert panels entirely in Swahili',
+          'Analyse classical Kiswahili poetry forms (tendi, shairi) and their rhetorical structures',
+        ],
         vocab: [
           { word: 'Utandawazi', translation: 'Globalization', partOfSpeech: 'noun', scenario: 'Academic paper on economic globalization and African development.', exampleNative: 'Utandawazi unaathiri vibaya uchumi wa nchi zinazoendelea.', exampleEnglish: 'Globalization negatively affects the economies of developing countries.' },
         ],
@@ -1183,6 +1493,18 @@ export const LANGUAGES: Language[] = [
         level: 'A1', label: 'Absolute Beginner', cefr: 'A1',
         description: 'For non-native English learners. English is the global business, science, and internet language.',
         azureVoice: 'en-US-AndrewMultilingualNeural',
+        objectives: [
+          'Greet someone formally and informally at different times of day',
+          'Introduce yourself (name, where you\'re from, what you do)',
+          'Count to 100 and tell the time',
+          'Ask for and understand basic directions',
+        ],
+        phonetics: [
+          { sound: 'The TH sounds', description: 'English has two TH sounds: voiceless (think, three, bath) — tongue between teeth, no voice. Voiced (the, this, bathe) — same position but with voice.', example: '"think" = tongue between teeth, no buzz. "the" = tongue between teeth, with buzz. These don\'t exist in most languages.' },
+          { sound: 'Short vs long vowels', description: 'English vowels are notoriously inconsistent. "A" alone can sound 5+ different ways depending on the word.', example: '"cat" (short a) vs "cake" (long a). "bit" vs "bite". Spelling does not reliably predict sound.' },
+          { sound: 'The schwa (ə)', description: 'The most common English vowel — an unstressed "uh" sound. Unstressed syllables almost always reduce to schwa in natural speech.', example: '"about" = ə-BOUT. "banana" = bə-NAN-ə. "the" before consonants = thə.' },
+          { sound: 'Consonant clusters', description: 'English allows difficult consonant clusters at the start and end of words. Many learners add extra vowels.', example: '"strength" = STRENGKTH (7 consonants total). "texts" = TEKSTS. Do not insert vowels between them.' },
+        ],
         vocab: [
           { word: 'Hello', translation: 'Universal greeting', partOfSpeech: 'greeting', scenario: 'Global business — English opens every international door.', exampleNative: 'Hello! My name is Jordan. Nice to meet you.', exampleEnglish: 'Hello! My name is Jordan. Nice to meet you.' },
           { word: 'Thank you', translation: 'Expression of gratitude', partOfSpeech: 'phrase', scenario: 'Any English-speaking or international context.', exampleNative: 'Thank you very much for your time and consideration.', exampleEnglish: 'Thank you very much for your time and consideration.' },
@@ -1205,6 +1527,12 @@ export const LANGUAGES: Language[] = [
         level: 'PhD', label: 'PhD / Expert', cefr: 'PhD',
         description: 'PhD-level academic English: dissertations, peer-reviewed papers, keynote speeches, contract drafting.',
         azureVoice: 'en-US-AndrewMultilingualNeural',
+        objectives: [
+          'Produce original academic work in English meeting the standards of peer-reviewed publication',
+          'Deploy hedging, nominalisation, and discourse markers to signal academic rigour',
+          'Deliver keynotes and participate in expert panels with spontaneous, precise English',
+          'Navigate legal, contractual, and classical literary registers alongside contemporary academic prose',
+        ],
         vocab: [
           { word: 'Ontological', translation: 'Relating to the nature of being/existence', partOfSpeech: 'adjective', scenario: 'Philosophy or social science dissertation introduction.', exampleNative: 'This paper adopts an ontological stance that treats social structures as emergent properties of human interaction.', exampleEnglish: 'This paper adopts an ontological stance that treats social structures as emergent properties of human interaction.' },
           { word: 'Epistemological', translation: 'Relating to the theory of knowledge', partOfSpeech: 'adjective', scenario: 'Research methodology chapter — how you know what you claim to know.', exampleNative: 'The epistemological assumptions underpinning this research are rooted in critical realism.', exampleEnglish: 'The epistemological assumptions underpinning this research are rooted in critical realism.' },

@@ -1,11 +1,11 @@
 'use client'
-import { use, useState, useRef, useCallback } from 'react'
+import { use, useState, useRef, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
 import { getLanguage, LEVEL_ORDER, VOICES, type LangCode, type ProfLevel, type VocabItem, type DialogueLine } from '@/lib/language-data'
 import { ChevronLeft, Volume2, Loader2, Check, X, ChevronDown, ChevronUp, BookOpen, GraduationCap, Dumbbell, Keyboard, Mic, MessageSquare, ChevronRight, Send, Bot, User as UserIcon } from 'lucide-react'
 
-type Tab = 'vocab' | 'grammar' | 'dialogue' | 'drill' | 'chars' | 'quiz' | 'ai'
+type Tab = 'sounds' | 'vocab' | 'grammar' | 'dialogue' | 'drill' | 'chars' | 'quiz' | 'ai'
 
 function speak(text: string, voice: string, onStart: () => void, onEnd: () => void) {
   if (typeof window === 'undefined' || !window.speechSynthesis) { onEnd(); return }
@@ -428,15 +428,20 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
     { id: 'quiz', label: 'Quiz', icon: Mic },
   ]
 
+  useEffect(() => {
+    setTab(lvl.phonetics && lvl.phonetics.length > 0 ? 'sounds' : 'vocab')
+  }, [levelIdx])
+
   const advanceLevel = () => {
     const nextIdx = levelIdx + 1
     if (nextIdx < availLevels.length) {
       setLevelIdx(nextIdx)
-      setTab('vocab')
-      // persist to localStorage
-      const levels = JSON.parse(localStorage.getItem('lang_levels') || '{}')
-      levels[lang] = availLevels[nextIdx]
-      localStorage.setItem('lang_levels', JSON.stringify(levels))
+      // tab will be set by the useEffect above
+      try {
+        const levels = JSON.parse(localStorage.getItem('lang_levels') || '{}')
+        levels[lang] = availLevels[nextIdx]
+        localStorage.setItem('lang_levels', JSON.stringify(levels))
+      } catch { /* localStorage unavailable */ }
     }
   }
 
@@ -502,8 +507,28 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
           </div>
         </div>
 
+        {/* Objectives banner */}
+        {lvl.objectives && lvl.objectives.length > 0 && (
+          <div className="mx-0 mb-3 bg-gradient-to-r from-[#fde8ef] to-[#fff0f5] border border-[#f9c6d8] rounded-xl p-4">
+            <div className="text-[10px] font-bold text-[#d4376e] tracking-[0.15em] uppercase mb-2">After this level you will be able to</div>
+            <ul className="space-y-1">
+              {lvl.objectives.map((obj, i) => (
+                <li key={i} className="flex items-start gap-2 text-[12px] text-[#6b1f3a]">
+                  <span className="text-[#d4376e] font-bold mt-0.5 flex-shrink-0">✓</span>
+                  <span>{obj}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Tabs — horizontally scrollable on mobile */}
         <div className="flex gap-1 bg-neutral-100 rounded-xl p-1 mb-5 overflow-x-auto scrollbar-none">
+          {lvl.phonetics && lvl.phonetics.length > 0 && (
+            <button onClick={() => setTab('sounds')} className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-semibold transition-colors whitespace-nowrap min-h-[40px] ${tab === 'sounds' ? 'bg-white text-[#d4376e] shadow-sm' : 'text-neutral-500 hover:text-neutral-700'}`}>
+              🔊 Sounds
+            </button>
+          )}
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -522,6 +547,25 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
         </div>
 
         {/* Content */}
+        {tab === 'sounds' && (
+          <div className="px-0 space-y-3">
+            <p className="text-[12px] text-neutral-500">Master these sounds before building vocabulary. Getting pronunciation right from the start prevents bad habits that are hard to fix later.</p>
+            {lvl.phonetics?.map((rule, i) => (
+              <div key={i} className="bg-white border border-neutral-200 rounded-xl p-4">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="text-[14px] font-bold text-[#0a0a0a]">{rule.sound}</h3>
+                  <SpeakBtn text={rule.example.split('"')[1] || rule.example} voice={voice} size="sm" />
+                </div>
+                <p className="text-[12px] text-neutral-600 leading-relaxed mb-2">{rule.description}</p>
+                <div className="bg-neutral-50 rounded-lg px-3 py-2">
+                  <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Example: </span>
+                  <span className="text-[12px] text-neutral-700 italic">{rule.example}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {tab === 'vocab' && (
           <div className="space-y-3">
             {lvl.vocab.length === 0
