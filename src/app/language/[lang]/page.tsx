@@ -3,9 +3,9 @@ import { use, useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Shell from '@/components/Shell'
 import { getLanguage, LEVEL_ORDER, VOICES, type LangCode, type ProfLevel, type VocabItem, type DialogueLine } from '@/lib/language-data'
-import { ChevronLeft, Volume2, Loader2, Check, X, ChevronDown, ChevronUp, BookOpen, GraduationCap, Dumbbell, Keyboard, Mic, MessageSquare, ChevronRight } from 'lucide-react'
+import { ChevronLeft, Volume2, Loader2, Check, X, ChevronDown, ChevronUp, BookOpen, GraduationCap, Dumbbell, Keyboard, Mic, MessageSquare, ChevronRight, Send, Bot, User as UserIcon } from 'lucide-react'
 
-type Tab = 'vocab' | 'grammar' | 'dialogue' | 'drill' | 'chars' | 'quiz'
+type Tab = 'vocab' | 'grammar' | 'dialogue' | 'drill' | 'chars' | 'quiz' | 'ai'
 
 function speak(text: string, voice: string, onStart: () => void, onEnd: () => void) {
   if (typeof window === 'undefined' || !window.speechSynthesis) { onEnd(); return }
@@ -283,6 +283,109 @@ function QuizSection({ vocab, voice, onAdvance }: { vocab: VocabItem[]; voice: s
   )
 }
 
+interface ChatMessage { role: 'user' | 'assistant'; content: string }
+
+function AiTutor({ language, languageCode, level }: { language: string; languageCode: string; level: string }) {
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  const send = async () => {
+    const text = input.trim()
+    if (!text || loading) return
+    setInput('')
+    const newMessages: ChatMessage[] = [...messages, { role: 'user', content: text }]
+    setMessages(newMessages)
+    setLoading(true)
+    try {
+      const res = await fetch('/api/claude-language', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: text,
+          language,
+          languageCode,
+          level,
+          conversationHistory: newMessages.slice(-6).map(m => ({ role: m.role, content: m.content }))
+        })
+      })
+      const data = await res.json()
+      if (data.error) {
+        setMessages(prev => [...prev, { role: 'assistant', content: data.error === 'ANTHROPIC_API_KEY not configured'
+          ? 'AI tutor not available — add your ANTHROPIC_API_KEY to the environment variables in Vercel.'
+          : `Error: ${data.error}` }])
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', content: data.response }])
+      }
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Connection error — try again.' }])
+    }
+    setLoading(false)
+    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+  }
+
+  return (
+    <div className="flex flex-col h-full" style={{ minHeight: 400 }}>
+      {messages.length === 0 && (
+        <div className="flex-1 flex flex-col items-center justify-center py-8 px-4">
+          <div className="w-12 h-12 rounded-full bg-[#fde8ef] flex items-center justify-center mb-3">
+            <Bot size={22} className="text-[#d4376e]" />
+          </div>
+          <div className="text-[13px] font-medium text-neutral-700 mb-1">AI Language Tutor</div>
+          <div className="text-[12px] text-neutral-400 text-center max-w-xs">Ask anything about {language} — grammar rules, vocab, pronunciation, how to say something, cultural context</div>
+          <div className="mt-4 flex flex-wrap gap-2 justify-center">
+            {[`How do I say "I don't understand" in ${language}?`, `Explain the word order in ${language}`, `What are the most useful ${language} phrases for a beginner?`].map(s => (
+              <button key={s} onClick={() => { setInput(s); }} className="text-[11px] border border-neutral-200 rounded-full px-3 py-1.5 text-neutral-500 hover:border-[#d4376e] hover:text-[#d4376e] transition-colors">{s}</button>
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="flex-1 overflow-y-auto space-y-3 px-0 pb-2">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex gap-2.5 ${m.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+            <div className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5 ${m.role === 'assistant' ? 'bg-[#fde8ef]' : 'bg-neutral-100'}`}>
+              {m.role === 'assistant' ? <Bot size={12} className="text-[#d4376e]" /> : <UserIcon size={12} className="text-neutral-400" />}
+            </div>
+            <div className={`max-w-[80%] rounded-xl px-3 py-2 text-[12.5px] leading-relaxed whitespace-pre-wrap ${m.role === 'assistant' ? 'bg-white border border-neutral-100 text-neutral-700' : 'bg-[#d4376e] text-white'}`}>
+              {m.content}
+            </div>
+          </div>
+        ))}
+        {loading && (
+          <div className="flex gap-2.5">
+            <div className="w-6 h-6 rounded-full bg-[#fde8ef] flex-shrink-0 flex items-center justify-center">
+              <Bot size={12} className="text-[#d4376e]" />
+            </div>
+            <div className="bg-white border border-neutral-100 rounded-xl px-3 py-2">
+              <Loader2 size={12} className="text-[#d4376e] animate-spin" />
+            </div>
+          </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+      <div className="pt-3 border-t border-neutral-100 mt-auto">
+        <div className="flex gap-2">
+          <input
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), send())}
+            placeholder={`Ask about ${language}…`}
+            className="flex-1 border border-neutral-200 rounded-xl px-3 py-2 text-[13px] outline-none focus:border-[#d4376e] bg-white"
+          />
+          <button
+            onClick={send}
+            disabled={!input.trim() || loading}
+            className="w-9 h-9 rounded-xl bg-[#d4376e] hover:bg-[#bb2d5e] disabled:opacity-40 flex items-center justify-center transition-colors flex-shrink-0"
+          >
+            <Send size={14} className="text-white" />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function LessonPage({ params, searchParams }: { params: Promise<{ lang: string }>; searchParams: Promise<{ level?: string }> }) {
   const { lang } = use(params)
   const { level: startLevel } = use(searchParams)
@@ -413,6 +516,9 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
               {label}
             </button>
           ))}
+          <button onClick={() => setTab('ai')} className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-semibold transition-colors whitespace-nowrap min-h-[40px] ${tab === 'ai' ? 'bg-[#fde8ef] text-[#d4376e]' : 'text-neutral-400 hover:text-neutral-600'}`}>
+            <Bot size={13} /> AI Tutor
+          </button>
         </div>
 
         {/* Content */}
@@ -506,6 +612,10 @@ export default function LessonPage({ params, searchParams }: { params: Promise<{
             voice={voice}
             onAdvance={levelIdx < availLevels.length - 1 ? advanceLevel : undefined}
           />
+        )}
+
+        {tab === 'ai' && (
+          <AiTutor language={language.name} languageCode={lang} level={availLevels[levelIdx]} />
         )}
       </div>
     </Shell>
