@@ -32,6 +32,12 @@ const LEARNING_PATH: PathSection[] = [
     courses: ['cc-restapi', 'cc-postgres', 'cc-supabase', 'cc-payload'],
   },
   {
+    label: 'Cloud & Infrastructure',
+    sublabel: 'AWS from first principles — the cloud mental model every engineer needs',
+    color: '#ea580c',
+    courses: ['cc-aws'],
+  },
+  {
     label: 'Ship It',
     sublabel: 'After the web dev stack — wire everything together and deploy to production',
     color: '#059669',

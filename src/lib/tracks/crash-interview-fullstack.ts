@@ -2310,4 +2310,183 @@ console.log(JSON.stringify(audit, null, 2))`,
       hints: ['RLS check: loop tables, flag any with hasRls: false', 'Service role key: look for NEXT_PUBLIC_ prefix combined with SERVICE_ROLE or ADMIN in the name', 'Server Action scope: any destructive action without hasUserIdFilter: true is a finding'],
     },
   },
+  {
+    id: 'cc-interview-fs-m15',
+    track: 'crash',
+    crashId: 'cc-interview-fullstack',
+    crashTitle: 'Full Stack Interview Prep',
+    title: 'Deploying to the Cloud — AWS for Full-Stack Engineers',
+    subtitle: 'S3 + CloudFront for static assets, Lambda for API routes, pre-signed URLs for uploads, and the cloud deployment questions full-stack interviewers ask.',
+    level: 'PhD', xp: 220, duration: 18, module: 15, certArea: 'Full Stack Interview Prep',
+    moduleObjective: 'Explain how to deploy a Next.js app with cloud-native asset delivery, implement direct-to-S3 file uploads using pre-signed URLs, architect a serverless API layer, and answer cloud cost and scaling questions that senior full-stack interviewers ask.',
+    courseObjective: 'Interview-ready on the full stack from UI architecture and state management to database design, auth, real-time features, and cloud deployment.',
+    keyTerms: [
+      { term: 'Pre-signed URL', definition: 'A time-limited URL generated server-side that lets a client upload directly to S3 without exposing AWS credentials. The server signs the URL with its IAM credentials; the client uses it for a single PUT request. Expires in N seconds.' },
+      { term: 'CloudFront CDN', definition: 'AWS\'s global content delivery network. Caches S3 objects at 400+ edge locations worldwide so users download from the nearest server. Reduces latency and S3 egress costs dramatically. Required for any production static asset strategy.' },
+      { term: 'Edge Function', definition: 'A lightweight function that runs at CDN edge nodes (CloudFront Functions, Vercel Edge, Cloudflare Workers). Used for auth redirects, A/B testing, and header manipulation — executes in <1ms globally but has limited runtime APIs.' },
+      { term: 'Object Storage vs Block Storage', definition: 'S3 is object storage — flat key-value, infinite scale, HTTP access, no random writes. EBS is block storage — behaves like a disk, low-latency random reads/writes, attached to one EC2 instance. S3 for files/assets; EBS for databases and OS volumes.' },
+      { term: 'Cache-Control Header', definition: 'HTTP header that tells browsers and CDNs how long to cache a response. `Cache-Control: public, max-age=31536000, immutable` on content-hashed assets (JS/CSS bundles) means browsers cache forever; `no-cache` on HTML means always revalidate.' },
+      { term: 'Multipart Upload', definition: 'S3 feature for uploading large files (>100MB) as parallel chunks. Each part is uploaded independently and assembled server-side. Required for files over 5GB; recommended over 100MB for reliability. AWS SDK handles it automatically via the managed upload API.' },
+    ],
+    content: `## Deploying to the Cloud — AWS for Full-Stack Engineers
+
+### Why Full-Stack Engineers Get Asked Cloud Questions
+
+In 2025, "full-stack" includes deployment. A senior full-stack engineer owns the feature from the React component to the CDN edge — interviewers test whether you understand how your code reaches users in production and what happens when it doesn't.
+
+---
+
+### Deploying a Next.js App — The Options
+
+**Vercel (recommended for most teams)**
+- Handles SSR, ISR, edge functions, CDN automatically
+- Zero config for Next.js — push to main, it deploys
+- Trade-off: costs more at scale, less control over infrastructure
+
+**AWS Amplify / Elastic Beanstalk**
+- Managed AWS hosting with more infrastructure control
+- Connects to other AWS services (Cognito, RDS, SQS) with less friction
+- Trade-off: more configuration, steeper learning curve
+
+**Self-hosted on ECS + CloudFront**
+- Docker container running \`next start\` behind a load balancer
+- CloudFront in front for CDN and SSL termination
+- Maximum control, maximum work — justified for large teams with DevOps
+
+**Static export + S3 + CloudFront**
+- Only works if the entire app can be \`output: 'export'\` (no SSR/ISR)
+- Cheapest option by far — S3 costs pennies; CloudFront handles global delivery
+- Use for: marketing sites, documentation, pure SPAs
+
+**The interview answer:**
+> "For a typical product app I default to Vercel for simplicity and Next.js optimization out of the box. If we're already AWS-heavy or have compliance requirements that demand more infrastructure control, I'd containerize with Docker and run on ECS with CloudFront in front. The key factor is how much the team wants to own."
+
+---
+
+### File Uploads — Pre-signed URLs (The Right Pattern)
+
+**Never upload files through your server.** This is the most common mistake interviewers probe for.
+
+**Why not through the server:**
+- Files have to travel server → your API → S3 (double the bandwidth, double the latency)
+- Server memory is tied up buffering large files
+- Lambda has a 6MB payload limit — a 50MB video crashes it
+
+**The correct pattern — direct-to-S3:**
+\`\`\`
+1. Client requests upload URL:
+   POST /api/upload-url { filename, contentType }
+
+2. Server generates pre-signed URL:
+   const url = await s3.getSignedUrlPromise('putObject', {
+     Bucket: 'my-uploads',
+     Key: \`uploads/\${userId}/\${uuid()}-\${filename}\`,
+     ContentType: contentType,
+     Expires: 300, // 5 minutes
+   })
+   return { url, key }
+
+3. Client uploads directly to S3:
+   await fetch(url, { method: 'PUT', body: file, headers: { 'Content-Type': contentType } })
+
+4. Client notifies server of completion:
+   POST /api/upload-complete { key }
+   Server verifies the object exists in S3, saves key to DB
+\`\`\`
+
+**Security notes:**
+- Scope the S3 bucket policy to only allow PUT on the \`uploads/\` prefix
+- The key should include the userId so users can't overwrite each other's files
+- Validate contentType server-side — don't trust the client
+- Set a maximum file size using the \`content-length-range\` condition in the pre-signed URL
+
+---
+
+### Static Assets — S3 + CloudFront
+
+Your images, videos, and user-uploaded files should be served via CloudFront, never directly from S3.
+
+**Why CloudFront over direct S3:**
+- S3 is in one region — CloudFront has 400+ edge locations globally
+- S3 egress is expensive ($0.09/GB) — CloudFront has lower egress rates and caches reduce origin requests by 90%+
+- CloudFront can add signed URLs for private content, custom headers, and Lambda@Edge for image transforms
+
+**Cache-Control strategy:**
+\`\`\`
+Content-hashed bundles (app-abc123.js):  Cache-Control: public, max-age=31536000, immutable
+HTML pages:                               Cache-Control: no-cache (always revalidate)
+User uploads (images, videos):           Cache-Control: public, max-age=86400
+Private user files:                       Use CloudFront signed URLs, no public cache
+\`\`\`
+
+---
+
+### Serverless API Architecture
+
+When your full-stack app scales beyond a single server, Lambda + API Gateway is the serverless answer.
+
+**Pattern:**
+\`\`\`
+Client → CloudFront → API Gateway → Lambda → RDS (via RDS Proxy)
+\`\`\`
+
+**Trade-offs to know:**
+- Cold starts: Lambda takes 100ms–2s on first invocation after idle — not acceptable for user-facing auth endpoints. Use Provisioned Concurrency on critical paths.
+- Connection limits: Lambda creates a new DB connection per invocation. At 1000 concurrent Lambda invocations, you hit RDS connection limits. Add RDS Proxy.
+- Cost: Lambda is cheaper than ECS at low traffic, more expensive at high sustained traffic. Break-even is roughly 1M requests/month at medium duration.
+
+---
+
+### The Full-Stack Cloud Stack in One Answer
+
+When asked "how would you deploy this app to production?":
+
+> "I'd deploy the Next.js app to Vercel (or ECS if we're AWS-native). Static assets and user uploads go to S3, served via CloudFront with aggressive Cache-Control on content-hashed bundles. For file uploads, the client gets a pre-signed URL from our API and uploads directly to S3 — no files through the server. Background jobs (image processing, emails) go through SQS to Lambda workers. Database is RDS Postgres in a private VPC, with RDS Proxy in front to handle Lambda connection bursts. CloudWatch alarms on error rate and p99 latency with PagerDuty for on-call."`,
+    quiz: [
+      {
+        q: 'A user uploads a profile photo. Your current implementation sends the file to your Next.js API route, which forwards it to S3. What is the problem and fix?',
+        options: [
+          'Next.js API routes can\'t handle binary data — use a separate Express server',
+          'The file travels through your server twice (client → server → S3), wasting bandwidth and memory. Fix: generate a pre-signed S3 URL server-side and have the client upload directly to S3.',
+          'S3 doesn\'t accept uploads from browsers — use a Lambda intermediary',
+          'There\'s no problem — this is the standard pattern',
+        ],
+        correct: 1,
+        explanation: 'Proxying uploads through your server doubles network cost, ties up server memory, and hits Lambda\'s 6MB payload limit for large files. The correct pattern: server generates a pre-signed PUT URL (time-limited, scoped to one key), client uploads directly to S3, client notifies server when complete. The server never handles the file bytes.',
+      },
+      {
+        q: 'Your Next.js app serves the same hero image on every page load. 80% of your users are in Europe but your S3 bucket is in us-east-1. What do you add?',
+        options: [
+          'Copy the S3 bucket to a eu-west-1 region and update image URLs',
+          'CloudFront CDN in front of S3 — it caches the image at edge nodes globally so European users download from nearby edge servers',
+          'Use a larger EC2 instance to serve static files faster',
+          'Enable S3 Transfer Acceleration',
+        ],
+        correct: 1,
+        explanation: 'CloudFront has 400+ edge locations. After the first European user downloads the image (cache miss → S3), it\'s cached at that edge node. Every subsequent European user gets it from the edge in ~5ms instead of ~180ms round-trip to Virginia. Transfer Acceleration helps uploads to S3, not downloads from S3 to end users.',
+      },
+      {
+        q: 'Your Lambda API is throwing "too many connections" errors on RDS Postgres during traffic spikes. What is the correct fix?',
+        options: [
+          'Increase Lambda Reserved Concurrency to unlimited',
+          'Switch from RDS to DynamoDB — it scales automatically',
+          'Add RDS Proxy — it maintains a connection pool and multiplexes many Lambda invocations over fewer database connections',
+          'Increase RDS max_connections setting in the parameter group',
+        ],
+        correct: 2,
+        explanation: 'Lambda creates a new database connection on every cold start. At 500 concurrent invocations you have 500 connections — RDS hits its limit and rejects new ones. RDS Proxy solves this: it maintains a pool of N connections to RDS and routes all Lambda requests through it. Increasing max_connections is a temporary fix that increases RDS memory pressure; RDS Proxy is the architectural solution.',
+      },
+      {
+        q: 'You need to serve user-uploaded medical documents that should only be accessible to the document owner. CloudFront is your CDN. What is the correct approach?',
+        options: [
+          'Make the S3 bucket public but use obscure, random file keys so documents are hard to guess',
+          'Store documents in a private S3 bucket and generate CloudFront signed URLs on demand — time-limited URLs that authenticate the specific user\'s access',
+          'Serve documents directly from your API server which checks auth before streaming the file',
+          'Use S3 bucket policies scoped by IP address',
+        ],
+        correct: 1,
+        explanation: 'Signed URLs are the cloud-native solution for authenticated CDN content. The server checks auth, generates a short-lived signed URL (e.g., 60 seconds) for that specific CloudFront path, and returns it to the client. The client fetches directly from CDN — fast global delivery with access control. Option C (streaming through your server) works but bypasses CDN and doesn\'t scale.',
+      },
+    ],
+  },
 ]

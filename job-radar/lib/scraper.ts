@@ -283,6 +283,122 @@ export async function scrapeGreenhouse(): Promise<RawJob[]> {
   return all
 }
 
+// ── We Work Remotely (RSS feed) ───────────────────────────────────────────────
+export async function scrapeWeWorkRemotely(): Promise<RawJob[]> {
+  const categories = [
+    'remote-programming-jobs',
+    'remote-devops-sysadmin-jobs',
+    'remote-design-jobs',
+    'remote-product-jobs',
+    'remote-marketing-jobs',
+    'remote-customer-support-jobs',
+  ]
+  const seen = new Set<string>()
+  const all: RawJob[] = []
+  for (const cat of categories) {
+    try {
+      const res = await fetch(`https://weworkremotely.com/categories/${cat}.rss`, {
+        headers: { 'User-Agent': 'JobRadar/1.0 (jordanroad631@gmail.com)' }
+      })
+      if (!res.ok) continue
+      const xml = await res.text()
+      const items = xml.match(/<item>([\s\S]*?)<\/item>/g) ?? []
+      for (const item of items) {
+        const get = (tag: string) => {
+          const m = item.match(new RegExp(`<${tag}(?:[^>]*)><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>|<${tag}(?:[^>]*)>([\\s\\S]*?)</${tag}>`))
+          return m ? (m[1] ?? m[2] ?? '').trim() : ''
+        }
+        const link = get('link') || ((item.match(/<link>([^<]+)<\/link>/) ?? [])[1]?.trim() ?? '')
+        const guid = get('guid') || link
+        if (!guid || seen.has(guid)) continue
+        seen.add(guid)
+        const title = get('title')
+        const company = get('region') || '' // WWR puts company in <region> sometimes; fallback below
+        // title format: "Company: Job Title"
+        const colonIdx = title.indexOf(':')
+        const companyName = colonIdx > 0 ? title.slice(0, colonIdx).trim() : company
+        const jobTitle = colonIdx > 0 ? title.slice(colonIdx + 1).trim() : title
+        all.push({
+          external_id: `wwr-${Buffer.from(guid).toString('base64url')}`,
+          title: jobTitle,
+          company: companyName,
+          location: 'Remote / Worldwide',
+          url: link,
+          description: get('description').replace(/<[^>]+>/g, ' ').slice(0, 3000),
+          tags: [],
+          salary_min: null, salary_max: null, currency: null,
+          job_type: 'remote',
+          source: 'weworkremotely',
+          posted_at: get('pubDate') ? new Date(get('pubDate')).toISOString() : new Date().toISOString(),
+        })
+      }
+    } catch (_) { /* skip */ }
+  }
+  return all
+}
+
+// ── Himalayas API ─────────────────────────────────────────────────────────────
+export async function scrapeHimalayas(): Promise<RawJob[]> {
+  try {
+    const res = await fetch('https://himalayas.app/jobs/api?limit=100', {
+      headers: { 'User-Agent': 'JobRadar/1.0 (jordanroad631@gmail.com)' }
+    })
+    if (!res.ok) return []
+    const { jobs } = await res.json()
+    return (jobs ?? []).map((j: any): RawJob => ({
+      external_id: `himalayas-${j.slug ?? j.id}`,
+      title: j.title ?? '',
+      company: j.companyName ?? j.company?.name ?? '',
+      location: j.locationRestrictions?.join(', ') ?? 'Worldwide',
+      url: j.applicationLink ?? `https://himalayas.app/jobs/${j.slug}`,
+      description: `${j.content ?? j.description ?? ''}`.slice(0, 3000),
+      tags: j.categories ?? [],
+      salary_min: j.salaryMin ?? null,
+      salary_max: j.salaryMax ?? null,
+      currency: j.salaryCurrency ?? null,
+      job_type: 'remote',
+      source: 'himalayas',
+      posted_at: j.createdAt ?? new Date().toISOString(),
+    }))
+  } catch (_) { return [] }
+}
+
+// ── Jobspresso (RSS feed) ─────────────────────────────────────────────────────
+export async function scrapeJobspresso(): Promise<RawJob[]> {
+  try {
+    const res = await fetch('https://jobspresso.co/feed/', {
+      headers: { 'User-Agent': 'JobRadar/1.0 (jordanroad631@gmail.com)' }
+    })
+    if (!res.ok) return []
+    const xml = await res.text()
+    const items = xml.match(/<item>([\s\S]*?)<\/item>/g) ?? []
+    const all: RawJob[] = []
+    for (const item of items) {
+      const get = (tag: string) => {
+        const m = item.match(new RegExp(`<${tag}(?:[^>]*)><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>|<${tag}(?:[^>]*)>([\\s\\S]*?)</${tag}>`))
+        return m ? (m[1] ?? m[2] ?? '').trim() : ''
+      }
+      const link = get('link') || ((item.match(/<link>([^<]+)<\/link>/) ?? [])[1]?.trim() ?? '')
+      const guid = get('guid') || link
+      if (!guid) continue
+      all.push({
+        external_id: `jobspresso-${Buffer.from(guid).toString('base64url')}`,
+        title: get('title'),
+        company: get('creator') || get('author') || '',
+        location: 'Remote',
+        url: link,
+        description: get('description').replace(/<[^>]+>/g, ' ').slice(0, 3000),
+        tags: [],
+        salary_min: null, salary_max: null, currency: null,
+        job_type: 'remote',
+        source: 'jobspresso',
+        posted_at: get('pubDate') ? new Date(get('pubDate')).toISOString() : new Date().toISOString(),
+      })
+    }
+    return all
+  } catch (_) { return [] }
+}
+
 // ── Score and filter ─────────────────────────────────────────────────────────
 export function enrichJobs(jobs: RawJob[]) {
   return jobs.map(job => {
