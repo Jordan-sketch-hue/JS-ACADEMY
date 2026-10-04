@@ -308,7 +308,7 @@ export async function scrapeWeWorkRemotely(): Promise<RawJob[]> {
           const m = item.match(new RegExp(`<${tag}(?:[^>]*)><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>|<${tag}(?:[^>]*)>([\\s\\S]*?)</${tag}>`))
           return m ? (m[1] ?? m[2] ?? '').trim() : ''
         }
-        const link = get('link') || (item.match(/<link>([^<]+)<\/link>/) ?? [])[1]?.trim() ?? ''
+        const link = get('link') || ((item.match(/<link>([^<]+)<\/link>/) ?? [])[1]?.trim() ?? '')
         const guid = get('guid') || link
         if (!guid || seen.has(guid)) continue
         seen.add(guid)
@@ -378,7 +378,7 @@ export async function scrapeJobspresso(): Promise<RawJob[]> {
         const m = item.match(new RegExp(`<${tag}(?:[^>]*)><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>|<${tag}(?:[^>]*)>([\\s\\S]*?)</${tag}>`))
         return m ? (m[1] ?? m[2] ?? '').trim() : ''
       }
-      const link = get('link') || (item.match(/<link>([^<]+)<\/link>/) ?? [])[1]?.trim() ?? ''
+      const link = get('link') || ((item.match(/<link>([^<]+)<\/link>/) ?? [])[1]?.trim() ?? '')
       const guid = get('guid') || link
       if (!guid) continue
       all.push({
