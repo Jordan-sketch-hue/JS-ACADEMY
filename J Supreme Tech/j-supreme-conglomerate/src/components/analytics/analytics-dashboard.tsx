@@ -748,7 +748,7 @@ export function AnalyticsDashboard({
   range: Range;
 }) {
   // For "combined" view: merge page views + events from both sources
-  const merged: AnalyticsData | null =
+  const merged: AnalyticsData | null = (
     site === "combined" && data && commsData
       ? {
           ...data,
@@ -773,10 +773,11 @@ export function AnalyticsDashboard({
             .slice(0, 50),
         }
       : site === "combined"
-        ? data ?? commsData
+        ? (data ?? commsData ?? null)
         : site === "comms"
-          ? commsData
-          : data;
+          ? (commsData ?? null)
+          : data
+  ) ?? null;
 
   return (
     <Suspense>

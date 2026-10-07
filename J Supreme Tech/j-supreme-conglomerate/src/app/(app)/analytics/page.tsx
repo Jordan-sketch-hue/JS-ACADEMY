@@ -94,7 +94,7 @@ async function fetchCommsAnalytics(range: Range) {
 
   return {
     range,
-    site: "comms",
+    site: "comms" as const,
     totalEvents: rows.length,
     uniqueVisitorsToday,
     pageViews: rows.filter((e: { event: string }) => e.event === "page_view").length,
@@ -138,7 +138,7 @@ export default async function AnalyticsPage({
 
   return (
     <AnalyticsDashboard
-      data={site === "comms" ? commsData : jstData}
+      data={site === "comms" ? commsData ?? null : jstData ?? null}
       commsData={commsData}
       site={site}
       range={range}
