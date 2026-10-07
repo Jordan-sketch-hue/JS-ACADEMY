@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -247,6 +247,7 @@ export function TodosClient({
   }, [todos]);
 
   const refresh = () => router.refresh();
+  const listScrollRef = useRef<HTMLDivElement>(null);
 
   const onCreateTodo = async () => {
     if (!newTitle.trim()) return;
@@ -275,24 +276,44 @@ export function TodosClient({
       setFilter("all");
       return;
     }
-    const res = await createTodoAction({
+    const now = new Date().toISOString();
+    const pr = Math.min(4, Math.max(1, Number(newPriority) || 2));
+    const tempId = `temp_${crypto.randomUUID()}`;
+    const optimisticRow: Todo = {
+      id: tempId,
+      owner_clerk_id: ownerId,
+      category_id: cat,
       title: newTitle.trim(),
       notes: newNotes.trim() || null,
-      category_id: cat,
+      done: false,
       due_date: newDue || null,
-      priority: Number(newPriority) || 2,
-    });
-    if (!res.ok) {
-      setFormError(res.error);
-      return;
-    }
+      priority: pr,
+      created_at: now,
+      updated_at: now,
+    };
+    setTodos((prev) => [optimisticRow, ...prev]);
     setFormError(null);
     setNewTitle("");
     setNewNotes("");
     setNewDue("");
     setNewPriority("2");
     setFilter("all");
-    refresh();
+    if (listScrollRef.current) listScrollRef.current.scrollTop = 0;
+    const res = await createTodoAction({
+      title: optimisticRow.title,
+      notes: optimisticRow.notes,
+      category_id: cat,
+      due_date: newDue || null,
+      priority: pr,
+    });
+    if (!res.ok) {
+      setTodos((prev) => prev.filter((t) => t.id !== tempId));
+      setFormError(res.error);
+      return;
+    }
+    if (res.todo) {
+      setTodos((prev) => prev.map((t) => t.id === tempId ? res.todo! : t));
+    }
   };
 
   const onToggle = async (id: string) => {
@@ -477,7 +498,7 @@ export function TodosClient({
                   ))}
                 </TabsList>
               </div>
-              <div className="mt-0 outline-none max-h-[62vh] overflow-y-auto pr-1" role="tabpanel">
+              <div ref={listScrollRef} className="mt-0 outline-none max-h-[62vh] overflow-y-auto pr-1" role="tabpanel">
                 <Separator className="mb-4 bg-border/50" />
                 <ul className="flex flex-col gap-2">
                   <AnimatePresence initial={false}>
