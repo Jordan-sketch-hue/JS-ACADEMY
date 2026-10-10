@@ -26,13 +26,15 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  await sb.from("ops_approvals").insert({
-    ticket_id: ticketId,
-    action,
-    actor: userId,
-    channel: "pwa",
-    created_at: new Date().toISOString(),
-  }).then(() => null).catch(() => null);
+  try {
+    await sb.from("ops_approvals").insert({
+      ticket_id: ticketId,
+      action,
+      actor: userId,
+      channel: "pwa",
+      created_at: new Date().toISOString(),
+    });
+  } catch { /* non-critical audit log */ }
 
   return NextResponse.json({ ok: true, state: newState });
 }
