@@ -11,14 +11,18 @@ export async function POST(req: NextRequest) {
   if (!subscription?.endpoint)
     return NextResponse.json({ error: "Invalid subscription" }, { status: 400 });
 
+  const p256dh: string = subscription.keys?.p256dh ?? "";
+  const auth: string = subscription.keys?.auth ?? "";
+
   const sb = getServiceSupabase();
   if (!sb)
     return NextResponse.json({ error: "DB unavailable" }, { status: 503 });
 
   const { error } = await sb.from("push_subscriptions").upsert(
     {
-      user_id: userId,
       endpoint: subscription.endpoint,
+      p256dh,
+      auth,
       subscription,
       active: true,
       updated_at: new Date().toISOString(),
