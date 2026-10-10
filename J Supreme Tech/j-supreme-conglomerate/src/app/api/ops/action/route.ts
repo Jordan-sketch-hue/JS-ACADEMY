@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     actor: userId,
     channel: "pwa",
     created_at: new Date().toISOString(),
-  }).throwOnError().catch(() => null);
+  }).then(() => null).catch(() => null);
 
   return NextResponse.json({ ok: true, state: newState });
 }
