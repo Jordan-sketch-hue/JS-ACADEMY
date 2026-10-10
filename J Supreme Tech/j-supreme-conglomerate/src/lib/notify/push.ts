@@ -48,8 +48,12 @@ export async function sendPushToAll(payload: PushPayload): Promise<void> {
   const expired: string[] = [];
   for (let i = 0; i < results.length; i++) {
     const r = results[i];
-    if (r.status === "rejected") {
-      const err = r.reason as { statusCode?: number };
+    const ep = subs[i].endpoint.slice(-20);
+    if (r.status === "fulfilled") {
+      console.log(`[push] OK endpoint=...${ep} status=${r.value.statusCode}`);
+    } else {
+      const err = r.reason as { statusCode?: number; body?: string };
+      console.error(`[push] FAIL endpoint=...${ep} status=${err?.statusCode} body=${JSON.stringify(err?.body)}`);
       if (err?.statusCode === 410 || err?.statusCode === 404) {
         expired.push(subs[i].endpoint);
       }

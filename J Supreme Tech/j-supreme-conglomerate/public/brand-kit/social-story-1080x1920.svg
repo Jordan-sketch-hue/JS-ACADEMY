@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920" role="img" aria-label="Story shell">
+  <defs>
+    <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#sg)"/>
+  <rect x="64" y="320" width="952" height="1200" rx="40" fill="none" stroke="#a5b4fc" stroke-width="3" opacity="0.55"/>
+  <text x="540" y="260" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="36" fill="#e0e7ff">Story · 1080 × 1920</text>
+  <text x="540" y="1480" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="26" fill="#c7d2fe" opacity="0.9">CTA / link in bio area</text>
+</svg>

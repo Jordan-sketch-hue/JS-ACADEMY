@@ -1,0 +1,249 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ---- Light mono (premium black & white) — default ---- */
+  :root,
+  [data-theme="light"] {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 12%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 0 0% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 89%;
+    --ring: 0 0% 55%;
+    --radius: 0.75rem;
+    --chart-1: 0 0% 15%;
+    --chart-2: 0 0% 34%;
+    --chart-3: 0 0% 50%;
+    --chart-4: 0 0% 66%;
+    --chart-5: 0 0% 80%;
+    --positive: 0 0% 28%;
+    --warning: 0 0% 12%;
+    --negative: 0 0% 18%;
+    --info: 0 0% 45%;
+  }
+
+  /* ---- Dark mono (premium charcoal & white) ---- */
+  [data-theme="dark"] {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 62%;
+    --accent: 0 0% 72%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 70%;
+    --radius: 0.75rem;
+    --chart-1: 0 0% 92%;
+    --chart-2: 0 0% 74%;
+    --chart-3: 0 0% 58%;
+    --chart-4: 0 0% 42%;
+    --chart-5: 0 0% 30%;
+    --positive: 0 0% 82%;
+    --warning: 0 0% 96%;
+    --negative: 0 0% 78%;
+    --info: 0 0% 64%;
+  }
+
+  /* ---- Color (electric violet + teal aurora) ---- */
+  [data-theme="color"] {
+    --background: 250 28% 6%;
+    --foreground: 250 20% 97%;
+    --card: 250 24% 9%;
+    --card-foreground: 250 20% 97%;
+    --popover: 250 26% 8%;
+    --popover-foreground: 250 20% 97%;
+    --primary: 256 92% 68%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 250 18% 16%;
+    --secondary-foreground: 250 20% 95%;
+    --muted: 250 16% 16%;
+    --muted-foreground: 250 12% 64%;
+    --accent: 174 84% 50%;
+    --accent-foreground: 250 45% 8%;
+    --destructive: 352 80% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 250 16% 19%;
+    --input: 250 16% 19%;
+    --ring: 256 92% 68%;
+    --radius: 0.8rem;
+    --chart-1: 256 92% 68%;
+    --chart-2: 174 84% 50%;
+    --chart-3: 150 80% 50%;
+    --chart-4: 38 95% 58%;
+    --chart-5: 330 85% 64%;
+    --positive: 150 70% 48%;
+    --warning: 38 95% 56%;
+    --negative: 352 80% 62%;
+    --info: 200 90% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    min-height: 100vh;
+  }
+  :root body,
+  [data-theme="light"] body {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(0 0% 0% / 0.04), transparent),
+      linear-gradient(180deg, hsl(0 0% 99%) 0%, hsl(0 0% 97%) 100%);
+    background-attachment: fixed;
+  }
+  [data-theme="dark"] body {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(0 0% 100% / 0.05), transparent),
+      linear-gradient(180deg, hsl(0 0% 6%) 0%, hsl(0 0% 8%) 100%);
+    background-attachment: fixed;
+  }
+  [data-theme="color"] body {
+    background-image:
+      radial-gradient(ellipse 100% 70% at 12% -10%, hsl(256 92% 42% / 0.38), transparent),
+      radial-gradient(ellipse 90% 60% at 100% 0%, hsl(174 84% 36% / 0.18), transparent),
+      radial-gradient(ellipse 90% 80% at 50% 120%, hsl(330 85% 48% / 0.10), transparent),
+      linear-gradient(180deg, hsl(250 30% 5%) 0%, hsl(250 26% 7%) 100%);
+    background-attachment: fixed;
+  }
+}
+
+.bg-grid {
+  background-size: 48px 48px;
+  background-image: linear-gradient(
+      to right,
+      hsl(var(--border) / 0.35) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, hsl(var(--border) / 0.35) 1px, transparent 1px);
+}
+
+.glass-panel {
+  @apply border border-white/[0.06] bg-card/60 backdrop-blur-xl shadow-glass;
+}
+
+@media print {
+  @page {
+    margin: 0.5in 0.5in;
+  }
+
+  html,
+  body {
+    background: white !important;
+    background-image: none !important;
+    color: #0a0a0a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Force every container that drives the printed invoice to render on white */
+  main,
+  form,
+  .invoice-document,
+  .invoice-print-summary,
+  .invoice-print-summary * {
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+
+  .invoice-print-summary {
+    color: #0a0a0a !important;
+  }
+
+  .invoice-print-summary .invoice-total-bar,
+  .invoice-document .invoice-total-bar {
+    background: #0a0a0a !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .invoice-print-summary .invoice-total-bar *,
+  .invoice-document .invoice-total-bar * {
+    color: #ffffff !important;
+  }
+  .invoice-print-summary .invoice-total-bar--paid,
+  .invoice-document .invoice-total-bar--paid {
+    background: #047857 !important;
+    color: #ffffff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .bg-grid {
+    background-image: none !important;
+  }
+
+  /* Neutralize input/button chrome inside the printed invoice — show values as plain text */
+  .invoice-document input,
+  .invoice-document button[role="combobox"],
+  .invoice-document textarea {
+    border: 0 !important;
+    background: transparent !important;
+    color: #0a0a0a !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    font: inherit !important;
+    resize: none !important;
+  }
+
+  .invoice-document button[role="combobox"] svg {
+    display: none !important;
+  }
+
+  .invoice-document table {
+    font-size: 12px;
+  }
+
+  .invoice-document thead th {
+    background: #f4f4f5 !important;
+    color: #3f3f46 !important;
+    font-weight: 600;
+    border-bottom: 1px solid #d4d4d8 !important;
+  }
+
+  .invoice-document tbody tr {
+    border-top: 1px solid #e4e4e7 !important;
+  }
+
+  .invoice-document tbody td {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .invoice-document .invoice-line-rate-cell::before {
+    content: attr(data-currency) " ";
+    color: #71717a;
+    margin-right: 2px;
+  }
+}

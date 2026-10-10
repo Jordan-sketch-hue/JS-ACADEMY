@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200" role="img" aria-label="Brand guidelines one-pager">
+  <rect width="800" height="1200" fill="#fdf4ff"/>
+  <text x="48" y="96" font-family="ui-sans-serif, system-ui, sans-serif" font-size="40" font-weight="700" fill="#4c1d95">J Supreme  voice &amp; visuals</text>
+  <text x="48" y="150" font-family="ui-sans-serif, system-ui, sans-serif" font-size="18" fill="#6b21a8">Cheat sheet · edit freely in Illustrator</text>
+  <rect x="48" y="200" width="704" height="120" rx="12" fill="#7c3aed"/>
+  <text x="72" y="268" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22" fill="#faf5ff">Primary gradient · #7c3aed ’ #06b6d4</text>
+  <rect x="48" y="360" width="220" height="220" rx="16" fill="#0f172a"/>
+  <rect x="290" y="360" width="220" height="220" rx="16" fill="#e0f2fe"/>
+  <rect x="532" y="360" width="220" height="220" rx="16" fill="#ecfccb"/>
+  <text x="48" y="640" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="600" fill="#312e81">Voice</text>
+  <text x="48" y="680" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" fill="#4338ca">Direct · operator-first · no hype adjectives.</text>
+  <text x="48" y="720" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" fill="#4338ca">Prefer bullets, name the next action, cite the screen/route.</text>
+  <text x="48" y="800" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="600" fill="#312e81">Type rhythm</text>
+  <text x="48" y="840" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" fill="#4338ca">H1 tight tracking · body 1618px · mono for keys/env names.</text>
+  <text x="48" y="920" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="600" fill="#312e81">Partners</text>
+  <text x="48" y="960" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" fill="#4338ca">Adobe CC Libraries for shared color + type tokens.</text>
+  <text x="48" y="1000" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" fill="#4338ca">Ship finals to Supabase-backed Assets when wiring storage.</text>
+</svg>

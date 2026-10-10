@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://island-rise-events.vercel.app/sitemap.xml
