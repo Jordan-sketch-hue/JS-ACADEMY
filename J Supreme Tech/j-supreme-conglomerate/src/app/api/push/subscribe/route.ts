@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
 
   const { error } = await sb.from("push_subscriptions").upsert(
     {
+      user_id: userId,
       endpoint: subscription.endpoint,
       subscription,
       active: true,
