@@ -138,6 +138,7 @@ const navSections: { heading: string; items: NavItem[] }[] = [
     heading: "Jarvis AI",
     items: [
       { href: "/jarvis", label: "Jarvis Hub", icon: Workflow },
+      { href: "/jarvis/ops", label: "Ops Board", icon: ClipboardList },
       { href: "/jarvis/angel", label: "Angel — Inbox", icon: MessagesSquare },
       { href: "/jarvis/whatsapp", label: "WhatsApp", icon: MessageCircle },
       // Direct tab links — a server redirect to the same pathname with only a
