@@ -78,64 +78,31 @@ type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const navSections: { heading: string; items: NavItem[] }[] = [
   {
-    heading: "Operate",
+    heading: "Command",
     items: [
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { href: "/backoffice", label: "Back office", icon: Building2 },
+      { href: "/backoffice", label: "Back Office", icon: Building2 },
       { href: "/todos", label: "Tasks", icon: ClipboardList },
       { href: "/reports", label: "EOD Reports", icon: ScrollText },
+      { href: "/daily-brief", label: "Daily Brief", icon: Newspaper },
     ],
   },
   {
-    heading: "Vision",
-    items: [
-      { href: "/vision", label: "Vision Board", icon: Compass },
-      { href: "/todos/learning", label: "Learning Roadmap", icon: GraduationCap },
-    ],
-  },
-  {
-    heading: "Supreme Suite",
-    items: [{ href: "/suite", label: "Suite Control", icon: Boxes }],
-  },
-  {
-    heading: "Cyber Defense",
-    items: [
-      { href: "/cyber", label: "Cyber Command", icon: ShieldCheck },
-      { href: "/cyber/fleet", label: "Fleet Security Scan", icon: Radar },
-      { href: "/cyber/playbooks", label: "IR Playbooks", icon: ShieldAlert },
-      { href: "/cyber/compliance", label: "Compliance & Audit", icon: ClipboardCheck },
-    ],
-  },
-  {
-    heading: "Clients & Money",
+    heading: "Money",
     items: [
       { href: "/crm", label: "CRM", icon: Users },
       { href: "/meetings", label: "Meetings", icon: CalendarClock },
-      { href: "/pipeline-intake", label: "Pipeline intake", icon: Inbox },
+      { href: "/pipeline-intake", label: "Pipeline Intake", icon: Inbox },
       { href: "/invoices", label: "Invoices", icon: FileText },
       { href: "/contracts", label: "Contracts", icon: FileSignature },
-      { href: "/earnings", label: "All-time earnings", icon: Wallet },
+      { href: "/earnings", label: "Earnings", icon: Wallet },
       { href: "/budget", label: "Budget", icon: PiggyBank },
       { href: "/subscriptions", label: "Subscriptions", icon: CreditCard },
       { href: "/projects", label: "Projects", icon: Briefcase },
-      { href: "/client-showcase", label: "Client Showcase", icon: GalleryHorizontalEnd },
-      { href: "/client-feedback", label: "Client Feedback (Lyra)", icon: MessageSquare },
     ],
   },
   {
-    heading: "Sales Department",
-    items: [
-      { href: "/sales", label: "Sales Dashboard", icon: Send },
-      { href: "/sales/prospects", label: "Prospects", icon: Users },
-      { href: "/sales/inbox", label: "Inbox", icon: Inbox },
-      { href: "/sales/campaigns", label: "Campaigns", icon: Megaphone },
-      { href: "/sales/templates", label: "Templates", icon: FileText },
-      { href: "/sales/settings", label: "Sales Settings", icon: Settings },
-      { href: "/sales/sop", label: "Sales SOP", icon: ClipboardCheck },
-    ],
-  },
-  {
-    heading: "Jarvis AI",
+    heading: "Jarvis",
     items: [
       { href: "/jarvis", label: "Jarvis Hub", icon: Workflow },
       { href: "/jarvis/ops", label: "Ops Board", icon: ClipboardList },
@@ -149,18 +116,8 @@ const navSections: { heading: string; items: NavItem[] }[] = [
     ],
   },
   {
-    heading: "Build & Sites",
+    heading: "Growth",
     items: [
-      { href: "/site-kit", label: "Site kit", icon: Package },
-      { href: "/sites", label: "Vercel sites", icon: Globe2 },
-      { href: "/web-toolset", label: "Web Toolset", icon: Layers },
-      { href: "/sops", label: "SOPs", icon: ClipboardCheck },
-    ],
-  },
-  {
-    heading: "Growth & Ops",
-    items: [
-      { href: "/daily-brief", label: "Daily Brief", icon: Newspaper },
       { href: "/wire", label: "The Wire", icon: Radio },
       { href: "/studio", label: "Creative Studio", icon: Palette },
       { href: "/marketing", label: "Marketing", icon: Megaphone },
@@ -169,6 +126,17 @@ const navSections: { heading: string; items: NavItem[] }[] = [
       { href: "/scripts", label: "Scripts", icon: MessagesSquare },
       { href: "/market-pricing", label: "Market Pricing", icon: Target },
       { href: "/assets", label: "Assets", icon: Activity },
+    ],
+  },
+  {
+    heading: "Build",
+    items: [
+      { href: "/site-kit", label: "Site Kit", icon: Package },
+      { href: "/sites", label: "Vercel Sites", icon: Globe2 },
+      { href: "/suite", label: "Suite Control", icon: Boxes },
+      { href: "/web-toolset", label: "Web Toolset", icon: Layers },
+      { href: "/client-showcase", label: "Client Showcase", icon: GalleryHorizontalEnd },
+      { href: "/sops", label: "SOPs", icon: ClipboardCheck },
     ],
   },
   {
@@ -183,7 +151,12 @@ const navSections: { heading: string; items: NavItem[] }[] = [
   {
     heading: "System",
     items: [
-      { href: "/need-to-know", label: "Need to know", icon: BookOpen },
+      { href: "/sales", label: "Sales", icon: Send },
+      { href: "/cyber", label: "Cyber", icon: ShieldCheck },
+      { href: "/vision", label: "Vision Board", icon: Compass },
+      { href: "/todos/learning", label: "Learning Roadmap", icon: GraduationCap },
+      { href: "/client-feedback", label: "Client Feedback", icon: MessageSquare },
+      { href: "/need-to-know", label: "Need to Know", icon: BookOpen },
       { href: "/settings", label: "Settings", icon: Settings },
     ],
   },
