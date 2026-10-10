@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid subscription" }, { status: 400 });
 
   const p256dh: string = subscription.keys?.p256dh ?? "";
-  const auth: string = subscription.keys?.auth ?? "";
+  const authKey: string = subscription.keys?.auth ?? "";
 
   const sb = getServiceSupabase();
   if (!sb)
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     {
       endpoint: subscription.endpoint,
       p256dh,
-      auth,
+      auth: authKey,
       subscription,
       active: true,
       updated_at: new Date().toISOString(),
