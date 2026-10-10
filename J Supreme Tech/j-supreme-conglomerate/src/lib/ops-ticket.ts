@@ -83,7 +83,7 @@ export function sendOpsTicketPush(
   void sendPushToAll({
     title: label,
     body: summary?.slice(0, 120) ?? "Needs attention",
-    url: opts?.url ?? "/jarvis/whatsapp",
+    url: opts?.url ?? `/jarvis/ops/${ticketRef}`,
     tag: ticketRef,
     urgent: opts?.urgent ?? false,
   }).catch((e) => console.error("[ops-ticket] push failed", e?.message));

@@ -897,7 +897,7 @@ export async function processInbound(opts: {
         ticketRef,
         `${existing.participant_name ?? opts.senderId} — ${tri.intent}`,
         tri.summary,
-        { url: "/jarvis/whatsapp", urgent: tri.priority === "high" },
+        { urgent: tri.priority === "high" },
       );
     }
   }
