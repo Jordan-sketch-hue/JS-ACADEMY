@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Bell, BellOff, CheckCircle2, RefreshCw, XCircle, AlertTriangle, Clock, FlaskConical } from "lucide-react";
+import { Bell, BellOff, CheckCircle2, RefreshCw, XCircle, AlertTriangle, Clock, FlaskConical, Loader2 } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -185,18 +185,40 @@ export function QAHealthTab() {
           )}
         </div>
         <div className="flex items-center gap-2">
+          {/* Alert toggle — green when active, muted when off */}
           <Button size="sm" variant="outline" onClick={togglePush} disabled={pushLoading}
-            className="gap-1.5 text-xs h-7">
-            {pushEnabled
-              ? <><BellOff className="size-3" /> Alerts On</>
-              : <><Bell className="size-3" /> Enable Alerts</>}
+            className={`gap-1.5 text-xs h-7 transition-colors ${
+              pushEnabled
+                ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950"
+                : "text-muted-foreground"
+            }`}>
+            {pushLoading
+              ? <Loader2 className="size-3 animate-spin" />
+              : pushEnabled
+                ? <Bell className="size-3" />
+                : <BellOff className="size-3" />}
+            {pushLoading ? "…" : pushEnabled ? "Alerts On" : "Enable Alerts"}
           </Button>
-          <Button size="sm" variant="outline" onClick={sendTestAlert} disabled={testLoading || !pushEnabled}
-            title={pushEnabled ? "Send test push + email" : "Enable alerts first"}
-            className={`gap-1.5 text-xs h-7 ${testResult === "ok" ? "border-green-500 text-green-600" : testResult === "err" ? "border-destructive text-destructive" : ""}`}>
-            <FlaskConical className="size-3" />
-            {testResult === "ok" ? "Sent!" : testResult === "err" ? "Failed" : "Test"}
-          </Button>
+
+          {/* Test button — only meaningful when alerts are on */}
+          {pushEnabled ? (
+            <Button size="sm" variant="outline" onClick={sendTestAlert} disabled={testLoading}
+              className={`gap-1.5 text-xs h-7 transition-colors ${
+                testResult === "ok"
+                  ? "border-green-500 text-green-600"
+                  : testResult === "err"
+                  ? "border-destructive text-destructive"
+                  : ""
+              }`}>
+              {testLoading
+                ? <Loader2 className="size-3 animate-spin" />
+                : <FlaskConical className="size-3" />}
+              {testResult === "ok" ? "Sent!" : testResult === "err" ? "Failed" : "Test"}
+            </Button>
+          ) : (
+            <span className="text-[10px] text-muted-foreground/60 italic">enable alerts to test</span>
+          )}
+
           <Button size="sm" variant="outline" onClick={fetchData} disabled={loading}
             className="h-7 w-7 p-0">
             <RefreshCw className={`size-3 ${loading ? "animate-spin" : ""}`} />
