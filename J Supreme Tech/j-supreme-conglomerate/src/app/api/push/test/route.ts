@@ -24,9 +24,12 @@ export async function POST() {
     }),
   ]);
 
+  const pushStats = pushResult.status === "fulfilled" ? pushResult.value : null;
+  const pushOk = pushStats !== null && pushStats.sent > 0;
+
   return NextResponse.json({
-    ok: true,
-    push: pushResult.status === "fulfilled" ? pushResult.value : { ok: false },
+    ok: pushOk,
+    push: pushStats ?? { sent: 0, cleaned: 0, total: 0 },
     email: emailResult.status === "fulfilled" ? emailResult.value : { ok: false },
   });
 }

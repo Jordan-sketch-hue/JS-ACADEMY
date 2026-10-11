@@ -118,6 +118,7 @@ export function QAHealthTab() {
   const [pushLoading, setPushLoading] = useState(false);
   const [testLoading, setTestLoading] = useState(false);
   const [testResult, setTestResult]   = useState<"ok" | "err" | null>(null);
+  const [testStats, setTestStats]     = useState<{ sent: number; total: number } | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -142,14 +143,18 @@ export function QAHealthTab() {
   const sendTestAlert = async () => {
     setTestLoading(true);
     setTestResult(null);
+    setTestStats(null);
     try {
       const res = await fetch("/api/push/test", { method: "POST" });
-      setTestResult(res.ok ? "ok" : "err");
+      const data = await res.json().catch(() => ({}));
+      const push = data?.push as { sent?: number; total?: number } | undefined;
+      if (push?.total !== undefined) setTestStats({ sent: push.sent ?? 0, total: push.total });
+      setTestResult(data?.ok ? "ok" : "err");
     } catch {
       setTestResult("err");
     } finally {
       setTestLoading(false);
-      setTimeout(() => setTestResult(null), 4000);
+      setTimeout(() => { setTestResult(null); setTestStats(null); }, 6000);
     }
   };
 
@@ -213,7 +218,11 @@ export function QAHealthTab() {
               {testLoading
                 ? <Loader2 className="size-3 animate-spin" />
                 : <FlaskConical className="size-3" />}
-              {testResult === "ok" ? "Sent!" : testResult === "err" ? "Failed" : "Test"}
+              {testResult === "ok"
+                ? testStats ? `${testStats.sent}/${testStats.total} sent` : "Sent!"
+                : testResult === "err"
+                ? testStats ? `0/${testStats.total} — re-subscribe`  : "No subs"
+                : "Test"}
             </Button>
           ) : (
             <span className="text-[10px] text-muted-foreground/60 italic">enable alerts to test</span>

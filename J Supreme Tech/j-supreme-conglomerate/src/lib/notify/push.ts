@@ -18,22 +18,29 @@ export interface PushPayload {
   urgent?: boolean;
 }
 
-export async function sendPushToAll(payload: PushPayload): Promise<void> {
+export interface PushResult {
+  sent: number;
+  cleaned: number;
+  total: number;
+}
+
+export async function sendPushToAll(payload: PushPayload): Promise<PushResult> {
   if (!VAPID_PUBLIC || !VAPID_PRIVATE) {
     console.warn("[push] VAPID keys not configured — skipping");
-    return;
+    return { sent: 0, cleaned: 0, total: 0 };
   }
   const sb = getServiceSupabase();
-  if (!sb) return;
+  if (!sb) return { sent: 0, cleaned: 0, total: 0 };
 
   const { data: subs, error } = await sb
     .from("push_subscriptions")
     .select("endpoint, subscription")
     .eq("active", true);
 
-  if (error || !subs?.length) return;
+  if (error || !subs?.length) return { sent: 0, cleaned: 0, total: 0 };
 
   const message = JSON.stringify(payload);
+  let sentCount = 0;
 
   const results = await Promise.allSettled(
     subs.map((row) =>
@@ -50,6 +57,7 @@ export async function sendPushToAll(payload: PushPayload): Promise<void> {
     const r = results[i];
     const ep = subs[i].endpoint.slice(-20);
     if (r.status === "fulfilled") {
+      sentCount++;
       console.log(`[push] OK endpoint=...${ep} status=${r.value.statusCode}`);
     } else {
       const err = r.reason as { statusCode?: number; body?: string };
@@ -67,4 +75,6 @@ export async function sendPushToAll(payload: PushPayload): Promise<void> {
       .update({ active: false })
       .in("endpoint", expired);
   }
+
+  return { sent: sentCount, cleaned: expired.length, total: subs.length };
 }
