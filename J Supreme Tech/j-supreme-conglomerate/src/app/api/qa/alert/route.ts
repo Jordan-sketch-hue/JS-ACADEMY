@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       title: `QA: ${critical_count} Critical Alert${critical_count !== 1 ? "s" : ""}`,
       body: alerts[0] ?? "Check QA Health dashboard",
       url: "/jarvis",
-      severity: "critical",
+      urgent: critical_count > 0,
       tag: "qa-alert",
     }),
   ]);
