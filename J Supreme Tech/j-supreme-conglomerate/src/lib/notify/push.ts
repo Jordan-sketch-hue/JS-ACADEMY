@@ -54,7 +54,8 @@ export async function sendPushToAll(payload: PushPayload): Promise<void> {
     } else {
       const err = r.reason as { statusCode?: number; body?: string };
       console.error(`[push] FAIL endpoint=...${ep} status=${err?.statusCode} body=${JSON.stringify(err?.body)}`);
-      if (err?.statusCode === 410 || err?.statusCode === 404) {
+      // 410/404 = subscription gone; 400/401/403 = VAPID key mismatch — all permanently dead
+      if ([400, 401, 403, 404, 410].includes(err?.statusCode ?? 0)) {
         expired.push(subs[i].endpoint);
       }
     }
