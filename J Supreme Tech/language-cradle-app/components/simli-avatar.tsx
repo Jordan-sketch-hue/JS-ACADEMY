@@ -241,6 +241,7 @@ export function SimliAvatar({
       style={{
         width: size,
         height: size,
+        transition: "width 0.35s ease, height 0.35s ease",
         animation: speaking && !isLive ? "lcBob 0.6s ease-in-out infinite" : speaking ? "none" : "lcBreathe 3.5s ease-in-out infinite",
       }}
     >
