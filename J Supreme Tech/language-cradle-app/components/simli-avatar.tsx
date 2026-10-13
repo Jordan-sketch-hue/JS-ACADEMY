@@ -9,7 +9,7 @@ interface SimliAvatarProps {
   name: string;
   size?: number;
   speaking: boolean;
-  /** The live Audio element from useTts — tapped for PCM to feed Simli. */
+  /** The live Audio element from useTts — used to read src + currentTime for PCM sync. */
   audioRef: React.RefObject<HTMLAudioElement | null>;
   simliFaceId?: string;
   gender?: "male" | "female";
@@ -19,7 +19,7 @@ type SimliState = "idle" | "connecting" | "live" | "error";
 
 const SIMLI_WSS = "wss://api.simli.ai/compose/webrtc/p2p";
 const PCM_SAMPLE_RATE = 16000;
-const SCRIPT_PROC_BUFFER = 1024;
+const CHUNK_SAMPLES   = 320; // 20 ms at 16 kHz
 
 export function SimliAvatar({
   tutorId,
@@ -31,25 +31,82 @@ export function SimliAvatar({
   gender = "female",
 }: SimliAvatarProps) {
   const [state, setState] = useState<SimliState>("idle");
-  const videoRef      = useRef<HTMLVideoElement>(null);
-  const pcRef         = useRef<RTCPeerConnection | null>(null);
-  const wsRef         = useRef<WebSocket | null>(null);
-  const audioCtxRef   = useRef<AudioContext | null>(null);
-  const processorRef  = useRef<ScriptProcessorNode | null>(null);
-  const sourceRef     = useRef<MediaElementAudioSourceNode | null>(null);
+  const videoRef       = useRef<HTMLVideoElement>(null);
+  const pcRef          = useRef<RTCPeerConnection | null>(null);
+  const wsRef          = useRef<WebSocket | null>(null);
+  const audioCtxRef    = useRef<AudioContext | null>(null);
+  const sendIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const teardown = useCallback(() => {
-    processorRef.current?.disconnect();
-    sourceRef.current?.disconnect();
-    processorRef.current = null;
-    sourceRef.current    = null;
+    if (sendIntervalRef.current) {
+      clearInterval(sendIntervalRef.current);
+      sendIntervalRef.current = null;
+    }
     audioCtxRef.current?.close().catch(() => {});
-    audioCtxRef.current  = null;
+    audioCtxRef.current = null;
     wsRef.current?.close();
-    wsRef.current        = null;
+    wsRef.current = null;
     pcRef.current?.close();
-    pcRef.current        = null;
+    pcRef.current = null;
     setState("idle");
+  }, []);
+
+  /**
+   * Fetch the audio file already playing in `audioEl`, decode it to 16-kHz PCM16,
+   * and stream chunks to Simli over the open WebSocket.
+   * Starts from the audio's current playback position so the lip-sync stays in sync
+   * even if Simli takes a few seconds to connect.
+   */
+  const streamPcmToSimli = useCallback(async (audioEl: HTMLAudioElement) => {
+    const src = audioEl.src;
+    if (!src) { console.warn("[simli] audio.src is empty — cannot stream PCM"); return; }
+
+    console.log("[simli] fetching audio for PCM decode:", src.slice(0, 80));
+    try {
+      const resp = await fetch(src);
+      if (!resp.ok) throw new Error(`fetch ${resp.status}`);
+      const rawBuf = await resp.arrayBuffer();
+
+      // Decode at 16 kHz so the output matches Simli's expected sample rate.
+      const ctx = new AudioContext({ sampleRate: PCM_SAMPLE_RATE });
+      await ctx.resume(); // ensure context is running (Chrome suspends by default)
+      audioCtxRef.current = ctx;
+
+      const decoded = await ctx.decodeAudioData(rawBuf);
+
+      // Down-mix to mono; use channel 0
+      const f32 = decoded.getChannelData(0);
+      const pcm = new Int16Array(f32.length);
+      for (let i = 0; i < f32.length; i++) {
+        pcm[i] = Math.max(-32768, Math.min(32767, Math.round(f32[i] * 32767)));
+      }
+
+      // Skip samples that have already played so the lip-sync lines up
+      const alreadyPlayed = Math.round(audioEl.currentTime * PCM_SAMPLE_RATE);
+      let offset = Math.max(0, alreadyPlayed);
+      console.log(`[simli] PCM ready: ${pcm.length} samples, starting at ${offset} (${audioEl.currentTime.toFixed(2)}s elapsed)`);
+
+      sendIntervalRef.current = setInterval(() => {
+        const ws = wsRef.current;
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+          clearInterval(sendIntervalRef.current!);
+          sendIntervalRef.current = null;
+          return;
+        }
+        if (offset >= pcm.length) {
+          clearInterval(sendIntervalRef.current!);
+          sendIntervalRef.current = null;
+          return;
+        }
+        const end   = Math.min(offset + CHUNK_SAMPLES, pcm.length);
+        const chunk = pcm.subarray(offset, end);
+        ws.send(new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength));
+        offset += CHUNK_SAMPLES;
+      }, 20); // 20 ms per 320-sample chunk = exact 16 kHz real-time rate
+
+    } catch (err) {
+      console.warn("[simli] PCM stream failed:", err);
+    }
   }, []);
 
   const connectSimli = useCallback(async () => {
@@ -58,7 +115,7 @@ export function SimliAvatar({
 
     setState("connecting");
 
-    /* Wait for useTts to create the Audio element (setSpeaking(true) fires before async fetch → playAudioUrl sets audioRef). */
+    // Wait for useTts to create the Audio element
     let audio = audioRef.current;
     if (!audio) {
       await new Promise<void>((resolve) => {
@@ -72,7 +129,7 @@ export function SimliAvatar({
     }
     console.log("[simli] audio ready, fetching token for face", simliFaceId);
 
-    /* 1. Get session token + Simli TURN/ICE servers via our server route (keeps API key secret). */
+    // 1. Get session token + ICE servers
     let token: string;
     let iceServers: RTCIceServer[] = [{ urls: "stun:stun.l.google.com:19302" }];
     try {
@@ -82,10 +139,7 @@ export function SimliAvatar({
         body: JSON.stringify({ face_id: simliFaceId, gender }),
       });
       const data = await res.json();
-      if (!res.ok || data.fallback) {
-        setState("error");
-        return;
-      }
+      if (!res.ok || data.fallback) { setState("error"); return; }
       token = data.session_token;
       if (Array.isArray(data.ice_servers) && data.ice_servers.length > 0) {
         iceServers = data.ice_servers;
@@ -97,17 +151,13 @@ export function SimliAvatar({
       return;
     }
 
-    /* 2. Create RTCPeerConnection with Simli TURN servers so ICE can relay through Cloudflare SFU. */
-    const pc = new RTCPeerConnection({
-      sdpSemantics: "unified-plan",
-      iceServers,
-    } as RTCConfiguration);
+    // 2. Create RTCPeerConnection
+    const pc = new RTCPeerConnection({ sdpSemantics: "unified-plan", iceServers } as RTCConfiguration);
     pcRef.current = pc;
 
     pc.addTransceiver("video", { direction: "recvonly" });
     pc.addTransceiver("audio", { direction: "recvonly" });
 
-    /* Video/audio tracks from Simli → render in <video>. */
     pc.ontrack = (e) => {
       console.log("[simli] ontrack", e.track.kind, "streams:", e.streams.length);
       const vid = videoRef.current;
@@ -119,9 +169,7 @@ export function SimliAvatar({
     pc.oniceconnectionstatechange = () => console.log("[simli] ICE:", pc.iceConnectionState);
     pc.onconnectionstatechange = () => console.log("[simli] PC:", pc.connectionState);
 
-    /* 3. Gather ICE candidates, then open WebSocket and do signalling. */
-
-    /* ICE gathering — must happen before we open the WS so the offer is complete. */
+    // 3. Gather ICE then open WebSocket
     let iceCandidateCount = 0;
     pc.onicecandidate = (e) => { if (e.candidate) iceCandidateCount++; };
 
@@ -139,7 +187,6 @@ export function SimliAvatar({
 
     console.log("[simli] ICE done — sdp lines:", pc.localDescription?.sdp.split("\n").length);
 
-    /* Open WebSocket and set ALL handlers before any events can fire. */
     const wsUrl = new URL(SIMLI_WSS);
     wsUrl.searchParams.set("session_token", token);
     wsUrl.searchParams.set("enableSFU", "true");
@@ -161,10 +208,7 @@ export function SimliAvatar({
       try { msg = JSON.parse(evt.data); } catch { return; }
       if (msg.sdp && msg.type === "answer") {
         console.log("[simli] applying answer");
-        await pc.setRemoteDescription(new RTCSessionDescription({
-          type: "answer",
-          sdp: msg.sdp,
-        }));
+        await pc.setRemoteDescription(new RTCSessionDescription({ type: "answer", sdp: msg.sdp }));
       } else if (msg.error) {
         console.error("[simli] server error:", msg.error);
         setState("error");
@@ -180,46 +224,19 @@ export function SimliAvatar({
       return;
     }
 
-    /* Post-open: replace open/close handlers with runtime ones. */
     ws.onerror = (e) => { console.error("[simli] ws runtime error", e); teardown(); };
     ws.onclose = (e) => { console.log("[simli] ws runtime close", e.code); if (state !== "idle") setState("idle"); };
 
-    /* Send the offer. */
+    // Send the offer
     console.log("[simli] sending offer");
     ws.send(JSON.stringify(pc.localDescription));
 
-    /* 4. Tap TTS audio with Web Audio API → send PCM16 to Simli over WebSocket. */
-    try {
-      const ctx = new AudioContext({ sampleRate: PCM_SAMPLE_RATE });
-      audioCtxRef.current = ctx;
+    // 4. Stream PCM audio to Simli (decode the file directly — no Web Audio tap)
+    await streamPcmToSimli(audio);
 
-      const source = ctx.createMediaElementSource(audio);
-      sourceRef.current = source;
-
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      const proc = ctx.createScriptProcessor(SCRIPT_PROC_BUFFER, 1, 1);
-      processorRef.current = proc;
-
-      proc.onaudioprocess = (e) => {
-        const ws2 = wsRef.current;
-        if (!ws2 || ws2.readyState !== WebSocket.OPEN) return;
-        const f32 = e.inputBuffer.getChannelData(0);
-        const i16 = new Int16Array(f32.length);
-        for (let i = 0; i < f32.length; i++) {
-          i16[i] = Math.max(-32768, Math.min(32767, Math.round(f32[i] * 32767)));
-        }
-        ws2.send(new Uint8Array(i16.buffer));
-      };
-
-      source.connect(proc);
-      proc.connect(ctx.destination); // audio still plays normally for the student
-    } catch {
-      // Web Audio tap failed — avatar stays as static portrait, audio still plays
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speaking, state, audioRef, simliFaceId, gender, teardown]);
+  }, [speaking, state, audioRef, simliFaceId, gender, teardown, streamPcmToSimli]);
 
-  /* Start Simli when speaking begins, tear down when it stops. */
   useEffect(() => {
     if (speaking) {
       connectSimli();
@@ -229,7 +246,6 @@ export function SimliAvatar({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [speaking]);
 
-  /* Cleanup on unmount. */
   useEffect(() => () => teardown(), [teardown]);
 
   const isLive = state === "live";
@@ -245,7 +261,7 @@ export function SimliAvatar({
         animation: speaking && !isLive ? "lcBob 0.6s ease-in-out infinite" : speaking ? "none" : "lcBreathe 3.5s ease-in-out infinite",
       }}
     >
-      {/* Simli live video — shown while WebRTC is connected */}
+      {/* Simli live video */}
       <video
         ref={videoRef}
         autoPlay
@@ -261,7 +277,7 @@ export function SimliAvatar({
         }}
       />
 
-      {/* Static portrait — shown when idle or during connect */}
+      {/* Static portrait — shown when idle or connecting */}
       <Image
         src={url}
         alt={`${name} avatar`}
@@ -287,7 +303,7 @@ export function SimliAvatar({
         />
       )}
 
-      {/* Fallback CSS mouth bob when Simli is unavailable */}
+      {/* Fallback CSS mouth bob if Simli errors */}
       {isPhoto && state === "error" && speaking && (
         <span
           aria-hidden
