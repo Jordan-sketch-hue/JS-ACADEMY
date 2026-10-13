@@ -138,6 +138,7 @@ export function SimliAvatar({
     /* Open WebSocket and set ALL handlers before any events can fire. */
     const wsUrl = new URL(SIMLI_WSS);
     wsUrl.searchParams.set("session_token", token);
+    wsUrl.searchParams.set("enableSFU", "true");
     const ws = new WebSocket(wsUrl.toString());
     wsRef.current = ws;
     ws.binaryType = "arraybuffer";
