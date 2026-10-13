@@ -72,8 +72,9 @@ export function SimliAvatar({
     }
     console.log("[simli] audio ready, fetching token for face", simliFaceId);
 
-    /* 1. Get session token via our server route (keeps API key secret). */
+    /* 1. Get session token + Simli TURN/ICE servers via our server route (keeps API key secret). */
     let token: string;
+    let iceServers: RTCIceServer[] = [{ urls: "stun:stun.l.google.com:19302" }];
     try {
       const res = await fetch("/api/ai/simli/session", {
         method: "POST",
@@ -86,17 +87,20 @@ export function SimliAvatar({
         return;
       }
       token = data.session_token;
-      console.log("[simli] token ok, opening WebSocket");
+      if (Array.isArray(data.ice_servers) && data.ice_servers.length > 0) {
+        iceServers = data.ice_servers;
+      }
+      console.log("[simli] token ok, ICE servers:", iceServers.length);
     } catch {
       console.error("[simli] token fetch threw");
       setState("error");
       return;
     }
 
-    /* 2. Create RTCPeerConnection with recvonly transceivers so offer SDP includes m=video + m=audio. */
+    /* 2. Create RTCPeerConnection with Simli TURN servers so ICE can relay through Cloudflare SFU. */
     const pc = new RTCPeerConnection({
       sdpSemantics: "unified-plan",
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      iceServers,
     } as RTCConfiguration);
     pcRef.current = pc;
 
@@ -155,10 +159,10 @@ export function SimliAvatar({
       if (typeof evt.data !== "string") return;
       let msg: { type?: string; sdp?: string; error?: string };
       try { msg = JSON.parse(evt.data); } catch { return; }
-      if (msg.sdp) {
+      if (msg.sdp && msg.type === "answer") {
         console.log("[simli] applying answer");
         await pc.setRemoteDescription(new RTCSessionDescription({
-          type: (msg.type as RTCSdpType) ?? "answer",
+          type: "answer",
           sdp: msg.sdp,
         }));
       } else if (msg.error) {
