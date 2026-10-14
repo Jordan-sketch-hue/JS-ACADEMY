@@ -64,6 +64,10 @@ async function handleUserCreated(data: Record<string, unknown>) {
   if (!clerkId) return;
 
   const supabase = getServiceSupabase();
+  if (!supabase) {
+    console.error("[clerk-webhook] Supabase service client unavailable — check env vars");
+    return;
+  }
 
   // 1. Create SaaS tenant record (trial account)
   const { error: tenantErr } = await supabase
