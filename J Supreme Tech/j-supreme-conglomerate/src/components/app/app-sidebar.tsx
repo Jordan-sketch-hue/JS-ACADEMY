@@ -90,6 +90,8 @@ const navSections: { heading: string; items: NavItem[] }[] = [
   {
     heading: "Money",
     items: [
+      { href: "/sales/leads", label: "Sales — Leads", icon: Send },
+      { href: "/sales", label: "Sales Overview", icon: LineChart },
       { href: "/crm", label: "CRM", icon: Users },
       { href: "/meetings", label: "Meetings", icon: CalendarClock },
       { href: "/pipeline-intake", label: "Pipeline Intake", icon: Inbox },
@@ -151,7 +153,6 @@ const navSections: { heading: string; items: NavItem[] }[] = [
   {
     heading: "System",
     items: [
-      { href: "/sales", label: "Sales", icon: Send },
       { href: "/cyber", label: "Cyber", icon: ShieldCheck },
       { href: "/vision", label: "Vision Board", icon: Compass },
       { href: "/todos/learning", label: "Learning Roadmap", icon: GraduationCap },
