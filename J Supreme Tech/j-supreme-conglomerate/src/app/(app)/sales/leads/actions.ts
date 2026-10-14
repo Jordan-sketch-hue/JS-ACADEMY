@@ -3,7 +3,12 @@
 import { requireOwnerClerkId } from "@/lib/session";
 
 const BOT_URL = process.env.SALES_BOT_URL ?? "https://ample-exploration-production-ef51.up.railway.app";
-const ADMIN_KEY = process.env.SALES_BOT_ADMIN_KEY ?? "jst-sales-bot-2026";
+
+function adminKey(): string {
+  const key = process.env.SALES_BOT_ADMIN_KEY;
+  if (!key) throw new Error("SALES_BOT_ADMIN_KEY env var is not set");
+  return key;
+}
 
 export interface LeadRow {
   id: number;
@@ -30,7 +35,7 @@ export async function fetchLeads(): Promise<{ stats: LeadsStats; leads: LeadRow[
 
   try {
     const res = await fetch(`${BOT_URL}/leads`, {
-      headers: { "x-admin-key": ADMIN_KEY },
+      headers: { "x-admin-key": adminKey() },
       cache: "no-store",
     });
     if (!res.ok) throw new Error(`Bot responded ${res.status}`);
@@ -47,7 +52,7 @@ export async function runScraper(): Promise<{ ok: boolean; message?: string; err
   try {
     const res = await fetch(`${BOT_URL}/scrape`, {
       method: "POST",
-      headers: { "x-admin-key": ADMIN_KEY, "Content-Type": "application/json" },
+      headers: { "x-admin-key": adminKey(), "Content-Type": "application/json" },
       body: JSON.stringify({ limit: 30 }),
     });
     if (!res.ok) {
@@ -67,7 +72,7 @@ export async function launchCalls(limit = 10): Promise<{ ok: boolean; queued?: n
   try {
     const res = await fetch(`${BOT_URL}/call-leads`, {
       method: "POST",
-      headers: { "x-admin-key": ADMIN_KEY, "Content-Type": "application/json" },
+      headers: { "x-admin-key": adminKey(), "Content-Type": "application/json" },
       body: JSON.stringify({ limit, bypass_hours: false }),
     });
     const data = await res.json() as any;
