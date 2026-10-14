@@ -13,14 +13,19 @@ function adminKey(): string {
 }
 
 export interface LeadRow {
-  id: number;
+  id: string;
   business_name: string | null;
   phone: string | null;
   address: string | null;
   category: string | null;
   recommended_product: string | null;
   has_website: boolean;
+  has_social: boolean;
+  google_rating: number | null;
+  market: string | null;
+  currency: string | null;
   status: string;
+  notes: string | null;
   called_at: string | null;
   created_at: string;
 }
@@ -30,6 +35,7 @@ export interface LeadsStats {
   new_count: string;
   called_count: string;
   dnc_count: string;
+  revenue_potential: string;
 }
 
 export async function fetchLeads(): Promise<{ stats: LeadsStats; leads: LeadRow[] }> {
@@ -55,12 +61,20 @@ export async function fetchLeads(): Promise<{ stats: LeadsStats; leads: LeadRow[
     const called_count = leads.filter(l => l.status === "called").length;
     const dnc_count = leads.filter(l => l.status === "dnc").length;
 
+    // Rough revenue potential: parse price from recommended_product string
+    let revenue_potential = 0;
+    leads.filter(l => l.status === "new").forEach(l => {
+      const match = (l.recommended_product ?? "").match(/J\$(\d[\d,]+)/);
+      if (match) revenue_potential += parseInt(match[1].replace(/,/g, ""));
+    });
+
     return {
       stats: {
         total: String(total),
         new_count: String(new_count),
         called_count: String(called_count),
         dnc_count: String(dnc_count),
+        revenue_potential: revenue_potential > 0 ? `J$${revenue_potential.toLocaleString()}` : "—",
       },
       leads,
     };
