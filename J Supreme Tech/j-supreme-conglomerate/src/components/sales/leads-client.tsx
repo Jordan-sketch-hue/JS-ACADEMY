@@ -28,10 +28,21 @@ const TERRITORY_PRIORITY: Record<string, { label: string; phase: number; color: 
   uk:      { label: "UK 🇬🇧",           phase: 4, color: "text-blue-400" },
 };
 
-// ── Tier extraction from recommended_product string ───────────────────────
-function parseTier(product: string | null): 1 | 2 | 3 {
+// ── Tier extraction — notes field first (scraper writes TIER:1/2/3), fallback to product ──
+function parseTier(product: string | null, notes?: string | null): 1 | 2 | 3 {
+  const noteMatch = (notes ?? "").match(/TIER:([123])/);
+  if (noteMatch) return parseInt(noteMatch[1]) as 1 | 2 | 3;
   if (!product) return 1;
-  if (/US\$/.test(product)) return 3;
+  if (/US\$/.test(product)) {
+    // US$ pricing: infer tier from amount
+    const m = product.match(/US\$(\d+)/);
+    if (m) {
+      const v = parseInt(m[1]);
+      if (v >= 500) return 3;
+      if (v >= 400) return 2;
+    }
+    return 1;
+  }
   const match = product.match(/J\$(\d[\d,]+)/);
   if (match) {
     const val = parseInt(match[1].replace(/,/g, ""));
@@ -132,14 +143,14 @@ export function LeadsClient({ initialStats, initialLeads }: {
   const newCount = parseInt(stats.new_count ?? "0");
 
   const filtered = leads.filter(l => {
-    const tierMatch = filterTier === 0 || parseTier(l.recommended_product) === filterTier;
+    const tierMatch = filterTier === 0 || parseTier(l.recommended_product, l.notes) === filterTier;
     const statusMatch = filterStatus === "all" || l.status === filterStatus;
     return tierMatch && statusMatch;
   });
 
-  const t1Count = leads.filter(l => parseTier(l.recommended_product) === 1).length;
-  const t2Count = leads.filter(l => parseTier(l.recommended_product) === 2).length;
-  const t3Count = leads.filter(l => parseTier(l.recommended_product) === 3).length;
+  const t1Count = leads.filter(l => parseTier(l.recommended_product, l.notes) === 1).length;
+  const t2Count = leads.filter(l => parseTier(l.recommended_product, l.notes) === 2).length;
+  const t3Count = leads.filter(l => parseTier(l.recommended_product, l.notes) === 3).length;
 
   return (
     <div className="space-y-6">
@@ -279,7 +290,7 @@ export function LeadsClient({ initialStats, initialLeads }: {
             <tbody className="divide-y">
               {filtered.map((lead) => {
                 const s = STATUS_BADGE[lead.status] ?? { label: lead.status, class: "bg-muted" };
-                const tier = parseTier(lead.recommended_product);
+                const tier = parseTier(lead.recommended_product, lead.notes);
                 const tierCfg = TIER_CONFIG[tier];
                 const marketKey = (lead.market ?? "").toLowerCase().replace(/\s/g, "_");
                 const territory = TERRITORY_PRIORITY[marketKey] ?? TERRITORY_PRIORITY[(lead.currency ?? "jmd") === "jmd" ? "jamaica" : "us"];
