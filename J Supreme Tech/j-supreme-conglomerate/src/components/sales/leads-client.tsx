@@ -139,8 +139,8 @@ export function LeadsClient({ initialStats, initialLeads }: { initialStats: Lead
                     <td className="px-4 py-2.5 text-xs max-w-[180px] truncate">{lead.recommended_product ?? "—"}</td>
                     <td className="px-4 py-2.5">
                       {lead.has_website
-                        ? <Globe className="h-3.5 w-3.5 text-amber-500" title="Has website" />
-                        : <Globe className="h-3.5 w-3.5 text-emerald-500 line-through opacity-50" title="No website — hot lead" />}
+                        ? <Globe className="h-3.5 w-3.5 text-amber-500" />
+                        : <Globe className="h-3.5 w-3.5 text-emerald-500 opacity-40" />}
                     </td>
                     <td className="px-4 py-2.5">
                       <Badge className={`text-[10px] text-white ${s.class}`}>{s.label}</Badge>
