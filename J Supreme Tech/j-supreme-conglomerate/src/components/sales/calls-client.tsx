@@ -73,7 +73,7 @@ export function CallsClient({ logs }: { logs: CallLogRow[] }) {
       const s = await summarizeCall(selected);
       setSummary(s);
       // Pre-fill email body with follow-up draft
-      const co = selected.company_name ?? "your business";
+      const co = selected.lead_business ?? selected.lead_name ?? "your business";
       setEmailSubject(`Following up — ${co}`);
       setEmailBody(s.follow_up_draft);
     });
@@ -81,7 +81,7 @@ export function CallsClient({ logs }: { logs: CallLogRow[] }) {
 
   function waLink() {
     if (!selected) return "#";
-    const num = (selected.mockup_wa_number ?? selected.to_number ?? "").replace(/\D/g, "");
+    const num = (selected.to_number ?? "").replace(/\D/g, "");
     const msg = summary?.follow_up_draft ?? `Hi, this is Alex from J Supreme Tech following up on our earlier conversation.`;
     return `https://wa.me/${num}?text=${encodeURIComponent(msg)}`;
   }
@@ -136,7 +136,7 @@ export function CallsClient({ logs }: { logs: CallLogRow[] }) {
           >
             <div className="flex items-center justify-between gap-2">
               <span className="truncate font-medium text-sm">
-                {log.company_name ?? log.to_number ?? "Unknown"}
+                {log.lead_business ?? log.lead_name ?? log.to_number ?? "Unknown"}
               </span>
               <Badge className={`shrink-0 text-[10px] text-white ${OUTCOME_COLORS[log.outcome] ?? "bg-muted"}`}>
                 {outcomeLabel(log.outcome)}
@@ -144,7 +144,7 @@ export function CallsClient({ logs }: { logs: CallLogRow[] }) {
             </div>
             <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
               <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{fmtDuration(log.duration_seconds)}</span>
-              {log.stage_reached && <span className="truncate">{log.stage_reached}</span>}
+              {log.to_number && <span className="truncate">{log.to_number}</span>}
             </div>
             <p className="mt-1 text-[11px] text-muted-foreground">{fmtDate(log.created_at)}</p>
           </button>
@@ -157,8 +157,8 @@ export function CallsClient({ logs }: { logs: CallLogRow[] }) {
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="text-xl font-semibold">{selected.company_name ?? "Unknown Company"}</h2>
-              <p className="text-sm text-muted-foreground">{selected.to_number} · {selected.industry ?? "—"}</p>
+              <h2 className="text-xl font-semibold">{selected.lead_business ?? selected.lead_name ?? "Unknown"}</h2>
+              <p className="text-sm text-muted-foreground">{selected.to_number}{selected.lead_name ? ` · ${selected.lead_name}` : ""}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{fmtDate(selected.created_at)}</p>
             </div>
             <div className="flex flex-col items-end gap-1">
@@ -169,10 +169,9 @@ export function CallsClient({ logs }: { logs: CallLogRow[] }) {
           </div>
 
           {/* Stage info */}
-          {selected.stage_reached && (
+          {selected.notes && (
             <p className="text-xs text-muted-foreground">
-              Stage reached: <span className="font-medium text-foreground">{selected.stage_reached}</span>
-              {selected.mockup_requested && " · Mockup requested"}
+              Notes: <span className="font-medium text-foreground">{selected.notes}</span>
             </p>
           )}
 

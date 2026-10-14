@@ -5,20 +5,16 @@ import { getServiceSupabase } from "@/lib/supabase/admin";
 import { sendSalesEmail } from "@/lib/sales/send";
 
 export interface CallLogRow {
-  id: number;
+  id: string;
   call_sid: string;
   to_number: string;
-  company_name: string | null;
-  industry: string | null;
+  lead_name: string | null;
+  lead_business: string | null;
   duration_seconds: number;
-  outcome: "answered" | "no_answer" | "busy" | "failed" | "error";
+  outcome: string;
   transcript: string | null;
   booked_followup: boolean;
-  stage_reached: string | null;
-  scores: Record<string, number> | null;
-  mockup_requested: boolean;
-  mockup_wa_number: string | null;
-  next_action: string | null;
+  notes: string | null;
   created_at: string;
 }
 
@@ -36,7 +32,7 @@ export async function fetchCallLogs(limit = 100): Promise<CallLogRow[]> {
   if (!sb) return [];
 
   const { data, error } = await sb
-    .from("call_logs")
+    .from("sales_calls")
     .select("*")
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -56,7 +52,7 @@ export async function summarizeCall(log: CallLogRow): Promise<CallSummary> {
       wants: "N/A — call not answered",
       pain_points: "N/A",
       sentiment: "no_answer",
-      next_action: log.next_action ?? "Schedule another call attempt",
+      next_action: log.notes ?? "Schedule another call attempt",
       follow_up_draft: buildFollowUpDraft(log, null),
     };
   }
@@ -67,17 +63,16 @@ export async function summarizeCall(log: CallLogRow): Promise<CallSummary> {
       wants: "No ANTHROPIC_API_KEY set",
       pain_points: "N/A",
       sentiment: "neutral",
-      next_action: log.next_action ?? "Follow up",
+      next_action: log.notes ?? "Follow up",
       follow_up_draft: buildFollowUpDraft(log, null),
     };
   }
 
   const prompt = `You are a sales manager reviewing a call transcript made by Alex, an AI agent for J Supreme Tech.
 
-Company: ${log.company_name ?? "Unknown"}
-Industry: ${log.industry ?? "Unknown"}
+Name: ${log.lead_name ?? "Unknown"}
+Business: ${log.lead_business ?? "Unknown"}
 Duration: ${log.duration_seconds}s
-Stage reached: ${log.stage_reached ?? "unknown"}
 Outcome: ${log.outcome}
 Booked follow-up: ${log.booked_followup}
 
@@ -119,14 +114,14 @@ Respond with ONLY valid JSON (no markdown, no extra text):
       wants: "Summary unavailable — check server logs",
       pain_points: "Summary unavailable",
       sentiment: "neutral",
-      next_action: log.next_action ?? "Follow up manually",
+      next_action: log.notes ?? "Follow up manually",
       follow_up_draft: buildFollowUpDraft(log, null),
     };
   }
 }
 
 function buildFollowUpDraft(log: CallLogRow, _summary: CallSummary | null): string {
-  const co = log.company_name ?? "your business";
+  const co = log.lead_business ?? log.lead_name ?? "your business";
   if (log.outcome !== "answered") {
     return `Hi, this is Alex from J Supreme Tech. I tried reaching ${co} earlier but missed you. We help Jamaican businesses get professional websites and digital marketing. Would love 5 minutes to chat — when is a good time?`;
   }
@@ -134,7 +129,7 @@ function buildFollowUpDraft(log: CallLogRow, _summary: CallSummary | null): stri
 }
 
 export async function sendFollowUpEmail(
-  _callId: number,
+  _callId: string,
   toEmail: string,
   subject: string,
   body: string
