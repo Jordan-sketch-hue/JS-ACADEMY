@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useState, useTransition } from "react";
-import { Database, Phone, RefreshCw, Play, Globe, GlobeOff, CheckCircle, Clock, Ban, Loader2 } from "lucide-react";
+import { Database, Phone, RefreshCw, Play, Globe, CheckCircle, Clock, Ban, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -15,7 +15,7 @@ const STATUS_BADGE: Record<string, { label: string; class: string }> = {
 };
 
 function fmtDate(iso: string | null) {
-  if (!iso) return "—";
+  if (!iso) return "â€”";
   try { return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "2-digit" }); }
   catch { return iso; }
 }
@@ -47,7 +47,7 @@ export function LeadsClient({ initialStats, initialLeads }: { initialStats: Lead
   function handleScrape() {
     startScrape(async () => {
       const res = await runScraper();
-      if (res.ok) showNotice("ok", res.message ?? "Scraper started — new leads will appear within ~2 minutes.");
+      if (res.ok) showNotice("ok", res.message ?? "Scraper started â€” new leads will appear within ~2 minutes.");
       else showNotice("error", res.error ?? "Scraper failed to start.");
     });
   }
@@ -76,7 +76,7 @@ export function LeadsClient({ initialStats, initialLeads }: { initialStats: Lead
       <div className="flex flex-wrap items-center gap-3">
         <Button onClick={handleScrape} disabled={scraping} className="gap-2">
           {scraping ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-          {scraping ? "Scraping…" : "Run Scraper"}
+          {scraping ? "Scrapingâ€¦" : "Run Scraper"}
         </Button>
         <Button
           onClick={() => handleCalls(10)}
@@ -85,7 +85,7 @@ export function LeadsClient({ initialStats, initialLeads }: { initialStats: Lead
           className="gap-2"
         >
           {calling ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
-          {calling ? "Launching…" : `Launch 10 Calls`}
+          {calling ? "Launchingâ€¦" : `Launch 10 Calls`}
         </Button>
         {newCount > 10 && (
           <Button
@@ -133,14 +133,14 @@ export function LeadsClient({ initialStats, initialLeads }: { initialStats: Lead
                 const s = STATUS_BADGE[lead.status] ?? { label: lead.status, class: "bg-muted" };
                 return (
                   <tr key={lead.id} className="hover:bg-muted/20 transition-colors">
-                    <td className="px-4 py-2.5 font-medium max-w-[200px] truncate">{lead.business_name ?? "—"}</td>
-                    <td className="px-4 py-2.5 font-mono text-xs text-muted-foreground">{lead.phone ?? "—"}</td>
+                    <td className="px-4 py-2.5 font-medium max-w-[200px] truncate">{lead.business_name ?? "â€”"}</td>
+                    <td className="px-4 py-2.5 font-mono text-xs text-muted-foreground">{lead.phone ?? "â€”"}</td>
                     <td className="px-4 py-2.5 capitalize text-muted-foreground">{(lead.category ?? "").replace(/_/g, " ")}</td>
-                    <td className="px-4 py-2.5 text-xs max-w-[180px] truncate">{lead.recommended_product ?? "—"}</td>
+                    <td className="px-4 py-2.5 text-xs max-w-[180px] truncate">{lead.recommended_product ?? "â€”"}</td>
                     <td className="px-4 py-2.5">
                       {lead.has_website
                         ? <Globe className="h-3.5 w-3.5 text-amber-500" title="Has website" />
-                        : <GlobeOff className="h-3.5 w-3.5 text-emerald-500" title="No website — hot lead" />}
+                        : <GlobeOff className="h-3.5 w-3.5 text-emerald-500" title="No website â€” hot lead" />}
                     </td>
                     <td className="px-4 py-2.5">
                       <Badge className={`text-[10px] text-white ${s.class}`}>{s.label}</Badge>
