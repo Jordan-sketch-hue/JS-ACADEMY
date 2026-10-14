@@ -105,14 +105,14 @@ export function LeadsClient({ initialStats, initialLeads }: { initialStats: Lead
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Scraper pulls businesses without websites from OpenStreetMap (free, no API key). Twilio must be upgraded from trial to call real leads.
+        Leads sourced from findyello.com — Jamaican business directory. Twilio must be upgraded from trial to call real leads.
       </p>
 
       {/* Leads table */}
       {leads.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 py-16 text-center text-muted-foreground">
           <Database className="h-10 w-10 opacity-30" />
-          <p className="text-sm">No leads yet. Click Run Scraper to populate from OpenStreetMap.</p>
+          <p className="text-sm">No leads yet. Run the scraper or add leads manually.</p>
         </div>
       ) : (
         <div className="overflow-x-auto rounded-lg border">

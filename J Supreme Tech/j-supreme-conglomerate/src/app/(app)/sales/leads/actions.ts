@@ -3,6 +3,8 @@
 import { requireOwnerClerkId } from "@/lib/session";
 
 const BOT_URL = process.env.SALES_BOT_URL ?? "https://ample-exploration-production-ef51.up.railway.app";
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://ibtadbwtrxglujkzqofs.supabase.co";
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 function adminKey(): string {
   const key = process.env.SALES_BOT_ADMIN_KEY;
@@ -34,12 +36,34 @@ export async function fetchLeads(): Promise<{ stats: LeadsStats; leads: LeadRow[
   await requireOwnerClerkId();
 
   try {
-    const res = await fetch(`${BOT_URL}/leads`, {
-      headers: { "x-admin-key": adminKey() },
-      cache: "no-store",
-    });
-    if (!res.ok) throw new Error(`Bot responded ${res.status}`);
-    return await res.json() as { stats: LeadsStats; leads: LeadRow[] };
+    // Read leads directly from Supabase (yello scraper writes here)
+    const leadsRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/sales_leads?select=*&order=created_at.desc&limit=200`,
+      {
+        headers: {
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "apikey": SUPABASE_KEY,
+        },
+        cache: "no-store",
+      }
+    );
+    if (!leadsRes.ok) throw new Error(`Supabase responded ${leadsRes.status}`);
+    const leads = await leadsRes.json() as LeadRow[];
+
+    const total = leads.length;
+    const new_count = leads.filter(l => l.status === "new").length;
+    const called_count = leads.filter(l => l.status === "called").length;
+    const dnc_count = leads.filter(l => l.status === "dnc").length;
+
+    return {
+      stats: {
+        total: String(total),
+        new_count: String(new_count),
+        called_count: String(called_count),
+        dnc_count: String(dnc_count),
+      },
+      leads,
+    };
   } catch (e: any) {
     console.error("[leads] fetchLeads error:", e.message);
     return { stats: { total: "0", new_count: "0", called_count: "0", dnc_count: "0" }, leads: [] };
