@@ -74,7 +74,7 @@ const clerkAuthMiddleware = clerkMiddleware(async (auth, req) => {
         return NextResponse.redirect(new URL("/access-denied", req.url));
       }
     }
-    if (allowed && (path === "/sign-in" || path.startsWith("/sign-in/"))) {
+    if (allowed && (path === "/" || path === "/sign-in" || path.startsWith("/sign-in/"))) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
   }
