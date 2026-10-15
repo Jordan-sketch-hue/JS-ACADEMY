@@ -518,7 +518,7 @@ export function LeadsClient({ initialStats, initialLeads, initialFollowUps = [],
       {/* ── Performance stats ─────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <StatCard label="Calls made"      value={stats.called_count ?? 0} icon={PhoneCall}    className="border-sky-500/30" />
-        <StatCard label="In queue"        value={stats.new_count ?? 0}    icon={Clock}        />
+        <StatCard label="In queue"        value={hasFilters && filteredCount !== null ? filteredCount : (stats.new_count ?? 0)} icon={Clock} sub={hasFilters && filteredCount !== null ? "filtered" : undefined} />
         <StatCard label="Booked call-back" value={bookedCount}            icon={CalendarCheck} className="border-emerald-500/30" sub="requested follow-up" />
         <StatCard label="Mockup requests" value={mockupCount}             icon={MessageSquare} className="border-amber-500/30" />
         <StatCard label="Hot leads"       value={hotLeads.length}         icon={Flame}        className="border-orange-500/30" />
