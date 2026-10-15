@@ -30,11 +30,20 @@ function fmtDate(iso: string | null) {
 function StatCard({ label, value, icon: Icon, sub, className = "" }: {
   label: string; value: string | number; icon: any; sub?: string; className?: string;
 }) {
+  const str = String(value);
+  const parts = str.includes(" + ") ? str.split(" + ") : null;
+  const fontSize = parts ? "text-sm" : str.length > 10 ? "text-lg" : "text-2xl";
   return (
     <Card className={`flex items-center gap-3 p-4 ${className}`}>
       <Icon className="h-5 w-5 shrink-0 text-muted-foreground" />
-      <div>
-        <p className="text-2xl font-bold leading-none">{value}</p>
+      <div className="min-w-0 flex-1">
+        {parts ? (
+          <div className="font-bold leading-tight text-sm">
+            {parts.map((p, i) => <p key={i}>{p}</p>)}
+          </div>
+        ) : (
+          <p className={`${fontSize} font-bold leading-none`}>{value}</p>
+        )}
         <p className="mt-0.5 text-xs text-muted-foreground">{label}</p>
         {sub && <p className="mt-0.5 text-[10px] text-muted-foreground/60">{sub}</p>}
       </div>
