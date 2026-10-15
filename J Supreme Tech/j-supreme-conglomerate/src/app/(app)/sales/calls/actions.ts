@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { requireOwnerClerkId } from "@/lib/session";
 import { getServiceSupabase } from "@/lib/supabase/admin";
@@ -49,7 +49,7 @@ export async function summarizeCall(log: CallLogRow): Promise<CallSummary> {
 
   if (!log.transcript || log.outcome !== "answered") {
     return {
-      wants: "N/A — call not answered",
+      wants: "N/A â€” call not answered",
       pain_points: "N/A",
       sentiment: "no_answer",
       next_action: log.notes ?? "Schedule another call attempt",
@@ -68,7 +68,7 @@ export async function summarizeCall(log: CallLogRow): Promise<CallSummary> {
     };
   }
 
-  const prompt = `You are a sales manager reviewing a call transcript made by Alex, an AI agent for J Supreme Tech.
+  const prompt = `You are a sales manager reviewing a call transcript made by Kai, an AI agent for J Supreme Tech.
 
 Name: ${log.lead_name ?? "Unknown"}
 Business: ${log.lead_business ?? "Unknown"}
@@ -85,7 +85,7 @@ Respond with ONLY valid JSON (no markdown, no extra text):
   "pain_points": "one sentence on their pain points or objections",
   "sentiment": "positive|neutral|negative",
   "next_action": "specific recommended next action for the sales agent",
-  "follow_up_draft": "a short, professional WhatsApp/text follow-up message from Alex at J Supreme Tech. 2-3 sentences max. No emoji unless natural. Reference what was discussed."
+  "follow_up_draft": "a short, professional WhatsApp/text follow-up message from Kai at J Supreme Tech. 2-3 sentences max. No emoji unless natural. Reference what was discussed."
 }`;
 
   try {
@@ -111,7 +111,7 @@ Respond with ONLY valid JSON (no markdown, no extra text):
   } catch (e: any) {
     console.error("[calls] summarizeCall error:", e.message);
     return {
-      wants: "Summary unavailable — check server logs",
+      wants: "Summary unavailable â€” check server logs",
       pain_points: "Summary unavailable",
       sentiment: "neutral",
       next_action: log.notes ?? "Follow up manually",
@@ -123,9 +123,9 @@ Respond with ONLY valid JSON (no markdown, no extra text):
 function buildFollowUpDraft(log: CallLogRow, _summary: CallSummary | null): string {
   const co = log.lead_business ?? log.lead_name ?? "your business";
   if (log.outcome !== "answered") {
-    return `Hi, this is Alex from J Supreme Tech. I tried reaching ${co} earlier but missed you. We help Jamaican businesses get professional websites and digital marketing. Would love 5 minutes to chat — when is a good time?`;
+    return `Hi, this is Kai from J Supreme Tech. I tried reaching ${co} earlier but missed you. We help Jamaican businesses get professional websites and digital marketing. Would love 5 minutes to chat â€” when is a good time?`;
   }
-  return `Hi, it was great speaking with someone from ${co}. This is Alex from J Supreme Tech following up on our conversation. Looking forward to helping you move forward — just reply here or give us a call.`;
+  return `Hi, it was great speaking with someone from ${co}. This is Kai from J Supreme Tech following up on our conversation. Looking forward to helping you move forward â€” just reply here or give us a call.`;
 }
 
 export async function sendFollowUpEmail(
@@ -138,7 +138,7 @@ export async function sendFollowUpEmail(
 
   const result = await sendSalesEmail({
     from: "hello@go.jsupremetech.online",
-    fromName: "Alex · J Supreme Tech",
+    fromName: "Kai Â· J Supreme Tech",
     to: toEmail,
     subject,
     html: `<p style="font-family:sans-serif;line-height:1.6">${body.replace(/\n/g, "<br/>")}</p>`,
@@ -150,3 +150,4 @@ export async function sendFollowUpEmail(
   if (!result.ok) return { ok: false, error: result.error };
   return { ok: true };
 }
+
