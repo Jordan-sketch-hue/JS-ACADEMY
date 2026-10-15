@@ -68,7 +68,7 @@ function ServiceTags({ services }: { services: string[] | null }) {
 // Jamaica local leads have market=NULL → use special value "NULL" to signal IS NULL filter
 const MARKET_OPTIONS = [
   { value: "",                  label: "All Markets" },
-  { value: "NULL",              label: "Jamaica (local)" },
+  { value: "JA",               label: "Jamaica" },
   { value: "US_MIAMI",         label: "Miami, FL" },
   { value: "US_MIAMI_BEACH",   label: "Miami Beach, FL" },
   { value: "US_ATLANTA",       label: "Atlanta, GA" },
@@ -92,7 +92,6 @@ const MARKET_OPTIONS = [
   { value: "BB_BRIDGETOWN",    label: "Bridgetown, Barbados" },
   { value: "BS_NASSAU",        label: "Nassau, Bahamas" },
   { value: "GD_ST_GEORGE",     label: "St. George's, Grenada" },
-  { value: "JA",               label: "Jamaica (intl-coded)" },
   { value: "KN_BASSETERRE",    label: "Basseterre, St. Kitts" },
   { value: "LC_CASTRIES",      label: "Castries, St. Lucia" },
 ];
