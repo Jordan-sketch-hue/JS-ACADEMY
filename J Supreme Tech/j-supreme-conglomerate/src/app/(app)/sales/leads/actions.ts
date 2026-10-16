@@ -37,6 +37,8 @@ export interface LeadsStats {
   dnc_count: string;
   follow_up_count: string;
   revenue_potential: string;
+  local_count: string;
+  intl_count: string;
 }
 
 export interface FollowUpRow {
@@ -110,6 +112,10 @@ export async function fetchLeads(): Promise<{ stats: LeadsStats; leads: LeadRow[
       offset += PAGE;
     }
 
+    // LOCAL = JMD currency, INTL = everything else (USD/GBP/CAD)
+    const local_count = allLeads.filter(l => l.currency === "JMD").length;
+    const intl_count  = allLeads.filter(l => l.currency !== "JMD" && l.currency != null).length;
+
     // Sort by hotness: JA first → category rank → no-website first → rating desc
     const MARKET_RANK: Record<string, number> = { JA: 0, US: 1, CA: 2, UK: 3 };
     const CATEGORY_RANK: Record<string, number> = {
@@ -166,12 +172,14 @@ export async function fetchLeads(): Promise<{ stats: LeadsStats; leads: LeadRow[
         dnc_count: String(dnc_count),
         follow_up_count: String(follow_up_count),
         revenue_potential,
+        local_count: String(local_count),
+        intl_count: String(intl_count),
       },
       leads,
     };
   } catch (e: any) {
     console.error("[leads] fetchLeads error:", e.message);
-    return { stats: { total: "0", new_count: "0", called_count: "0", dnc_count: "0", follow_up_count: "0", revenue_potential: "—" }, leads: [] };
+    return { stats: { total: "0", new_count: "0", called_count: "0", dnc_count: "0", follow_up_count: "0", revenue_potential: "—", local_count: "0", intl_count: "0" }, leads: [] };
   }
 }
 

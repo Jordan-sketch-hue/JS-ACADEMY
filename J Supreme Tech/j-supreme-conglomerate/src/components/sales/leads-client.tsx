@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition, useEffect, useCallback } from "react";
 import {
   Phone, RefreshCw, Play, CheckCircle, Ban,
   Loader2, TrendingUp, Flame, MessageSquare,
   ChevronDown, ChevronUp, Database, Zap, Clock,
   PhoneCall, PhoneOff, CalendarCheck, Filter, X,
   ClipboardList, AlertCircle, CheckCheck, VoicemailIcon,
+  BarChart3,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -131,7 +132,7 @@ export function LeadsClient({ initialStats, initialLeads, initialFollowUps = [],
   const [leads] = useState(initialLeads);
   const [followUps] = useState(initialFollowUps);
   const [callLogs] = useState(initialCallLogs);
-  const [activeTab, setActiveTab] = useState<"dashboard" | "call-log">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "call-log" | "velocity">("dashboard");
   const [notice, setNotice] = useState<{ type: "ok" | "error"; msg: string } | null>(null);
   const [scraping, startScrape] = useTransition();
   const [calling, startCall] = useTransition();
@@ -257,6 +258,17 @@ export function LeadsClient({ initialStats, initialLeads, initialFollowUps = [],
               {needsFollowUp.length} follow-up
             </Badge>
           )}
+        </button>
+        <button
+          onClick={() => setActiveTab("velocity")}
+          className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
+            activeTab === "velocity"
+              ? "border-foreground text-foreground"
+              : "border-transparent text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <BarChart3 className="h-3.5 w-3.5" />
+          Sales Velocity
         </button>
       </div>
 
@@ -711,6 +723,220 @@ export function LeadsClient({ initialStats, initialLeads, initialFollowUps = [],
       </div>
 
       </>)}
+
+      {activeTab === "velocity" && (
+        <SalesVelocityPanel
+          localCount={parseInt(stats.local_count ?? "902")}
+          intlCount={parseInt(stats.intl_count ?? "1238")}
+          calledCount={parseInt(stats.called_count ?? "0")}
+          bookedCount={bookedCount}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── Sales Velocity Panel ───────────────────────────────────────────────────
+// JST_CATALOG defaults: Website J$50K entry / J$80K avg, Mktg Starter J$30K/mo
+// Intl: Website US$650+ / US$700 avg, Mktg Starter US$500/mo
+const JMD_PER_USD = 158;
+
+function fmtJmd(v: number) {
+  if (v >= 1_000_000) return `J$${(v / 1_000_000).toFixed(1)}M`;
+  if (v >= 1_000)     return `J$${Math.round(v / 1_000)}K`;
+  return `J$${Math.round(v)}`;
+}
+function fmtUsd(v: number) {
+  if (v >= 1_000_000) return `US$${(v / 1_000_000).toFixed(1)}M`;
+  if (v >= 1_000)     return `US$${Math.round(v / 1_000)}K`;
+  return `US$${Math.round(v)}`;
+}
+function calcVel(n: number, wr: number, adv: number, cycleDays: number) {
+  return (n * wr * adv * 30) / cycleDays;
+}
+
+function VelCard({ label, primary, secondary, accent = false, note }: {
+  label: string; primary: string; secondary?: string; accent?: boolean; note?: string;
+}) {
+  return (
+    <Card className={`p-4 space-y-1 ${accent ? "border-violet-500/40 bg-violet-500/5" : ""}`}>
+      <p className="text-xs text-muted-foreground uppercase tracking-widest">{label}</p>
+      <p className={`text-2xl font-bold leading-none ${accent ? "text-violet-400" : ""}`}>{primary}</p>
+      {secondary && <p className="text-xs text-muted-foreground">{secondary}</p>}
+      {note && <p className="text-[10px] text-muted-foreground/60 pt-1 border-t mt-2">{note}</p>}
+    </Card>
+  );
+}
+
+function SalesVelocityPanel({
+  localCount, intlCount, calledCount, bookedCount,
+}: {
+  localCount: number; intlCount: number; calledCount: number; bookedCount: number;
+}) {
+  const realWrPct = calledCount > 0 ? Math.round((bookedCount / calledCount) * 1000) / 10 : 2.5;
+  const [wrPct,       setWrPct]       = useState(Math.max(realWrPct, 0.5));
+  const [localDeal,   setLocalDeal]   = useState(80_000);
+  const [intlDeal,    setIntlDeal]    = useState(700);
+  const [localCycle,  setLocalCycle]  = useState(7);
+  const [intlCycle,   setIntlCycle]   = useState(14);
+
+  const wr = wrPct / 100;
+  const localVel   = calcVel(localCount, wr, localDeal, localCycle);
+  const intlVelUsd = calcVel(intlCount,  wr, intlDeal,  intlCycle);
+  const intlVelJmd = intlVelUsd * JMD_PER_USD;
+  const merged     = localVel + intlVelJmd;
+
+  const scenarios = [
+    { label: "Conservative", wr: 0.01 },
+    { label: "Realistic",    wr: 0.025 },
+    { label: "Strong",       wr: 0.05 },
+  ];
+
+  return (
+    <div className="space-y-6">
+
+      {/* ── Pipeline snapshot ──────────────────────────────────────────── */}
+      <div className="grid grid-cols-3 gap-3">
+        <Card className="p-4 border-sky-500/30">
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">Local pipeline</p>
+          <p className="text-3xl font-bold text-sky-400">{localCount.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground mt-1">JA + diaspora · JMD pricing</p>
+        </Card>
+        <Card className="p-4 border-orange-500/30">
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">Intl pipeline</p>
+          <p className="text-3xl font-bold text-orange-400">{intlCount.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground mt-1">US / UK / CA / Caribbean · USD</p>
+        </Card>
+        <Card className="p-4 border-emerald-500/30">
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">Calls made</p>
+          <p className="text-3xl font-bold text-emerald-400">{calledCount}</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {bookedCount} booked · live win rate {realWrPct}%
+          </p>
+        </Card>
+      </div>
+
+      {/* ── Controls ───────────────────────────────────────────────────── */}
+      <div className="rounded-lg border bg-card p-4 space-y-4">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Assumptions</p>
+
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <label className="text-xs text-muted-foreground">Win rate</label>
+            <span className="text-sm font-semibold tabular-nums">{wrPct.toFixed(1)}%</span>
+          </div>
+          <input
+            type="range" min={0.5} max={20} step={0.5}
+            value={wrPct}
+            onChange={e => setWrPct(parseFloat(e.target.value))}
+            className="w-full accent-violet-500"
+          />
+          <div className="flex justify-between text-[10px] text-muted-foreground/60">
+            <span>0.5% cold-call</span>
+            <span>20% warm pipeline</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">Local avg deal (J$)</label>
+            <input
+              type="number" value={localDeal} step={5000}
+              onChange={e => setLocalDeal(parseInt(e.target.value) || 80_000)}
+              className="w-full rounded border bg-background px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+            <p className="text-[9px] text-muted-foreground/60">Website J$50K · Mktg J$30K/mo</p>
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">Local cycle (days)</label>
+            <input
+              type="number" value={localCycle} min={1} max={90}
+              onChange={e => setLocalCycle(parseInt(e.target.value) || 7)}
+              className="w-full rounded border bg-background px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">Intl avg deal (US$)</label>
+            <input
+              type="number" value={intlDeal} step={50}
+              onChange={e => setIntlDeal(parseInt(e.target.value) || 700)}
+              className="w-full rounded border bg-background px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+            <p className="text-[9px] text-muted-foreground/60">Website US$650 · Mktg US$500/mo</p>
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">Intl cycle (days)</label>
+            <input
+              type="number" value={intlCycle} min={1} max={90}
+              onChange={e => setIntlCycle(parseInt(e.target.value) || 14)}
+              className="w-full rounded border bg-background px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ── Live velocity cards ─────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <VelCard
+          label="Local / month"
+          primary={fmtJmd(localVel)}
+          secondary={`≈ ${fmtUsd(localVel / JMD_PER_USD)}`}
+          note={`${localCount} leads · ${localCycle}d cycle · J$${localDeal.toLocaleString()} avg`}
+        />
+        <VelCard
+          label="Intl / month"
+          primary={fmtUsd(intlVelUsd)}
+          secondary={`≈ ${fmtJmd(intlVelJmd)}`}
+          note={`${intlCount} leads · ${intlCycle}d cycle · US$${intlDeal} avg`}
+        />
+        <VelCard
+          label="Merged / month"
+          primary={fmtJmd(merged)}
+          secondary={`≈ ${fmtUsd(merged / JMD_PER_USD)}`}
+          accent
+          note={`J$158/US$ conversion · ${wrPct}% win rate`}
+        />
+      </div>
+
+      {/* ── Scenario table ──────────────────────────────────────────────── */}
+      <div>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Scenario comparison</p>
+        <div className="overflow-x-auto rounded-lg border">
+          <table className="w-full text-sm">
+            <thead className="border-b bg-muted/40">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">Scenario</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">Win rate</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-sky-400">Local / mo</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-orange-400">Intl / mo</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-violet-400">Merged (J$)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {scenarios.map(s => {
+                const lv = calcVel(localCount, s.wr, localDeal, localCycle);
+                const iv = calcVel(intlCount,  s.wr, intlDeal,  intlCycle) * JMD_PER_USD;
+                const mv = lv + iv;
+                return (
+                  <tr key={s.label} className="hover:bg-muted/20 transition-colors">
+                    <td className="px-4 py-3 font-medium">{s.label}</td>
+                    <td className="px-4 py-3 text-muted-foreground tabular-nums">{(s.wr * 100).toFixed(1)}%</td>
+                    <td className="px-4 py-3 text-right font-mono text-sky-400 tabular-nums">{fmtJmd(lv)}</td>
+                    <td className="px-4 py-3 text-right font-mono text-orange-400 tabular-nums">{fmtUsd(iv / JMD_PER_USD)}</td>
+                    <td className="px-4 py-3 text-right font-mono text-violet-400 tabular-nums font-semibold">{fmtJmd(mv)}</td>
+                  </tr>
+                );
+              })}
+              <tr className="bg-muted/20 font-medium text-xs text-muted-foreground">
+                <td colSpan={5} className="px-4 py-2">
+                  Formula: (N leads × win rate × avg deal × 30) ÷ cycle days
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   );
 }
