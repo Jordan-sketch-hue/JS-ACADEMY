@@ -1,8 +1,8 @@
-import { Phone } from "lucide-react";
+﻿import { Phone } from "lucide-react";
 import { fetchCallLogs } from "./actions";
 import { CallsClient } from "@/components/sales/calls-client";
 
-export const metadata = { title: "Call Logs · Sales · J Supreme" };
+export const metadata = { title: "Call Logs Â· Sales Â· J Supreme" };
 export const dynamic = "force-dynamic";
 
 export default async function CallLogsPage() {
@@ -15,7 +15,7 @@ export default async function CallLogsPage() {
           <Phone className="h-6 w-6" /> Call Logs
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Review every call Alex made — AI summary, transcript, and one-click follow-up via WhatsApp, email, or SMS.
+          Review every call Kai made â€” AI summary, transcript, and one-click follow-up via WhatsApp, email, or SMS.
         </p>
       </div>
 
@@ -23,3 +23,4 @@ export default async function CallLogsPage() {
     </div>
   );
 }
+
