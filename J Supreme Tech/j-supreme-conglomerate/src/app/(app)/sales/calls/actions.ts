@@ -1,7 +1,6 @@
 ﻿"use server";
 
 import { requireOwnerClerkId } from "@/lib/session";
-import { getServiceSupabase } from "@/lib/supabase/admin";
 import { sendSalesEmail } from "@/lib/sales/send";
 
 export interface CallLogRow {
@@ -28,20 +27,25 @@ export interface CallSummary {
 
 export async function fetchCallLogs(limit = 100): Promise<CallLogRow[]> {
   await requireOwnerClerkId();
-  const sb = getServiceSupabase();
-  if (!sb) return [];
 
-  const { data, error } = await sb
-    .from("sales_calls")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const botUrl = process.env.SALES_BOT_URL ?? "https://ample-exploration-production-ef51.up.railway.app";
+  const adminKey = process.env.SALES_BOT_ADMIN_KEY ?? "jst-sales-bot-2026";
 
-  if (error) {
-    console.error("[calls] fetchCallLogs error:", error.message);
+  try {
+    const res = await fetch(`${botUrl}/call-logs?limit=${limit}`, {
+      headers: { "x-admin-key": adminKey },
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      console.error("[calls] fetchCallLogs bot error:", res.status);
+      return [];
+    }
+    const data = await res.json() as CallLogRow[];
+    return data;
+  } catch (e: any) {
+    console.error("[calls] fetchCallLogs error:", e.message);
     return [];
   }
-  return (data ?? []) as CallLogRow[];
 }
 
 export async function summarizeCall(log: CallLogRow): Promise<CallSummary> {
