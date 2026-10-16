@@ -164,6 +164,11 @@ export function CallsClient({ logs }: { logs: CallLogRow[] }) {
             <div className="flex flex-col items-end gap-1">
               <Badge className={`text-white ${OUTCOME_COLORS[selected.outcome]}`}>{outcomeLabel(selected.outcome)}</Badge>
               <span className="text-xs text-muted-foreground">{fmtDuration(selected.duration_seconds)}</span>
+              {selected.cost_usd != null && selected.cost_usd > 0 && (
+                <span className="text-xs text-muted-foreground" title={`Rime: ${selected.rime_chars ?? 0} chars · Claude in: ${selected.anthropic_input_tokens ?? 0} · out: ${selected.anthropic_output_tokens ?? 0}`}>
+                  ${selected.cost_usd.toFixed(4)} API cost
+                </span>
+              )}
               {selected.booked_followup && <Badge variant="outline" className="text-[10px] text-emerald-500 border-emerald-500">Follow-up booked</Badge>}
             </div>
           </div>
