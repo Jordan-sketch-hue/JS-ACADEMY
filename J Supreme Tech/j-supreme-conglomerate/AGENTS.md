@@ -399,3 +399,55 @@ vercel deploy --prod --scope jordan-sketch-hues-projects
 ```
 
 **Why `vercel build --prebuilt` fails on Windows:** Vercel creates symlinks in `.vercel/output/functions/` which require elevated privileges on Windows. Always use `vercel deploy --prod` instead.
+
+---
+
+## AI Influencers (Higgsfield)
+
+Jordan has two approved AI influencer personas used across JST marketing, sales content, social media, and brand promotions. These are the official faces of J Supreme Tech and J Supreme Marketing campaigns.
+
+### Alex (Male)
+- **File:** `higgsfield/avatars/alex.png`
+- **Age:** Late 20s
+- **Appearance:** Biracial Black/White, light caramel skin, short soft black curls faded on sides, defined bone structure, warm brown eyes, confident smile
+- **Role:** JST sales executive — promotes tech services, SaaS bundles, web/app packages to Caribbean business owners, SMEs, startups
+- **Tone:** Tech-forward, confident, approachable, modern
+
+### Maya (Female)
+- **File:** `higgsfield/avatars/maya.png`
+- **Age:** Late 20s
+- **Appearance:** Black female, bold colorful structured blazer, arms confidently crossed, warm smile, elegant jewelry
+- **Role:** J Supreme Marketing strategist — promotes lifestyle branding, social media growth, marketing packages, brand identity services
+- **Tone:** Bold, sophisticated, aspirational, relatable
+
+### Generating Content with Alex or Maya
+
+```bash
+# Single image (~$0.003)
+tsx higgsfield/influencer.ts alex [jst|lifestyle|sales]
+tsx higgsfield/influencer.ts maya [jst|lifestyle|sales]
+
+# Both at once
+tsx higgsfield/influencer.ts both
+
+# Video/motion clip (~$0.10 per 5-sec clip via Wan 3.0)
+# Add video prompts to influencer.ts and call wan-3.0/text-to-video
+
+# Train Soul ID (locks face permanently across all generations)
+# 1. Add 5-10 portrait photos to higgsfield/photos/alex/ or higgsfield/photos/maya/
+# 2. Run: tsx higgsfield/influencer.ts train-alex
+# 3. Add returned UUID to .env.local as HF_SOUL_ID_ALEX / HF_SOUL_ID_MAYA
+```
+
+### Cost Reference
+| Action | Model | Cost |
+|--------|-------|------|
+| Image generation | Soul 2 Standard | $0.003/image |
+| Video clip (5s) | Wan 3.0 | ~$0.10/clip |
+| Premium video (5s) | Seedance 2.5 | Higher — explicit opt-in only |
+
+### Script Location
+`higgsfield/influencer.ts` — all persona definitions, prompts per scene, Soul ID training, and generation logic.
+
+### Key Rule
+Seedance 2.5 is NEVER the default. Always use cheapest models (Soul 2 for image, Wan 3.0 for video) unless Jordan explicitly requests premium.
