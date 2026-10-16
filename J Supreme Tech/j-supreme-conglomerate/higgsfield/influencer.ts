@@ -41,21 +41,24 @@ const PERSONAS = {
     name: "Alex",
     soulId: process.env.HF_SOUL_ID_ALEX,
     prompts: {
-      jst: "A confident male tech executive in his late 20s, wearing a sharp black blazer over a minimal white shirt, sitting at a modern desk with dual monitors, cinematic lighting, professional headshot style, 4K quality",
-      lifestyle: "A stylish young professional man smiling confidently in a modern Caribbean city setting, wearing smart casual attire, golden hour lighting, lifestyle photography",
-      sales: "A charismatic male sales executive presenting to a client, modern glass office, confident body language, professional attire, dynamic and engaging",
+      // Approved look: biracial Black/White, light caramel skin, short soft black curls faded on sides,
+      // defined bone structure, black turtleneck, bright airy background
+      jst: "Attractive mixed-race male model, light caramel skin tone, biracial Black and White, short soft black curls faded on sides, symmetrical handsome face, defined bone structure, warm brown eyes, relaxed confident smile, light stubble, fitted black turtleneck, clean modern luxury lifestyle portrait, bright airy background, professional fashion photography, sharp focus, photorealistic 4K",
+      lifestyle: "Attractive mixed-race male model, light caramel skin, biracial Black and White, short soft black curls faded sides, confident warm smile, casual luxury streetwear, golden hour Caribbean city backdrop, lifestyle photography, fashion editorial, photorealistic 4K",
+      sales: "Attractive mixed-race male model, light caramel skin, biracial Black and White, short soft black curls faded sides, sharp black blazer white shirt, confident professional presentation, modern glass office, dynamic editorial portrait, photorealistic 4K",
     },
-    style: "tech-forward, confident, professional, modern Caribbean executive",
+    style: "tech-forward, confident, approachable, modern biracial executive",
   },
   maya: {
     name: "Maya",
     soulId: process.env.HF_SOUL_ID_MAYA,
     prompts: {
-      jst: "A sophisticated female marketing strategist in her late 20s, wearing elegant business attire with bold colors, modern minimalist office background, cinematic portrait, confident and approachable",
-      lifestyle: "A stylish young professional woman in a vibrant Caribbean city, wearing trendy yet professional outfit, golden hour lifestyle photography, aspirational and relatable",
-      sales: "A dynamic female executive confidently presenting brand strategy on a modern screen, business casual attire, warm and professional atmosphere, high-end photography",
+      // Approved look: Black female, colorful bold blazer, arms crossed, confident warm expression
+      jst: "A sophisticated Black female marketing executive in her late 20s, bold colorful structured blazer, arms confidently crossed, warm smile, elegant jewelry, modern minimalist background, cinematic portrait lighting, photorealistic 4K",
+      lifestyle: "A confident stylish Black woman in her late 20s, bold fashion statement outfit, warm genuine smile, vibrant Caribbean city setting, golden hour lifestyle photography, aspirational editorial, photorealistic 4K",
+      sales: "A dynamic Black female executive in her late 20s, bold professional blazer, confident posture, presenting to camera, modern office environment, warm professional portrait, photorealistic 4K",
     },
-    style: "modern, aspirational, sophisticated, relatable brand ambassador",
+    style: "modern, bold, sophisticated, aspirational brand ambassador",
   },
 };
 
