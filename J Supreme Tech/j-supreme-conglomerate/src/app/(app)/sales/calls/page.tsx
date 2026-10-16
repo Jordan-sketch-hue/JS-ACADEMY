@@ -1,12 +1,19 @@
-﻿import { Phone } from "lucide-react";
+﻿import { redirect } from "next/navigation";
+import { Phone } from "lucide-react";
 import { fetchCallLogs } from "./actions";
 import { CallsClient } from "@/components/sales/calls-client";
 
-export const metadata = { title: "Call Logs Â· Sales Â· J Supreme" };
+export const metadata = { title: "Call Logs · Sales · J Supreme" };
 export const dynamic = "force-dynamic";
 
 export default async function CallLogsPage() {
-  const logs = await fetchCallLogs(100);
+  let logs;
+  try {
+    logs = await fetchCallLogs(100);
+  } catch (e: any) {
+    if (e?.message === "Unauthorized") redirect("/sign-in");
+    throw e;
+  }
 
   return (
     <div className="space-y-5 p-4 sm:p-6">
