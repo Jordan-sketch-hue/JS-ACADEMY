@@ -11,6 +11,7 @@ import {
 const TABS = [
   { href: "/sales", label: "Overview" },
   { href: "/sales/calls", label: "Call Logs" },
+  { href: "/sales/sms", label: "SMS Logs" },
   { href: "/sales/leads", label: "Leads" },
   { href: "/sales/prospects", label: "Prospects" },
   { href: "/sales/inbox", label: "Inbox" },
