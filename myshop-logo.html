@@ -1,0 +1,236 @@
+<title>MYSHOP Logo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap">
+<style>
+:root {
+  --navy: #1A2744;
+  --gold: #C9A84C;
+  --white: #ffffff;
+  --off: #f6f5f2;
+  --muted: #888;
+  --fg: #1a1a1a;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--off);
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 48px 64px;
+}
+h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 40px;
+  text-align: center;
+}
+.section {
+  max-width: 900px;
+  margin: 0 auto 48px;
+}
+.section-label {
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+/* Swatch panels */
+.panel {
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  flex: 1;
+  min-width: 200px;
+}
+.panel.light { background: #ffffff; }
+.panel.dark  { background: var(--navy); }
+.panel.gold  { background: var(--gold); }
+.panel.off   { background: var(--off); border: 1px solid rgba(0,0,0,.07); }
+
+/* Size demos */
+.sizes { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end; }
+.size-item { text-align: center; }
+.size-item span { display: block; font-size: .65rem; color: var(--muted); margin-top: 8px; letter-spacing: .06em; }
+
+/* Wordmark combos */
+.lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lockup-v {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.wm {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--navy);
+  line-height: 1;
+}
+.wm.on-dark { color: #ffffff; }
+.wm.on-gold { color: var(--navy); }
+
+.tagline {
+  font-size: .65rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.tagline.on-dark { color: rgba(255,255,255,.5); }
+</style>
+
+<h1>MYSHOP — Logo System</h1>
+
+<!-- MARK CONSTRUCTION -->
+<div class="section">
+  <div class="section-label">Mark — Angular Split</div>
+  <div class="row">
+    <div class="panel off">
+      <!-- Primary mark: square split by bold diagonal slash, navy + gold -->
+      <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Navy upper-left triangle -->
+        <polygon points="4,4 96,4 4,96" fill="#1A2744"/>
+        <!-- Gold lower-right triangle -->
+        <polygon points="96,4 96,96 4,96" fill="#C9A84C"/>
+        <!-- Speed slash gap — white diagonal stripe through center -->
+        <polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#f6f5f2"/>
+        <!-- Inner accent — thin gold line on navy side -->
+        <line x1="22" y1="10" x2="88" y2="76" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="square" opacity="0.35"/>
+      </svg>
+    </div>
+    <div class="panel light">
+      <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="4,4 96,4 4,96" fill="#1A2744"/>
+        <polygon points="96,4 96,96 4,96" fill="#C9A84C"/>
+        <polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#ffffff"/>
+        <line x1="22" y1="10" x2="88" y2="76" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="square" opacity="0.35"/>
+      </svg>
+    </div>
+    <div class="panel dark">
+      <!-- Inverted: gold upper, white lower -->
+      <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="4,4 96,4 4,96" fill="#C9A84C"/>
+        <polygon points="96,4 96,96 4,96" fill="rgba(255,255,255,0.12)"/>
+        <polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#1A2744"/>
+        <line x1="22" y1="10" x2="88" y2="76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="square" opacity="0.25"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- SIZE SCALE -->
+<div class="section">
+  <div class="section-label">Scale Test</div>
+  <div class="panel light" style="justify-content:flex-start">
+    <div class="sizes">
+      <div class="size-item">
+        <svg width="16" height="16" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#1A2744"/><polygon points="96,4 96,96 4,96" fill="#C9A84C"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#ffffff"/></svg>
+        <span>16px</span>
+      </div>
+      <div class="size-item">
+        <svg width="24" height="24" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#1A2744"/><polygon points="96,4 96,96 4,96" fill="#C9A84C"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#ffffff"/></svg>
+        <span>24px</span>
+      </div>
+      <div class="size-item">
+        <svg width="40" height="40" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#1A2744"/><polygon points="96,4 96,96 4,96" fill="#C9A84C"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#ffffff"/></svg>
+        <span>40px</span>
+      </div>
+      <div class="size-item">
+        <svg width="64" height="64" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#1A2744"/><polygon points="96,4 96,96 4,96" fill="#C9A84C"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#ffffff"/></svg>
+        <span>64px</span>
+      </div>
+      <div class="size-item">
+        <svg width="96" height="96" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#1A2744"/><polygon points="96,4 96,96 4,96" fill="#C9A84C"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#ffffff"/></svg>
+        <span>96px</span>
+      </div>
+      <div class="size-item">
+        <svg width="160" height="160" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#1A2744"/><polygon points="96,4 96,96 4,96" fill="#C9A84C"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#ffffff"/><line x1="22" y1="10" x2="88" y2="76" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="square" opacity="0.35"/></svg>
+        <span>160px</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOCKUPS -->
+<div class="section">
+  <div class="section-label">Logo Lockups</div>
+  <div class="row">
+    <!-- Horizontal on light -->
+    <div class="panel light" style="flex:2;justify-content:flex-start;gap:16px;flex-direction:column;align-items:flex-start">
+      <div class="lockup">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#1A2744"/><polygon points="96,4 96,96 4,96" fill="#C9A84C"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#ffffff"/><line x1="22" y1="10" x2="88" y2="76" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="square" opacity="0.35"/></svg>
+        <div>
+          <div class="wm" style="font-size:1.4rem">MYSHOP</div>
+        </div>
+      </div>
+      <div class="lockup">
+        <svg width="32" height="32" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#1A2744"/><polygon points="96,4 96,96 4,96" fill="#C9A84C"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#ffffff"/></svg>
+        <div>
+          <div class="wm" style="font-size:1rem">MYSHOP</div>
+          <div class="tagline">Everything. Delivered.</div>
+        </div>
+      </div>
+    </div>
+    <!-- On dark -->
+    <div class="panel dark" style="flex:2;justify-content:flex-start;gap:16px;flex-direction:column;align-items:flex-start">
+      <div class="lockup">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#C9A84C"/><polygon points="96,4 96,96 4,96" fill="rgba(255,255,255,0.12)"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#1A2744"/><line x1="22" y1="10" x2="88" y2="76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="square" opacity="0.25"/></svg>
+        <div>
+          <div class="wm on-dark" style="font-size:1.4rem">MYSHOP</div>
+        </div>
+      </div>
+      <div class="lockup">
+        <svg width="32" height="32" viewBox="0 0 100 100" fill="none"><polygon points="4,4 96,4 4,96" fill="#C9A84C"/><polygon points="96,4 96,96 4,96" fill="rgba(255,255,255,0.12)"/><polygon points="52,0 100,0 100,4 96,4 48,100 4,100 4,96 56,4" fill="#1A2744"/></svg>
+        <div>
+          <div class="wm on-dark" style="font-size:1rem">MYSHOP</div>
+          <div class="tagline on-dark">Everything. Delivered.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MEANING -->
+<div class="section">
+  <div class="section-label">Mark Meaning</div>
+  <div class="panel light" style="flex-direction:column;align-items:flex-start;gap:20px;padding:28px 32px">
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div style="flex:1;min-width:180px">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:6px">The Slash</div>
+        <div style="font-size:.82rem;color:var(--muted);line-height:1.6">A precision cut through the square — speed, forward motion, the decisive moment of purchase.</div>
+      </div>
+      <div style="flex:1;min-width:180px">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:6px">Navy + Gold</div>
+        <div style="font-size:.82rem;color:var(--muted);line-height:1.6">Authority meets value. Navy = trusted destination. Gold = the find — the deal, the product you wanted.</div>
+      </div>
+      <div style="flex:1;min-width:180px">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:6px">One Square</div>
+        <div style="font-size:.82rem;color:var(--muted);line-height:1.6">A single unified form — one destination, everything you need. The split lives inside the whole.</div>
+      </div>
+    </div>
+  </div>
+</div>

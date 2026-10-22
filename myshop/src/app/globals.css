@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+/* MYSHOP brand tokens — Navy · Gold · White */
+:root {
+  --navy: #1A2744;
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --off: #F6F5F2;
+  --muted: #888888;
+
+  --background: #ffffff;
+  --foreground: #1A2744;
+  --surface: #F6F5F2;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #0e1520;
+    --foreground: #F6F5F2;
+    --surface: #1A2744;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --background: #0e1520;
+  --foreground: #F6F5F2;
+  --surface: #1A2744;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-navy: var(--navy);
+  --color-gold: var(--gold);
+  --color-muted: var(--muted);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Inter, system-ui, sans-serif;
+}
