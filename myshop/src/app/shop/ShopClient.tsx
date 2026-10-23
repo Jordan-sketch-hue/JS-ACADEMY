@@ -1,25 +1,35 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import type { Product, Category } from '@/types/shop'
 import ProductCard from '@/components/ProductCard'
 import Link from 'next/link'
 
 const catEmoji: Record<string, string> = {
-  jewelry:       '✦',
-  electronics:   '◈',
-  'home-living': '◉',
-  beauty:        '◆',
-  lifestyle:     '◐',
+  jewelry:            '✦',
+  electronics:        '◈',
+  'home-living':      '◉',
+  beauty:             '◆',
+  lifestyle:          '◐',
+  furniture:          '◫',
+  'home-improvement': '◧',
+  cellphone:          '◰',
+  fitness:            '◑',
+  pets:               '◒',
+  baby:               '◓',
+  office:             '◨',
+  garden:             '◍',
 }
 
 export default function ShopClient({
   categories,
   products,
+  initialSlug = 'all',
 }: {
   categories: Category[]
   products: Product[]
+  initialSlug?: string
 }) {
-  const [activeSlug, setActiveSlug] = useState<string>('all')
+  const [activeSlug, setActiveSlug] = useState<string>(initialSlug)
 
   const filtered = activeSlug === 'all'
     ? products
