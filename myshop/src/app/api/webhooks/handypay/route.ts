@@ -1,27 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createHmac, timingSafeEqual } from 'node:crypto'
 import { createServiceSupabase } from '@/lib/supabase-server'
-
-export const runtime = 'nodejs'
 
 const SECRET = process.env.HANDYPAY_WEBHOOK_SECRET
 
-function hasValidSignature(payload: string, signature: string): boolean {
+async function hasValidSignature(payload: string, signature: string): Promise<boolean> {
   if (!SECRET) return false
   const prefix = 'sha256='
   if (!signature.startsWith(prefix)) return false
   const hex = signature.slice(prefix.length)
   if (!/^[0-9a-f]{64}$/i.test(hex)) return false
-  const expected = createHmac('sha256', SECRET).update(payload).digest()
-  const received = Buffer.from(hex, 'hex')
-  return received.length === expected.length && timingSafeEqual(received, expected)
+
+  const enc = new TextEncoder()
+  const key = await crypto.subtle.importKey(
+    'raw', enc.encode(SECRET),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false, ['sign']
+  )
+  const expectedBuf = await crypto.subtle.sign('HMAC', key, enc.encode(payload))
+  const expected = new Uint8Array(expectedBuf)
+  const received = new Uint8Array(32)
+  for (let i = 0; i < 32; i++) received[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16)
+  let diff = 0
+  for (let i = 0; i < 32; i++) diff |= expected[i] ^ received[i]
+  return diff === 0
 }
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
   const signature = req.headers.get('x-handypay-signature') ?? ''
 
-  if (SECRET && !hasValidSignature(body, signature)) {
+  if (SECRET && !await hasValidSignature(body, signature)) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
   }
 

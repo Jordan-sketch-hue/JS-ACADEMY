@@ -2,8 +2,6 @@ import { createServerSupabase } from '@/lib/supabase-server'
 import type { Product } from '@/types/shop'
 import ProductCard from '@/components/ProductCard'
 
-export const revalidate = 60
-
 export default async function ShopPage() {
   const supabase = await createServerSupabase()
   const { data: products } = await supabase

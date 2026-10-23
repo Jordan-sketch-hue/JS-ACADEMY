@@ -3,8 +3,6 @@ import type { Product } from '@/types/shop'
 import { notFound } from 'next/navigation'
 import AddToCartButton from '@/components/AddToCartButton'
 
-export const revalidate = 60
-
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const supabase = await createServerSupabase()
