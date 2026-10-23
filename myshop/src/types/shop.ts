@@ -1,3 +1,14 @@
+export interface Category {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+  cover_url: string | null
+  hero_url: string | null
+  accent_color: string
+  created_at: string
+}
+
 export interface Product {
   id: string
   name: string
