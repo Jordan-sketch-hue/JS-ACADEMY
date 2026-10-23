@@ -162,12 +162,12 @@ export default function CheckoutPage() {
         <div className="rounded-xl p-6 mb-6" style={{ background: 'var(--surface)' }}>
           {cart.map(item => (
             <div
-              key={item.product.id}
+              key={item.product_id}
               className="flex justify-between text-sm py-2"
               style={{ color: 'var(--navy)' }}
             >
-              <span>{item.product.name} × {item.qty}</span>
-              <span>J${(item.product.price_jmd * item.qty).toLocaleString()}</span>
+              <span>{item.name} × {item.quantity}</span>
+              <span>J${(item.price_jmd * item.quantity).toLocaleString()}</span>
             </div>
           ))}
           <div
