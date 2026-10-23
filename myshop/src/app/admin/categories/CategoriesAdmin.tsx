@@ -100,8 +100,8 @@ function CategoryCard({ cat, onUpdate }: { cat: Category; onUpdate: (updated: Ca
           body: JSON.stringify({ statusUrl: status_url }),
         })
         const pollData = await pollRes.json()
-        if (pollData.status === 'completed' && pollData.output_url) {
-          imageUrl = pollData.output_url
+        if (pollData.status === 'completed' && (pollData.output_url || pollData.output?.[0])) {
+          imageUrl = pollData.output_url ?? pollData.output[0]
           break
         }
         if (pollData.status === 'failed') throw new Error('Generation failed')

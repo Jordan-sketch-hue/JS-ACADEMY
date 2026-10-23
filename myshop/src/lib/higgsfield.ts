@@ -40,11 +40,17 @@ export async function generateVideo(prompt: string) {
 export async function pollStatus(statusUrl: string): Promise<{
   status: string
   output?: string[]
+  images?: { url: string }[]
   error?: string
 }> {
   const res = await fetch(statusUrl, {
     headers: { Authorization: authHeader() },
   })
   if (!res.ok) throw new Error(`Poll ${res.status}: ${await res.text()}`)
-  return res.json()
+  const data = await res.json()
+  // Normalize: Soul V2 returns images[0].url; expose as output[0] for compatibility
+  if (data.images?.length && !data.output) {
+    data.output = data.images.map((img: { url: string }) => img.url)
+  }
+  return data
 }
