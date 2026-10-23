@@ -4,11 +4,19 @@ import type { Product } from '@/types/shop'
 import { useCart } from '@/context/CartContext'
 
 const catColors: Record<string, string> = {
-  jewelry:     '#C9A84C',
-  electronics: '#3B82F6',
-  'home-living': '#10B981',
-  beauty:      '#EC4899',
-  lifestyle:   '#8B5CF6',
+  jewelry:           '#C9A84C',
+  electronics:       '#3B82F6',
+  'home-living':     '#10B981',
+  beauty:            '#EC4899',
+  lifestyle:         '#8B5CF6',
+  furniture:         '#8B7355',
+  'home-improvement':'#F59E0B',
+  cellphone:         '#6366F1',
+  fitness:           '#22C55E',
+  pets:              '#F97316',
+  baby:              '#FB7185',
+  office:            '#64748B',
+  garden:            '#84CC16',
 }
 
 export default function ProductCard({ product: p }: { product: Product }) {

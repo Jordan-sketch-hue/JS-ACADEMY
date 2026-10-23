@@ -26,6 +26,38 @@ const catPrompts: Record<string, { cover: string; hero: string }> = {
     cover: 'Trendy lifestyle accessories flat lay, vibrant colors, sunglasses bags and accessories, fashion editorial photography, modern aesthetic',
     hero:  'Aspirational lifestyle flat lay with trendy accessories and fashion items, bold colors, social media ready product photography',
   },
+  furniture: {
+    cover: 'Modern minimalist furniture flat lay, warm wood tones, stylish sofa and accent chairs, interior design photography, soft natural light',
+    hero:  'Beautifully staged living room with premium furniture pieces, warm ambient lighting, luxury home decor editorial photography',
+  },
+  'home-improvement': {
+    cover: 'Professional home improvement tools flat lay, clean white background, drill power tools and hardware, product photography',
+    hero:  'Modern home renovation in progress, fresh paint and new fixtures, bright clean aesthetic, DIY home improvement lifestyle photography',
+  },
+  cellphone: {
+    cover: 'Trendy phone cases and accessories flat lay, colorful tech accessories, clean modern background, product photography',
+    hero:  'Premium smartphone with stylish accessories, tech lifestyle editorial, dark minimalist backdrop, high-end product photography',
+  },
+  fitness: {
+    cover: 'Fitness equipment flat lay, yoga mat resistance bands and weights, athletic lifestyle photography, clean white background',
+    hero:  'Dynamic outdoor fitness lifestyle, athletic gear in action, vibrant energy, sports editorial photography',
+  },
+  pets: {
+    cover: 'Adorable pet accessories flat lay, colorful toys collars and treats, clean pastel background, lifestyle product photography',
+    hero:  'Happy pet with premium accessories, warm natural light, lifestyle photography for pet lovers',
+  },
+  baby: {
+    cover: 'Cute baby products flat lay, soft pastel tones, baby clothes toys and essentials, lifestyle photography',
+    hero:  'Bright and cheerful nursery with premium baby products, warm soft lighting, family lifestyle photography',
+  },
+  office: {
+    cover: 'Modern office supplies flat lay, clean desk setup with stationery and organizers, minimalist photography, white background',
+    hero:  'Stylish productive workspace with premium office products, natural lighting, modern professional aesthetic photography',
+  },
+  garden: {
+    cover: 'Garden tools and outdoor products flat lay, earthy tones, plants and pots and tools, lifestyle photography, natural light',
+    hero:  'Beautiful outdoor patio and garden setup, lush greenery with premium outdoor furniture, lifestyle photography',
+  },
 }
 
 function CategoryCard({ cat, onUpdate }: { cat: Category; onUpdate: (updated: Category) => void }) {
