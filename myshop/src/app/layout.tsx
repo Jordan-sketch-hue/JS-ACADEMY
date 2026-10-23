@@ -5,7 +5,7 @@ import Nav from '@/components/Nav'
 import { CartProvider } from '@/context/CartContext'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display', weight: ['400','500','600','700','800'] })
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display', weight: ['400','500','600','700'] })
 
 export const metadata: Metadata = {
   title: 'MYSHOP — Everything. Delivered.',
