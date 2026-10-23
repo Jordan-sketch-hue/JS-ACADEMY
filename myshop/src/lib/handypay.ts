@@ -42,6 +42,7 @@ export async function createPaymentSession({
       ],
       success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl,
+      pass_fees_to_customer: true,
       metadata: { order_id: orderId },
     }),
   })
