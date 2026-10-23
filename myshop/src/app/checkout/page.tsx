@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCart } from '@/context/CartContext'
 import { useRouter } from 'next/navigation'
 
@@ -10,10 +10,13 @@ export default function CheckoutPage() {
   const [redirecting, setRedirecting] = useState(false)
   const [error, setError] = useState('')
 
-  if (cart.length === 0) {
-    router.replace('/cart')
-    return null
-  }
+  useEffect(() => {
+    if (cart.length === 0) {
+      router.replace('/cart')
+    }
+  }, [cart.length, router])
+
+  if (cart.length === 0) return null
 
   async function handlePay() {
     setLoading(true)
