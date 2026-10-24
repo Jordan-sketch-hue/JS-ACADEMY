@@ -8,7 +8,7 @@ const supabase = createClient(
 
 const JARVIS_ENDPOINT = 'https://jarvis-wa-reader-production.up.railway.app/send'
 const JARVIS_SECRET = process.env.JARVIS_WA_SECRET || 'jst-wa-send-2026'
-const JORDAN_JID = '6582182282'
+const JORDAN_JID = '16582182282'
 
 const POSITIVE = /\b(y|yes|yeah|yep|sure|interested|definitely|absolutely|ok|okay|yh|yea)\b/i
 const NEGATIVE = /\b(n|no|nope|not interested|stop|unsubscribe|remove)\b/i
@@ -16,17 +16,35 @@ const NEGATIVE = /\b(n|no|nope|not interested|stop|unsubscribe|remove)\b/i
 async function notifyJordan(from: string, body: string, sentiment: string) {
   const emoji = sentiment === 'positive' ? '🟢' : sentiment === 'negative' ? '🔴' : '🟡'
   const msg = `${emoji} SMS Reply\n\nFrom: ${from}\nMessage: "${body}"\n\nStatus: ${sentiment.toUpperCase()}`
-  await fetch(JARVIS_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-send-secret': JARVIS_SECRET },
-    body: JSON.stringify({ jid: JORDAN_JID, text: msg })
-  })
+  try {
+    await fetch(JARVIS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-send-secret': JARVIS_SECRET },
+      body: JSON.stringify({ jid: JORDAN_JID, text: msg })
+    })
+  } catch (e) {
+    console.error('WA notify failed:', e)
+  }
 }
 
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json()
     const event = payload?.data?.event_type
+
+    // Handle delivery receipts — update sms_outbound delivered status
+    if (event === 'message.finalized') {
+      const msg = payload?.data?.payload
+      const telnyxId: string = msg?.id || ''
+      const status: string = msg?.to?.[0]?.status || ''
+      if (telnyxId) {
+        await supabase
+          .from('sms_outbound')
+          .update({ delivered: status === 'delivered', delivery_status: status })
+          .eq('telnyx_id', telnyxId)
+      }
+      return NextResponse.json({ ok: true })
+    }
 
     if (event !== 'message.received') {
       return NextResponse.json({ ok: true })
