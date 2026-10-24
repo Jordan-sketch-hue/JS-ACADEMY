@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { MessageSquare } from "lucide-react";
 import { fetchSmsLogs } from "./actions";
 import { SmsClient } from "@/components/sales/sms-client";
@@ -22,7 +22,7 @@ export default async function SmsLogsPage() {
           <MessageSquare className="h-6 w-6" /> SMS Logs
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Every text Kai sent after a call — delivery status and message body.
+          Outbound blasts, Kai follow-up texts, and inbound replies — all in one place.
         </p>
       </div>
 
