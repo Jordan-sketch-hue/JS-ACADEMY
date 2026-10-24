@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { MessageSquare, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft } from "lucide-react";
@@ -54,7 +54,7 @@ function ReceivedLog({ row }: { row: SmsLogRow }) {
         )}
         <span className="ml-auto text-xs text-muted-foreground">{fmtDate(row.sent_at)}</span>
       </div>
-      <p className="text-sm leading-relaxed pl-7">{row.body.replace(/^\[Blast reply\] /, "").replace(/ — (POSITIVE|NEGATIVE|NEUTRAL)$/, "")}</p>
+      <p className="text-sm leading-relaxed pl-7">{row.body.replace(/^\[Blast reply\] /, "").replace(/ â€” (POSITIVE|NEGATIVE|NEUTRAL)$/, "")}</p>
     </Card>
   );
 }
@@ -62,7 +62,7 @@ function ReceivedLog({ row }: { row: SmsLogRow }) {
 export function SmsClient({ logs }: { logs: SmsLogRow[] }) {
   const [tab, setTab] = useState<"sent" | "received">("received");
 
-  const sent = logs.filter(r => r.source === "kai");
+  const sent = logs.filter(r => r.source === "kai" || r.source === "blast");
   const received = logs.filter(r => r.source === "blast_reply");
   const shown = tab === "sent" ? sent : received;
 
@@ -80,7 +80,7 @@ export function SmsClient({ logs }: { logs: SmsLogRow[] }) {
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            {t === "received" ? "Received" : "Sent (Kai)"}
+            {t === "received" ? "Received" : "Sent"}
             <span className="ml-2 text-xs rounded-full bg-muted px-1.5 py-0.5">
               {t === "received" ? received.length : sent.length}
             </span>
