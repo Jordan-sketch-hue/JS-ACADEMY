@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+﻿export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { getClient } from "@/lib/ct-client";
@@ -120,28 +120,28 @@ const GALLERY_IMAGES: Record<string, GalleryImage[]> = {
     { src: "/gallery/variety/variety-6.webp", alt: "Variety store 6" },
   ],
   beauty: [
-    { src: "/gallery/beauty/beauty-1.webp", alt: "Beauty service 1" },
-    { src: "/gallery/beauty/beauty-2.webp", alt: "Beauty service 2" },
-    { src: "/gallery/beauty/beauty-3.webp", alt: "Beauty service 3" },
-    { src: "/gallery/beauty/beauty-4.webp", alt: "Beauty service 4" },
-    { src: "/gallery/beauty/beauty-5.webp", alt: "Beauty service 5" },
-    { src: "/gallery/beauty/beauty-6.webp", alt: "Beauty service 6" },
+    { src: "/gallery/beauty-1.jpg", alt: "Nail art service" },
+    { src: "/gallery/beauty-2.jpg", alt: "Gel manicure" },
+    { src: "/gallery/beauty-3.jpg", alt: "Acrylic nails" },
+    { src: "/gallery/beauty-4.jpg", alt: "Nail art design" },
+    { src: "/gallery/beauty-5.jpg", alt: "Pedicure service" },
+    { src: "/gallery/beauty-6.jpg", alt: "French tips" },
   ],
   automotive: [
-    { src: "/gallery/automotive/auto-1.webp", alt: "Auto service 1" },
-    { src: "/gallery/automotive/auto-2.webp", alt: "Auto service 2" },
-    { src: "/gallery/automotive/auto-3.webp", alt: "Auto service 3" },
-    { src: "/gallery/automotive/auto-4.webp", alt: "Auto service 4" },
-    { src: "/gallery/automotive/auto-5.webp", alt: "Auto service 5" },
-    { src: "/gallery/automotive/auto-6.webp", alt: "Auto service 6" },
+    { src: "/gallery/auto-1.jpg", alt: "Auto repair service" },
+    { src: "/gallery/auto-2.jpg", alt: "Engine diagnostics" },
+    { src: "/gallery/auto-3.jpg", alt: "Brake service" },
+    { src: "/gallery/auto-4.jpg", alt: "Oil change" },
+    { src: "/gallery/auto-5.jpg", alt: "Tyre service" },
+    { src: "/gallery/auto-6.jpg", alt: "Car wash and detailing" },
   ],
   furniture: [
-    { src: "/gallery/furniture/furniture-1.webp", alt: "Furniture piece 1" },
-    { src: "/gallery/furniture/furniture-2.webp", alt: "Furniture piece 2" },
-    { src: "/gallery/furniture/furniture-3.webp", alt: "Furniture piece 3" },
-    { src: "/gallery/furniture/furniture-4.webp", alt: "Furniture piece 4" },
-    { src: "/gallery/furniture/furniture-5.webp", alt: "Furniture piece 5" },
-    { src: "/gallery/furniture/furniture-6.webp", alt: "Furniture piece 6" },
+    { src: "/gallery/furniture-1.jpg", alt: "Living room furniture" },
+    { src: "/gallery/furniture-2.jpg", alt: "Bedroom set" },
+    { src: "/gallery/furniture-3.jpg", alt: "Dining furniture" },
+    { src: "/gallery/furniture-4.jpg", alt: "Office furniture" },
+    { src: "/gallery/furniture-5.jpg", alt: "Outdoor furniture" },
+    { src: "/gallery/furniture-6.jpg", alt: "Custom furniture" },
   ],
 };
 
@@ -166,9 +166,12 @@ const CATEGORY_DEFAULTS: Record<string, Omit<CategoryDefaults, "gallery">> = {
       { label: "Contact", href: "#contact" },
     ],
     services: [
-      { icon: "", title: "Hair Services", description: "Relaxers, naturals, braids, weaves, colour, and treatments.", image: "/services/beauty-1.jpg" },
-      { icon: "", title: "Nail Services", description: "Gel, acrylic, pedicures, and nail art.", image: "/services/beauty-2.jpg" },
-      { icon: "", title: "Skincare & Spa", description: "Facials, waxing, brow design, and relaxation treatments.", image: "/services/beauty-3.jpg" },
+      { icon: "", title: "Gel Polish", description: "Long-lasting gel colour in hundreds of shades. Chip-free finish.", image: "/services/beauty-1.jpg" },
+      { icon: "", title: "Acrylic Nails", description: "Full sets, infills, and extensions sculpted to your style.", image: "/services/beauty-2.jpg" },
+      { icon: "", title: "Nail Art & Design", description: "Chrome, ombre, 3D art, foils, and hand-painted designs.", image: "/services/beauty-3.jpg" },
+      { icon: "", title: "Manicure", description: "Classic, spa, and luxury manicures with cuticle care.", image: "/services/beauty-1.jpg" },
+      { icon: "", title: "Pedicure", description: "Foot soak, exfoliation, cuticle care, and polish.", image: "/services/beauty-2.jpg" },
+      { icon: "", title: "French Tips", description: "Classic French, reverse French, and coloured tip variations.", image: "/services/beauty-3.jpg" },
     ],
     stats: [
       { value: 3000, suffix: "+", label: "Clients Served" },
@@ -317,10 +320,10 @@ const CATEGORY_DEFAULTS: Record<string, Omit<CategoryDefaults, "gallery">> = {
       { label: "Contact", href: "#contact" },
     ],
     services: [
-      { icon: "", title: "Daily Meals", description: "Freshly prepared breakfast, lunch, and dinner options." },
-      { icon: "", title: "Catering", description: "Corporate events, parties, weddings, and private functions." },
-      { icon: "", title: "Baked Goods", description: "Cakes, pastries, bread, and custom celebration cakes." },
-      { icon: "", title: "Meal Prep", description: "Weekly meal prep packages for individuals and families." },
+      { icon: "", title: "Dine In", description: "Fresh, flavourful plates made to order in a welcoming space." },
+      { icon: "", title: "Takeout & Delivery", description: "Order online or by phone -- ready when you are." },
+      { icon: "", title: "Catering", description: "Corporate events, birthdays, and private functions catered on demand." },
+      { icon: "", title: "Baked Goods", description: "Pastries, custom cakes, and baked-to-order desserts." },
     ],
     stats: [
       { value: 800, suffix: "+", label: "Meals Delivered" },
@@ -519,7 +522,39 @@ const CATEGORY_DEFAULTS: Record<string, Omit<CategoryDefaults, "gallery">> = {
       { name: "Ingrid W.", rating: 4, text: "Great selection of kids clothes. Good quality for the price." },
     ],
   },
-  crafts: {
+
+  design: {
+    heroHeadline: "Design That Makes People Stop",
+    heroSubline: "Logos, branding, print, and digital graphics that set your business apart.",
+    ctaLabel: "Get a Quote",
+    ctaHref: "#contact",
+    navLinks: [
+      { label: "Services", href: "#services" },
+      { label: "Portfolio", href: "#gallery" },
+      { label: "Reviews", href: "#testimonials" },
+      { label: "Contact", href: "#contact" },
+    ],
+    services: [
+      { icon: "", title: "Logo Design", description: "Original, scalable logos built around your brand identity." },
+      { icon: "", title: "Branding & Identity", description: "Full brand kits including colours, fonts, and brand guidelines." },
+      { icon: "", title: "Print Design", description: "Flyers, brochures, posters, and business stationery." },
+      { icon: "", title: "Banners & Signage", description: "Roll-up banners, billboard designs, and event signage." },
+      { icon: "", title: "Social Media Graphics", description: "Posts, stories, ads, and branded templates for every platform." },
+      { icon: "", title: "Business Cards", description: "Premium business card designs in standard and custom formats." },
+    ],
+    stats: [
+      { value: 500, suffix: "+", label: "Projects Delivered" },
+      { value: 150, suffix: "+", label: "Brands Created" },
+      { value: 8, label: "Years in Design" },
+      { value: 100, suffix: "%", label: "Client Satisfaction" },
+    ],
+    testimonials: [
+      { name: "Marcia L.", rating: 5, text: "Our new logo completely transformed how clients see us. Phenomenal work." },
+      { name: "Devon H.", rating: 5, text: "Fast turnaround, great communication, and the designs were top notch." },
+      { name: "Simone T.", rating: 5, text: "The branding package was worth every dollar. My business looks professional now." },
+    ],
+    bookingServices: ["Logo Design", "Brand Identity", "Print Design", "Social Media Graphics", "Business Cards", "Signage"],
+  },  crafts: {
     heroHeadline: "Handmade with Heart",
     heroSubline: "Unique handcrafted items and custom commissions. One-of-a-kind pieces you will treasure.",
     ctaLabel: "Shop Handmade",
@@ -579,6 +614,24 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   const defaults = CATEGORY_DEFAULTS[client.category] ?? CATEGORY_DEFAULTS.variety;
 
+  // Slug-level overrides for businesses whose DB category does not match their trade
+  const slugDefaults: Record<string, Partial<typeof defaults>> = {
+    "ecm-graphics": CATEGORY_DEFAULTS.design ?? defaults,
+    "bar-supplies-cassie": {
+      ...CATEGORY_DEFAULTS.packaging,
+      heroHeadline: "Everything Your Bar Needs",
+      heroSubline: "Straws, cups, cocktail tools, bar accessories, and beverage supplies for events and businesses.",
+      services: [
+        { icon: "", title: "Bar Straws & Cups", description: "Paper straws, reusable cups, and cocktail glasses for every occasion." },
+        { icon: "", title: "Cocktail Tools", description: "Shakers, jiggers, muddlers, bar spoons, and mixing equipment." },
+        { icon: "", title: "Beverage Supplies", description: "Syrups, bitters, garnish picks, and bar essentials." },
+        { icon: "", title: "Event Bar Kits", description: "Full bar setup kits for weddings, parties, and corporate events." },
+        { icon: "", title: "Custom Branding", description: "Branded cups, straws, and packaging for bars and restaurants." },
+      ],
+    },
+  };
+  const finalDefaults = { ...defaults, ...(slugDefaults[slug] ?? {}) };
+
   // Fetch real products from Supabase
   const { data: productsRaw } = await supabase
     .from("ct_products")
@@ -593,7 +646,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     title: String(p.name ?? ""),
     description: p.description ? String(p.description) : `${String(p.currency ?? client.currency ?? "JMD")} ${Number(p.price).toLocaleString()}`,
   }));
-  const services = realServices.length > 0 ? realServices : defaults.services;
+  const services = realServices.length > 0 ? realServices : finalDefaults.services;
 
   // Build ClientConfig from Supabase client row
   const config: ClientConfig = {
@@ -611,8 +664,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     },
   };
 
-  const heroUrl = client.hero_url ?? `/heroes/hero-${client.category}-desktop.png`;
-  const heroUrlMobile = client.hero_url_mobile ?? `/heroes/hero-${client.category}-mobile.png`;
+  const heroUrl = client.hero_url ?? `/heroes/hero-${client.category}-desktop.webp`;
+  const heroUrlMobile = client.hero_url_mobile ?? `/heroes/hero-${client.category}-mobile.webp`;
   const heroVideo = client.hero_video_url ?? VIDEO_CATS[client.category] ?? null;
   const gallery = placeholderGallery(client.category, client.accent);
 
@@ -623,34 +676,34 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       <style dangerouslySetInnerHTML={{ __html: cssVars }} />
       <SiteLayout
         config={config}
-        navLinks={defaults.navLinks}
-        ctaLabel={defaults.ctaLabel}
-        ctaHref={defaults.ctaHref}
+        navLinks={finalDefaults.navLinks}
+        ctaLabel={finalDefaults.ctaLabel}
+        ctaHref={finalDefaults.ctaHref}
       >
         <SiteHero
           config={config}
-          headline={client.headline ?? defaults.heroHeadline}
-          subline={client.subline ?? defaults.heroSubline}
+          headline={client.headline ?? finalDefaults.heroHeadline}
+          subline={client.subline ?? finalDefaults.heroSubline}
           bgImage={heroUrl}
           bgImageMobile={heroUrlMobile}
           bgVideo={heroVideo}
-          ctaLabel={defaults.ctaLabel}
-          ctaHref={defaults.ctaHref}
+          ctaLabel={finalDefaults.ctaLabel}
+          ctaHref={finalDefaults.ctaHref}
         />
 
         <ServicesGrid items={services} heading={["automotive", "tech-repair", "beauty", "florist", "events"].includes(client.category) ? "Our Services" : "What We Offer"} />
 
-        <AnimatedStats stats={defaults.stats} />
+        <AnimatedStats stats={finalDefaults.stats} />
 
         <GalleryCarousel images={gallery} heading="Gallery" />
 
-        <Testimonials reviews={defaults.testimonials} />
+        <Testimonials reviews={finalDefaults.testimonials} />
 
         {BOOKING_CATS.has(client.category) && (
           <section id="booking" className="py-16 px-6 bg-[var(--bg)]">
             <div className="mx-auto max-w-xl">
               <BookingWidget
-                services={defaults.bookingServices ?? defaults.services.map((s) => s.title)}
+                services={finalDefaults.bookingServices ?? defaults.services.map((s) => s.title)}
                 slug={slug}
                 whatsapp={client.whatsapp}
               />
