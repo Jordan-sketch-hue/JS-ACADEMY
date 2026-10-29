@@ -20,8 +20,17 @@
   --background:     #FFFFFF;
   --foreground:     #1A1A1A;
 }
+
+html {
+  overflow-x: hidden;
+}
+
 body {
+  overflow-x: hidden;
   background: #FFFFFF;
   color: var(--text-primary);
   font-family: var(--font-body, system-ui, sans-serif);
 }
+
+/* Mobile-safe scroll containers */
+.scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
