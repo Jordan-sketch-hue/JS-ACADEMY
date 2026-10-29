@@ -1,32 +1,50 @@
 "use client";
-export const dynamic = 'force-dynamic';
+import { useState } from "react";
 import { CRMLayout } from "@shared/components/layout/CRMLayout";
 import { StatCard } from "@shared/components/charts/StatCard";
-import { BarChart } from "@shared/components/charts/BarChart";
 import { AppointmentsModule } from "@shared/components/crm/AppointmentsModule";
+import { CustomersModule } from "@shared/components/crm/CustomersModule";
+import { ProductsModule } from "@shared/components/crm/ProductsModule";
+import { PaymentsModule } from "@shared/components/crm/PaymentsModule";
+import { QuotesModule } from "@shared/components/crm/QuotesModule";
+import { LeadsModule } from "@shared/components/crm/LeadsModule";
+import { ReportsModule } from "@shared/components/crm/ReportsModule";
+import { TasksModule } from "@shared/components/crm/TasksModule";
 
-const DEMO_CHART = [
-  { label: "Mon", value: 5 }, { label: "Tue", value: 8 }, { label: "Wed", value: 6 },
-  { label: "Thu", value: 10 }, { label: "Fri", value: 12 }, { label: "Sat", value: 15 }, { label: "Sun", value: 3 },
+const NAV = [
+  { href: "#", tabKey: "dashboard", label: "Dashboard" },
+  { href: "#", tabKey: "appointments", label: "Appointments" },
+  { href: "#", tabKey: "customers", label: "Customers" },
+  { href: "#", tabKey: "products", label: "Products" },
+  { href: "#", tabKey: "payments", label: "Payments" },
+  { href: "#", tabKey: "quotes", label: "Quotes" },
+  { href: "#", tabKey: "leads", label: "Leads" },
+  { href: "#", tabKey: "reports", label: "Reports" },
+  { href: "#", tabKey: "tasks", label: "Tasks" },
 ];
 
+const REPORT_DATA = { period: "7d" as const, totalRevenue: 0, totalOrders: 0, newLeads: 0, newCustomers: 0, currency: "JMD", dailyRevenue: [] };
+
 export default function Page() {
+  const [tab, setTab] = useState("dashboard");
   return (
-    <CRMLayout title="Beauty CRM" extraNav={[{ href: "/crm/beauty/appointments", label: "Appointments" }, { href: "/crm/beauty/clients", label: "Clients" }]}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 32 }}>
-        <StatCard label="Appointments Today" value="0" change="+0%" positive={true} />
-        <StatCard label="Revenue" value="J$0" change="+0%" positive={true} />
-        <StatCard label="New Leads" value="0" change="+0%" positive={true} />
-        <StatCard label="Active Clients" value="0" />
-      </div>
-      <div style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Bookings This Week</h2>
-        <BarChart data={DEMO_CHART} height={200} />
-      </div>
-      <div>
-        <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Upcoming Appointments</h2>
-        <AppointmentsModule appointments={[]} />
-      </div>
-    </CRMLayout>
+    <>
+      <style dangerouslySetInnerHTML={{ __html: ":root{--accent:#1A1A1A;--accent-fg:#FFFFFF;}" }} />
+      <CRMLayout title="Beauty CRM" nav={NAV} brandColor="#1A1A1A" brandName="[CLIENT NAME]" activeTab={tab} onTabChange={setTab}>
+        {tab === "dashboard" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
+            <StatCard label="Appointments Today" value="0" /><StatCard label="Net Sales" value="J$0" /><StatCard label="New Leads" value="0" /><StatCard label="Active Clients" value="0" />
+          </div>
+        )}
+        {tab === "appointments" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Appointments</h2><AppointmentsModule appointments={[]} /></div>)}
+        {tab === "customers" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Customers</h2><CustomersModule customers={[]} /></div>)}
+        {tab === "products" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Products</h2><ProductsModule products={[]} /></div>)}
+        {tab === "payments" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Payments</h2><PaymentsModule payments={[]} /></div>)}
+        {tab === "quotes" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Quotes</h2><QuotesModule quotes={[]} /></div>)}
+        {tab === "leads" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Leads</h2><LeadsModule leads={[]} /></div>)}
+        {tab === "reports" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Reports</h2><ReportsModule data={REPORT_DATA} /></div>)}
+        {tab === "tasks" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Tasks</h2><TasksModule tasks={[]} /></div>)}
+      </CRMLayout>
+    </>
   );
 }
