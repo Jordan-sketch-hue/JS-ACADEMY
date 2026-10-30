@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { getClient } from "@/lib/ct-client";
 import type { Metadata } from "next";
 import type { ClientConfig } from "@shared/types/config";
+import { SLUG_TO_CRM } from "@/lib/crm-map";
 import { SiteLayout } from "@shared/components/layout/SiteLayout";
 import { SiteHero } from "@shared/components/sections/SiteHero";
 import { ServicesGrid } from "@shared/components/sections/ServicesGrid";
@@ -605,6 +606,16 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
         <ContactForm config={config} slug={slug} />
       </SiteLayout>
+
+      {/* Admin CRM footer link — hidden from customers, visible to business owner */}
+      {SLUG_TO_CRM[slug] && (
+        <div style={{ padding: "12px 24px", background: "#111", textAlign: "center" }}>
+          <a href={`/crm/${SLUG_TO_CRM[slug]}?slug=${slug}`}
+            style={{ fontSize: 12, color: "#666", textDecoration: "none", fontWeight: 500, letterSpacing: 0.5 }}>
+            ⚙ Admin Dashboard
+          </a>
+        </div>
+      )}
     </>
   );
 }
