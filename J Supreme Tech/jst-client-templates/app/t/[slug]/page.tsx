@@ -591,6 +591,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             <MenuGrid
               config={config}
               items={shopProducts}
+              slug={slug}
               heading={CAKE_SLUGS.has(slug) ? "Our Menu" : "Order Now"}
               whatsapp={client.whatsapp ?? undefined}
             />

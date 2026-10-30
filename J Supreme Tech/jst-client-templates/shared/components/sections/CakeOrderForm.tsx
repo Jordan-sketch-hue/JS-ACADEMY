@@ -35,11 +35,12 @@ export default function CakeOrderForm({ businessName, slug, whatsapp, accent = "
     ].filter(Boolean).join(" | ");
 
     try {
-      await fetch("/api/submit-lead", {
+      const res = await fetch("/api/submit-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug, name: form.name, phone: form.phone, email: form.email, message: orderMsg }),
       });
+      if (!res.ok) throw new Error("submit failed");
       setSuccess(true);
     } catch {
       setSubmitting(false);

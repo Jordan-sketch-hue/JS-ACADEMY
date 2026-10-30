@@ -17,11 +17,12 @@ type OrderItem = MenuItem & { qty: number };
 interface Props {
   config: ClientConfig;
   items: MenuItem[];
+  slug: string;
   heading?: string;
   whatsapp?: string;
 }
 
-export function MenuGrid({ config, items, heading = "Our Menu", whatsapp }: Props) {
+export function MenuGrid({ config, items, slug, heading = "Our Menu", whatsapp }: Props) {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [order, setOrder] = useState<OrderItem[]>([]);
   const [orderOpen, setOrderOpen] = useState(false);
@@ -70,7 +71,7 @@ export function MenuGrid({ config, items, heading = "Our Menu", whatsapp }: Prop
       await fetch("/api/submit-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: config.name, name: form.name, phone: form.phone, message }),
+        body: JSON.stringify({ slug, name: form.name, phone: form.phone, message }),
       });
     } catch {/* order still goes via WhatsApp below */}
     sendViaWhatsApp();

@@ -67,7 +67,7 @@ export async function createCharge(req: HandyPayChargeRequest): Promise<HandyPay
 }
 
 export function verifyWebhookSignature(rawBody: string, receivedSig: string): boolean {
-  if (!HP_SECRET) return true; // allow through in dev/sim
+  if (!HP_SECRET) return false; // reject unsigned webhooks when secret not configured
   const expected = buildSignature(rawBody);
   return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(receivedSig));
 }
