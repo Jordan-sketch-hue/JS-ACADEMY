@@ -505,15 +505,17 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   const config: ClientConfig = {
     name: client.name,
-    slug,
     category: client.category as ClientConfig["category"],
-    accent: client.accent,
-    accent_fg: client.accent_fg,
-    logo_url: client.logo_url ?? "",
-    hero_url: client.hero_url,
-    phone: client.phone ?? "",
-    whatsapp: client.whatsapp ?? "",
-    address: client.address ?? undefined,
+    logo: client.logo_url ?? "",
+    colors: {
+      accent: client.accent ?? "#1A1A1A",
+      accentFg: client.accent_fg ?? "#FFFFFF",
+    },
+    contact: {
+      phone: client.phone ?? "",
+      whatsapp: client.whatsapp ?? "",
+      address: client.address ?? undefined,
+    },
   };
 
   const heroUrl = client.hero_url ?? `/heroes/hero-${client.category}-desktop.webp`;

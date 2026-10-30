@@ -16,6 +16,9 @@ export default function ShopPageClient({ slug, config, products }: { slug: strin
   const [cart, setCart] = useState<CartItem[]>(getCart);
   const [filter, setFilter] = useState("all");
   const [toast, setToast] = useState("");
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [orderForm, setOrderForm] = useState({ name: "", phone: "" });
+  const [orderSent, setOrderSent] = useState(false);
 
   const categories = ["all", ...Array.from(new Set(products.map(p => p.category ?? "general")))];
   const visible = filter === "all" ? products : products.filter(p => (p.category ?? "general") === filter);
@@ -32,15 +35,35 @@ export default function ShopPageClient({ slug, config, products }: { slug: strin
   };
 
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const currency = cart[0]?.currency ?? "JMD";
+
+  const handleCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const lines = cart.map(i => `${i.qty}x ${i.name} (${currency} ${(i.price * i.qty).toLocaleString()})`);
+    lines.push(`Total: ${currency} ${total.toLocaleString()}`);
+    const message = `ORDER: ${lines.join(" | ")} | Name: ${orderForm.name} | Phone: ${orderForm.phone}`;
+    await fetch("/api/submit-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug, name: orderForm.name, phone: orderForm.phone, message }),
+    }).catch(() => {});
+    const wa = config.contact?.whatsapp || config.contact?.phone || "";
+    if (wa) {
+      const waNum = wa.replace(/\D/g, "");
+      window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(message)}`, "_blank");
+    }
+    setCart([]); saveCart([]);
+    setOrderSent(true);
+  };
 
   return (
     <div style={{ maxWidth: 1152, margin: "0 auto", padding: "40px 16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
         <h1 style={{ fontSize: 28, fontWeight: 800, color: "var(--text-primary)" }}>Shop</h1>
         {cart.length > 0 && (
-          <a href={"/t/" + slug + "/checkout"} style={{ background: "var(--accent)", color: "var(--accent-fg)", padding: "10px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
-            Cart ({cart.reduce((s, i) => s + i.qty, 0)}) — {cart[0]?.currency ?? "JMD"} {total.toLocaleString()}
-          </a>
+          <button onClick={() => setCheckoutOpen(true)} style={{ background: "var(--accent)", color: "var(--accent-fg)", padding: "10px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>
+            Cart ({cart.reduce((s, i) => s + i.qty, 0)}) — {currency} {total.toLocaleString()}
+          </button>
         )}
       </div>
 
@@ -82,6 +105,41 @@ export default function ShopPageClient({ slug, config, products }: { slug: strin
 
       {toast && (
         <div style={{ position: "fixed", bottom: 80, left: "50%", transform: "translateX(-50%)", background: "#111", color: "#fff", padding: "12px 24px", borderRadius: 8, fontSize: 13, fontWeight: 600, zIndex: 100 }}>{toast}</div>
+      )}
+
+      {checkoutOpen && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div onClick={() => setCheckoutOpen(false)} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)" }} />
+          <div style={{ position: "relative", background: "#fff", borderRadius: 16, padding: 28, width: "min(480px,95vw)", maxHeight: "90vh", overflowY: "auto" }}>
+            <button onClick={() => setCheckoutOpen(false)} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", fontSize: 22, cursor: "pointer" }}>×</button>
+            {orderSent ? (
+              <div style={{ textAlign: "center", padding: 32 }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>✅</div>
+                <h3 style={{ fontWeight: 800, fontSize: 20, marginBottom: 8 }}>Order Sent!</h3>
+                <p style={{ color: "#6b7280", fontSize: 14 }}>Check WhatsApp — we will confirm your order shortly.</p>
+                <button onClick={() => { setCheckoutOpen(false); setOrderSent(false); }} style={{ marginTop: 20, padding: "10px 24px", borderRadius: 8, background: "var(--accent)", color: "var(--accent-fg)", border: "none", fontWeight: 700, cursor: "pointer" }}>Continue Shopping</button>
+              </div>
+            ) : (
+              <>
+                <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 16 }}>Your Order</h3>
+                {cart.map(i => (
+                  <div key={i.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #f3f4f6", fontSize: 14 }}>
+                    <span>{i.qty}× {i.name}</span>
+                    <span style={{ fontWeight: 700 }}>{currency} {(i.price * i.qty).toLocaleString()}</span>
+                  </div>
+                ))}
+                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 800, fontSize: 16, padding: "12px 0 20px" }}>
+                  <span>Total</span><span>{currency} {total.toLocaleString()}</span>
+                </div>
+                <form onSubmit={handleCheckout} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <input required placeholder="Your Name *" value={orderForm.name} onChange={e => setOrderForm(f => ({ ...f, name: e.target.value }))} style={{ padding: "12px 14px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 15 }} />
+                  <input required placeholder="Phone Number *" value={orderForm.phone} onChange={e => setOrderForm(f => ({ ...f, phone: e.target.value }))} style={{ padding: "12px 14px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 15 }} />
+                  <button type="submit" style={{ background: "#25D366", color: "#fff", border: "none", borderRadius: 8, padding: "14px 0", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>📲 Send Order via WhatsApp</button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
