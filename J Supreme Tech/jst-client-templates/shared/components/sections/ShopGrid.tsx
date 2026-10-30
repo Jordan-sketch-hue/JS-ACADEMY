@@ -1,6 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import { Button } from "@shared/components/ui/Button";
+import { ProductImage } from "@shared/components/ui/ProductImage";
 import type { ClientConfig } from "@shared/types/config";
 
 export type ShopProduct = {
@@ -165,12 +166,7 @@ export function ShopGrid({ config, products, heading = "Shop", whatsapp, slug }:
               const inCart = cart.find((i) => i.id === product.id);
               return (
                 <div key={product.id} style={{ background: "var(--bg-card)", borderRadius: 12, overflow: "hidden", border: "1px solid var(--border)", display: "flex", flexDirection: "column" }}>
-                  {product.image_url
-                    ? <img src={product.image_url} alt={product.name} style={{ width: "100%", height: 200, objectFit: "cover" }} loading="lazy" />
-                    : <div style={{ width: "100%", height: 200, background: "var(--bg-surface)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "var(--text-muted)", fontStyle: "italic" }}>
-                        Image coming soon
-                      </div>
-                  }
+                  <ProductImage name={product.name} category={product.category} imageUrl={product.image_url} height={200} />
                   <div style={{ padding: 16, flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
                     {product.category && (
                       <span style={{ fontSize: 11, fontWeight: 600, color: "var(--accent)", textTransform: "uppercase", letterSpacing: 1 }}>{product.category}</span>

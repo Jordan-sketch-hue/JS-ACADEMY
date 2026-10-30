@@ -1,14 +1,59 @@
-/**
- * Notification stubs — Resend email + WhatsApp Cloud API
- * All functions are graceful no-ops when env vars are absent.
- * Wire in keys via Vercel env vars to activate:
- *   RESEND_API_KEY          — Resend API key (re_...)
- *   RESEND_FROM_EMAIL       — verified sender, e.g. orders@jsupremetech.online
- *   WA_PHONE_NUMBER_ID      — WhatsApp Cloud API phone number ID
- *   WA_ACCESS_TOKEN         — WhatsApp Cloud API permanent token
- */
+import { Resend } from "resend";
+import { createClient } from "@supabase/supabase-js";
 
-export interface LeadPayload {
+const resend = new Resend(process.env.RESEND_API_KEY);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+const RAILWAY_BOT_URL = "https://whatsapp-jarvis-bot-production.up.railway.app/send";
+const OWNER_JID = process.env.WA_NOTIFY_JID ?? "6582182282@s.whatsapp.net";
+
+async function pingRailwayBot(text: string) {
+  const secret = process.env.WA_SEND_SECRET;
+  if (!secret) return;
+  try {
+    await fetch(RAILWAY_BOT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-send-secret": secret },
+      body: JSON.stringify({ jid: OWNER_JID, text }),
+    });
+  } catch {
+    // non-blocking — never throw
+  }
+}
+
+export async function sendEmail(opts: {
+  clientId: string;
+  to: string;
+  subject: string;
+  html: string;
+  template: string;
+  relatedId?: string;
+}) {
+  if (!process.env.RESEND_API_KEY) return false;
+  const { data, error } = await resend.emails.send({
+    from: "noreply@jsupremetech.online",
+    to: opts.to,
+    subject: opts.subject,
+    html: opts.html,
+  });
+
+  await supabase.from("ct_notifications").insert({
+    client_id: opts.clientId,
+    type: "email",
+    recipient: opts.to,
+    template: opts.template,
+    related_id: opts.relatedId,
+    status: error ? "failed" : "sent",
+    provider_response: error ? { error } : { id: data?.id },
+  });
+
+  return !error;
+}
+
+export async function sendLeadEmail(payload: {
   clientName: string;
   clientSlug: string;
   clientEmail?: string;
@@ -16,59 +61,79 @@ export interface LeadPayload {
   phone: string;
   email?: string;
   message: string;
+}) {
+  if (!process.env.RESEND_API_KEY) return;
+  const to = payload.email || payload.clientEmail;
+  if (!to) return;
+  const isOrder = payload.message.startsWith("ORDER:");
+  const isBooking = payload.message.startsWith("BOOKING");
+  const subject = isOrder
+    ? `Order Received — ${payload.clientName}`
+    : isBooking
+    ? `Booking Request — ${payload.clientName}`
+    : `Message from ${payload.clientName}`;
+  const html = `<p>Hi ${payload.name},</p><p>${payload.message}</p><p>— ${payload.clientName}</p>`;
+  try {
+    await resend.emails.send({ from: "noreply@jsupremetech.online", to, subject, html });
+  } catch {
+    // non-blocking
+  }
 }
 
-// ─── Resend email notification ───────────────────────────────────────────────
-
-export async function sendLeadEmail(lead: LeadPayload): Promise<void> {
-  const key = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL;
-  if (!key || !from) return;
-
-  const to = lead.clientEmail ?? from;
-  const subject = `New lead for ${lead.clientName}`;
-  const html = `
-    <h2>New enquiry — ${lead.clientName}</h2>
-    <p><strong>From:</strong> ${lead.name}</p>
-    <p><strong>Phone:</strong> ${lead.phone}</p>
-    ${lead.email ? `<p><strong>Email:</strong> ${lead.email}</p>` : ""}
-    <p><strong>Message:</strong></p>
-    <blockquote style="background:#f9fafb;padding:12px;border-left:4px solid #111">${lead.message.replace(/\n/g, "<br>")}</blockquote>
-    <hr>
-    <p style="font-size:12px;color:#6b7280">Sent via JST Client Templates — ${lead.clientSlug}</p>
-  `;
-
-  await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from, to, subject, html }),
-  }).catch(() => {});
+export async function sendLeadWhatsApp(payload: {
+  clientName: string;
+  clientSlug: string;
+  name: string;
+  phone: string;
+  message: string;
+}) {
+  const lines = [
+    `📥 *New Lead — ${payload.clientName}*`,
+    `From: ${payload.name} | ${payload.phone}`,
+    payload.message.slice(0, 400),
+  ];
+  await pingRailwayBot(lines.join("\n"));
 }
 
-// ─── WhatsApp Cloud API notification ────────────────────────────────────────
-
-export async function sendLeadWhatsApp(lead: LeadPayload): Promise<void> {
-  const phoneNumberId = process.env.WA_PHONE_NUMBER_ID;
-  const token = process.env.WA_ACCESS_TOKEN;
-  const recipientPhone = process.env.WA_NOTIFY_PHONE; // owner's WA number in E.164 e.g. 18761234567
-  if (!phoneNumberId || !token || !recipientPhone) return;
-
+export async function sendBookingNotification(payload: {
+  clientName: string;
+  customerName: string;
+  customerPhone: string;
+  service: string;
+  bookingDate?: string;
+  bookingTime?: string;
+}) {
   const text = [
-    `New lead — ${lead.clientName}`,
-    `Name: ${lead.name}`,
-    `Phone: ${lead.phone}`,
-    lead.email ? `Email: ${lead.email}` : "",
-    `\n${lead.message}`,
+    `📅 *New Booking — ${payload.clientName}*`,
+    `Customer: ${payload.customerName} | ${payload.customerPhone}`,
+    `Service: ${payload.service}`,
+    payload.bookingDate ? `Date: ${payload.bookingDate}` : "",
+    payload.bookingTime ? `Time: ${payload.bookingTime}` : "",
   ].filter(Boolean).join("\n");
+  await pingRailwayBot(text);
+}
 
-  await fetch(`https://graph.facebook.com/v20.0/${phoneNumberId}/messages`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      messaging_product: "whatsapp",
-      to: recipientPhone,
-      type: "text",
-      text: { body: text },
-    }),
-  }).catch(() => {});
+export function buildOrderConfirmationEmail(opts: {
+  businessName: string;
+  customerName: string;
+  orderId: string;
+  items: string;
+  total: string;
+}) {
+  return {
+    subject: `Order Confirmed — ${opts.businessName}`,
+    html: `<h2>Order Confirmed</h2><p>Hi ${opts.customerName},</p><p>Your order <strong>#${opts.orderId}</strong> has been received.</p><p>${opts.items}</p><p><strong>Total: ${opts.total}</strong></p><p>Thank you for choosing ${opts.businessName}.</p>`,
+  };
+}
+
+export function buildAppointmentConfirmationEmail(opts: {
+  businessName: string;
+  customerName: string;
+  service: string;
+  dateTime: string;
+}) {
+  return {
+    subject: `Appointment Confirmed — ${opts.businessName}`,
+    html: `<h2>Appointment Confirmed</h2><p>Hi ${opts.customerName},</p><p>Your appointment for <strong>${opts.service}</strong> on <strong>${opts.dateTime}</strong> is confirmed.</p><p>— ${opts.businessName}</p>`,
+  };
 }
