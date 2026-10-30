@@ -1,4 +1,4 @@
-﻿export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { getClient } from "@/lib/ct-client";
@@ -775,6 +775,38 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         { icon: "", title: "Catering Orders", description: "Bulk pastry orders and dessert stations for events." },
       ],
     },
+
+      "velvet-vault": {
+        ...CATEGORY_DEFAULTS.fashion ?? defaults,
+        heroHeadline: "Luxury Wholesale, Redefined",
+        heroSubline: "Premium fashion, accessories, and luxury goods at wholesale prices. Shop the collection.",
+        services: [
+          { icon: "", title: "Luxury Handbags", description: "Designer-inspired and premium branded handbags at wholesale prices.", image: "/services/fashion-1.jpg" },
+          { icon: "", title: "Fashion Accessories", description: "Jewellery, scarves, belts, sunglasses, and statement pieces in bulk.", image: "/services/fashion-2.jpg" },
+          { icon: "", title: "Clothing & Apparel", description: "Dresses, tops, sets, and co-ords -- curated luxury styles at trade prices.", image: "/services/fashion-3.jpg" },
+          { icon: "", title: "Beauty & Fragrance", description: "Wholesale beauty products, perfumes, and luxury body care.", image: "/services/fashion-4.jpg" },
+          { icon: "", title: "Wholesale Bundles", description: "Mixed product bundles for resellers, boutiques, and event vendors.", image: "/services/fashion-5.jpg" },
+        ],
+        ctaLabel: "Shop Wholesale",
+        ctaHref: "#contact",
+        bookingServices: [],
+      },
+
+      "chichaven": {
+        ...CATEGORY_DEFAULTS.fashion ?? defaults,
+        heroHeadline: "Fashion That Speaks for You",
+        heroSubline: "Curated styles, bold looks, and pieces that make a statement -- for the woman who owns every room.",
+        services: [
+          { icon: "", title: "Dresses & Sets", description: "Party dresses, co-ords, and occasion sets for every event.", image: "/services/fashion-1.jpg" },
+          { icon: "", title: "Tops & Bodysuits", description: "On-trend tops, bodysuits, and statement blouses.", image: "/services/fashion-2.jpg" },
+          { icon: "", title: "Bottoms", description: "Trousers, skirts, shorts, and jeans in fresh season styles.", image: "/services/fashion-3.jpg" },
+          { icon: "", title: "Accessories", description: "Bags, jewellery, and accessories to complete any look.", image: "/services/fashion-4.jpg" },
+          { icon: "", title: "New Arrivals", description: "Weekly drops -- fresh styles added every week.", image: "/services/fashion-5.jpg" },
+        ],
+        ctaLabel: "Shop Now",
+        ctaHref: "#services",
+        bookingServices: [],
+      },
   };
   const finalDefaults = { ...defaults, ...(slugDefaults[slug] ?? {}) };
 
