@@ -22,7 +22,9 @@ const CATEGORY_ACCENT: Record<string, string> = {
   fashion: "#2D1B69", accessories: "#B8860B", food: "#B45309",
   florist: "#4A7C59", events: "#7C3AED", "tech-repair": "#0F172A",
   packaging: "#0369A1", lighting: "#D97706", variety: "#047857",
-  crafts: "#92400E", design: "#1A1A1A",
+  crafts: "#92400E", design: "#1A1A1A", bar: "#7C2D12",
+  pizza: "#991B1B", baker: "#92400E", ceiling: "#1E40AF",
+  baby: "#DB2777",
 };
 
 const CATEGORY_STAT1: Record<string, string> = {
@@ -30,7 +32,9 @@ const CATEGORY_STAT1: Record<string, string> = {
   fashion: "Orders Today", accessories: "Orders Today", food: "Orders Today",
   florist: "Orders Today", events: "Events This Month", "tech-repair": "Jobs Today",
   packaging: "Orders Today", lighting: "Jobs This Month", variety: "Sales Today",
-  crafts: "Orders Today", design: "Projects This Month",
+  crafts: "Orders Today", design: "Projects This Month", bar: "Orders Today",
+  pizza: "Orders Today", baker: "Orders Today", ceiling: "Projects This Month",
+  baby: "Orders Today",
 };
 
 const CATEGORY_STAT4: Record<string, string> = {
@@ -38,7 +42,31 @@ const CATEGORY_STAT4: Record<string, string> = {
   fashion: "Active Clients", accessories: "Active Clients", food: "Active Tables",
   florist: "Active Clients", events: "Active Bookings", "tech-repair": "Active Devices",
   packaging: "Active Projects", lighting: "Active Projects", variety: "Active Customers",
-  crafts: "Active Projects", design: "Active Clients",
+  crafts: "Active Projects", design: "Active Clients", bar: "Active Customers",
+  pizza: "Active Customers", baker: "Active Customers", ceiling: "Active Projects",
+  baby: "Active Customers",
+};
+
+const CATEGORY_HERO_FALLBACK: Record<string, string> = {
+  beauty: "/heroes/hero-beauty-desktop-v4.webp",
+  automotive: "/heroes/hero-automotive-desktop.webp",
+  furniture: "/heroes/hero-furniture-desktop.webp",
+  fashion: "/heroes/hero-fashion-desktop.webp",
+  accessories: "/heroes/hero-accessories-desktop.webp",
+  food: "/heroes/hero-food-desktop-v1.webp",
+  florist: "/heroes/hero-florist-desktop.webp",
+  events: "/heroes/hero-events-desktop.webp",
+  "tech-repair": "/heroes/hero-tech-repair-desktop.webp",
+  packaging: "/heroes/hero-packaging-desktop.webp",
+  lighting: "/heroes/hero-lighting-desktop.webp",
+  variety: "/heroes/hero-variety-desktop.webp",
+  crafts: "/heroes/hero-crafts-desktop.webp",
+  design: "/heroes/hero-packaging-desktop.webp",
+  bar: "/heroes/hero-bar-desktop.webp",
+  pizza: "/heroes/hero-pizza-desktop.webp",
+  baker: "/heroes/hero-baker-desktop-v2.webp",
+  ceiling: "/heroes/hero-ceiling-desktop.webp",
+  baby: "/heroes/hero-baby-desktop.webp",
 };
 
 const NAV = [
@@ -57,7 +85,8 @@ const NAV = [
 type Client = {
   id: string; slug: string; name: string; category: string;
   accent?: string | null; crm_banner_url?: string | null; currency?: string | null;
-  whatsapp?: string | null;
+  whatsapp?: string | null; hero_url?: string | null; logo_url?: string | null;
+  headline?: string | null; subline?: string | null;
 };
 
 function periodToDays(p: "7d" | "30d" | "90d") { return p === "7d" ? 7 : p === "30d" ? 30 : 90; }
@@ -100,7 +129,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
   useEffect(() => {
     params.then(async ({ slug: s }) => {
-      const { data: cl } = await supabase.from("ct_clients").select("id,slug,name,category,accent,crm_banner_url,currency,whatsapp").eq("slug", s).single();
+      const { data: cl } = await supabase.from("ct_clients").select("id,slug,name,category,accent,crm_banner_url,currency,whatsapp,hero_url,logo_url,headline,subline").eq("slug", s).single();
       setClient(cl as Client | null);
       if (!cl) { setLoading(false); return; }
       const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
@@ -154,13 +183,16 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
   const category = client.category ?? "beauty";
   const accent = client.accent ?? CATEGORY_ACCENT[category] ?? "#1A1A1A";
-  const bannerUrl = client.crm_banner_url ?? `/crm-banners/${category}.jpg`;
+  // Priority: crm_banner_url → hero_url (brand-specific) → category hero fallback → category crm banner
+  const bannerUrl = client.crm_banner_url ?? client.hero_url ?? CATEGORY_HERO_FALLBACK[category] ?? `/crm-banners/${category}.jpg`;
+  const logoUrl = client.logo_url;
   const brandName = client.name;
   const stat1Label = CATEGORY_STAT1[category] ?? "Activity Today";
   const stat4Label = CATEGORY_STAT4[category] ?? "Active Clients";
   const titleLabel = `${brandName} CRM`;
   const css = `:root{--accent:${accent};--accent-fg:#FFFFFF;}`;
   const currency = client.currency ?? "JMD";
+  const subline = client.subline ?? client.headline ?? "Business management dashboard";
 
   return (
     <>
@@ -168,16 +200,26 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
       <CRMLayout title={titleLabel} nav={NAV} brandColor={accent} brandName={brandName} activeTab={tab} onTabChange={setTab}>
         {tab === "dashboard" && (
           <>
-            <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", marginBottom: 24, height: 180 }}>
-              <img src={bannerUrl} alt={titleLabel} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.25) 100%)", display: "flex", alignItems: "center", padding: "0 28px" }}>
-                <div>
-                  <p style={{ color: "#fff", fontSize: 22, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>{brandName}</p>
-                  <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 13, margin: "4px 0 0" }}>Business management dashboard</p>
+            {/* Brand hero banner — uses client's actual storefront hero for brand consistency */}
+            <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", marginBottom: 24, height: 220 }}>
+              <img src={bannerUrl} alt={brandName} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }} loading="lazy" />
+              <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg, ${accent}DD 0%, ${accent}88 40%, rgba(0,0,0,0.2) 100%)` }} />
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "flex-end", padding: "24px 28px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 14, flex: 1 }}>
+                  {logoUrl && (
+                    <img src={logoUrl} alt={brandName} style={{ width: 52, height: 52, borderRadius: 10, objectFit: "contain", background: "#fff", padding: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.3)", flexShrink: 0 }} />
+                  )}
+                  <div>
+                    <p style={{ color: "#fff", fontSize: 24, fontWeight: 800, margin: 0, letterSpacing: "-0.03em", textShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>{brandName}</p>
+                    <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, margin: "3px 0 0", textShadow: "0 1px 3px rgba(0,0,0,0.4)" }}>{subline}</p>
+                  </div>
+                </div>
+                <div style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", borderRadius: 8, padding: "6px 14px", border: "1px solid rgba(255,255,255,0.25)" }}>
+                  <p style={{ color: "#fff", fontSize: 11, fontWeight: 700, margin: 0, letterSpacing: "0.08em", textTransform: "uppercase" }}>Live CRM</p>
                 </div>
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 8 }}>
               <StatCard label={stat1Label} value={String(statsToday.activity)} />
               <StatCard label="Net Sales" value={`${currency} ${reportData.totalRevenue.toLocaleString()}`} />
               <StatCard label="New Leads" value={String(statsToday.leads)} />
