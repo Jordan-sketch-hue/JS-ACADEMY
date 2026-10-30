@@ -746,7 +746,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     },
 
     // Bakers -- food defaults lead with Dine In which is wrong for home bakers
-    "keke-designer-desserts": {
+    "keke-the-baker": {
       ...CATEGORY_DEFAULTS.food,
       heroHeadline: "Designer Cakes & Mini Desserts",
       heroSubline: "Custom celebration cakes, cupcakes, dessert boards, and mini treats.",
