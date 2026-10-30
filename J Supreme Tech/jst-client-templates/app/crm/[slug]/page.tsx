@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { CRMLayout } from "@shared/components/layout/CRMLayout";
 import { StatCard } from "@shared/components/charts/StatCard";
 import { OrdersModule } from "@shared/components/crm/OrdersModule";
@@ -34,8 +35,9 @@ interface ClientData {
 
 interface Lead { id: string; name: string; contact?: string; message: string; createdAt?: string; }
 
-export default function ClientCRMPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default function ClientCRMPage() {
+  const params = useParams();
+  const slug = (Array.isArray(params.slug) ? params.slug[0] : params.slug) ?? "";
   const [tab, setTab] = useState("dashboard");
   const [client, setClient] = useState<ClientData | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);

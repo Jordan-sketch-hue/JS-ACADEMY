@@ -624,14 +624,12 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       </SiteLayout>
 
       {/* Admin CRM footer link — hidden from customers, visible to business owner */}
-      {SLUG_TO_CRM[slug] && (
-        <div style={{ padding: "12px 24px", background: "#111", textAlign: "center" }}>
-          <a href={`/crm/${SLUG_TO_CRM[slug]}?slug=${slug}`}
-            style={{ fontSize: 12, color: "#666", textDecoration: "none", fontWeight: 500, letterSpacing: 0.5 }}>
-            ⚙ Admin Dashboard
-          </a>
-        </div>
-      )}
+      <div style={{ padding: "12px 24px", background: "#111", textAlign: "center" }}>
+        <a href={`/crm/${slug}`}
+          style={{ fontSize: 12, color: "#666", textDecoration: "none", fontWeight: 500, letterSpacing: 0.5 }}>
+          ⚙ Admin Dashboard
+        </a>
+      </div>
     </>
   );
 }
