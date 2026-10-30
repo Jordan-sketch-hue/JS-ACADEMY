@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 type Product = {
@@ -17,7 +17,11 @@ type Product = {
 
 export default function AdminProductsPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params?.slug as string;
+  const secret = searchParams?.get("secret") ?? "";
+
+  const authHeader = secret ? { "x-admin-secret": secret } : {};
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +35,7 @@ export default function AdminProductsPage() {
 
   useEffect(() => {
     if (!slug) return;
-    fetch(`/api/admin/products?slug=${slug}`)
+    fetch(`/api/admin/products?slug=${slug}`, { headers: authHeader })
       .then((r) => r.json())
       .then((d) => {
         setProducts(d.products ?? []);
@@ -56,7 +60,7 @@ export default function AdminProductsPage() {
     setSaving(true);
     const res = await fetch("/api/admin/products", {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeader },
       body: JSON.stringify({ id: editingId, ...editForm }),
     });
     if (res.ok) {
@@ -71,7 +75,7 @@ export default function AdminProductsPage() {
   const toggleActive = async (p: Product) => {
     const res = await fetch("/api/admin/products", {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeader },
       body: JSON.stringify({ id: p.id, active: !p.active }),
     });
     if (res.ok) {
@@ -81,7 +85,7 @@ export default function AdminProductsPage() {
 
   const deleteProduct = async (id: string) => {
     if (!confirm("Delete this product? This cannot be undone.")) return;
-    const res = await fetch(`/api/admin/products?id=${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/admin/products?id=${id}`, { method: "DELETE", headers: authHeader });
     if (res.ok) {
       setProducts((prev) => prev.filter((p) => p.id !== id));
       flash("Product deleted.");
@@ -93,7 +97,7 @@ export default function AdminProductsPage() {
     setSaving(true);
     const res = await fetch("/api/admin/products", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeader },
       body: JSON.stringify({ slug, ...addForm, price: parseFloat(addForm.price) }),
     });
     if (res.ok) {
