@@ -139,3 +139,4 @@ NEXT_PUBLIC_APP_URL=https://jst-client-templates.vercel.app
 ## DEPLOYMENT
 cd "C:\Users\jader\J Supreme Tech\jst-client-templates"
 npx vercel --prod --yes
+- [x] Deployed: dpl_4rfpCHUNYR1bJk7RyWW6KLXFPZ3N (Oct 30 — All 13 static /crm/{category} pages: Inventory tab + 7d/30d/90d period switching added; 10-tab nav now complete)
