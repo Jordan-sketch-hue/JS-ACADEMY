@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { CRMLayout } from "@shared/components/layout/CRMLayout";
 import { StatCard } from "@shared/components/charts/StatCard";
@@ -18,54 +18,27 @@ const supabase = createClient(
 );
 
 const CATEGORY_ACCENT: Record<string, string> = {
-  beauty: "#B4778A",
-  automotive: "#1E3A5F",
-  furniture: "#5C3D1E",
-  fashion: "#2D1B69",
-  accessories: "#B8860B",
-  food: "#B45309",
-  florist: "#4A7C59",
-  events: "#7C3AED",
-  "tech-repair": "#0F172A",
-  packaging: "#0369A1",
-  lighting: "#D97706",
-  variety: "#047857",
-  crafts: "#92400E",
-  design: "#1A1A1A",
+  beauty: "#B4778A", automotive: "#1E3A5F", furniture: "#5C3D1E",
+  fashion: "#2D1B69", accessories: "#B8860B", food: "#B45309",
+  florist: "#4A7C59", events: "#7C3AED", "tech-repair": "#0F172A",
+  packaging: "#0369A1", lighting: "#D97706", variety: "#047857",
+  crafts: "#92400E", design: "#1A1A1A",
 };
 
 const CATEGORY_STAT1: Record<string, string> = {
-  beauty: "Appointments Today",
-  automotive: "Jobs Today",
-  furniture: "Orders Today",
-  fashion: "Orders Today",
-  accessories: "Orders Today",
-  food: "Orders Today",
-  florist: "Orders Today",
-  events: "Events This Month",
-  "tech-repair": "Jobs Today",
-  packaging: "Orders Today",
-  lighting: "Jobs This Month",
-  variety: "Sales Today",
-  crafts: "Orders Today",
-  design: "Projects This Month",
+  beauty: "Appointments Today", automotive: "Jobs Today", furniture: "Orders Today",
+  fashion: "Orders Today", accessories: "Orders Today", food: "Orders Today",
+  florist: "Orders Today", events: "Events This Month", "tech-repair": "Jobs Today",
+  packaging: "Orders Today", lighting: "Jobs This Month", variety: "Sales Today",
+  crafts: "Orders Today", design: "Projects This Month",
 };
 
 const CATEGORY_STAT4: Record<string, string> = {
-  beauty: "Active Clients",
-  automotive: "Active Vehicles",
-  furniture: "Active Projects",
-  fashion: "Active Clients",
-  accessories: "Active Clients",
-  food: "Active Tables",
-  florist: "Active Clients",
-  events: "Active Bookings",
-  "tech-repair": "Active Devices",
-  packaging: "Active Projects",
-  lighting: "Active Projects",
-  variety: "Active Customers",
-  crafts: "Active Projects",
-  design: "Active Clients",
+  beauty: "Active Clients", automotive: "Active Vehicles", furniture: "Active Projects",
+  fashion: "Active Clients", accessories: "Active Clients", food: "Active Tables",
+  florist: "Active Clients", events: "Active Bookings", "tech-repair": "Active Devices",
+  packaging: "Active Projects", lighting: "Active Projects", variety: "Active Customers",
+  crafts: "Active Projects", design: "Active Clients",
 };
 
 const NAV = [
@@ -78,39 +51,90 @@ const NAV = [
   { href: "#", tabKey: "leads", label: "Leads" },
   { href: "#", tabKey: "reports", label: "Reports" },
   { href: "#", tabKey: "tasks", label: "Tasks" },
+  { href: "#", tabKey: "inventory", label: "Inventory" },
 ];
 
-const REPORT_DATA = { period: "7d" as const, totalRevenue: 0, totalOrders: 0, newLeads: 0, newCustomers: 0, currency: "JMD", dailyRevenue: [] };
-
 type Client = {
-  slug: string;
-  name: string;
-  category: string;
-  accent?: string | null;
-  crm_banner_url?: string | null;
-  currency?: string | null;
+  id: string; slug: string; name: string; category: string;
+  accent?: string | null; crm_banner_url?: string | null; currency?: string | null;
+  whatsapp?: string | null;
 };
+
+function periodToDays(p: "7d" | "30d" | "90d") { return p === "7d" ? 7 : p === "30d" ? 30 : 90; }
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
   const [tab, setTab] = useState("dashboard");
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
-  const [slug, setSlug] = useState("");
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
+  const [quotes, setQuotes] = useState<any[]>([]);
+  const [leads, setLeads] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [reportPeriod, setReportPeriod] = useState<"7d" | "30d" | "90d">("7d");
+  const [reportData, setReportData] = useState({ totalRevenue: 0, totalOrders: 0, newLeads: 0, newCustomers: 0, dailyRevenue: [] as { date: string; amount: number }[] });
+  const [inventory, setInventory] = useState<any[]>([]);
+  const [statsToday, setStatsToday] = useState({ activity: 0, leads: 0, active: 0 });
+
+  const fetchReports = useCallback(async (clientId: string, period: "7d" | "30d" | "90d", currency: string) => {
+    const days = periodToDays(period);
+    const since = new Date(Date.now() - days * 86400000).toISOString();
+    const [ordersRes, leadsRes, customersRes, paymentsRes] = await Promise.all([
+      supabase.from("ct_orders").select("amount,created_at").eq("client_id", clientId).gte("created_at", since),
+      supabase.from("ct_leads").select("id,created_at").eq("client_id", clientId).gte("created_at", since),
+      supabase.from("ct_customers").select("id,created_at").eq("client_id", clientId).gte("created_at", since),
+      supabase.from("ct_payments").select("amount,created_at").eq("client_id", clientId).eq("status", "completed").gte("created_at", since),
+    ]);
+    const orders = ordersRes.data ?? [];
+    const rev = (paymentsRes.data ?? []).reduce((s: number, p: any) => s + (p.amount ?? 0), 0);
+    const dailyMap: Record<string, number> = {};
+    (paymentsRes.data ?? []).forEach((p: any) => {
+      const d = p.created_at?.slice(0, 10);
+      if (d) dailyMap[d] = (dailyMap[d] ?? 0) + (p.amount ?? 0);
+    });
+    const dailyRevenue = Object.entries(dailyMap).sort(([a], [b]) => a.localeCompare(b)).map(([date, amount]) => ({ date, amount }));
+    setReportData({ totalRevenue: rev / 100, totalOrders: orders.length, newLeads: (leadsRes.data ?? []).length, newCustomers: (customersRes.data ?? []).length, dailyRevenue });
+  }, []);
 
   useEffect(() => {
-    params.then(({ slug: s }) => {
-      setSlug(s);
-      supabase
-        .from("ct_clients")
-        .select("slug,name,category,accent,crm_banner_url,currency")
-        .eq("slug", s)
-        .single()
-        .then(({ data }) => {
-          setClient(data as Client | null);
-          setLoading(false);
-        });
+    params.then(async ({ slug: s }) => {
+      const { data: cl } = await supabase.from("ct_clients").select("id,slug,name,category,accent,crm_banner_url,currency,whatsapp").eq("slug", s).single();
+      setClient(cl as Client | null);
+      if (!cl) { setLoading(false); return; }
+      const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+      const [apptRes, custRes, prodRes, payRes, quoteRes, leadsRes, tasksRes, invRes, todayAppt, todayOrders, activeCust] = await Promise.all([
+        supabase.from("ct_appointments").select("*").eq("client_id", cl.id).order("scheduled_at", { ascending: false }).limit(50),
+        supabase.from("ct_customers").select("*").eq("client_id", cl.id).order("created_at", { ascending: false }).limit(50),
+        supabase.from("ct_products").select("*").eq("client_id", cl.id).order("created_at", { ascending: false }),
+        supabase.from("ct_payments").select("*").eq("client_id", cl.id).order("created_at", { ascending: false }).limit(50),
+        supabase.from("ct_quotes").select("*").eq("client_id", cl.id).order("created_at", { ascending: false }).limit(50),
+        supabase.from("ct_leads").select("*").eq("client_id", cl.id).order("created_at", { ascending: false }).limit(50),
+        supabase.from("ct_tasks").select("*").eq("client_id", cl.id).order("due_at", { ascending: true }).limit(50),
+        supabase.from("ct_product_variants").select("id,name,sku,price,stock_qty,product_id,created_at,ct_products!inner(name,client_id)").eq("ct_products.client_id", cl.id).limit(100),
+        supabase.from("ct_appointments").select("id", { count: "exact", head: true }).eq("client_id", cl.id).gte("scheduled_at", todayStart.toISOString()),
+        supabase.from("ct_orders").select("id", { count: "exact", head: true }).eq("client_id", cl.id).gte("created_at", todayStart.toISOString()),
+        supabase.from("ct_customers").select("id", { count: "exact", head: true }).eq("client_id", cl.id),
+      ]);
+      setAppointments(apptRes.data ?? []);
+      setCustomers((custRes.data ?? []).map((c: any) => ({ id: c.id, name: c.name, phone: c.phone, email: c.email, notes: c.notes, created_at: c.created_at })));
+      setProducts((prodRes.data ?? []).map((p: any) => ({ id: p.id, name: p.name, category: p.category, sku: p.sku, price: p.price, currency: p.currency ?? cl.currency ?? "JMD", active: p.active, created_at: p.created_at })));
+      setPayments((payRes.data ?? []).map((p: any) => ({ id: p.id, amount: p.amount, currency: p.currency ?? cl.currency ?? "JMD", method: p.method, status: p.status, verified_at: p.verified_at, created_at: p.created_at })));
+      setQuotes(quoteRes.data ?? []);
+      setLeads((leadsRes.data ?? []).map((l: any) => ({ id: l.id, name: l.name, phone: l.phone ?? "", source: l.source ?? "website", status: l.status ?? "new", createdAt: l.created_at })));
+      setTasks((tasksRes.data ?? []).map((t: any) => ({ id: t.id, title: t.title, due_at: t.due_at, status: t.status, created_at: t.created_at })));
+      setInventory(invRes.data ?? []);
+      setStatsToday({ activity: (todayAppt.count ?? 0) + (todayOrders.count ?? 0), leads: (leadsRes.data ?? []).filter((l: any) => l.status === "new").length, active: activeCust.count ?? 0 });
+      await fetchReports(cl.id, "7d", cl.currency ?? "JMD");
+      setLoading(false);
     });
-  }, [params]);
+  }, [params, fetchReports]);
+
+  const handlePeriodChange = async (p: "7d" | "30d" | "90d") => {
+    setReportPeriod(p);
+    if (client) await fetchReports(client.id, p, client.currency ?? "JMD");
+  };
 
   if (loading) {
     return (
@@ -120,14 +144,23 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     );
   }
 
-  const category = client?.category ?? "beauty";
-  const accent = client?.accent ?? CATEGORY_ACCENT[category] ?? "#1A1A1A";
-  const bannerUrl = client?.crm_banner_url ?? `/crm-banners/${category}.jpg`;
-  const brandName = client?.name ?? "[CLIENT NAME]";
+  if (!client) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#FAFAFA" }}>
+        <p style={{ color: "#999", fontSize: 14 }}>Client not found.</p>
+      </div>
+    );
+  }
+
+  const category = client.category ?? "beauty";
+  const accent = client.accent ?? CATEGORY_ACCENT[category] ?? "#1A1A1A";
+  const bannerUrl = client.crm_banner_url ?? `/crm-banners/${category}.jpg`;
+  const brandName = client.name;
   const stat1Label = CATEGORY_STAT1[category] ?? "Activity Today";
   const stat4Label = CATEGORY_STAT4[category] ?? "Active Clients";
   const titleLabel = `${brandName} CRM`;
   const css = `:root{--accent:${accent};--accent-fg:#FFFFFF;}`;
+  const currency = client.currency ?? "JMD";
 
   return (
     <>
@@ -145,21 +178,72 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
               </div>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
-              <StatCard label={stat1Label} value="0" />
-              <StatCard label="Net Sales" value={`${client?.currency ?? "JMD"} 0`} />
-              <StatCard label="New Leads" value="0" />
-              <StatCard label={stat4Label} value="0" />
+              <StatCard label={stat1Label} value={String(statsToday.activity)} />
+              <StatCard label="Net Sales" value={`${currency} ${reportData.totalRevenue.toLocaleString()}`} />
+              <StatCard label="New Leads" value={String(statsToday.leads)} />
+              <StatCard label={stat4Label} value={String(statsToday.active)} />
             </div>
           </>
         )}
-        {tab === "appointments" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Appointments</h2><AppointmentsModule appointments={[]} /></div>)}
-        {tab === "customers" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Customers</h2><CustomersModule customers={[]} /></div>)}
-        {tab === "products" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Products</h2><ProductsModule products={[]} /></div>)}
-        {tab === "payments" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Payments</h2><PaymentsModule payments={[]} /></div>)}
-        {tab === "quotes" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Quotes</h2><QuotesModule quotes={[]} /></div>)}
-        {tab === "leads" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Leads</h2><LeadsModule leads={[]} /></div>)}
-        {tab === "reports" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Reports</h2><ReportsModule data={REPORT_DATA} /></div>)}
-        {tab === "tasks" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Tasks</h2><TasksModule tasks={[]} /></div>)}
+        {tab === "appointments" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Appointments</h2><AppointmentsModule appointments={appointments} clientId={client.id} businessWhatsapp={client.whatsapp} /></div>)}
+        {tab === "customers" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Customers</h2><CustomersModule customers={customers} clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "products" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Products</h2><ProductsModule products={products} clientId={client.id} accentColor={accent} currency={currency} /></div>)}
+        {tab === "payments" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Payments</h2><PaymentsModule payments={payments} /></div>)}
+        {tab === "quotes" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Quotes</h2><QuotesModule quotes={quotes} clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "leads" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Leads</h2><LeadsModule leads={leads} clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "reports" && (
+          <div>
+            <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Reports</h2>
+            <ReportsModule
+              data={{ period: reportPeriod, totalRevenue: reportData.totalRevenue, totalOrders: reportData.totalOrders, newLeads: reportData.newLeads, newCustomers: reportData.newCustomers, currency, dailyRevenue: reportData.dailyRevenue }}
+              onPeriodChange={handlePeriodChange}
+              accentColor={accent}
+            />
+          </div>
+        )}
+        {tab === "tasks" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Tasks</h2><TasksModule tasks={tasks} clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "inventory" && (
+          <div>
+            <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Inventory</h2>
+            {inventory.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "60px 0", color: "#9ca3af" }}>
+                <p style={{ fontSize: 14 }}>No inventory variants yet. Add products first, then add variants with stock quantities.</p>
+              </div>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: "2px solid #e5e7eb" }}>
+                      {["Product", "Variant", "SKU", "Price", "Stock", "Status"].map(h => (
+                        <th key={h} style={{ textAlign: "left", padding: "10px 12px", color: "#6b7280", fontWeight: 600, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inventory.map((v: any) => {
+                      const low = v.stock_qty !== null && v.stock_qty < 5;
+                      const out = v.stock_qty !== null && v.stock_qty === 0;
+                      return (
+                        <tr key={v.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
+                          <td style={{ padding: "10px 12px", fontWeight: 500 }}>{v.ct_products?.name ?? "---"}</td>
+                          <td style={{ padding: "10px 12px" }}>{v.name}</td>
+                          <td style={{ padding: "10px 12px", color: "#9ca3af", fontFamily: "monospace" }}>{v.sku ?? "---"}</td>
+                          <td style={{ padding: "10px 12px" }}>{currency} {((v.price ?? 0) / 100).toLocaleString()}</td>
+                          <td style={{ padding: "10px 12px", fontWeight: 600, color: out ? "#ef4444" : low ? "#f59e0b" : "#111" }}>{v.stock_qty ?? "---"}</td>
+                          <td style={{ padding: "10px 12px" }}>
+                            <span style={{ padding: "2px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600, background: out ? "#fee2e2" : low ? "#fef3c7" : "#dcfce7", color: out ? "#dc2626" : low ? "#d97706" : "#16a34a" }}>
+                              {out ? "Out of Stock" : low ? "Low Stock" : "In Stock"}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
       </CRMLayout>
     </>
   );
