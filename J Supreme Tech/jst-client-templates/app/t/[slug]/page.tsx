@@ -617,7 +617,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   // Slug-level overrides for businesses whose DB category does not match their trade
   const slugDefaults: Record<string, Partial<typeof defaults>> = {
     "ecm-graphics": CATEGORY_DEFAULTS.design ?? defaults,
-    "bar-supplies-cassie": {
+
+    // Bar supplies — was keyed to wrong slug
+    "cassie-bar": {
       ...CATEGORY_DEFAULTS.packaging,
       heroHeadline: "Everything Your Bar Needs",
       heroSubline: "Straws, cups, cocktail tools, bar accessories, and beverage supplies for events and businesses.",
@@ -627,6 +629,150 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         { icon: "", title: "Beverage Supplies", description: "Syrups, bitters, garnish picks, and bar essentials." },
         { icon: "", title: "Event Bar Kits", description: "Full bar setup kits for weddings, parties, and corporate events." },
         { icon: "", title: "Custom Branding", description: "Branded cups, straws, and packaging for bars and restaurants." },
+      ],
+    },
+
+    // Hair salons mis-categorised as beauty (nail defaults) or fashion
+    "sincerely-sparks": {
+      ...CATEGORY_DEFAULTS.beauty,
+      heroHeadline: "The Hairdresser to Vibe With",
+      heroSubline: "Walk-ins welcome. Cuts, colour, styling, and braids by skilled hands.",
+      services: [
+        { icon: "", title: "Haircut & Trim", description: "Precision cuts for all hair types -- relaxed, natural, and transitioning.", image: "/services/beauty-1.jpg" },
+        { icon: "", title: "Colour & Highlights", description: "Single-process colour, balayage, highlights, and colour corrections.", image: "/services/beauty-2.jpg" },
+        { icon: "", title: "Blow Dry & Styling", description: "Sleek blow-outs, roller sets, and finish styling.", image: "/services/beauty-3.jpg" },
+        { icon: "", title: "Braids & Protective Styles", description: "Box braids, knotless braids, cornrows, and loc maintenance.", image: "/services/beauty-1.jpg" },
+        { icon: "", title: "Natural Hair", description: "Twist-outs, wash-and-gos, and deep conditioning treatments.", image: "/services/beauty-2.jpg" },
+        { icon: "", title: "Relaxer & Texturiser", description: "Professional relaxer application with conditioning care.", image: "/services/beauty-3.jpg" },
+      ],
+      bookingServices: ["Haircut & Trim", "Colour Treatment", "Blow Dry & Style", "Braids & Protective", "Natural Hair Treatment", "Relaxer"],
+    },
+
+    "westside-mandeville": {
+      ...CATEGORY_DEFAULTS.beauty,
+      heroHeadline: "The Hairdresser Mandeville Trusts",
+      heroSubline: "Cuts, colour, and styling in the heart of Mandeville.",
+      services: [
+        { icon: "", title: "Haircut & Trim", description: "Precision cuts tailored to your face shape and style goals.", image: "/services/beauty-1.jpg" },
+        { icon: "", title: "Colour & Highlights", description: "Balayage, single-process colour, highlights, and colour corrections.", image: "/services/beauty-2.jpg" },
+        { icon: "", title: "Blow Dry & Styling", description: "Smooth blow-outs, roller sets, and special occasion styling.", image: "/services/beauty-3.jpg" },
+        { icon: "", title: "Braids & Loc Styles", description: "Box braids, knotless braids, cornrows, and starter locs.", image: "/services/beauty-1.jpg" },
+        { icon: "", title: "Natural Hair Care", description: "Twist-outs, bantu knots, wash-and-gos, and deep treatments.", image: "/services/beauty-2.jpg" },
+        { icon: "", title: "Relaxer & Texturiser", description: "Professional relaxer application with nourishing aftercare.", image: "/services/beauty-3.jpg" },
+      ],
+      bookingServices: ["Haircut & Trim", "Colour Treatment", "Blow Dry & Style", "Braids", "Natural Hair", "Relaxer"],
+    },
+
+    // General beauty salon (hair + nails + skincare)
+    "beauty-lounge-sydz": {
+      ...CATEGORY_DEFAULTS.beauty,
+      heroHeadline: "Feel Beautiful, Inside and Out",
+      heroSubline: "Hair, nails, skincare, and spa services by appointment.",
+      services: [
+        { icon: "", title: "Hair Services", description: "Cuts, colour, blow-dry, braids, and natural hair styling.", image: "/services/beauty-1.jpg" },
+        { icon: "", title: "Gel & Acrylic Nails", description: "Gel polish, acrylic sets, nail art, and infills.", image: "/services/beauty-2.jpg" },
+        { icon: "", title: "Manicure & Pedicure", description: "Classic and luxury mani-pedi with exfoliation and massage.", image: "/services/beauty-3.jpg" },
+        { icon: "", title: "Facial & Skincare", description: "Deep cleanse, exfoliation, and brightening facials.", image: "/services/beauty-1.jpg" },
+        { icon: "", title: "Waxing & Brow Design", description: "Brow shaping, tinting, and full-body waxing.", image: "/services/beauty-2.jpg" },
+        { icon: "", title: "Lash & Makeup", description: "Lash extensions, lash lifts, and full makeup application.", image: "/services/beauty-3.jpg" },
+      ],
+      bookingServices: ["Hair Services", "Nail Services", "Manicure & Pedicure", "Facial & Skincare", "Waxing & Brows", "Lash & Makeup"],
+    },
+
+    // Cosmetics retail -- products, not salon services
+    "blye-beauty": {
+      ...CATEGORY_DEFAULTS.beauty,
+      heroHeadline: "Cosmetics, Skincare & Beauty Tools",
+      heroSubline: "Two convenient locations. Everything you need for your beauty routine.",
+      ctaLabel: "Shop Now",
+      ctaHref: "#services",
+      services: [
+        { icon: "", title: "Makeup & Cosmetics", description: "Foundations, concealers, eyeshadow, lipstick, and full face products.", image: "/services/beauty-1.jpg" },
+        { icon: "", title: "Skincare", description: "Cleansers, serums, moisturisers, SPF, and treatment products.", image: "/services/beauty-2.jpg" },
+        { icon: "", title: "Haircare", description: "Shampoos, conditioners, deep treatments, and styling products.", image: "/services/beauty-3.jpg" },
+        { icon: "", title: "Nail Products", description: "Gel polishes, base coats, nail tools, and nail art supplies.", image: "/services/beauty-1.jpg" },
+        { icon: "", title: "Beauty Tools", description: "Brushes, sponges, lash curlers, and professional-grade accessories.", image: "/services/beauty-2.jpg" },
+        { icon: "", title: "Fragrances & Body", description: "Perfumes, body lotions, scrubs, and bath essentials.", image: "/services/beauty-3.jpg" },
+      ],
+      bookingServices: [],
+    },
+
+    // Ceiling installation -- mis-categorised as furniture
+    "atelier-luxridge": {
+      ...CATEGORY_DEFAULTS.furniture,
+      heroHeadline: "Premium PVC Ceiling Panels",
+      heroSubline: "Installed across Jamaica. Durable, stylish, and low-maintenance interior solutions.",
+      ctaLabel: "Request a Quote",
+      ctaHref: "#contact",
+      navLinks: [
+        { label: "Services", href: "#services" },
+        { label: "Gallery", href: "#gallery" },
+        { label: "Reviews", href: "#testimonials" },
+        { label: "Contact", href: "#contact" },
+      ],
+      services: [
+        { icon: "", title: "PVC Ceiling Panels", description: "Lightweight, waterproof ceiling panels in dozens of finishes and textures.", image: "/services/furniture-1.jpg" },
+        { icon: "", title: "Ceiling Installation", description: "Full installation service -- residential, commercial, and rental properties.", image: "/services/furniture-2.jpg" },
+        { icon: "", title: "Wall Cladding", description: "PVC wall panels for kitchens, bathrooms, and living spaces.", image: "/services/furniture-3.jpg" },
+        { icon: "", title: "Cornice & Moulding", description: "Decorative cornices and trim to finish any ceiling installation.", image: "/services/furniture-4.jpg" },
+        { icon: "", title: "Supply Only", description: "Bulk panel supply for contractors and large-scale projects.", image: "/services/furniture-5.jpg" },
+      ],
+      stats: [
+        { value: 800, suffix: "+", label: "Rooms Installed" },
+        { value: 10, label: "Years Experience" },
+        { value: 100, suffix: "+", label: "Finishes Available" },
+        { value: 100, suffix: "%", label: "Waterproof Product" },
+      ],
+      testimonials: [
+        { name: "Delroy W.", rating: 5, text: "They installed ceilings throughout my entire house. Clean work, great finish." },
+        { name: "Pauline S.", rating: 5, text: "Used them for a rental property. Tenants love the look. Highly recommend." },
+        { name: "Mark C.", rating: 4, text: "Fast installation, no mess, and the panels look premium. Will use again." },
+      ],
+    },
+
+    // Mobile auto detailing -- automotive defaults are for mechanical repair
+    "buff-n-beam": {
+      ...CATEGORY_DEFAULTS.automotive,
+      heroHeadline: "Mobile Auto Detailing, Done Right",
+      heroSubline: "We come to you. Full interior and exterior detailing at your doorstep.",
+      services: [
+        { icon: "", title: "Full Detail Package", description: "Complete interior and exterior detail -- wash, wax, vacuum, and clean.", image: "/services/auto-1.jpg" },
+        { icon: "", title: "Exterior Wash & Polish", description: "Hand wash, clay bar, machine polish, and UV wax protection.", image: "/services/auto-2.jpg" },
+        { icon: "", title: "Interior Deep Clean", description: "Vacuum, steam clean, leather condition, and odour treatment.", image: "/services/auto-3.jpg" },
+        { icon: "", title: "Engine Bay Clean", description: "Safe degreasing and detailing of the engine compartment.", image: "/services/auto-4.jpg" },
+        { icon: "", title: "Ceramic Coating", description: "Long-lasting ceramic paint protection for showroom shine.", image: "/services/auto-5.jpg" },
+      ],
+      bookingServices: ["Full Detail Package", "Exterior Wash & Polish", "Interior Deep Clean", "Engine Bay Clean", "Ceramic Coating"],
+    },
+
+    // Bakers -- food defaults lead with Dine In which is wrong for home bakers
+    "keke-designer-desserts": {
+      ...CATEGORY_DEFAULTS.food,
+      heroHeadline: "Designer Cakes & Mini Desserts",
+      heroSubline: "Custom celebration cakes, cupcakes, dessert boards, and mini treats.",
+      ctaLabel: "Order a Cake",
+      ctaHref: "#contact",
+      services: [
+        { icon: "", title: "Custom Cakes", description: "Birthday, wedding, graduation, and anniversary cakes designed to order." },
+        { icon: "", title: "Mini Desserts", description: "Cupcakes, cake pops, brownie bites, and dessert shooters." },
+        { icon: "", title: "Dessert Boards", description: "Grazing boards, sweet charcuterie, and dessert spreads for events." },
+        { icon: "", title: "Flavours & Tiers", description: "Vanilla, red velvet, carrot cake, marble, and more -- single or tiered." },
+        { icon: "", title: "Catering & Events", description: "Dessert tables and bulk orders for weddings, parties, and corporates." },
+      ],
+    },
+
+    "sweet-face-pastries": {
+      ...CATEGORY_DEFAULTS.food,
+      heroHeadline: "Custom Cakes & Pastries",
+      heroSubline: "Handmade pastries and celebration cakes baked with love.",
+      ctaLabel: "Order Now",
+      ctaHref: "#contact",
+      services: [
+        { icon: "", title: "Custom Cakes", description: "Celebration cakes designed to your theme -- birthday, wedding, or corporate." },
+        { icon: "", title: "Pastries & Bakes", description: "Croissants, tarts, cheesecakes, and daily baked goods." },
+        { icon: "", title: "Cupcakes", description: "Classic and specialty cupcakes in custom flavours and designs." },
+        { icon: "", title: "Dessert Boxes", description: "Assorted dessert gift boxes for any occasion." },
+        { icon: "", title: "Catering Orders", description: "Bulk pastry orders and dessert stations for events." },
       ],
     },
   };
