@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import { SkeletonTable } from "@shared/components/ui/Skeleton";
 import Link from "next/link";
 
 type Booking = {
@@ -23,7 +24,10 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
 
 export default function AdminBookingsPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params?.slug as string;
+  const secret = searchParams?.get("secret") ?? "";
+  const authHeader = secret ? { "x-admin-secret": secret } : {};
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +36,7 @@ export default function AdminBookingsPage() {
 
   useEffect(() => {
     if (!slug) return;
-    fetch(`/api/admin/leads?slug=${slug}&type=booking`)
+    fetch(`/api/admin/leads?slug=${slug}&type=booking`, { headers: authHeader })
       .then((r) => r.json())
       .then((d) => {
         setBookings(d.leads ?? []);
@@ -45,7 +49,7 @@ export default function AdminBookingsPage() {
   const updateStatus = async (id: string, status: string) => {
     const res = await fetch("/api/admin/leads", {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeader },
       body: JSON.stringify({ id, status }),
     });
     if (res.ok) {
@@ -101,7 +105,7 @@ export default function AdminBookingsPage() {
 
       <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", overflow: "hidden" }}>
         {loading ? (
-          <div style={{ padding: 40, textAlign: "center", color: "#9ca3af" }}>Loading bookings...</div>
+          <div style={{ padding: 24 }}><SkeletonTable rows={5} /></div>
         ) : filtered.length === 0 ? (
           <div style={{ padding: 40, textAlign: "center", color: "#9ca3af" }}>No bookings {filter !== "all" ? `with status "${filter}"` : "yet"}.</div>
         ) : (

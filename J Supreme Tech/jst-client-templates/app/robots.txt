@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /t/
+Allow: /
+
+Sitemap: https://jst-client-templates.vercel.app/sitemap.xml

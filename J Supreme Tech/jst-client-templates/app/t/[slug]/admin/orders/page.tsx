@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { SkeletonTable } from "@shared/components/ui/Skeleton";
 
 type Lead = {
   id: string;
@@ -22,7 +23,10 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
 
 export default function AdminOrdersPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params?.slug as string;
+  const secret = searchParams?.get("secret") ?? "";
+  const authHeader = secret ? { "x-admin-secret": secret } : {};
 
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +35,7 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     if (!slug) return;
-    fetch(`/api/admin/leads?slug=${slug}&type=order`)
+    fetch(`/api/admin/leads?slug=${slug}&type=order`, { headers: authHeader })
       .then((r) => r.json())
       .then((d) => {
         setLeads(d.leads ?? []);
@@ -44,7 +48,7 @@ export default function AdminOrdersPage() {
   const updateStatus = async (id: string, status: string) => {
     const res = await fetch("/api/admin/leads", {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeader },
       body: JSON.stringify({ id, status }),
     });
     if (res.ok) {
@@ -94,7 +98,7 @@ export default function AdminOrdersPage() {
 
       <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", overflow: "hidden" }}>
         {loading ? (
-          <div style={{ padding: 40, textAlign: "center", color: "#9ca3af" }}>Loading orders...</div>
+          <div style={{ padding: 24 }}><SkeletonTable rows={5} /></div>
         ) : filtered.length === 0 ? (
           <div style={{ padding: 40, textAlign: "center", color: "#9ca3af" }}>No orders {filter !== "all" ? `with status "${filter}"` : "yet"}.</div>
         ) : (

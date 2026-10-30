@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { CRMLayout } from "@shared/components/layout/CRMLayout";
 import { StatCard } from "@shared/components/charts/StatCard";
@@ -33,7 +33,7 @@ export default function Page() {
       <CRMLayout title="Automotive CRM" nav={NAV} brandColor="#1F7A35" brandName="Auto Shop" activeTab={tab} onTabChange={setTab}>
         {tab === "dashboard" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
-            <StatCard label="Open Jobs" value="0" /><StatCard label="Net Sales" value="J$0" /><StatCard label="Vehicles In Shop" value="0" /><StatCard label="New Leads" value="0" />
+            <StatCard label="Open Jobs" value="—" /><StatCard label="Net Sales" value="—" /><StatCard label="Vehicles In Shop" value="—" /><StatCard label="New Leads" value="—" />
           </div>
         )}
         {tab === "jobs" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Repair Jobs</h2><JobCardsModule jobs={[]} /></div>)}

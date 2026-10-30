@@ -15,10 +15,10 @@ export function ReportsModule({ data }: { data: ReportData }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
         {[
-          { label: "Total Revenue", value: fmt(data.totalRevenue) },
-          { label: "Total Orders", value: String(data.totalOrders) },
-          { label: "New Leads", value: String(data.newLeads) },
-          { label: "New Customers", value: String(data.newCustomers) },
+          { label: "Total Revenue", value: data.totalRevenue > 0 ? fmt(data.totalRevenue) : "—" },
+          { label: "Total Orders", value: data.totalOrders > 0 ? String(data.totalOrders) : "—" },
+          { label: "New Leads", value: data.newLeads > 0 ? String(data.newLeads) : "—" },
+          { label: "New Customers", value: data.newCustomers > 0 ? String(data.newCustomers) : "—" },
         ].map((s) => (
           <div key={s.label} style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", padding: "20px 24px" }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 8 }}>{s.label}</div>

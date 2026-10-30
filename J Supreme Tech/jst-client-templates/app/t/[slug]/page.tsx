@@ -14,6 +14,8 @@ import { Testimonials } from "@shared/components/sections/Testimonials";
 import { BookingWidget } from "@shared/components/sections/BookingWidget";
 import { ContactForm } from "@shared/components/sections/ContactForm";
 import { ShopGrid } from "@shared/components/sections/ShopGrid";
+import { MenuGrid } from "@shared/components/sections/MenuGrid";
+import CakeOrderForm from "@shared/components/sections/CakeOrderForm";
 import QuoteForm, { type QuoteItem } from "@shared/components/sections/QuoteForm";
 import { WholesaleGrid } from "@shared/components/sections/WholesaleGrid";
 import type { ShopProduct } from "@shared/components/sections/ShopGrid";
@@ -30,6 +32,7 @@ const supabase = createClient(
 );
 
 const WHOLESALE_SLUGS = new Set(["luxurious-wholesale-ja", "mini-good-girl"]);
+const CAKE_SLUGS = new Set(["keke-the-baker", "sweet-face-pastries"]);
 
 // ── Category-specific site defaults ──────────────────────────────────────────
 
@@ -584,13 +587,23 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             slug={slug}
           />
         ) : FOOD_CATS.has(client.category) ? (
-          <ShopGrid
-            config={config}
-            products={shopProducts}
-            heading="Order Now"
-            whatsapp={client.whatsapp}
-            slug={slug}
-          />
+          <>
+            <MenuGrid
+              config={config}
+              items={shopProducts}
+              heading={CAKE_SLUGS.has(slug) ? "Our Menu" : "Order Now"}
+              whatsapp={client.whatsapp ?? undefined}
+            />
+            {CAKE_SLUGS.has(slug) && (
+              <CakeOrderForm
+                businessName={client.name}
+                slug={slug}
+                whatsapp={client.whatsapp ?? undefined}
+                accent={client.accent}
+                accentFg={client.accent_fg}
+              />
+            )}
+          </>
         ) : null}
 
         {QUOTE_CATS.has(client.category) && (
