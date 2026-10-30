@@ -131,6 +131,17 @@ Nav dropdowns reinforce this: "Shop" nav item has children: "Dresses", "Tops", "
 4. ✅ ShopGrid, MenuGrid, ServiceGrid, QuoteForm — all 4 commerce components built
 5. ✅ Admin panel: `/t/[slug]/admin` (products CRUD), `/t/[slug]/admin/orders`, `/t/[slug]/admin/bookings`
 6. ✅ API routes: `/api/admin/products` (GET/POST/PATCH/DELETE), `/api/admin/leads` (GET/PATCH)
+7. ✅ `/api/submit-lead` route created — Supabase insert + notify stubs
+8. ✅ ShopGrid: 3-option checkout — WhatsApp (live), WiPay (coming soon), HandyPay (coming soon)
+9. ✅ ServiceGrid: WhatsApp follow-up button after booking confirmed
+10. ✅ `lib/notify.ts` — Resend + WhatsApp Cloud API stubs, graceful no-op when keys absent
+
+### Env vars to activate notifications (set in Vercel)
+- `RESEND_API_KEY` — Resend API key
+- `RESEND_FROM_EMAIL` — verified sender address
+- `WA_PHONE_NUMBER_ID` — WhatsApp Cloud API phone number ID
+- `WA_ACCESS_TOKEN` — WhatsApp Cloud API permanent token
+- `WA_NOTIFY_PHONE` — owner's WA number in E.164 (e.g. 18761234567)
 
 ## STILL OPEN
 
@@ -138,11 +149,9 @@ Nav dropdowns reinforce this: "Shop" nav item has children: "Dresses", "Tops", "
 2. `SiteNav.tsx` has no dropdown support — no "Shop → Dresses" sub-nav
 3. Full checkout (WiPay/HandyPay HMAC integration)
 4. Booking calendar with slot selection (BookingWidget upgrade)
-5. Resend email automations (order confirm, booking confirm, quote received)
-6. WhatsApp notifications via Railway bot
-7. Category pages `/t/[slug]/shop/[category]`
-8. Wholesale MOQ layout for luxurious-wholesale-ja, mini-good-girl
-9. SEO metadata, GA4, Core Web Vitals
+5. Category pages `/t/[slug]/shop/[category]`
+6. Wholesale MOQ layout for luxurious-wholesale-ja, mini-good-girl
+7. SEO metadata, GA4, Core Web Vitals
 
 ---
 
@@ -176,17 +185,18 @@ Nav dropdowns reinforce this: "Shop" nav item has children: "Dresses", "Tops", "
 | 11 | DB: insert service cards for 8 service shops | ✅ DONE |
 | 12 | Admin panel /t/[slug]/admin — product CRUD, orders, bookings | ✅ DONE |
 | 13 | API routes /api/admin/products + /api/admin/leads | ✅ DONE |
+| 13b | /api/submit-lead route (Supabase insert + notify stubs) | ✅ DONE |
 | 14 | Higgsfield: product images (fashion, variety, accessories) | PENDING |
 | 15 | Higgsfield: food images | PENDING |
 | 16 | Higgsfield: beauty service portfolio images | PENDING |
 | 17 | Compress all images <200KB WebP, update image_url in DB | PENDING |
 | 18 | SiteNav dropdown support | PENDING |
 | 19 | Product detail modal (gallery, variants) | PENDING |
-| 20 | Full checkout — WiPay/HandyPay HMAC | PENDING |
+| 20 | Full checkout — WiPay/HandyPay HMAC | PARTIAL — WhatsApp live; WiPay/HandyPay stubbed "Coming Soon" |
 | 21 | Booking calendar — slots, staff, confirm emails | PENDING |
 | 22 | Custom cake order form (keke-the-baker, sweet-face-pastries) | PENDING |
 | 23 | Wholesale MOQ layout (luxurious-wholesale-ja, mini-good-girl) | PENDING |
 | 24 | Category pages /t/[slug]/shop/[category] | PENDING |
-| 25 | Resend email automations (order, booking, quote) | PENDING |
-| 26 | WhatsApp notifications via Railway bot | PENDING |
+| 25 | Resend email automations (order, booking, quote) | PARTIAL — stubs live in lib/notify.ts, activate with RESEND_API_KEY |
+| 26 | WhatsApp Cloud API notifications | PARTIAL — stubs live in lib/notify.ts, activate with WA_* env vars |
 | 27 | SEO metadata, GA4, Core Web Vitals, WCAG 2.2 AA | PENDING |

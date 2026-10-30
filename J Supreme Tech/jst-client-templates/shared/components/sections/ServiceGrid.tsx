@@ -31,6 +31,16 @@ export function ServiceGrid({ config, services, heading = "Our Services", slug, 
   const filtered = activeCategory === "All" ? services : services.filter((s) => s.category === activeCategory);
   const currency = services[0]?.currency ?? "JMD";
 
+  const buildWaBookingMessage = () => {
+    if (!selected) return "";
+    return [
+      `BOOKING: ${selected.name}`,
+      form.date ? `Date: ${form.date}` : "",
+      form.phone ? `Phone: ${form.phone}` : "",
+      form.notes ? `Notes: ${form.notes}` : "",
+    ].filter(Boolean).join("\n");
+  };
+
   const handleBook = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selected) return;
@@ -40,7 +50,7 @@ export function ServiceGrid({ config, services, heading = "Our Services", slug, 
       const res = await fetch("/api/submit-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: config.name, name: form.name, phone: form.phone, message }),
+        body: JSON.stringify({ slug: slug ?? (config as { slug?: string }).slug ?? config.name, name: form.name, phone: form.phone, message }),
       });
       if (res.ok) setStatus("sent");
       else setStatus("error");
@@ -119,8 +129,17 @@ export function ServiceGrid({ config, services, heading = "Our Services", slug, 
 
             {status === "sent" ? (
               <div style={{ textAlign: "center", padding: "24px 0" }}>
+                <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
                 <p style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Booking Request Sent!</p>
-                <p style={{ color: "#6b7280", fontSize: 14 }}>We will confirm your appointment shortly. Check your WhatsApp or phone for a response.</p>
+                <p style={{ color: "#6b7280", fontSize: 14, marginBottom: 20 }}>We will confirm your appointment shortly.</p>
+                {whatsapp && (
+                  <a
+                    href={`https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(buildWaBookingMessage())}`}
+                    target="_blank" rel="noopener noreferrer"
+                    style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 24px", borderRadius: 10, background: "#25d366", color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
+                    💬 Follow up on WhatsApp
+                  </a>
+                )}
               </div>
             ) : (
               <form onSubmit={handleBook} style={{ display: "flex", flexDirection: "column", gap: 14 }}>

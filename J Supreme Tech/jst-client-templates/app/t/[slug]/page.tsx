@@ -956,7 +956,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             ? <MenuGrid config={config} items={shopProducts as unknown as MenuItem[]} heading="Our Menu" whatsapp={client.whatsapp ?? undefined} />
             : ["beauty", "automotive", "tech-repair", "events"].includes(client.category)
               ? <ServiceGrid config={config} services={shopProducts as unknown as ServiceCard[]} heading="Our Services" slug={slug} whatsapp={client.whatsapp ?? undefined} />
-              : <ShopGrid config={config} products={shopProducts} heading="Shop Our Collection" />
+              : <ShopGrid config={config} products={shopProducts} heading="Shop Our Collection" slug={slug} whatsapp={client.whatsapp ?? undefined} />
         )}
 
         {QUOTE_CATS.has(client.category) && (

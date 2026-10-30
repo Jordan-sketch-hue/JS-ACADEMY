@@ -19,15 +19,18 @@ interface Props {
   config: ClientConfig;
   products: ShopProduct[];
   heading?: string;
+  whatsapp?: string;
+  slug?: string;
 }
 
-export function ShopGrid({ config, products, heading = "Shop" }: Props) {
+export function ShopGrid({ config, products, heading = "Shop", whatsapp, slug }: Props) {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", email: "", notes: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [checkoutMethod, setCheckoutMethod] = useState<"whatsapp" | null>(null);
 
   // Build unique category list from products
   const categories = ["All", ...Array.from(new Set(products.map((p) => p.category).filter(Boolean) as string[]))];
@@ -52,6 +55,19 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
   const currency = cart[0]?.currency ?? (config as { currency?: string }).currency ?? "JMD";
   const cartCount = cart.reduce((n, i) => n + i.qty, 0);
 
+  const buildWaMessage = () => {
+    const lines = cart.map((i) => `${i.name} x${i.qty} — ${currency} ${(i.price * i.qty).toLocaleString()}`);
+    return [
+      `ORDER from ${form.name || "Customer"}`,
+      "──────────────",
+      ...lines,
+      "──────────────",
+      `TOTAL: ${currency} ${total.toLocaleString()}`,
+      form.phone ? `Phone: ${form.phone}` : "",
+      form.notes ? `Notes: ${form.notes}` : "",
+    ].filter(Boolean).join("\n");
+  };
+
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
@@ -61,11 +77,32 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
       const res = await fetch("/api/submit-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: config.name, name: form.name, phone: form.phone, email: form.email, message }),
+        body: JSON.stringify({ slug: slug ?? (config as { slug?: string }).slug ?? config.name, name: form.name, phone: form.phone, email: form.email, message }),
       });
       if (res.ok) { setStatus("sent"); setCart([]); }
       else setStatus("error");
     } catch { setStatus("error"); }
+  };
+
+  const handleWhatsAppOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+    const waText = buildWaMessage();
+    const orderSummary = cart.map((i) => `${i.qty}x ${i.name} (${currency} ${(i.price * i.qty).toLocaleString()})`).join(", ");
+    const dbMessage = `ORDER: ${orderSummary}. Total: ${currency} ${total.toLocaleString()}. Notes: ${form.notes || "none"}`;
+    // Post to DB silently — don't block WhatsApp on this
+    fetch("/api/submit-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: slug ?? (config as { slug?: string }).slug ?? config.name, name: form.name, phone: form.phone, email: form.email, message: dbMessage }),
+    }).catch(() => {});
+    const waNum = whatsapp ? whatsapp.replace(/\D/g, "") : "";
+    const waUrl = waNum
+      ? `https://wa.me/${waNum}?text=${encodeURIComponent(waText)}`
+      : `https://wa.me/?text=${encodeURIComponent(waText)}`;
+    window.open(waUrl, "_blank");
+    setStatus("sent");
+    setCart([]);
   };
 
   return (
@@ -193,34 +230,83 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
       {/* Checkout modal */}
       {checkoutOpen && (
         <div style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 32, width: "min(480px,100%)", maxHeight: "90vh", overflowY: "auto" }}>
+          <div style={{ background: "#fff", borderRadius: 16, padding: 32, width: "min(500px,100%)", maxHeight: "90vh", overflowY: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-              <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Complete Order</h3>
-              <button onClick={() => setCheckoutOpen(false)} style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer" }}>×</button>
+              <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Checkout</h3>
+              <button onClick={() => { setCheckoutOpen(false); setCheckoutMethod(null); setStatus("idle"); }} style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer" }}>×</button>
             </div>
+
+            {/* Order summary */}
+            <div style={{ background: "#f9fafb", borderRadius: 8, padding: 12, fontSize: 14, color: "#374151", lineHeight: 1.8, marginBottom: 20 }}>
+              {cart.map((i) => <div key={i.id}>{i.qty}x {i.name} — {currency} {(i.price * i.qty).toLocaleString()}</div>)}
+              <div style={{ fontWeight: 800, marginTop: 8, borderTop: "1px solid #e5e7eb", paddingTop: 8 }}>Total: {currency} {total.toLocaleString()}</div>
+            </div>
+
             {status === "sent" ? (
               <div style={{ textAlign: "center", padding: "24px 0" }}>
-                <p style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Order Received!</p>
-                <p style={{ color: "#6b7280" }}>We will contact you shortly to confirm and arrange delivery.</p>
+                <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
+                <p style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Order Sent!</p>
+                <p style={{ color: "#6b7280", fontSize: 14 }}>
+                  {checkoutMethod === "whatsapp"
+                    ? "WhatsApp opened with your order. The business will confirm shortly."
+                    : "Your order has been received. We will contact you to confirm."}
+                </p>
               </div>
+            ) : !checkoutMethod ? (
+              <>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#6b7280", marginBottom: 14 }}>Choose how to place your order:</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {/* WhatsApp — ACTIVE */}
+                  <button onClick={() => setCheckoutMethod("whatsapp")}
+                    style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 12, border: "2px solid #25d366", background: "#f0fdf4", cursor: "pointer", textAlign: "left" }}>
+                    <span style={{ fontSize: 28 }}>💬</span>
+                    <div>
+                      <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: "#15803d" }}>Order via WhatsApp</p>
+                      <p style={{ margin: 0, fontSize: 12, color: "#6b7280" }}>Send your order directly to the business</p>
+                    </div>
+                  </button>
+
+                  {/* WiPay — Coming Soon */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 12, border: "1px solid #e5e7eb", background: "#f9fafb", opacity: 0.65, cursor: "not-allowed", position: "relative" }}>
+                    <span style={{ fontSize: 28 }}>💳</span>
+                    <div>
+                      <p style={{ margin: 0, fontWeight: 700, fontSize: 15 }}>Pay with WiPay</p>
+                      <p style={{ margin: 0, fontSize: 12, color: "#6b7280" }}>Credit / debit card (JMD)</p>
+                    </div>
+                    <span style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700, color: "#fff", background: "#9ca3af", borderRadius: 100, padding: "3px 10px" }}>Coming Soon</span>
+                  </div>
+
+                  {/* HandyPay — Coming Soon */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 12, border: "1px solid #e5e7eb", background: "#f9fafb", opacity: 0.65, cursor: "not-allowed", position: "relative" }}>
+                    <span style={{ fontSize: 28 }}>📱</span>
+                    <div>
+                      <p style={{ margin: 0, fontWeight: 700, fontSize: 15 }}>Pay with HandyPay</p>
+                      <p style={{ margin: 0, fontSize: 12, color: "#6b7280" }}>Mobile money / local payment</p>
+                    </div>
+                    <span style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700, color: "#fff", background: "#9ca3af", borderRadius: 100, padding: "3px 10px" }}>Coming Soon</span>
+                  </div>
+                </div>
+              </>
             ) : (
-              <form onSubmit={handleCheckout} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <div style={{ background: "#f9fafb", borderRadius: 8, padding: 12, fontSize: 14, color: "#374151", lineHeight: 1.8 }}>
-                  {cart.map((i) => <div key={i.id}>{i.qty}x {i.name} — {currency} {(i.price * i.qty).toLocaleString()}</div>)}
-                  <div style={{ fontWeight: 800, marginTop: 8, borderTop: "1px solid #e5e7eb", paddingTop: 8 }}>Total: {currency} {total.toLocaleString()}</div>
+              /* WhatsApp order form */
+              <form onSubmit={handleWhatsAppOrder} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <button type="button" onClick={() => setCheckoutMethod(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280", fontSize: 13, padding: 0 }}>← Back</button>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#15803d" }}>Order via WhatsApp</span>
                 </div>
                 <input type="text" placeholder="Your Name *" required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                   style={{ padding: "12px 14px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 15 }} />
-                <input type="text" placeholder="Phone Number *" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                <input type="text" placeholder="Phone / WhatsApp *" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                   style={{ padding: "12px 14px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 15 }} />
                 <input type="email" placeholder="Email (optional)" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                   style={{ padding: "12px 14px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 15 }} />
                 <textarea placeholder="Delivery address or notes" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} rows={3}
                   style={{ padding: "12px 14px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 15, resize: "vertical" }} />
                 {status === "error" && <p style={{ color: "#ef4444", fontSize: 14 }}>Something went wrong. Try again.</p>}
-                <Button variant="primary" size="lg" style={{ background: "var(--accent)", color: "var(--accent-fg)" }}>
-                  {status === "sending" ? "Placing Order..." : `Place Order · ${currency} ${total.toLocaleString()}`}
-                </Button>
+                <button type="submit" disabled={status === "sending"}
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "#25d366", color: "#fff", border: "none", borderRadius: 10, padding: "14px 0", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>
+                  💬 {status === "sending" ? "Opening WhatsApp..." : `Send Order via WhatsApp · ${currency} ${total.toLocaleString()}`}
+                </button>
               </form>
             )}
           </div>
