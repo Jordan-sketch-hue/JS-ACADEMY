@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+﻿export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { getClient } from "@/lib/ct-client";
@@ -843,7 +843,15 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   };
 
   const heroUrl = client.hero_url ?? `/heroes/hero-${client.category}-desktop.webp`;
-  const heroUrlMobile = client.hero_url_mobile ?? `/heroes/hero-${client.category}-mobile.webp`;
+  // If hero_url is a /heroes/hero-*-desktop.webp, derive mobile from its stem; else fall back to category
+  const heroMobileFallback = (() => {
+    if (client.hero_url) {
+      const m = client.hero_url.match(/\/heroes\/hero-(.+)-desktop\.webp$/);
+      if (m) return `/heroes/hero-${m[1]}-mobile.webp`;
+    }
+    return `/heroes/hero-${client.category}-mobile.webp`;
+  })();
+  const heroUrlMobile = client.hero_url_mobile ?? heroMobileFallback;
   const heroVideo = client.hero_video_url ?? VIDEO_CATS[client.category] ?? null;
   const gallery = placeholderGallery(client.category, client.accent);
 
