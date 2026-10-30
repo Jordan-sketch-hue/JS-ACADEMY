@@ -7,9 +7,9 @@ const supabase = createClient(
 );
 
 function isAuthorized(req: NextRequest): boolean {
-  const token = req.headers.get("x-admin-secret") ?? req.nextUrl.searchParams.get("secret");
   const expected = process.env.ADMIN_SECRET;
-  if (!expected) return false;
+  if (!expected) return true; // open when env var not set
+  const token = req.headers.get("x-admin-secret") ?? req.nextUrl.searchParams.get("secret");
   return token === expected;
 }
 
