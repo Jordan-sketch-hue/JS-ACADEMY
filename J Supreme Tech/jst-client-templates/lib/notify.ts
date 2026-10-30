@@ -1,7 +1,11 @@
 import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  return new Resend(key);
+}
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -32,7 +36,8 @@ export async function sendEmail(opts: {
   template: string;
   relatedId?: string;
 }) {
-  if (!process.env.RESEND_API_KEY) return false;
+  const resend = getResend();
+  if (!resend) return false;
   const { data, error } = await resend.emails.send({
     from: "noreply@jsupremetech.online",
     to: opts.to,
@@ -62,7 +67,8 @@ export async function sendLeadEmail(payload: {
   email?: string;
   message: string;
 }) {
-  if (!process.env.RESEND_API_KEY) return;
+  const resend = getResend();
+  if (!resend) return;
   const to = payload.email || payload.clientEmail;
   if (!to) return;
   const isOrder = payload.message.startsWith("ORDER:");

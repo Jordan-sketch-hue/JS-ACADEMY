@@ -37,12 +37,21 @@ export function BookingWidget({ services, slug, whatsapp }: Props) {
     setLoading(true);
 
     try {
-      await fetch("/api/submit-booking", {
+      const res = await fetch("/api/submit-booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ clientSlug: slug, customerName: name, customerPhone: phone, customerEmail: email || undefined, service, bookingDate: date, bookingTime: time }),
       });
-    } catch { /* non-blocking */ }
+      if (!res.ok) {
+        setErr("Something went wrong. Please try again.");
+        setLoading(false);
+        return;
+      }
+    } catch {
+      setErr("Network error. Please check your connection and try again.");
+      setLoading(false);
+      return;
+    }
 
     setLoading(false);
     setDone(true);

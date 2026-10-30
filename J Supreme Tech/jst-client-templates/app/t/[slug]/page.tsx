@@ -13,7 +13,7 @@ import { Testimonials } from "@shared/components/sections/Testimonials";
 import { BookingWidget } from "@shared/components/sections/BookingWidget";
 import { ContactForm } from "@shared/components/sections/ContactForm";
 import { ShopGrid } from "@shared/components/sections/ShopGrid";
-import { QuoteForm } from "@shared/components/sections/QuoteForm";
+import QuoteForm, { type QuoteItem } from "@shared/components/sections/QuoteForm";
 import { WholesaleGrid } from "@shared/components/sections/WholesaleGrid";
 import type { ShopProduct } from "@shared/components/sections/ShopGrid";
 import type { WholesaleProduct } from "@shared/components/sections/WholesaleGrid";
@@ -460,13 +460,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   }
 
   if (new Set(["beauty", "automotive", "tech-repair", "events", "florist"]).has(client.category)) {
-    dynamicNavLinks.push({ label: "Book", href: "/t/" + slug + "/book" });
+    dynamicNavLinks.push({ label: "Book", href: "#booking" });
   }
   if (new Set(["events", "packaging", "lighting", "furniture", "design", "ceiling"]).has(client.category)) {
-    dynamicNavLinks.push({ label: "Quote", href: "/t/" + slug + "/quote" });
+    dynamicNavLinks.push({ label: "Quote", href: "#contact" });
   }
   dynamicNavLinks.push(
-    { label: "Services", href: "/t/" + slug + "/services" },
+    { label: "Services", href: "#services" },
     { label: "Gallery", href: "#gallery" },
     { label: "Contact", href: "#contact" },
   );
@@ -594,10 +594,12 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
         {QUOTE_CATS.has(client.category) && (
           <QuoteForm
-            config={config}
-            services={finalDefaults.services.map((s) => s.title)}
-            heading="Request a Quote"
-            subheading="Tell us about your project and we will get back to you within 24 hours."
+            items={shopProducts.length > 0 ? shopProducts as QuoteItem[] : finalDefaults.services.map((s, i) => ({ id: String(i), name: s.title, description: s.description }))}
+            clientSlug={slug}
+            phone={client.phone ?? undefined}
+            whatsapp={client.whatsapp ?? undefined}
+            accent={client.accent}
+            accentFg={client.accent_fg}
           />
         )}
 

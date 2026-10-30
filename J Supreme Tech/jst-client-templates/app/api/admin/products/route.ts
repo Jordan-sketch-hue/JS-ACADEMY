@@ -6,7 +6,17 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+function isAuthorized(req: NextRequest): boolean {
+  const token = req.headers.get("x-admin-secret") ?? req.nextUrl.searchParams.get("secret");
+  const expected = process.env.ADMIN_SECRET;
+  if (!expected) return false;
+  return token === expected;
+}
+
+const UNAUTHORIZED = NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
 export async function GET(req: NextRequest) {
+  if (!isAuthorized(req)) return UNAUTHORIZED;
   const slug = req.nextUrl.searchParams.get("slug");
   if (!slug) return NextResponse.json({ error: "Missing slug" }, { status: 400 });
 
@@ -28,6 +38,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  if (!isAuthorized(req)) return UNAUTHORIZED;
   const body = await req.json();
   const { slug, name, category, price, currency, description, sku } = body;
 
@@ -50,6 +61,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  if (!isAuthorized(req)) return UNAUTHORIZED;
   const body = await req.json();
   const { id, ...updates } = body;
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
@@ -69,6 +81,7 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  if (!isAuthorized(req)) return UNAUTHORIZED;
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 

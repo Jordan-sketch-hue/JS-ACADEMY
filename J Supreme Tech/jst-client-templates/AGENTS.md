@@ -164,7 +164,7 @@ Nav dropdowns reinforce this: "Shop" nav item has children: "Dresses", "Tops", "
 - Compress ALL images < 200KB WebP before deploy
 - Higgsfield hallucination: avoid props that "should" have text (shopping bags with logos, signage, price tags)
 - Higgsfield API: `POST https://api.higgsfield.ai/higgsfield-ai/soul/v2/standard`
-- Auth header: `Key ce333b0c-cdf3-48c9-8c09-b4d07c1820d9:eb0c1356f4e81211b32af7a099ec90e43e97cad2d0ec304c5196e1ee880dbbd9`
+- Auth header: `Key <HIGGSFIELD_API_KEY>` — set `HIGGSFIELD_API_KEY` env var; see operator credentials
 
 ---
 

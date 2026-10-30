@@ -135,7 +135,7 @@ export function WholesaleGrid({ slug, products, heading = "Wholesale Catalogue",
 
                   {/* Qty stepper */}
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: "auto" }}>
-                    <button type="button" onClick={() => setItemQty(product, qty - 1)} disabled={qty <= 0}
+                    <button type="button" onClick={() => setItemQty(product, qty === moq ? 0 : Math.max(moq, qty - 1))} disabled={qty <= 0}
                       style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-surface)", cursor: qty > 0 ? "pointer" : "not-allowed", fontSize: 18, opacity: qty > 0 ? 1 : 0.4 }}>-</button>
                     <span style={{ fontWeight: 700, minWidth: 24, textAlign: "center", fontSize: 15 }}>{qty}</span>
                     <button type="button" onClick={() => setItemQty(product, Math.max(moq, qty + 1))}

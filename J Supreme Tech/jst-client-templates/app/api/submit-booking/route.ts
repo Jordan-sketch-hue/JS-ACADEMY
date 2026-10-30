@@ -40,6 +40,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    // Dual-write to ct_leads so the admin inbox shows bookings alongside other leads
+    await supabase.from("ct_leads").insert({
+      client_id: client.id,
+      name: customerName,
+      phone: customerPhone || null,
+      email: customerEmail || null,
+      message: `BOOKING: ${service || "Appointment"} on ${bookingDate || "TBD"} at ${bookingTime || "TBD"}`,
+      source: "booking",
+      status: "new",
+      related_booking_id: booking?.id,
+    });
+
     // Notifications — both non-blocking
     await sendBookingNotification({
       clientName: client.name,
