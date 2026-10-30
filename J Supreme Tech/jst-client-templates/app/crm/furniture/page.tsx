@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { CRMLayout } from "@shared/components/layout/CRMLayout";
 import { StatCard } from "@shared/components/charts/StatCard";
-import { OrdersModule } from "@shared/components/crm/OrdersModule";
+import { AppointmentsModule } from "@shared/components/crm/AppointmentsModule";
 import { CustomersModule } from "@shared/components/crm/CustomersModule";
 import { ProductsModule } from "@shared/components/crm/ProductsModule";
 import { PaymentsModule } from "@shared/components/crm/PaymentsModule";
@@ -13,7 +13,7 @@ import { TasksModule } from "@shared/components/crm/TasksModule";
 
 const NAV = [
   { href: "#", tabKey: "dashboard", label: "Dashboard" },
-  { href: "#", tabKey: "orders", label: "Orders" },
+  { href: "#", tabKey: "appointments", label: "Appointments" },
   { href: "#", tabKey: "customers", label: "Customers" },
   { href: "#", tabKey: "products", label: "Products" },
   { href: "#", tabKey: "payments", label: "Payments" },
@@ -27,16 +27,28 @@ const REPORT_DATA = { period: "7d" as const, totalRevenue: 0, totalOrders: 0, ne
 
 export default function Page() {
   const [tab, setTab] = useState("dashboard");
+  const css = ":root{--accent:#5C3D1E;--accent-fg:#FFFFFF;}";
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: ":root{--accent:#1A1A1A;--accent-fg:#FFFFFF;}" }} />
-      <CRMLayout title="Furniture CRM" nav={NAV} brandColor="#1A1A1A" brandName="[CLIENT NAME]" activeTab={tab} onTabChange={setTab}>
+      <style dangerouslySetInnerHTML={{ __html: css }} />
+      <CRMLayout title="Furniture CRM" nav={NAV} brandColor="#5C3D1E" brandName="[CLIENT NAME]" activeTab={tab} onTabChange={setTab}>
         {tab === "dashboard" && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
-            <StatCard label="Orders This Week" value="0" /><StatCard label="Net Sales" value="J$0" /><StatCard label="New Leads" value="0" /><StatCard label="Open Quotes" value="0" />
-          </div>
+          <>
+            <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", marginBottom: 24, height: 180 }}>
+              <img src="/crm-banners/furniture.jpg" alt="Furniture CRM" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.25) 100%)", display: "flex", alignItems: "center", padding: "0 28px" }}>
+                <div>
+                  <p style={{ color: "#fff", fontSize: 22, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>Furniture CRM</p>
+                  <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 13, margin: "4px 0 0" }}>Sales and custom orders overview</p>
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
+              <StatCard label="Orders Today" value="0" /><StatCard label="Net Sales" value="J$0" /><StatCard label="New Leads" value="0" /><StatCard label="Active Projects" value="0" />
+            </div>
+          </>
         )}
-        {tab === "orders" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Orders</h2><OrdersModule orders={[]} /></div>)}
+        {tab === "appointments" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Appointments</h2><AppointmentsModule appointments={[]} /></div>)}
         {tab === "customers" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Customers</h2><CustomersModule customers={[]} /></div>)}
         {tab === "products" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Products</h2><ProductsModule products={[]} /></div>)}
         {tab === "payments" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Payments</h2><PaymentsModule payments={[]} /></div>)}
