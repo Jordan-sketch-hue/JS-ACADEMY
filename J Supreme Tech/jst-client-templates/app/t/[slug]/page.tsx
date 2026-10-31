@@ -603,6 +603,7 @@ const VIDEO_CATS: Record<string, string> = {
   automotive: "/videos/hero-automotive.mp4",
   florist: "/videos/hero-florist.mp4",
 };
+const NO_VIDEO_SLUGS = new Set(["beach-picnic-ja"]);
 
 // ── Metadata ─────────────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
