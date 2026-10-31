@@ -603,7 +603,11 @@ const VIDEO_CATS: Record<string, string> = {
   automotive: "/videos/hero-automotive.mp4",
   florist: "/videos/hero-florist.mp4",
 };
-const NO_VIDEO_SLUGS = new Set(["beach-picnic-ja", "sincerely-sparks", "hair-by-keba", "blye-beauty", "ginza-yotsumi", "cre8tive-cafe"]);
+const NO_VIDEO_SLUGS = new Set([
+  "beach-picnic-ja", "sincerely-sparks", "hair-by-keba", "blye-beauty", "ginza-yotsumi", "cre8tive-cafe",
+  // Bakers/pastry & ice cream -- food video is seafood; suppress for all sweet/dessert slugs
+  "keke-the-baker", "sweet-face-pastries", "jae-bakes", "cookie-corner-tt", "tropical-toppingz",
+]);
 
 // ── Metadata ─────────────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -667,18 +671,19 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     },
 
     "westside-mandeville": {
-      ...CATEGORY_DEFAULTS.beauty,
-      heroHeadline: "The Hairdresser Mandeville Trusts",
-      heroSubline: "Cuts, colour, and styling in the heart of Mandeville.",
+      ...CATEGORY_DEFAULTS.fashion,
+      heroHeadline: "Mandeville's Go-To Fashion Store",
+      heroSubline: "Fresh styles, everyday fits, and occasion wear for every body and budget.",
       services: [
-        { icon: "", title: "Haircut & Trim", description: "Precision cuts tailored to your face shape and style goals.", image: "/services/beauty-1.jpg" },
-        { icon: "", title: "Colour & Highlights", description: "Balayage, single-process colour, highlights, and colour corrections.", image: "/services/beauty-2.jpg" },
-        { icon: "", title: "Blow Dry & Styling", description: "Smooth blow-outs, roller sets, and special occasion styling.", image: "/services/beauty-3.jpg" },
-        { icon: "", title: "Braids & Loc Styles", description: "Box braids, knotless braids, cornrows, and starter locs.", image: "/services/beauty-1.jpg" },
-        { icon: "", title: "Natural Hair Care", description: "Twist-outs, bantu knots, wash-and-gos, and deep treatments.", image: "/services/beauty-2.jpg" },
-        { icon: "", title: "Relaxer & Texturiser", description: "Professional relaxer application with nourishing aftercare.", image: "/services/beauty-3.jpg" },
+        { icon: "", title: "Dresses & Sets", description: "Party dresses, co-ords, and occasion sets for every event." },
+        { icon: "", title: "Tops & Bodysuits", description: "On-trend tops, blouses, and bodysuits in the latest styles." },
+        { icon: "", title: "Bottoms", description: "Jeans, trousers, skirts, and shorts for every occasion." },
+        { icon: "", title: "Accessories", description: "Bags, jewellery, scarves, and accessories to complete your look." },
+        { icon: "", title: "Men's & Kids", description: "Casual and semi-formal clothing for men and children." },
       ],
-      bookingServices: ["Haircut & Trim", "Colour Treatment", "Blow Dry & Style", "Braids", "Natural Hair", "Relaxer"],
+      ctaLabel: "Shop Now",
+      ctaHref: "#services",
+      bookingServices: [],
     },
 
     // General beauty salon (hair + nails + skincare)
@@ -794,6 +799,105 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       ],
     },
 
+    // Jae Bakes -- custom cakes & baked goods
+    "jae-bakes": {
+      ...CATEGORY_DEFAULTS.food,
+      heroHeadline: "Cakes Made with Love",
+      heroSubline: "Custom celebration cakes, flavour-packed cupcakes, and baked treats for every occasion.",
+      ctaLabel: "Order a Cake",
+      ctaHref: "#contact",
+      services: [
+        { icon: "", title: "Custom Cakes", description: "Birthday, wedding, graduation, and themed cakes baked to order." },
+        { icon: "", title: "Cupcakes", description: "Decorated cupcakes in classic and specialty flavours." },
+        { icon: "", title: "Brownies & Bars", description: "Fudgy brownies, lemon bars, and slice-and-share bakes." },
+        { icon: "", title: "Dessert Boards", description: "Sweet charcuterie and dessert spreads for events." },
+        { icon: "", title: "Bulk & Event Orders", description: "Large orders for weddings, parties, and corporate events." },
+      ],
+    },
+
+    // Cookie Corner TT -- cookies & baked treats (Trinidad)
+    "cookie-corner-tt": {
+      ...CATEGORY_DEFAULTS.food,
+      heroHeadline: "Trinidad's Favourite Cookie Shop",
+      heroSubline: "Freshly baked cookies, sweet treats, and custom dessert boxes delivered to your door.",
+      ctaLabel: "Order Now",
+      ctaHref: "#contact",
+      services: [
+        { icon: "", title: "Cookies", description: "Classic chocolate chip, double choc, snickerdoodle, and seasonal specials." },
+        { icon: "", title: "Custom Gift Boxes", description: "Curated cookie boxes for birthdays, holidays, and corporate gifting." },
+        { icon: "", title: "Brownies & Bars", description: "Fudgy brownies, blondies, and dessert bars." },
+        { icon: "", title: "Event Orders", description: "Bulk cookie and treat orders for events and celebrations." },
+        { icon: "", title: "Subscription Boxes", description: "Weekly or monthly cookie subscription deliveries." },
+      ],
+    },
+
+    // Tropical Toppingz -- ice cream & dessert shop (NOT a bakery)
+    "tropical-toppingz": {
+      ...CATEGORY_DEFAULTS.food,
+      heroHeadline: "Scoops, Sundaes & Sweet Vibes",
+      heroSubline: "Hand-crafted ice cream, loaded sundaes, and tropical milkshakes you won't forget.",
+      ctaLabel: "Order Now",
+      ctaHref: "#contact",
+      services: [
+        { icon: "", title: "Ice Cream Scoops", description: "Single, double, and triple scoops in signature tropical flavours." },
+        { icon: "", title: "Sundaes", description: "Loaded sundaes with toppings, sauces, and whipped cream." },
+        { icon: "", title: "Milkshakes", description: "Thick tropical milkshakes in mango, coconut, strawberry, and more." },
+        { icon: "", title: "Waffle Cones & Cups", description: "Fresh waffle cones and cups with your flavour of choice." },
+        { icon: "", title: "Party Platters", description: "Ice cream platters and dessert stations for events and parties." },
+      ],
+    },
+
+    // Samkhil Ltd -- lawn care & garden maintenance
+    "samkhil": {
+      ...CATEGORY_DEFAULTS.events,
+      heroHeadline: "Lawn Care & Garden Maintenance",
+      heroSubline: "Professional mowing, trimming, landscaping, and garden upkeep across Jamaica.",
+      ctaLabel: "Get a Quote",
+      ctaHref: "#contact",
+      services: [
+        { icon: "", title: "Lawn Mowing", description: "Regular residential and commercial lawn mowing on your schedule." },
+        { icon: "", title: "Trimming & Edging", description: "Neat edges, hedge trimming, and shrub shaping." },
+        { icon: "", title: "Landscaping", description: "Garden design, planting, and landscaping for homes and businesses." },
+        { icon: "", title: "Weed Control", description: "Chemical and manual weed removal to keep your lawn clean." },
+        { icon: "", title: "Cleanup & Hauling", description: "Leaf removal, debris hauling, and post-storm garden cleanup." },
+      ],
+      bookingServices: ["Lawn Mowing", "Trimming & Edging", "Landscaping", "Weed Control", "Cleanup & Hauling"],
+    },
+
+    // Surprise Fashion Shop -- regular fashion store (NOT mystery boxes)
+    "surprise-fashion": {
+      ...CATEGORY_DEFAULTS.fashion,
+      heroHeadline: "Fashion for Every Occasion",
+      heroSubline: "Trendy clothing, accessories, and everyday styles for women, men, and kids.",
+      ctaLabel: "Shop Now",
+      ctaHref: "#services",
+      services: [
+        { icon: "", title: "Dresses & Sets", description: "Party dresses, co-ords, and occasion sets for every event." },
+        { icon: "", title: "Tops & Blouses", description: "On-trend tops, bodysuits, and blouses in the latest styles." },
+        { icon: "", title: "Bottoms", description: "Jeans, trousers, skirts, and shorts for every occasion." },
+        { icon: "", title: "Accessories", description: "Bags, jewellery, belts, and accessories to complete your look." },
+        { icon: "", title: "Men's & Kids", description: "Everyday casual and semi-formal pieces for the whole family." },
+      ],
+      bookingServices: [],
+    },
+
+    // Trendy Accessories JA -- phone cases & mobile accessories
+    "trendy-accessories": {
+      ...CATEGORY_DEFAULTS.accessories,
+      heroHeadline: "Phone Cases & Mobile Accessories",
+      heroSubline: "Stylish phone cases, screen protectors, chargers, and mobile accessories for every device.",
+      ctaLabel: "Shop Now",
+      ctaHref: "#services",
+      services: [
+        { icon: "", title: "Phone Cases", description: "Protective and stylish cases for iPhone, Samsung, and more." },
+        { icon: "", title: "Screen Protectors", description: "Tempered glass and film protectors for all major phone models." },
+        { icon: "", title: "Chargers & Cables", description: "Fast chargers, USB-C cables, and wireless charging pads." },
+        { icon: "", title: "Earphones & Audio", description: "Wired and Bluetooth earphones, AirPod cases, and audio accessories." },
+        { icon: "", title: "Phone Holders & Stands", description: "Car mounts, desk stands, and pop sockets for everyday use." },
+      ],
+      bookingServices: [],
+    },
+
       "velvet-vault": {
         ...CATEGORY_DEFAULTS.fashion ?? defaults,
         heroHeadline: "Luxury Wholesale, Redefined",
@@ -902,7 +1006,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     "chichaven":            ["/heroes/hero-chichaven-desktop.webp",   "/heroes/hero-chichaven-mobile.webp"],
     "velvet-vault":         ["/heroes/hero-velvet-vault-desktop.webp", "/heroes/hero-velvet-vault-mobile.webp"],
     "sincerely-sparks":     ["/heroes/hero-hair-desktop.webp",        "/heroes/hero-hair-mobile.webp"],
-    "westside-mandeville":  ["/heroes/hero-hair-desktop.webp",        "/heroes/hero-hair-mobile.webp"],
+    "westside-mandeville":  ["/heroes/hero-fashion-desktop.webp",     "/heroes/hero-fashion-mobile.webp"],
     "hair-by-keba":         ["/heroes/hero-hair-desktop.webp",        "/heroes/hero-hair-mobile.webp"],
     "ginza-yotsumi":        ["/heroes/hero-japanese-desktop.webp",    "/heroes/hero-japanese-mobile.webp"],
     "beach-picnic-ja":      ["/heroes/hero-beach-desktop.webp",       "/heroes/hero-beach-mobile.webp"],
@@ -912,6 +1016,15 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     "savvy-apple":          ["/heroes/hero-tech-repair-desktop.webp", "/heroes/hero-tech-repair-mobile.webp"],
     "cre8tive-cafe":        ["/heroes/hero-pizza-desktop.webp",       "/heroes/hero-pizza-mobile.webp"],
     "kylas-content":        ["/heroes/hero-crafts-desktop.webp",      "/heroes/hero-crafts-mobile.webp"],
+    // Baker clients -- use baker heroes (not generic food/seafood hero)
+    "jae-bakes":            ["/heroes/hero-baker-desktop.webp",       "/heroes/hero-baker-mobile.webp"],
+    "cookie-corner-tt":     ["/heroes/hero-baker-desktop.webp",       "/heroes/hero-baker-mobile.webp"],
+    "keke-the-baker":       ["/heroes/hero-baker-desktop.webp",       "/heroes/hero-baker-mobile.webp"],
+    "sweet-face-pastries":  ["/heroes/hero-baker-desktop.webp",       "/heroes/hero-baker-mobile.webp"],
+    // Ice cream shop
+    "tropical-toppingz":    ["/heroes/hero-food-desktop.webp",        "/heroes/hero-food-mobile.webp"],
+    // Phone cases store
+    "trendy-accessories":   ["/heroes/hero-accessories-desktop.webp", "/heroes/hero-accessories-mobile.webp"],
   };
   // Exhaustive category map — covers all known category names including aliases
   const CATEGORY_HERO: Record<string, [string, string]> = {
