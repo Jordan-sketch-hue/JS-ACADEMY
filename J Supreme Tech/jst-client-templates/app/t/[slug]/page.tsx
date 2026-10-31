@@ -612,6 +612,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${client.name} | Jamaica`,
     description: client.subline ?? client.headline ?? undefined,
+    icons: { icon: `/api/favicon/${slug}` },
     openGraph: {
       title: client.name,
       description: client.subline ?? client.headline ?? undefined,
@@ -895,16 +896,53 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     },
   };
 
-  const heroUrl = client.hero_url ?? `/heroes/hero-${client.category}-desktop.webp`;
-  // If hero_url is a /heroes/hero-*-desktop.webp, derive mobile from its stem; else fall back to category
-  const heroMobileFallback = (() => {
-    if (client.hero_url) {
-      const m = client.hero_url.match(/\/heroes\/hero-(.+)-desktop\.webp$/);
-      if (m) return `/heroes/hero-${m[1]}-mobile.webp`;
-    }
-    return `/heroes/hero-${client.category}-mobile.webp`;
-  })();
-  const heroUrlMobile = client.hero_url_mobile ?? heroMobileFallback;
+  // Slug-specific hero overrides — for clients whose DB category doesn't match the right hero file
+  const SLUG_HERO: Record<string, [string, string]> = {
+    "chichaven":            ["/heroes/hero-chichaven-desktop.webp",   "/heroes/hero-chichaven-mobile.webp"],
+    "velvet-vault":         ["/heroes/hero-velvet-vault-desktop.webp", "/heroes/hero-velvet-vault-mobile.webp"],
+    "sincerely-sparks":     ["/heroes/hero-hair-desktop.webp",        "/heroes/hero-hair-mobile.webp"],
+    "westside-mandeville":  ["/heroes/hero-hair-desktop.webp",        "/heroes/hero-hair-mobile.webp"],
+    "hair-by-keba":         ["/heroes/hero-hair-desktop.webp",        "/heroes/hero-hair-mobile.webp"],
+    "ginza-yotsumi":        ["/heroes/hero-japanese-desktop.webp",    "/heroes/hero-japanese-mobile.webp"],
+    "beach-picnic-ja":      ["/heroes/hero-beach-desktop.webp",       "/heroes/hero-beach-mobile.webp"],
+    "blye-beauty":          ["/heroes/hero-cosmetics-desktop.webp",   "/heroes/hero-cosmetics-mobile.webp"],
+    "atelier-luxridge":     ["/heroes/hero-ceiling-desktop.webp",     "/heroes/hero-ceiling-mobile.webp"],
+    "harbor-jet-logistics": ["/heroes/hero-variety-desktop.webp",     "/heroes/hero-variety-mobile.webp"],
+    "savvy-apple":          ["/heroes/hero-tech-repair-desktop.webp", "/heroes/hero-tech-repair-mobile.webp"],
+    "cre8tive-cafe":        ["/heroes/hero-pizza-desktop.webp",       "/heroes/hero-pizza-mobile.webp"],
+    "kylas-content":        ["/heroes/hero-crafts-desktop.webp",      "/heroes/hero-crafts-mobile.webp"],
+  };
+  // Exhaustive category map — covers all known category names including aliases
+  const CATEGORY_HERO: Record<string, [string, string]> = {
+    beauty:        ["/heroes/hero-beauty-desktop.webp",      "/heroes/hero-beauty-mobile.webp"],
+    automotive:    ["/heroes/hero-automotive-desktop.webp",  "/heroes/hero-automotive-mobile.webp"],
+    furniture:     ["/heroes/hero-furniture-desktop.webp",   "/heroes/hero-furniture-mobile.webp"],
+    fashion:       ["/heroes/hero-fashion-desktop.webp",     "/heroes/hero-fashion-mobile.webp"],
+    accessories:   ["/heroes/hero-accessories-desktop.webp", "/heroes/hero-accessories-mobile.webp"],
+    food:          ["/heroes/hero-food-desktop.webp",        "/heroes/hero-food-mobile.webp"],
+    florist:       ["/heroes/hero-florist-desktop.webp",     "/heroes/hero-florist-mobile.webp"],
+    events:        ["/heroes/hero-events-desktop.webp",      "/heroes/hero-events-mobile.webp"],
+    "tech-repair": ["/heroes/hero-tech-repair-desktop.webp", "/heroes/hero-tech-repair-mobile.webp"],
+    packaging:     ["/heroes/hero-packaging-desktop.webp",   "/heroes/hero-packaging-mobile.webp"],
+    lighting:      ["/heroes/hero-lighting-desktop.webp",    "/heroes/hero-lighting-mobile.webp"],
+    variety:       ["/heroes/hero-variety-desktop.webp",     "/heroes/hero-variety-mobile.webp"],
+    design:        ["/heroes/hero-crafts-desktop.webp",      "/heroes/hero-crafts-mobile.webp"],
+    crafts:        ["/heroes/hero-crafts-desktop.webp",      "/heroes/hero-crafts-mobile.webp"],
+    ceiling:       ["/heroes/hero-ceiling-desktop.webp",     "/heroes/hero-ceiling-mobile.webp"],
+    baby:          ["/heroes/hero-baby-desktop.webp",        "/heroes/hero-baby-mobile.webp"],
+    bar:           ["/heroes/hero-bar-desktop.webp",         "/heroes/hero-bar-mobile.webp"],
+    pizza:         ["/heroes/hero-pizza-desktop.webp",       "/heroes/hero-pizza-mobile.webp"],
+    baker:         ["/heroes/hero-baker-desktop.webp",       "/heroes/hero-baker-mobile.webp"],
+    hair:          ["/heroes/hero-hair-desktop.webp",        "/heroes/hero-hair-mobile.webp"],
+    cosmetics:     ["/heroes/hero-cosmetics-desktop.webp",   "/heroes/hero-cosmetics-mobile.webp"],
+    beach:         ["/heroes/hero-beach-desktop.webp",       "/heroes/hero-beach-mobile.webp"],
+    japanese:      ["/heroes/hero-japanese-desktop.webp",    "/heroes/hero-japanese-mobile.webp"],
+  };
+  const HERO_FALLBACK: [string, string] = ["/heroes/hero-variety-desktop.webp", "/heroes/hero-variety-mobile.webp"];
+
+  const [catD, catM] = SLUG_HERO[slug] ?? CATEGORY_HERO[client.category] ?? HERO_FALLBACK;
+  const heroUrl = client.hero_url ?? catD;
+  const heroUrlMobile = client.hero_url_mobile ?? catM;
   const heroVideo = client.hero_video_url ?? VIDEO_CATS[client.category] ?? null;
   const gallery = placeholderGallery(client.category, client.accent);
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useRef } from "react";
 import { Button } from "@shared/components/ui/Button";
 import type { ClientConfig } from "@shared/types/config";
@@ -31,12 +31,14 @@ export function SiteHero({ config, headline, subline, bgImage, bgImageMobile, bg
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // Ensure video plays (autoplay blocked on some mobile browsers until interaction)
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    v.play().catch(() => {/* silently ignore — image fallback is already visible */});
+    v.play().catch(() => {});
   }, []);
+
+  const hasMobileAlt = !!(bgImageMobile && bgImageMobile !== bgImage);
+  const bgZ = bgVideo ? -1 : 0;
 
   return (
     <section
@@ -46,14 +48,11 @@ export function SiteHero({ config, headline, subline, bgImage, bgImageMobile, bg
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
-        // Mobile: 70svh keeps content visible without full-screen lock
-        // Desktop: 100svh for full impact
         minHeight: "clamp(480px, 70svh, 100svh)",
         width: "100%",
       }}
       aria-label="Hero"
     >
-      {/* Video background — muted, loop, plays inline on mobile */}
       {bgVideo && (
         <video
           ref={videoRef}
@@ -70,28 +69,27 @@ export function SiteHero({ config, headline, subline, bgImage, bgImageMobile, bg
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            // Ensure face/subject stays centred on mobile crop
             objectPosition: "center center",
           }}
         />
       )}
 
-      {/* Image background — <picture> swaps to portrait crop on mobile */}
-      <picture style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: bgVideo ? -1 : 0 }}>
-        {bgImageMobile && (
-          <source media="(max-width: 767px)" srcSet={bgImageMobile} />
-        )}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={bgImage}
-          alt=""
-          aria-hidden="true"
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", display: "block" }}
-          fetchPriority="high"
+      {/*
+        CSS bg-image divs replace <picture>/<img> to eliminate viewport-swap flicker.
+        Browser evaluates CSS media queries at paint time — only one image loads per viewport.
+        With <picture>, <img> loads immediately then swaps when <source> media query resolves.
+      */}
+      <div
+        className={hasMobileAlt ? "hero-bg-desktop has-mobile-alt" : "hero-bg-desktop"}
+        style={{ backgroundImage: `url(${JSON.stringify(bgImage)})`, zIndex: bgZ }}
+      />
+      {hasMobileAlt && (
+        <div
+          className="hero-bg-mobile"
+          style={{ backgroundImage: `url(${JSON.stringify(bgImageMobile!)})`, zIndex: bgZ }}
         />
-      </picture>
+      )}
 
-      {/* Overlay — gradient: heavier at bottom for text legibility on mobile */}
       <div style={{
         position: "absolute",
         inset: 0,
@@ -99,7 +97,6 @@ export function SiteHero({ config, headline, subline, bgImage, bgImageMobile, bg
         zIndex: 1,
       }} />
 
-      {/* Content */}
       <div style={{
         position: "relative",
         zIndex: 2,
@@ -123,7 +120,6 @@ export function SiteHero({ config, headline, subline, bgImage, bgImageMobile, bg
           ref={headRef}
           style={{
             margin: "0 0 16px",
-            // fluid font: 32px mobile → 56px desktop
             fontSize: "clamp(32px, 6vw, 56px)",
             fontWeight: 800,
             lineHeight: 1.15,
@@ -135,7 +131,6 @@ export function SiteHero({ config, headline, subline, bgImage, bgImageMobile, bg
         <p style={{
           margin: "0 auto 32px",
           maxWidth: 520,
-          // fluid: 16px mobile → 20px desktop
           fontSize: "clamp(16px, 2.5vw, 20px)",
           lineHeight: 1.6,
           opacity: 0.9,

@@ -1,4 +1,15 @@
 ﻿@import "tailwindcss";
+/* Global box-sizing reset — prevents padding+100%-width overflow on mobile */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Ensure long words/URLs wrap instead of blowing out their container */
+p, h1, h2, h3, h4, h5, h6, a, li, td, th, span, label {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
 @source "../../shared/**/*.tsx";
 @source "../../app/**/*.tsx";
 
@@ -43,3 +54,24 @@ section {
 
 /* Mobile-safe scroll containers */
 .scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+/* Hero background — CSS bg swap avoids <picture>/<img> flicker */
+.hero-bg-desktop {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.hero-bg-mobile {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+@media (max-width: 767px) {
+  .hero-bg-desktop.has-mobile-alt { display: none; }
+  .hero-bg-mobile { display: block; }
+}
