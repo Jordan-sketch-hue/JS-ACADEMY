@@ -10,6 +10,8 @@ export type ShopProduct = {
   currency: string;
   description?: string | null;
   image_url?: string | null;
+  category?: string | null;
+  subcategory?: string | null;
 };
 
 type CartItem = ShopProduct & { qty: number };
@@ -26,6 +28,18 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", email: "", notes: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [activeFilter, setActiveFilter] = useState<string>("All");
+
+  // Derive unique categories from products
+  const categories = (() => {
+    const cats = new Set<string>();
+    products.forEach((p) => {
+      if (p.category) cats.add(p.category);
+    });
+    return cats.size > 1 ? ["All", ...Array.from(cats)] : [];
+  })();
+
+  const filtered = activeFilter === "All" ? products : products.filter((p) => p.category === activeFilter);
 
   const addToCart = useCallback((product: ShopProduct) => {
     setCart((prev) => {
@@ -46,7 +60,6 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
   const currency = cart[0]?.currency ?? (config as { currency?: string }).currency ?? "JMD";
   const cartCount = cart.reduce((n, i) => n + i.qty, 0);
 
-  // Sync cart count to SiteNav badge + listen for open-cart from bottom nav
   useEffect(() => {
     window.dispatchEvent(new CustomEvent("cart-update", { detail: { count: cartCount } }));
   }, [cartCount]);
@@ -78,7 +91,7 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
   return (
     <section id="shop" style={{ padding: "64px 24px", background: "var(--bg-surface)" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: categories.length ? 24 : 40 }}>
           <h2 style={{ fontSize: "clamp(24px,4vw,36px)", fontWeight: 800, margin: 0 }}>{heading}</h2>
           {cartCount > 0 && (
             <button onClick={() => setCartOpen(true)}
@@ -88,11 +101,28 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
           )}
         </div>
 
+        {categories.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 32 }}>
+            {categories.map((cat) => (
+              <button key={cat} onClick={() => setActiveFilter(cat)}
+                style={{
+                  padding: "8px 18px", borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: "pointer", border: "2px solid",
+                  borderColor: activeFilter === cat ? "var(--accent)" : "var(--border)",
+                  background: activeFilter === cat ? "var(--accent)" : "transparent",
+                  color: activeFilter === cat ? "var(--accent-fg)" : "var(--text-secondary)",
+                  transition: "all 0.15s ease",
+                }}>
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 240px), 1fr))", gap: 20 }}>
-          {products.map((product) => {
+          {filtered.map((product) => {
             const inCart = cart.find((i) => i.id === product.id);
             return (
-              <div key={product.id} style={{ background: "var(--bg-card)", borderRadius: 12, overflow: "hidden", border: "1px solid var(--border)", display: "flex", flexDirection: "column" }}>
+              <div key={product.id} style={{ background: "var(--bg-card)", borderRadius: 12, overflow: "hidden", border: "1px solid var(--border)", display: "flex", flexDirection: "column", cursor: "pointer", transition: "box-shadow 0.15s, transform 0.15s" }}, onMouseEnter={(e)=>{(e.currentTarget as HTMLDivElement).style.boxShadow="0 4px 20px rgba(0,0,0,0.10)";(e.currentTarget as HTMLDivElement).style.transform="translateY(-2px)"}}, onMouseLeave={(e)=>{(e.currentTarget as HTMLDivElement).style.boxShadow="none";(e.currentTarget as HTMLDivElement).style.transform="none"}}>
                 {product.image_url
                   ? <img src={product.image_url} alt={product.name} style={{ width: "100%", height: 200, objectFit: "cover", display: "block", flexShrink: 0 }} loading="lazy" />
                   : <div style={{ width: "100%", height: 200, background: "var(--bg-surface)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48 }}>
@@ -120,7 +150,7 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
           <div style={{ position: "relative", zIndex: 101, background: "#fff", width: "min(400px,100vw)", height: "100vh", overflowY: "auto", padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>Your Cart</h3>
-              <button onClick={() => setCartOpen(false)} style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer" }}>x</button>
+              <button onClick={() => setCartOpen(false)} style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer", lineHeight: 1 }}>&#215;</button>
             </div>
             {cart.length === 0 ? <p style={{ color: "#6b7280" }}>Your cart is empty.</p> : (
               <>
@@ -155,7 +185,7 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
           <div style={{ background: "#fff", borderRadius: 16, padding: 32, width: "min(480px,100%)", maxHeight: "90vh", overflowY: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
               <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Complete Order</h3>
-              <button onClick={() => setCheckoutOpen(false)} style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer" }}>x</button>
+              <button onClick={() => setCheckoutOpen(false)} style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer", lineHeight: 1 }}>&#215;</button>
             </div>
             {status === "sent" ? (
               <div style={{ textAlign: "center", padding: "24px 0" }}>

@@ -146,7 +146,7 @@ export function SiteHero({ config, headline, subline, bgImage, bgImageMobile, bg
           <Button
             variant="primary"
             size="lg"
-            onClick={() => document.querySelector(ctaHref)?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() => { if (ctaHref.startsWith('#')) { document.querySelector(ctaHref)?.scrollIntoView({ behavior: 'smooth' }); } else { window.location.href = ctaHref; } }}
             style={{ backgroundColor: "var(--accent)", color: "var(--accent-fg)" }}
           >
             {ctaLabel}

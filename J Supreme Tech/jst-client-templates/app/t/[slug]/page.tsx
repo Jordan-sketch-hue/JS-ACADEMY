@@ -874,6 +874,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     currency: String(p.currency ?? client.currency ?? "JMD"),
     description: p.description ? String(p.description) : null,
     image_url: p.image_url ? String(p.image_url) : null,
+    category: p.category ? String(p.category) : null,
+    subcategory: p.subcategory ? String(p.subcategory) : null,
   }));
   const services = realServices.length > 0 ? realServices : finalDefaults.services;
 
@@ -906,7 +908,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const heroVideo = client.hero_video_url ?? VIDEO_CATS[client.category] ?? null;
   const gallery = placeholderGallery(client.category, client.accent);
 
-  const cssVars = `:root{--accent:${client.accent};--accent-fg:${client.accent_fg};--bg:#FFFFFF;--bg-card:#FFFFFF;--bg-surface:#F9FAFB;--text-primary:#111111;--text-secondary:#4B5563;--text-muted:#9CA3AF;--border:#E5E7EB;--radius-lg:12px;}`;
+  const cssVars = `:root{--accent:${client.accent};--accent-fg:${client.accent_fg};--bg:#FFFFFF;--bg-card:#FFFFFF;--bg-surface:#F9FAFB;--text-primary:#111111;--text-secondary:#4B5563;--text-muted:#9CA3AF;--border:#E5E7EB;--radius-lg:12px;}section[id]{scroll-margin-top:72px;}`;
 
   return (
     <>

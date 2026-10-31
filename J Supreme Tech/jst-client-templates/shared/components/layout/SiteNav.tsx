@@ -220,13 +220,15 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
             {item.label}
           </a>
         ))}
-        {/* Cart slot */}
+        {/* Cart slot — only show when items in cart */}
+        {cartCount > 0 && (
         <button onClick={() => { window.dispatchEvent(new CustomEvent("open-cart")); }}
           style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, color: "#666", background: "none", border: "none", cursor: "pointer", fontSize: 10, fontWeight: 500, minWidth: 56, padding: "0 4px" }}
           aria-label="Cart">
           <CartIcon count={cartCount} />
           Cart
         </button>
+        )}
       </nav>
 
       {/* Spacer so content doesn't hide behind bottom nav on mobile */}
@@ -238,7 +240,7 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
           <div style={{ background: "#fff", borderRadius: 16, padding: 32, width: "min(400px,100%)", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
               <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>{authMode === "signin" ? "Sign In" : "Create Account"}</h3>
-              <button onClick={() => setAuthOpen(false)} style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#888" }}>x</button>
+              <button onClick={() => setAuthOpen(false)} style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#888", lineHeight: 1 }}>&#215;</button>
             </div>
             <form onSubmit={handleAuth} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <input type="email" placeholder="Email" required value={authEmail} onChange={(e) => setAuthEmail(e.target.value)} style={{ padding: "12px 14px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 15 }} />
