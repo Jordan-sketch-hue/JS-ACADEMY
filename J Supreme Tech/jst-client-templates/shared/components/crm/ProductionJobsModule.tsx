@@ -8,7 +8,7 @@ export function ProductionJobsModule({ jobs: initial, clientId, accentColor = "#
   const [jobs, setJobs] = useState<ProductionJob[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/production-jobs?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setJobs(j.data); });
+    fetch(`/api/ct/production-jobs?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setJobs(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);

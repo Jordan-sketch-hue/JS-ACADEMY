@@ -8,7 +8,7 @@ export function StaffModule({ staff: initial, clientId, accentColor = "#111" }: 
   const [staff, setStaff] = useState<StaffMember[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/staff?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setStaff(j.data); });
+    fetch(`/api/ct/staff?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setStaff(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);

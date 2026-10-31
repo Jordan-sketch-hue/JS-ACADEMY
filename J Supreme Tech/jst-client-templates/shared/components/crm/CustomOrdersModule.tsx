@@ -10,7 +10,7 @@ export function CustomOrdersModule({ orders: initial, clientId, accentColor = "#
   const [orders, setOrders] = useState<CustomOrder[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/custom-orders?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setOrders(j.data); });
+    fetch(`/api/ct/custom-orders?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setOrders(j.data); });
   }, [clientId]);
   const [search, setSearch] = useState("");
   const [showAdd, setShowAdd] = useState(false);

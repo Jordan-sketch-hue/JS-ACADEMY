@@ -8,7 +8,7 @@ export function WarrantiesModule({ warranties: initial, clientId, accentColor = 
   const [warranties, setWarranties] = useState<Warranty[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/warranties?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setWarranties(j.data); });
+    fetch(`/api/ct/warranties?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setWarranties(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);

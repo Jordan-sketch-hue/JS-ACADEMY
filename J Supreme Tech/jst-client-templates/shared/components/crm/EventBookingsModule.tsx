@@ -8,7 +8,7 @@ export function EventBookingsModule({ bookings: initial, clientId, accentColor =
   const [bookings, setBookings] = useState<EventBooking[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/event-bookings?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setBookings(j.data); });
+    fetch(`/api/ct/event-bookings?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setBookings(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);

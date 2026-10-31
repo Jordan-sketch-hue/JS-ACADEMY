@@ -8,7 +8,7 @@ export function KitchenOrdersModule({ orders: initial, clientId, accentColor = "
   const [orders, setOrders] = useState<KitchenOrder[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/kitchen-orders?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setOrders(j.data); });
+    fetch(`/api/ct/kitchen-orders?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setOrders(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);

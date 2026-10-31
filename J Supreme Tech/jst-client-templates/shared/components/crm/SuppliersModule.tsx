@@ -8,7 +8,7 @@ export function SuppliersModule({ suppliers: initial, clientId, accentColor = "#
   const [suppliers, setSuppliers] = useState<Supplier[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/suppliers?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setSuppliers(j.data); });
+    fetch(`/api/ct/suppliers?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setSuppliers(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);

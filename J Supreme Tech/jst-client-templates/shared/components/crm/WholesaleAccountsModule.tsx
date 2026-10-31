@@ -8,7 +8,7 @@ export function WholesaleAccountsModule({ accounts: initial, clientId, accentCol
   const [accounts, setAccounts] = useState<WholesaleAccount[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/wholesale-accounts?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setAccounts(j.data); });
+    fetch(`/api/ct/wholesale-accounts?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setAccounts(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);

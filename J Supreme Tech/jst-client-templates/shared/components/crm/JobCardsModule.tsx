@@ -8,7 +8,7 @@ export function JobCardsModule({ jobs: initial, clientId, accentColor = "#111", 
   const [jobs, setJobs] = useState<JobCard[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/job-cards?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setJobs(j.data); });
+    fetch(`/api/ct/job-cards?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setJobs(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);

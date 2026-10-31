@@ -8,7 +8,7 @@ export function DeliveriesModule({ deliveries: initial, clientId, accentColor = 
   const [deliveries, setDeliveries] = useState<Delivery[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/deliveries?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setDeliveries(j.data); });
+    fetch(`/api/ct/deliveries?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setDeliveries(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);

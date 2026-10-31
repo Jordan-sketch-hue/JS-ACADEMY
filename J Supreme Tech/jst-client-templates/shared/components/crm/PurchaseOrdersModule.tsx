@@ -9,7 +9,7 @@ export function PurchaseOrdersModule({ orders: initial, suppliers = [], clientId
   const [orders, setOrders] = useState<PurchaseOrder[]>(initial ?? []);
   useEffect(() => {
     if (!clientId || (initial && initial.length > 0)) return;
-    fetch(/api/ct/purchase-orders?clientId=).then(r=>r.json()).then(j=>{ if (j.data) setOrders(j.data); });
+    fetch(`/api/ct/purchase-orders?clientId=${clientId}`).then(r=>r.json()).then(j=>{ if (j.data) setOrders(j.data); });
   }, [clientId]);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);
