@@ -831,37 +831,37 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       ],
     },
 
-    // Tropical Toppingz -- ice cream & dessert shop (NOT a bakery)
+    // Tropical Toppingz -- candied fruit shop with candy toppings
     "tropical-toppingz": {
       ...CATEGORY_DEFAULTS.food,
-      heroHeadline: "Scoops, Sundaes & Sweet Vibes",
-      heroSubline: "Hand-crafted ice cream, loaded sundaes, and tropical milkshakes you won't forget.",
+      heroHeadline: "Candied Fruits & Sweet Toppings",
+      heroSubline: "Handcrafted candied fruits loaded with Skittles, Jolly Ranchers, gummy bears and more. Make it tropical. Make it yours.",
       ctaLabel: "Order Now",
       ctaHref: "#contact",
       services: [
-        { icon: "", title: "Ice Cream Scoops", description: "Single, double, and triple scoops in signature tropical flavours." },
-        { icon: "", title: "Sundaes", description: "Loaded sundaes with toppings, sauces, and whipped cream." },
-        { icon: "", title: "Milkshakes", description: "Thick tropical milkshakes in mango, coconut, strawberry, and more." },
-        { icon: "", title: "Waffle Cones & Cups", description: "Fresh waffle cones and cups with your flavour of choice." },
-        { icon: "", title: "Party Platters", description: "Ice cream platters and dessert stations for events and parties." },
+        { icon: "", title: "Candied Fruits", description: "Fresh fruits candied with Jolly Ranchers, Skittles, Nerds clusters and more." },
+        { icon: "", title: "Custom Cups", description: "Choose your fruit and candy toppings — mango, strawberry, watermelon and more." },
+        { icon: "", title: "Party Platters", description: "Large sharing platters of mixed candied fruits and toppings for groups and events." },
+        { icon: "", title: "Candied Fruit Flavours", description: "Strawberry, blueberry, watermelon, pineapple, cotton candy, mango, cherry, and kiwi." },
+        { icon: "", title: "Delivery", description: "Free delivery in Papine — delivery available to Halfway Tree, Crossroads, Town, Spanish Town and Portmore." },
       ],
     },
 
-    // Samkhil Ltd -- lawn care & garden maintenance
+    // Samkhil Ltd -- LED lighting & solar energy solutions
     "samkhil": {
-      ...CATEGORY_DEFAULTS.events,
-      heroHeadline: "Lawn Care & Garden Maintenance",
-      heroSubline: "Professional mowing, trimming, landscaping, and garden upkeep across Jamaica.",
+      ...CATEGORY_DEFAULTS["tech-repair"],
+      heroHeadline: "LED Lighting & Energy Solutions",
+      heroSubline: "Solar panels, inverters, batteries and LED lighting islandwide. Authorized dealer for Ecolite, TCL, Suntec, DEYE and SRNE brands.",
       ctaLabel: "Get a Quote",
       ctaHref: "#contact",
       services: [
-        { icon: "", title: "Lawn Mowing", description: "Regular residential and commercial lawn mowing on your schedule." },
-        { icon: "", title: "Trimming & Edging", description: "Neat edges, hedge trimming, and shrub shaping." },
-        { icon: "", title: "Landscaping", description: "Garden design, planting, and landscaping for homes and businesses." },
-        { icon: "", title: "Weed Control", description: "Chemical and manual weed removal to keep your lawn clean." },
-        { icon: "", title: "Cleanup & Hauling", description: "Leaf removal, debris hauling, and post-storm garden cleanup." },
+        { icon: "", title: "Solar Panel Systems", description: "Full solar panel installation with JA Solar, SRNE and Suntec panels for homes and businesses." },
+        { icon: "", title: "Inverters & Batteries", description: "DEYE and SRNE inverters with battery storage for reliable backup power." },
+        { icon: "", title: "LED Lighting", description: "Commercial and residential LED lighting solutions -- Ecolite, TCL and Suntec brands." },
+        { icon: "", title: "Solar Water Heaters", description: "Energy-efficient solar water heater installation and servicing." },
+        { icon: "", title: "Installation & Maintenance", description: "Professional system design, installation, net metering setup, and ongoing maintenance." },
       ],
-      bookingServices: ["Lawn Mowing", "Trimming & Edging", "Landscaping", "Weed Control", "Cleanup & Hauling"],
+      bookingServices: ["Solar Panel Installation", "LED Lighting", "Inverter Setup", "Solar Water Heater", "Site Visit & Survey"],
     },
 
     // Surprise Fashion Shop -- regular fashion store (NOT mystery boxes)
