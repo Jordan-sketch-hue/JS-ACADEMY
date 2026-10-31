@@ -56,25 +56,29 @@ const ProfileIcon = () => (
   </svg>
 );
 
+const QuoteIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+  </svg>
+);
+
+function getNavIcon(label: string, href: string): JSX.Element {
+  const lc = label.toLowerCase();
+  if (lc === "home" || href === "/" || href === "#") return <HomeIcon />;
+  if (lc.includes("shop") || lc.includes("product") || lc.includes("menu") || lc.includes("order")) return <ShopIcon />;
+  if (lc.includes("gallery") || lc.includes("photo") || lc.includes("port")) return <GalleryIcon />;
+  if (lc.includes("contact") || lc.includes("reach") || lc.includes("touch")) return <ContactIcon />;
+  if (lc.includes("book") || lc.includes("appoint") || lc.includes("reserv")) return <ContactIcon />;
+  if (lc.includes("service")) return <ShopIcon />;
+  return <QuoteIcon />;
+}
+
 function getBottomNavItems(navLinks: NavLink[]) {
-  // Map nav links to bottom nav slots (max 5: Home, Shop/Services, Gallery, Contact, Cart)
-  const map: Record<string, { icon: JSX.Element; label: string; href: string }> = {};
-  navLinks.forEach(l => {
-    const lc = l.label.toLowerCase();
-    if (lc === "home" || l.href === "/" || l.href === "#") {
-      if (!map["home"]) map["home"] = { icon: <HomeIcon />, label: "Home", href: "/" };
-    } else if (lc.includes("shop") || lc.includes("product") || lc.includes("menu") || lc.includes("service") || lc.includes("book")) {
-      if (!map["shop"]) map["shop"] = { icon: <ShopIcon />, label: l.label, href: l.href };
-    } else if (lc.includes("gallery") || lc.includes("photo") || lc.includes("port")) {
-      if (!map["gallery"]) map["gallery"] = { icon: <GalleryIcon />, label: l.label, href: l.href };
-    } else if (lc.includes("contact") || lc.includes("reach") || lc.includes("book")) {
-      if (!map["contact"]) map["contact"] = { icon: <ContactIcon />, label: l.label, href: l.href };
-    }
-  });
-  // Ensure home always present
-  if (!map["home"]) map["home"] = { icon: <HomeIcon />, label: "Home", href: "#hero" };
-  const items = [map["home"], map["shop"], map["gallery"], map["contact"]].filter(Boolean) as { icon: JSX.Element; label: string; href: string }[];
-  return items.slice(0, 4);
+  const home = navLinks.find(l => l.label.toLowerCase() === "home" || l.href === "/" || l.href === "#");
+  const rest = navLinks.filter(l => l !== home);
+  const ordered = home ? [home, ...rest] : navLinks;
+  return ordered.slice(0, 5).map(l => ({ icon: getNavIcon(l.label, l.href), label: l.label, href: l.href }));
 }
 
 import { createClient } from "@supabase/supabase-js";

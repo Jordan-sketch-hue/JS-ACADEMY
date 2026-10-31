@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @source "../../shared/**/*.tsx";
 @source "../../app/**/*.tsx";
 
@@ -23,13 +23,22 @@
 
 html {
   overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
   overflow-x: hidden;
+  max-width: 100vw;
   background: #FFFFFF;
   color: var(--text-primary);
   font-family: var(--font-body, system-ui, sans-serif);
+}
+
+/* Prevent sections from breaking mobile layout */
+section {
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Mobile-safe scroll containers */
