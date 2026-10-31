@@ -33,12 +33,12 @@ p, h1, h2, h3, h4, h5, h6, a, li, td, th, span, label {
 }
 
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100vw;
 }
 
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100vw;
   background: #FFFFFF;
   color: var(--text-primary);
@@ -75,3 +75,4 @@ section {
   .hero-bg-desktop.has-mobile-alt { display: none; }
   .hero-bg-mobile { display: block; }
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 
 interface NavLink { label: string; href: string; }
@@ -135,7 +135,7 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
     <>
       <header style={{ position: "sticky", top: 0, zIndex: 30, background: "rgba(255,255,255,0.96)", backdropFilter: "blur(10px)", borderBottom: "1px solid #E5E5E5" }}>
         <div style={{ maxWidth: 1152, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", height: 64 }}>
-          {/* Logo — click scrolls to top */}
+          {/* Logo â€” click scrolls to top */}
           <button onClick={scrollToTop} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0, display: "flex", alignItems: "center" }} aria-label="Back to top">
             {logoSrc
               ? <img src={logoSrc} alt={logoAlt} style={{ height: 36, objectFit: "contain" }} />
@@ -144,7 +144,7 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
           </button>
 
           {/* Desktop nav */}
-          <nav className="site-desktop-nav" style={{ display: "flex", gap: 28, alignItems: "center" }}>
+          <nav className="site-desktop-nav" style={{ display: "flex", gap: 28, alignItems: "center", flex: 1, justifyContent: "center" }}>
             {navLinks.map((l) => (
               <div key={l.label} style={{ position: "relative" }}
                 onMouseEnter={() => setHovered(l.label)}
@@ -159,13 +159,13 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
 
           {/* Right side: cart + CTA */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-            {/* Profile icon — desktop */}
+            {/* Profile icon â€” desktop */}
             <button onClick={() => user ? handleSignOut() : setAuthOpen(true)}
               style={{ background: "none", border: "none", cursor: "pointer", color: user ? accent : "#888", display: "flex", alignItems: "center" }}
               aria-label={user ? `Signed in as ${user.email}` : "Sign in"} title={user ? user.email : "Sign in"}>
               <ProfileIcon />
             </button>
-            {/* Cart icon — desktop */}
+            {/* Cart icon â€” desktop */}
             {cartCount > 0 && (
               <button className="site-desktop-nav" onClick={() => window.dispatchEvent(new CustomEvent("open-cart"))}
                 style={{ background: "none", border: "none", cursor: "pointer", color: accent, display: "flex", alignItems: "center" }}
@@ -214,7 +214,7 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
         )}
       </header>
 
-      {/* ── TRAILING BOTTOM NAV — mobile only ── */}
+      {/* â”€â”€ TRAILING BOTTOM NAV â€” mobile only â”€â”€ */}
       <nav className="site-bottom-nav" style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, background: "rgba(255,255,255,0.97)", backdropFilter: "blur(12px)", borderTop: "1px solid #E8E8E8", display: "none", alignItems: "center", justifyContent: "space-around", padding: "8px 0 max(8px, env(safe-area-inset-bottom))" }}>
         {bottomItems.map((item) => (
           <a key={item.label} href={item.href}
@@ -224,7 +224,7 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
             {item.label}
           </a>
         ))}
-        {/* Cart slot — only show when items in cart */}
+        {/* Cart slot â€” only show when items in cart */}
         {cartCount > 0 && (
         <button onClick={() => { window.dispatchEvent(new CustomEvent("open-cart")); }}
           style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, color: "#666", background: "none", border: "none", cursor: "pointer", fontSize: 10, fontWeight: 500, minWidth: 56, padding: "0 4px" }}
