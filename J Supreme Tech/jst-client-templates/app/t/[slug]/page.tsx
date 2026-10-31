@@ -607,6 +607,8 @@ const NO_VIDEO_SLUGS = new Set([
   "beach-picnic-ja", "sincerely-sparks", "hair-by-keba", "blye-beauty", "ginza-yotsumi", "cre8tive-cafe",
   // Bakers/pastry & ice cream -- food video is seafood; suppress for all sweet/dessert slugs
   "keke-the-baker", "sweet-face-pastries", "jae-bakes", "cookie-corner-tt", "tropical-toppingz",
+  // Nail art -- beauty video shows makeup artist, not nails
+  "ruel",
 ]);
 
 // ── Metadata ─────────────────────────────────────────────────────────────────
