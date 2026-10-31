@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { CRMLayout } from "@shared/components/layout/CRMLayout";
@@ -25,6 +25,7 @@ import { ProjectsModule } from "@shared/components/crm/ProjectsModule";
 import { PurchaseOrdersModule } from "@shared/components/crm/PurchaseOrdersModule";
 import { SuppliersModule } from "@shared/components/crm/SuppliersModule";
 import { EventBookingsModule } from "@shared/components/crm/EventBookingsModule";
+import { IntegrationsModule } from "@shared/components/crm/IntegrationsModule";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -92,6 +93,7 @@ const CORE_TABS = [
   { tabKey: "leads", label: "Leads" },
   { tabKey: "tasks", label: "Tasks" },
   { tabKey: "reports", label: "Reports" },
+    { tabKey: "integrations", label: "Integrations" },
 ];
 
 // Extra tabs by category
@@ -341,6 +343,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         {tab === "purchase-orders" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Purchase Orders</h2><PurchaseOrdersModule clientId={client.id} accentColor={accent} currency={currency} /></div>)}
         {tab === "event-bookings" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Event Bookings</h2><EventBookingsModule clientId={client.id} accentColor={accent} currency={currency} /></div>)}
         {tab === "quotes" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Quotes</h2><QuotesModule quotes={quotes} clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "integrations" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Integrations</h2><IntegrationsModule clientId={client.id} clientSlug={client.slug} category={category} accentColor={accent} /></div>)}
       </CRMLayout>
     </>
   );
