@@ -122,7 +122,7 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
           {filtered.map((product) => {
             const inCart = cart.find((i) => i.id === product.id);
             return (
-              <div key={product.id} style={{ background: "var(--bg-card)", borderRadius: 12, overflow: "hidden", border: "1px solid var(--border)", display: "flex", flexDirection: "column", cursor: "pointer", transition: "box-shadow 0.15s, transform 0.15s" }}, onMouseEnter={(e)=>{(e.currentTarget as HTMLDivElement).style.boxShadow="0 4px 20px rgba(0,0,0,0.10)";(e.currentTarget as HTMLDivElement).style.transform="translateY(-2px)"}}, onMouseLeave={(e)=>{(e.currentTarget as HTMLDivElement).style.boxShadow="none";(e.currentTarget as HTMLDivElement).style.transform="none"}}>
+              <div key={product.id} style={{ background: "var(--bg-card)", borderRadius: 12, overflow: "hidden", border: "1px solid var(--border)", display: "flex", flexDirection: "column", cursor: "pointer", transition: "box-shadow 0.15s, transform 0.15s" }} onMouseEnter={(e)=>{(e.currentTarget as HTMLDivElement).style.boxShadow="0 4px 20px rgba(0,0,0,0.10)";(e.currentTarget as HTMLDivElement).style.transform="translateY(-2px)"}} onMouseLeave={(e)=>{(e.currentTarget as HTMLDivElement).style.boxShadow="none";(e.currentTarget as HTMLDivElement).style.transform="none"}}>
                 {product.image_url
                   ? <img src={product.image_url} alt={product.name} style={{ width: "100%", height: 200, objectFit: "cover", display: "block", flexShrink: 0 }} loading="lazy" />
                   : <div style={{ width: "100%", height: 200, background: "var(--bg-surface)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48 }}>
