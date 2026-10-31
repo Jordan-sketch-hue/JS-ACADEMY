@@ -1,5 +1,5 @@
-﻿"use client";
-import { useState, useCallback } from "react";
+"use client";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@shared/components/ui/Button";
 import type { ClientConfig } from "@shared/types/config";
 
@@ -45,6 +45,17 @@ export function ShopGrid({ config, products, heading = "Shop" }: Props) {
   const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
   const currency = cart[0]?.currency ?? (config as { currency?: string }).currency ?? "JMD";
   const cartCount = cart.reduce((n, i) => n + i.qty, 0);
+
+  // Sync cart count to SiteNav badge + listen for open-cart from bottom nav
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("cart-update", { detail: { count: cartCount } }));
+  }, [cartCount]);
+
+  useEffect(() => {
+    const handler = () => setCartOpen(true);
+    window.addEventListener("open-cart", handler);
+    return () => window.removeEventListener("open-cart", handler);
+  }, []);
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();

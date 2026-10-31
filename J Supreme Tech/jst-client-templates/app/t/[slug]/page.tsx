@@ -1,4 +1,4 @@
-﻿export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { getClient } from "@/lib/ct-client";
@@ -12,6 +12,9 @@ import { GalleryCarousel } from "@shared/components/sections/GalleryCarousel";
 import { Testimonials } from "@shared/components/sections/Testimonials";
 import { BookingWidget } from "@shared/components/sections/BookingWidget";
 import { ContactForm } from "@shared/components/sections/ContactForm";
+import { ShopGrid } from "@shared/components/sections/ShopGrid";
+import { QuoteForm } from "@shared/components/sections/QuoteForm";
+import type { ShopProduct } from "@shared/components/sections/ShopGrid";
 import type { ServiceItem } from "@shared/components/sections/ServicesGrid";
 import type { Stat } from "@shared/components/sections/AnimatedStats";
 
@@ -588,6 +591,8 @@ const CATEGORY_DEFAULTS: Record<string, Omit<CategoryDefaults, "gallery">> = {
 
 // ── Appointment-based categories ─────────────────────────────────────────────
 const BOOKING_CATS = new Set(["beauty", "florist", "events", "automotive", "tech-repair"]);
+const COMMERCE_CATS = new Set(["fashion", "food", "variety", "accessories", "crafts", "baby", "bar", "pizza", "baker", "florist"]);
+const QUOTE_CATS = new Set(["events", "packaging", "lighting", "furniture", "design", "ceiling"]);
 
 // ── Categories with generated hero videos (Wan 3.0) ──────────────────────────
 const VIDEO_CATS: Record<string, string> = {
@@ -603,7 +608,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const client = await getClient(slug);
   if (!client) return { title: "Not Found" };
-  return { title: client.name, description: client.subline ?? client.headline ?? undefined };
+  return {
+    title: `${client.name} | Jamaica`,
+    description: client.subline ?? client.headline ?? undefined,
+    openGraph: {
+      title: client.name,
+      description: client.subline ?? client.headline ?? undefined,
+      images: client.hero_url ? [{ url: client.hero_url, width: 1280, height: 720 }] : [],
+      siteName: client.name,
+      type: "website",
+    },
+  };
 }
 
 // ── Page ─────────────────────────────────────────────────────────────────────
@@ -781,11 +796,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         heroHeadline: "Luxury Wholesale, Redefined",
         heroSubline: "Premium fashion, accessories, and luxury goods at wholesale prices. Shop the collection.",
         services: [
-          { icon: "", title: "Luxury Handbags", description: "Designer-inspired and premium branded handbags at wholesale prices.", image: "/services/fashion-1.jpg" },
-          { icon: "", title: "Fashion Accessories", description: "Jewellery, scarves, belts, sunglasses, and statement pieces in bulk.", image: "/services/fashion-2.jpg" },
-          { icon: "", title: "Clothing & Apparel", description: "Dresses, tops, sets, and co-ords -- curated luxury styles at trade prices.", image: "/services/fashion-3.jpg" },
-          { icon: "", title: "Beauty & Fragrance", description: "Wholesale beauty products, perfumes, and luxury body care.", image: "/services/fashion-4.jpg" },
-          { icon: "", title: "Wholesale Bundles", description: "Mixed product bundles for resellers, boutiques, and event vendors.", image: "/services/fashion-5.jpg" },
+          { icon: "", title: "Luxury Handbags", description: "Designer-inspired and premium branded handbags at wholesale prices." },
+          { icon: "", title: "Fashion Accessories", description: "Jewellery, scarves, belts, sunglasses, and statement pieces in bulk." },
+          { icon: "", title: "Clothing & Apparel", description: "Dresses, tops, sets, and co-ords -- curated luxury styles at trade prices." },
+          { icon: "", title: "Beauty & Fragrance", description: "Wholesale beauty products, perfumes, and luxury body care." },
+          { icon: "", title: "Wholesale Bundles", description: "Mixed product bundles for resellers, boutiques, and event vendors." },
         ],
         ctaLabel: "Shop Wholesale",
         ctaHref: "#contact",
@@ -797,11 +812,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         heroHeadline: "Fashion That Speaks for You",
         heroSubline: "Curated styles, bold looks, and pieces that make a statement -- for the woman who owns every room.",
         services: [
-          { icon: "", title: "Dresses & Sets", description: "Party dresses, co-ords, and occasion sets for every event.", image: "/services/fashion-1.jpg" },
-          { icon: "", title: "Tops & Bodysuits", description: "On-trend tops, bodysuits, and statement blouses.", image: "/services/fashion-2.jpg" },
-          { icon: "", title: "Bottoms", description: "Trousers, skirts, shorts, and jeans in fresh season styles.", image: "/services/fashion-3.jpg" },
-          { icon: "", title: "Accessories", description: "Bags, jewellery, and accessories to complete any look.", image: "/services/fashion-4.jpg" },
-          { icon: "", title: "New Arrivals", description: "Weekly drops -- fresh styles added every week.", image: "/services/fashion-5.jpg" },
+          { icon: "", title: "Dresses & Sets", description: "Party dresses, co-ords, and occasion sets for every event." },
+          { icon: "", title: "Tops & Bodysuits", description: "On-trend tops, bodysuits, and statement blouses." },
+          { icon: "", title: "Bottoms", description: "Trousers, skirts, shorts, and jeans in fresh season styles." },
+          { icon: "", title: "Accessories", description: "Bags, jewellery, and accessories to complete any look." },
+          { icon: "", title: "New Arrivals", description: "Weekly drops -- fresh styles added every week." },
         ],
         ctaLabel: "Shop Now",
         ctaHref: "#services",
@@ -809,11 +824,36 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       },
   };
   const finalDefaults = { ...defaults, ...(slugDefaults[slug] ?? {}) };
+  // Build real inner-page nav links (replace anchor-only links with routed pages)
+  const COMMERCE_NAV_SLUGS = ["fashion","food","variety","accessories","crafts","baby","bar","pizza","baker","florist"];
+  const BOOKING_NAV_SLUGS = ["beauty","automotive","tech-repair","events","florist","furniture","design"];
+  const QUOTE_NAV_SLUGS = ["events","packaging","lighting","furniture","design","ceiling"];
+  const MENU_NAV_SLUGS = ["food","pizza","baker","bar"];
+
+  const dynamicNavLinks: { label: string; href: string }[] = [
+    { label: "Home", href: "/t/" + slug },
+  ];
+  if (MENU_NAV_SLUGS.includes(client.category)) {
+    dynamicNavLinks.push({ label: "Menu", href: "/t/" + slug + "/menu" });
+  } else if (COMMERCE_NAV_SLUGS.includes(client.category)) {
+    dynamicNavLinks.push({ label: "Shop", href: "/t/" + slug + "/shop" });
+  }
+  if (BOOKING_NAV_SLUGS.includes(client.category)) {
+    dynamicNavLinks.push({ label: "Book", href: "/t/" + slug + "/book" });
+  }
+  if (QUOTE_NAV_SLUGS.includes(client.category)) {
+    dynamicNavLinks.push({ label: "Quote", href: "/t/" + slug + "/quote" });
+  }
+  dynamicNavLinks.push(
+    { label: "Services", href: "/t/" + slug + "/services" },
+    { label: "Gallery", href: "#gallery" },
+    { label: "Contact", href: "#contact" },
+  );
 
   // Fetch real products from Supabase
   const { data: productsRaw } = await supabase
     .from("ct_products")
-    .select("id,name,price,currency,description,active")
+    .select("id,name,price,currency,description,image_url,active")
     .eq("client_id", client.id)
     .eq("active", true)
     .limit(12);
@@ -823,6 +863,16 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     icon: "",
     title: String(p.name ?? ""),
     description: p.description ? String(p.description) : `${String(p.currency ?? client.currency ?? "JMD")} ${Number(p.price).toLocaleString()}`,
+    image: p.image_url ? String(p.image_url) : undefined,
+  }));
+  // Build ShopProduct array for commerce grid
+  const shopProducts: ShopProduct[] = (productsRaw ?? []).map((p) => ({
+    id: String(p.id),
+    name: String(p.name ?? ""),
+    price: Number(p.price ?? 0),
+    currency: String(p.currency ?? client.currency ?? "JMD"),
+    description: p.description ? String(p.description) : null,
+    image_url: p.image_url ? String(p.image_url) : null,
   }));
   const services = realServices.length > 0 ? realServices : finalDefaults.services;
 
@@ -862,7 +912,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       <style dangerouslySetInnerHTML={{ __html: cssVars }} />
       <SiteLayout
         config={config}
-        navLinks={finalDefaults.navLinks}
+        navLinks={dynamicNavLinks}
         ctaLabel={finalDefaults.ctaLabel}
         ctaHref={finalDefaults.ctaHref}
       >
@@ -897,7 +947,24 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           </section>
         )}
 
-        <ContactForm config={config} />
+        {COMMERCE_CATS.has(client.category) && shopProducts.length > 0 && (
+          <ShopGrid
+            config={config}
+            products={shopProducts}
+            heading={client.category === "food" || client.category === "pizza" || client.category === "baker" ? "Order Now" : "Shop Our Collection"}
+          />
+        )}
+
+        {QUOTE_CATS.has(client.category) && (
+          <QuoteForm
+            config={config}
+            services={finalDefaults.services.map((s) => s.title)}
+            heading="Request a Quote"
+            subheading="Tell us about your project and we will get back to you within 24 hours."
+          />
+        )}
+
+        <ContactForm config={config} slug={slug} />
       </SiteLayout>
     </>
   );
