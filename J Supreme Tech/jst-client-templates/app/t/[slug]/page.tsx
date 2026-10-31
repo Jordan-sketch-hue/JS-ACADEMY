@@ -943,7 +943,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const [catD, catM] = SLUG_HERO[slug] ?? CATEGORY_HERO[client.category] ?? HERO_FALLBACK;
   const heroUrl = client.hero_url ?? catD;
   const heroUrlMobile = client.hero_url_mobile ?? catM;
-  const heroVideo = client.hero_video_url ?? VIDEO_CATS[client.category] ?? null;
+  const heroVideo = client.hero_video_url ?? (NO_VIDEO_SLUGS.has(slug) ? null : VIDEO_CATS[client.category]) ?? null;
   const gallery = placeholderGallery(client.category, client.accent);
 
   const cssVars = `:root{--accent:${client.accent};--accent-fg:${client.accent_fg};--bg:#FFFFFF;--bg-card:#FFFFFF;--bg-surface:#F9FAFB;--text-primary:#111111;--text-secondary:#4B5563;--text-muted:#9CA3AF;--border:#E5E7EB;--radius-lg:12px;}section[id]{scroll-margin-top:72px;}`;
