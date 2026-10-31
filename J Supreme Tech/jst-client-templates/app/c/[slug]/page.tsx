@@ -26,6 +26,7 @@ import { PurchaseOrdersModule } from "@shared/components/crm/PurchaseOrdersModul
 import { SuppliersModule } from "@shared/components/crm/SuppliersModule";
 import { EventBookingsModule } from "@shared/components/crm/EventBookingsModule";
 import { IntegrationsModule } from "@shared/components/crm/IntegrationsModule";
+import { BusinessProfileModule } from "@shared/components/crm/BusinessProfileModule";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -94,6 +95,7 @@ const CORE_TABS = [
   { tabKey: "tasks", label: "Tasks" },
   { tabKey: "reports", label: "Reports" },
     { tabKey: "integrations", label: "Integrations" },
+  { tabKey: "settings", label: "Settings" },
 ];
 
 // Extra tabs by category
@@ -130,6 +132,8 @@ type Client = {
   accent?: string | null; crm_banner_url?: string | null; currency?: string | null;
   whatsapp?: string | null; hero_url?: string | null; logo_url?: string | null;
   headline?: string | null; subline?: string | null;
+  phone?: string | null; address?: string | null; tagline?: string | null;
+  business_hours?: Record<string, unknown> | null;
 };
 
 function periodToDays(p: "7d" | "30d" | "90d") { return p === "7d" ? 7 : p === "30d" ? 30 : 90; }
@@ -172,7 +176,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
   useEffect(() => {
     params.then(async ({ slug: s }) => {
-      const { data: cl } = await supabase.from("ct_clients").select("id,slug,name,category,accent,crm_banner_url,currency,whatsapp,hero_url,logo_url,headline,subline").eq("slug", s).single();
+      const { data: cl } = await supabase.from("ct_clients").select("id,slug,name,category,accent,crm_banner_url,currency,whatsapp,hero_url,logo_url,headline,subline,phone,address,tagline,business_hours").eq("slug", s).single();
       setClient(cl as Client | null);
       if (!cl) { setLoading(false); return; }
       const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
@@ -344,6 +348,12 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         {tab === "event-bookings" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Event Bookings</h2><EventBookingsModule clientId={client.id} accentColor={accent} currency={currency} /></div>)}
         {tab === "quotes" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Quotes</h2><QuotesModule quotes={quotes} clientId={client.id} accentColor={accent} /></div>)}
         {tab === "integrations" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Integrations</h2><IntegrationsModule clientId={client.id} clientSlug={client.slug} category={category} accentColor={accent} /></div>)}
+        {tab === "settings" && (
+          <div>
+            <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Business Settings</h2>
+            <BusinessProfileModule client={{ id: client.id, name: client.name, phone: client.phone ?? null, whatsapp: client.whatsapp ?? null, address: client.address ?? null, headline: client.headline ?? null, subline: client.subline ?? null, tagline: client.tagline ?? null, currency: client.currency ?? "JMD", business_hours: client.business_hours ?? null }} accentColor={accent} />
+          </div>
+        )}
       </CRMLayout>
     </>
   );
