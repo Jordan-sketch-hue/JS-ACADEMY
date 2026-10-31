@@ -1016,6 +1016,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     "savvy-apple":          ["/heroes/hero-tech-repair-desktop.webp", "/heroes/hero-tech-repair-mobile.webp"],
     "cre8tive-cafe":        ["/heroes/hero-pizza-desktop.webp",       "/heroes/hero-pizza-mobile.webp"],
     "kylas-content":        ["/heroes/hero-crafts-desktop.webp",      "/heroes/hero-crafts-mobile.webp"],
+    // Nail art -- override beauty category fallback
+    "ruel":                 ["https://images.unsplash.com/photo-1604654894610-df63bc536371?w=1600&h=900&fit=crop", "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=900&h=1125&fit=crop"],
     // Baker clients -- use baker heroes (not generic food/seafood hero)
     "jae-bakes":            ["/heroes/hero-baker-desktop.webp",       "/heroes/hero-baker-mobile.webp"],
     "cookie-corner-tt":     ["/heroes/hero-baker-desktop.webp",       "/heroes/hero-baker-mobile.webp"],
