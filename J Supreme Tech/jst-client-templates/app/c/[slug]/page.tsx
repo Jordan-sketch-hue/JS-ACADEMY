@@ -12,6 +12,20 @@ import { LeadsModule } from "@shared/components/crm/LeadsModule";
 import { ReportsModule } from "@shared/components/crm/ReportsModule";
 import { TasksModule } from "@shared/components/crm/TasksModule";
 
+import { CustomOrdersModule } from "@shared/components/crm/CustomOrdersModule";
+import { DeliveriesModule } from "@shared/components/crm/DeliveriesModule";
+import { WarrantiesModule } from "@shared/components/crm/WarrantiesModule";
+import { StaffModule } from "@shared/components/crm/StaffModule";
+import { ReservationsModule } from "@shared/components/crm/ReservationsModule";
+import { KitchenOrdersModule } from "@shared/components/crm/KitchenOrdersModule";
+import { ProductionJobsModule } from "@shared/components/crm/ProductionJobsModule";
+import { WholesaleAccountsModule } from "@shared/components/crm/WholesaleAccountsModule";
+import { JobCardsModule } from "@shared/components/crm/JobCardsModule";
+import { ProjectsModule } from "@shared/components/crm/ProjectsModule";
+import { PurchaseOrdersModule } from "@shared/components/crm/PurchaseOrdersModule";
+import { SuppliersModule } from "@shared/components/crm/SuppliersModule";
+import { EventBookingsModule } from "@shared/components/crm/EventBookingsModule";
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -69,18 +83,45 @@ const CATEGORY_HERO_FALLBACK: Record<string, string> = {
   baby: "/heroes/hero-baby-desktop.webp",
 };
 
-const NAV = [
-  { href: "#", tabKey: "dashboard", label: "Dashboard" },
-  { href: "#", tabKey: "appointments", label: "Appointments" },
-  { href: "#", tabKey: "customers", label: "Customers" },
-  { href: "#", tabKey: "products", label: "Products" },
-  { href: "#", tabKey: "payments", label: "Payments" },
-  { href: "#", tabKey: "quotes", label: "Quotes" },
-  { href: "#", tabKey: "leads", label: "Leads" },
-  { href: "#", tabKey: "reports", label: "Reports" },
-  { href: "#", tabKey: "tasks", label: "Tasks" },
-  { href: "#", tabKey: "inventory", label: "Inventory" },
+// Core tabs every category gets
+const CORE_TABS = [
+  { tabKey: "dashboard", label: "Dashboard" },
+  { tabKey: "customers", label: "Customers" },
+  { tabKey: "products", label: "Products" },
+  { tabKey: "payments", label: "Payments" },
+  { tabKey: "leads", label: "Leads" },
+  { tabKey: "tasks", label: "Tasks" },
+  { tabKey: "reports", label: "Reports" },
 ];
+
+// Extra tabs by category
+const EXTRA_TABS: Record<string, { tabKey: string; label: string }[]> = {
+  beauty: [{ tabKey: "appointments", label: "Appointments" }, { tabKey: "staff", label: "Staff" }],
+  automotive: [{ tabKey: "job-cards", label: "Job Cards" }, { tabKey: "warranties", label: "Warranties" }, { tabKey: "staff", label: "Staff" }],
+  furniture: [{ tabKey: "custom-orders", label: "Custom Orders" }, { tabKey: "deliveries", label: "Deliveries" }, { tabKey: "projects", label: "Projects" }, { tabKey: "suppliers", label: "Suppliers" }],
+  fashion: [{ tabKey: "inventory", label: "Inventory" }, { tabKey: "custom-orders", label: "Custom Orders" }, { tabKey: "wholesale-accounts", label: "Wholesale" }],
+  accessories: [{ tabKey: "inventory", label: "Inventory" }, { tabKey: "wholesale-accounts", label: "Wholesale" }],
+  food: [{ tabKey: "kitchen-orders", label: "Kitchen" }, { tabKey: "reservations", label: "Reservations" }, { tabKey: "staff", label: "Staff" }],
+  florist: [{ tabKey: "custom-orders", label: "Custom Orders" }, { tabKey: "deliveries", label: "Deliveries" }],
+  events: [{ tabKey: "event-bookings", label: "Event Bookings" }, { tabKey: "staff", label: "Staff" }],
+  "tech-repair": [{ tabKey: "job-cards", label: "Job Cards" }, { tabKey: "warranties", label: "Warranties" }, { tabKey: "appointments", label: "Appointments" }],
+  packaging: [{ tabKey: "production-jobs", label: "Production" }, { tabKey: "custom-orders", label: "Custom Orders" }, { tabKey: "suppliers", label: "Suppliers" }, { tabKey: "purchase-orders", label: "Purchase Orders" }],
+  lighting: [{ tabKey: "projects", label: "Projects" }, { tabKey: "suppliers", label: "Suppliers" }, { tabKey: "purchase-orders", label: "Purchase Orders" }],
+  variety: [{ tabKey: "inventory", label: "Inventory" }, { tabKey: "wholesale-accounts", label: "Wholesale" }],
+  crafts: [{ tabKey: "custom-orders", label: "Custom Orders" }, { tabKey: "production-jobs", label: "Production" }],
+  design: [{ tabKey: "projects", label: "Projects" }, { tabKey: "quotes", label: "Quotes" }],
+  bar: [{ tabKey: "kitchen-orders", label: "Kitchen" }, { tabKey: "reservations", label: "Reservations" }, { tabKey: "staff", label: "Staff" }],
+  pizza: [{ tabKey: "kitchen-orders", label: "Kitchen" }, { tabKey: "deliveries", label: "Deliveries" }, { tabKey: "staff", label: "Staff" }],
+  baker: [{ tabKey: "custom-orders", label: "Custom Orders" }, { tabKey: "production-jobs", label: "Production" }],
+  ceiling: [{ tabKey: "projects", label: "Projects" }, { tabKey: "quotes", label: "Quotes" }, { tabKey: "suppliers", label: "Suppliers" }],
+  baby: [{ tabKey: "inventory", label: "Inventory" }, { tabKey: "wholesale-accounts", label: "Wholesale" }],
+};
+
+function buildNav(category: string) {
+  const extras = EXTRA_TABS[category] ?? [];
+  const all = [...CORE_TABS, ...extras];
+  return all.map((t) => ({ href: "#", tabKey: t.tabKey, label: t.label }));
+}
 
 type Client = {
   id: string; slug: string; name: string; category: string;
@@ -197,7 +238,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
-      <CRMLayout title={titleLabel} nav={NAV} brandColor={accent} brandName={brandName} activeTab={tab} onTabChange={setTab}>
+      <CRMLayout title={titleLabel} nav={buildNav(category)} brandColor={accent} brandName={brandName} activeTab={tab} onTabChange={setTab}>
         {tab === "dashboard" && (
           <>
             {/* Brand hero banner — uses client's actual storefront hero for brand consistency */}
@@ -286,6 +327,20 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             )}
           </div>
         )}
+        {tab === "job-cards" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Job Cards</h2><JobCardsModule clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "warranties" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Warranties</h2><WarrantiesModule clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "staff" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Staff</h2><StaffModule clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "custom-orders" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Custom Orders</h2><CustomOrdersModule clientId={client.id} accentColor={accent} currency={currency} /></div>)}
+        {tab === "deliveries" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Deliveries</h2><DeliveriesModule clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "reservations" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Reservations</h2><ReservationsModule clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "kitchen-orders" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Kitchen Orders</h2><KitchenOrdersModule clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "production-jobs" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Production Jobs</h2><ProductionJobsModule clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "wholesale-accounts" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Wholesale Accounts</h2><WholesaleAccountsModule clientId={client.id} accentColor={accent} currency={currency} /></div>)}
+        {tab === "projects" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Projects</h2><ProjectsModule clientId={client.id} accentColor={accent} currency={currency} /></div>)}
+        {tab === "suppliers" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Suppliers</h2><SuppliersModule clientId={client.id} accentColor={accent} /></div>)}
+        {tab === "purchase-orders" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Purchase Orders</h2><PurchaseOrdersModule clientId={client.id} accentColor={accent} currency={currency} /></div>)}
+        {tab === "event-bookings" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Event Bookings</h2><EventBookingsModule clientId={client.id} accentColor={accent} currency={currency} /></div>)}
+        {tab === "quotes" && (<div><h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Quotes</h2><QuotesModule quotes={quotes} clientId={client.id} accentColor={accent} /></div>)}
       </CRMLayout>
     </>
   );

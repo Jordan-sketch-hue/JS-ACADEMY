@@ -13,6 +13,7 @@ import { Testimonials } from "@shared/components/sections/Testimonials";
 import { BookingWidget } from "@shared/components/sections/BookingWidget";
 import { ContactForm } from "@shared/components/sections/ContactForm";
 import { ShopGrid } from "@shared/components/sections/ShopGrid";
+import { FilteredServicesGrid } from "@shared/components/sections/FilteredServicesGrid";
 import { QuoteForm } from "@shared/components/sections/QuoteForm";
 import type { ShopProduct } from "@shared/components/sections/ShopGrid";
 import type { ServiceItem } from "@shared/components/sections/ServicesGrid";
@@ -853,7 +854,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   // Fetch real products from Supabase
   const { data: productsRaw } = await supabase
     .from("ct_products")
-    .select("id,name,price,currency,description,image_url,active")
+    .select("id,name,price,currency,description,image_url,active,category,subcategory")
     .eq("client_id", client.id)
     .eq("active", true)
     .limit(12);
@@ -927,7 +928,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           ctaHref={finalDefaults.ctaHref}
         />
 
-        <ServicesGrid items={services} heading={["automotive", "tech-repair", "beauty", "florist", "events"].includes(client.category) ? "Our Services" : "What We Offer"} />
+        <FilteredServicesGrid items={services} heading={["automotive", "tech-repair", "beauty", "florist", "events"].includes(client.category) ? "Our Services" : "What We Offer"} />
 
         <AnimatedStats stats={finalDefaults.stats} />
 

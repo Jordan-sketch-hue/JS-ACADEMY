@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 
 interface NavLink { label: string; href: string; }
@@ -50,6 +50,12 @@ const CartIcon = ({ count }: { count: number }) => (
   </div>
 );
 
+const ProfileIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+  </svg>
+);
+
 function getBottomNavItems(navLinks: NavLink[]) {
   // Map nav links to bottom nav slots (max 5: Home, Shop/Services, Gallery, Contact, Cart)
   const map: Record<string, { icon: JSX.Element; label: string; href: string }> = {};
@@ -71,10 +77,22 @@ function getBottomNavItems(navLinks: NavLink[]) {
   return items.slice(0, 4);
 }
 
+import { createClient } from "@supabase/supabase-js";
+const _sb = typeof window !== "undefined"
+  ? createClient(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "")
+  : null;
+
 export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, accent = "#1A1A1A", category }: Props) {
   const [open, setOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPwd, setAuthPwd] = useState("");
+  const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
+  const [authStatus, setAuthStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [authMsg, setAuthMsg] = useState("");
+  const [user, setUser] = useState<{ email?: string } | null>(null);
 
   // Listen for cart updates dispatched by ShopGrid
   useEffect(() => {
@@ -82,6 +100,25 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
     window.addEventListener("cart-update", handler as EventListener);
     return () => window.removeEventListener("cart-update", handler as EventListener);
   }, []);
+
+  useEffect(() => {
+    if (!_sb) return;
+    _sb.auth.getSession().then(({ data }) => { if (data.session?.user) setUser({ email: data.session.user.email }); });
+    const { data: { subscription } } = _sb.auth.onAuthStateChange((_e, s) => { setUser(s?.user ? { email: s.user.email } : null); });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!_sb) return;
+    setAuthStatus("loading");
+    const fn = authMode === "signin" ? _sb.auth.signInWithPassword({ email: authEmail, password: authPwd }) : _sb.auth.signUp({ email: authEmail, password: authPwd });
+    const { error } = await fn;
+    if (error) { setAuthStatus("error"); setAuthMsg(error.message); }
+    else { setAuthStatus("done"); setAuthOpen(false); setAuthMsg(""); }
+  };
+
+  const handleSignOut = async () => { if (_sb) { await _sb.auth.signOut(); setUser(null); } };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -118,6 +155,12 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
 
           {/* Right side: cart + CTA */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+            {/* Profile icon — desktop */}
+            <button onClick={() => user ? handleSignOut() : setAuthOpen(true)}
+              style={{ background: "none", border: "none", cursor: "pointer", color: user ? accent : "#888", display: "flex", alignItems: "center" }}
+              aria-label={user ? `Signed in as ${user.email}` : "Sign in"} title={user ? user.email : "Sign in"}>
+              <ProfileIcon />
+            </button>
             {/* Cart icon — desktop */}
             {cartCount > 0 && (
               <button className="site-desktop-nav" onClick={() => window.dispatchEvent(new CustomEvent("open-cart"))}
@@ -188,6 +231,32 @@ export function SiteNav({ logoSrc, logoAlt, phone, navLinks, ctaLabel, ctaHref, 
 
       {/* Spacer so content doesn't hide behind bottom nav on mobile */}
       <div className="site-bottom-spacer" style={{ display: "none", height: 64 }} />
+
+      {/* Auth modal */}
+      {authOpen && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+          <div style={{ background: "#fff", borderRadius: 16, padding: 32, width: "min(400px,100%)", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
+              <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>{authMode === "signin" ? "Sign In" : "Create Account"}</h3>
+              <button onClick={() => setAuthOpen(false)} style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#888" }}>x</button>
+            </div>
+            <form onSubmit={handleAuth} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <input type="email" placeholder="Email" required value={authEmail} onChange={(e) => setAuthEmail(e.target.value)} style={{ padding: "12px 14px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 15 }} />
+              <input type="password" placeholder="Password" required value={authPwd} onChange={(e) => setAuthPwd(e.target.value)} style={{ padding: "12px 14px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 15 }} />
+              {authStatus === "error" && <p style={{ color: "#ef4444", fontSize: 13, margin: 0 }}>{authMsg}</p>}
+              <button type="submit" style={{ background: accent, color: "#fff", border: "none", borderRadius: 8, padding: "12px 0", fontWeight: 700, cursor: "pointer", fontSize: 15 }}>
+                {authStatus === "loading" ? "..." : authMode === "signin" ? "Sign In" : "Sign Up"}
+              </button>
+            </form>
+            <p style={{ textAlign: "center", fontSize: 13, marginTop: 16, color: "#6b7280" }}>
+              {authMode === "signin" ? "No account? " : "Have an account? "}
+              <button onClick={() => setAuthMode(authMode === "signin" ? "signup" : "signin")} style={{ background: "none", border: "none", color: accent, fontWeight: 600, cursor: "pointer", fontSize: 13 }}>
+                {authMode === "signin" ? "Sign up" : "Sign in"}
+              </button>
+            </p>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @media (max-width: 767px) {
