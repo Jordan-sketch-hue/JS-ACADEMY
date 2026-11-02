@@ -45,6 +45,22 @@ const CATEGORIES = {
   floral: {
     keywords: ['flower', 'floral', 'bouquet', 'wedding', 'event', 'decor', 'planner', 'garden', 'plant', 'arrangement', 'centerpiece', 'corsage', 'florist', 'bloom', 'rose', 'lily', 'orchid'],
     message: `Hey! Your arrangements are beautiful. I'm Jordan from J Supreme Tech — we build online booking and ordering sites for floral and event businesses. I designed a free mockup for your brand. Can I send it over?`
+  },
+  realestate: {
+    keywords: ['real estate', 'realtor', 'property', 'land', 'house', 'home', 'construction', 'builder', 'contractor', 'renovate', 'build', 'invest', 'listing', 'airbnb', 'rental property', 'mortgage'],
+    message: `Hey! I love what you're building in the property space. I'm Jordan from J Supreme Tech — we build listing sites, lead capture pages, and portals for real estate and construction brands. I put together a free mockup for your brand. Want me to send it?`
+  },
+  wellness: {
+    keywords: ['fitness', 'gym', 'trainer', 'health', 'wellness', 'yoga', 'pilates', 'nutrition', 'diet', 'weight', 'workout', 'coach', 'spa', 'massage', 'physio', 'therapy', 'mental health', 'meditation'],
+    message: `Hey! Your content is inspiring. I'm Jordan from J Supreme Tech — we build booking and client management sites for fitness and wellness brands. I put together a free mockup of a booking page for your brand. Can I send it over?`
+  },
+  events: {
+    keywords: ['event', 'party', 'dj', 'entertainment', 'venue', 'concert', 'festival', 'promoter', 'sound', 'booking', 'club', 'host', 'mc', 'emcee', 'nightlife', 'vip'],
+    message: `Hey! Your energy is everything — I love what you're doing in events. I'm Jordan from J Supreme Tech and we build event booking and ticketing sites for entertainers and promoters. I put together a free mockup for your brand. Want to see it?`
+  },
+  hospitality: {
+    keywords: ['hotel', 'villa', 'airbnb', 'resort', 'guesthouse', 'tourism', 'tour', 'travel', 'excursion', 'transfer', 'airport', 'guide', 'hospitality', 'visitor', 'accommodation'],
+    message: `Hey! Your setup looks amazing. I'm Jordan from J Supreme Tech — we build booking and tourism sites for hospitality businesses in the Caribbean. I designed a free mockup for your brand. Can I send it?`
   }
 };
 

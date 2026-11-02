@@ -1,6 +1,6 @@
 // Hashtags ordered most-popular → least-popular
 // Scraper works down the list; dedup removes repeat profiles
-// Total: 87 hashtags across 4 tiers
+// Total: 120 hashtags across 4 tiers + Tier 5 expansion
 
 const HASHTAGS = [
   // ── TIER 1: MEGA (JA/Caribbean broad) — 10M–100M+ views ──
@@ -120,6 +120,44 @@ const HASHTAGS = [
   'corporate876',
   'jamaicatech',
   'caribbeanstartup',
+
+  // ── TIER 5: EXPANSION — general SMB + diaspora + adjacent niches ──
+  // General SMB / entrepreneur
+  'blackownedbusiness',
+  'blackentrepreneur',
+  'caribbeanentrepreneurs',
+  'islandbusiness',
+  'tropicalbusiness',
+  'smallbusinessowner',
+  'womeninbusiness876',
+  'caribbeanwomeninbusiness',
+  // Diaspora / export market
+  'jamaicansinamerica',
+  'jamaicansincanada',
+  'jamaicansinuk',
+  'jamaicandiapora',
+  // Service-based
+  'jamaicaevents',
+  'caribbeanevents',
+  'eventplannersjamaica',
+  'jamaicaphotographer',
+  'caribbeanphotography',
+  'jamaicavideographer',
+  // Real estate / construction
+  'jamaicarealestate',
+  'caribbeanrealestate',
+  'jamaicaconstruction',
+  'buildingjamaica',
+  // Health & wellness
+  'jamaicawellness',
+  'caribbeanwellness',
+  'jamaicanfitness',
+  '876fitness',
+  // Tourism & hospitality
+  'jamaicatourism',
+  'visitjamaica',
+  'jamaicaairbnb',
+  'caribbeantravel',
 ];
 
 module.exports = { HASHTAGS };

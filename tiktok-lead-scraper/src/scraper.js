@@ -10,7 +10,7 @@ axiosRetry(axios, {
 });
 
 const DELAY_MS = 3000;
-const MIN_FOLLOWERS = 100;
+const MIN_FOLLOWERS = 50;
 const MAX_PROFILES_PER_HASHTAG = 30;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
