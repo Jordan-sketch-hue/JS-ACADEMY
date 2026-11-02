@@ -1,7 +1,7 @@
 {
-  "name": "Agri-HW Leads CRM",
-  "short_name": "AgriLeads",
-  "description": "Agriculture & Hardware Procurement Leads Manager",
+  "name": "Agri-H Leads",
+  "short_name": "Agri-H",
+  "description": "Agriculture & Hardware Procurement CRM",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",

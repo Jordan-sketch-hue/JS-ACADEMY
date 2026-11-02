@@ -70,8 +70,8 @@ export default function Dashboard() {
       <header className="border-b safe-top sticky top-0 z-40" style={{ background: "var(--surface-2, #111)", borderColor: "var(--border, #2a2a2a)" }}>
         <div className="px-4 py-3 flex items-center justify-between max-w-6xl mx-auto">
           <div>
-            <p className="text-[#C9930C] text-xs font-semibold tracking-widest uppercase">Agri-HW Leads</p>
-            <h1 className="font-bold text-lg leading-none" style={{ color: "var(--text, #f0f0f0)" }}>Procurement CRM</h1>
+            <p className="text-[#C9930C] text-xs font-semibold tracking-widest uppercase">Agri-H Leads</p>
+            <h1 className="font-bold text-lg leading-none" style={{ color: "var(--text, #f0f0f0)" }}>Agriculture & Hardware</h1>
           </div>
           <div className="flex items-center gap-3">
             {overdueCount > 0 && (
