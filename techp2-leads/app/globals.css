@@ -16,8 +16,19 @@
   --amber: #f59e0b;
 }
 
+/* Light mode overrides */
+[data-theme="light"] {
+  --surface: #ffffff;
+  --surface-2: #f0f0eb;
+  --surface-3: #e8e8e3;
+  --border: #E5E5E0;
+  --text: #0a0a0a;
+  --text-dim: #555555;
+}
+[data-theme="light"] body { background: #F5F5F0; color: #0a0a0a; }
+
 * { box-sizing: border-box; }
-body { background: #0a0a0a; overscroll-behavior: none; }
+body { background: #0a0a0a; overscroll-behavior: none; transition: background 0.2s ease, color 0.2s ease; }
 
 /* Gold accent scrollbar */
 ::-webkit-scrollbar { width: 4px; }

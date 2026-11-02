@@ -4,12 +4,14 @@ import { supabase, Lead, FollowUp } from "@/lib/supabase";
 import Link from "next/link";
 import {
   Users, Bell, TrendingUp, MapPin, Phone, Plus,
-  Calendar, CheckCircle, AlertCircle, Wheat, Hammer
+  Calendar, CheckCircle, AlertCircle, Wheat, Hammer, Sun, Moon
 } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
 
 const PARISHES = ["St. Ann", "Portland", "St. Mary", "St. Thomas"];
 
 export default function Dashboard() {
+  const { theme, toggle } = useTheme();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [followUps, setFollowUps] = useState<FollowUp[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,13 +65,13 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen" style={{ background: "var(--surface, #0a0a0a)", color: "var(--text, #f0f0f0)" }}>
       {/* Header */}
-      <header className="bg-[#111] border-b border-[#2a2a2a] safe-top sticky top-0 z-40">
+      <header className="border-b safe-top sticky top-0 z-40" style={{ background: "var(--surface-2, #111)", borderColor: "var(--border, #2a2a2a)" }}>
         <div className="px-4 py-3 flex items-center justify-between max-w-6xl mx-auto">
           <div>
-            <p className="text-[#C9930C] text-xs font-semibold tracking-widest uppercase">TechP2</p>
-            <h1 className="text-white font-bold text-lg leading-none">Procurement CRM</h1>
+            <p className="text-[#C9930C] text-xs font-semibold tracking-widest uppercase">Agri-HW Leads</p>
+            <h1 className="font-bold text-lg leading-none" style={{ color: "var(--text, #f0f0f0)" }}>Procurement CRM</h1>
           </div>
           <div className="flex items-center gap-3">
             {overdueCount > 0 && (
@@ -80,6 +82,14 @@ export default function Dashboard() {
                 </span>
               </Link>
             )}
+            <button
+              onClick={toggle}
+              className="p-1.5 rounded-lg transition-fast"
+              style={{ color: "var(--text-dim, #888)", background: "var(--surface-3, #222)" }}
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
             <Link
               href="/leads/new"
               className="flex items-center gap-1.5 bg-[#C9930C] text-black text-sm font-semibold px-3 py-1.5 rounded-lg"

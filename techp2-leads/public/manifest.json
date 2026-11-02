@@ -1,6 +1,6 @@
 {
-  "name": "TechP2 Leads CRM",
-  "short_name": "TechP2",
+  "name": "Agri-HW Leads CRM",
+  "short_name": "AgriLeads",
   "description": "Agriculture & Hardware Procurement Leads Manager",
   "start_url": "/",
   "display": "standalone",
