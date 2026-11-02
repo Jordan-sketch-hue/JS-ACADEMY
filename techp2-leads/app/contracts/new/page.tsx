@@ -1,12 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Save } from "lucide-react";
 
 const TYPES = ["Pricing Agreement","Supply Agreement","Distribution Agreement","MOU","Service Agreement","Custom"];
 
-export default function NewContractPage() {
+function NewContractForm() {
   const router = useRouter();
   const params = useSearchParams();
   const leadId = params.get("lead");
@@ -138,5 +138,13 @@ export default function NewContractPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function NewContractPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center"><div className="w-6 h-6 border-2 border-[#C9930C] border-t-transparent rounded-full animate-spin" /></div>}>
+      <NewContractForm />
+    </Suspense>
   );
 }
