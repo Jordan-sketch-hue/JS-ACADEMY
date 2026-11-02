@@ -47,20 +47,19 @@ async function fetchProfilesForHashtag(tag, maxProfiles = MAX_PROFILES_PER_HASHT
       timeout: 20000,
     });
 
-    // Extract __NEXT_DATA__ JSON embedded in the page
-    const match = html.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/);
-    if (!match) {
-      // Fallback: try SIGI_STATE
-      const sigiMatch = html.match(/window\['SIGI_STATE'\]\s*=\s*(\{[\s\S]*?\});\s*window\[/);
-      if (!sigiMatch) {
-        console.log(`  ⚠ No data in page for #${tag} (likely geo-blocked or captcha)`);
-        return profiles;
-      }
+    // Extract __NEXT_DATA__ JSON embedded in the page, falling back to SIGI_STATE
+    const nextDataMatch = html.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/);
+    const sigiMatch = !nextDataMatch && html.match(/window\['SIGI_STATE'\]\s*=\s*(\{[\s\S]*?\});\s*window\[/);
+    const rawJson = nextDataMatch ? nextDataMatch[1] : (sigiMatch ? sigiMatch[1] : null);
+
+    if (!rawJson) {
+      console.log(`  ⚠ No data in page for #${tag} (likely geo-blocked or captcha)`);
+      return profiles;
     }
 
     let pageData;
     try {
-      pageData = JSON.parse(match[1]);
+      pageData = JSON.parse(rawJson);
     } catch {
       console.log(`  ⚠ JSON parse failed for #${tag}`);
       return profiles;
