@@ -4,8 +4,8 @@
  * Parishes: St. Ann, Portland, St. Mary, St. Thomas
  * Categories: Agriculture, Hardware
  */
-import puppeteer from "puppeteer";
-import * as cheerio from "cheerio";
+import puppeteer, { type Browser } from "puppeteer";
+import { load as cheerioLoad } from "cheerio";
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
@@ -56,7 +56,7 @@ const YP_SEARCHES = [
 ];
 
 async function scrapeYellowPages(
-  browser: puppeteer.Browser,
+  browser: Browser,
   query: string,
   parish: string,
   category: "Agriculture" | "Hardware" | "Both"
@@ -73,7 +73,7 @@ async function scrapeYellowPages(
     await new Promise(r => setTimeout(r, 2000));
 
     const html = await page.content();
-    const $ = cheerio.load(html);
+    const $ = cheerioLoad(html);
 
     // Yellow Pages JA listing selectors
     $(".listing, .business-listing, .result-item, .yp-listing").each((_, el) => {
@@ -103,7 +103,7 @@ async function scrapeYellowPages(
         await pages[i].click();
         await page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 15000 });
         const html2 = await page.content();
-        const $2 = cheerio.load(html2);
+        const $2 = cheerioLoad(html2);
         $2(".listing, .business-listing, .result-item").each((_, el) => {
           const name = $2(el).find(".business-name, h2, h3").first().text().trim();
           const phone = $2(el).find(".phone, [href^='tel:']").first().text().trim();
@@ -122,7 +122,7 @@ async function scrapeYellowPages(
 
 // ─── BusinessFinda JA ─────────────────────────────────────────────────
 async function scrapeBusinessFinda(
-  browser: puppeteer.Browser,
+  browser: Browser,
   category: string,
   parish: string,
   catType: "Agriculture" | "Hardware" | "Both"
@@ -137,7 +137,7 @@ async function scrapeBusinessFinda(
     await new Promise(r => setTimeout(r, 2000));
 
     const html = await page.content();
-    const $ = cheerio.load(html);
+    const $ = cheerioLoad(html);
 
     $(".business-card, .listing-card, .company-item, article").each((_, el) => {
       const name = $(el).find("h2, h3, .name, .title").first().text().trim();
@@ -159,7 +159,7 @@ async function scrapeBusinessFinda(
 
 // ─── Jamaica Business Directory ───────────────────────────────────────
 async function scrapeJamaicaBizDir(
-  browser: puppeteer.Browser,
+  browser: Browser,
   keyword: string,
   parish: string,
   catType: "Agriculture" | "Hardware" | "Both"
@@ -173,7 +173,7 @@ async function scrapeJamaicaBizDir(
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
     await new Promise(r => setTimeout(r, 1500));
     const html = await page.content();
-    const $ = cheerio.load(html);
+    const $ = cheerioLoad(html);
 
     $(".post, .listing, .entry").each((_, el) => {
       const name = $(el).find("h2, h3, .entry-title").first().text().trim();
@@ -193,7 +193,7 @@ async function scrapeJamaicaBizDir(
 
 // ─── Google Maps fallback (Places-style search) ───────────────────────
 async function scrapeGoogleMaps(
-  browser: puppeteer.Browser,
+  browser: Browser,
   keyword: string,
   parish: string,
   catType: "Agriculture" | "Hardware" | "Both"
@@ -220,7 +220,7 @@ async function scrapeGoogleMaps(
     }
 
     const html = await page.content();
-    const $ = cheerio.load(html);
+    const $ = cheerioLoad(html);
 
     // Maps result cards
     $('[data-result-index], .Nv2PK, .lI9IFe').each((_, el) => {
