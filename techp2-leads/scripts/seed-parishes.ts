@@ -15,7 +15,7 @@ dotenv.config({ path: ".env.local" });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 const SEED_LEADS = [
@@ -129,7 +129,7 @@ async function seed() {
     const { error } = await supabase.from("tp2_leads").insert({
       ...lead,
       status: "New",
-      source: "Field Research",
+      source: "Field Visit",
       follow_up_required: lead.priority === "High",
       follow_up_date: lead.priority === "High"
         ? new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0]

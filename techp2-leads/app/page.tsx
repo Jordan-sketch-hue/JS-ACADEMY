@@ -32,8 +32,8 @@ export default function Dashboard() {
   useEffect(() => {
     load();
     const ch = supabase.channel("realtime-dashboard")
-      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, load)
-      .on("postgres_changes", { event: "*", schema: "public", table: "follow_ups" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "tp2_leads" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "tp2_follow_ups" }, load)
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, [load]);
