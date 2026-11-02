@@ -25,3 +25,12 @@ CREATE INDEX IF NOT EXISTS idx_tiktok_leads_status    ON tiktok_leads(status);
 CREATE INDEX IF NOT EXISTS idx_tiktok_leads_followers ON tiktok_leads(followers DESC);
 
 -- status enum values: new | sent | replied | converted | skip
+
+-- RLS: deny all anon access; only service_role (Railway scraper) can read/write
+ALTER TABLE tiktok_leads ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "service_role_all" ON tiktok_leads
+  FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);

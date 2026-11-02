@@ -60,18 +60,30 @@ async function upsertLeads(leads) {
 }
 
 async function fetchLeadsForExport(filters = {}) {
-  let query = supabase
-    .from('tiktok_leads')
-    .select('username, display_name, bio, followers, category, message, status, profile_url, scraped_at')
-    .order('followers', { ascending: false });
+  const PAGE_SIZE = 1000;
+  const allRows = [];
+  let offset = 0;
 
-  if (filters.category) query = query.eq('category', filters.category);
-  if (filters.status)   query = query.eq('status', filters.status);
-  if (filters.minFollowers) query = query.gte('followers', filters.minFollowers);
+  while (true) {
+    let query = supabase
+      .from('tiktok_leads')
+      .select('username, display_name, bio, followers, category, message, status, profile_url, scraped_at')
+      .order('followers', { ascending: false })
+      .range(offset, offset + PAGE_SIZE - 1);
 
-  const { data, error } = await query;
-  if (error) throw error;
-  return data || [];
+    if (filters.category) query = query.eq('category', filters.category);
+    if (filters.status)   query = query.eq('status', filters.status);
+    if (filters.minFollowers) query = query.gte('followers', filters.minFollowers);
+
+    const { data, error } = await query;
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+    allRows.push(...data);
+    if (data.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+  }
+
+  return allRows;
 }
 
 module.exports = { upsertLeads, fetchLeadsForExport, MIGRATION_SQL };

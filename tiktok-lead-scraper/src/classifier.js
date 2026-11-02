@@ -51,7 +51,7 @@ const CATEGORIES = {
 function classify(profile) {
   const text = [
     profile.username || '',
-    profile.nickname || '',
+    profile.display_name || '',
     profile.bio || ''
   ].join(' ').toLowerCase();
 
