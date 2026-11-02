@@ -1,0 +1,23 @@
+{
+  "name": "tiktok-lead-scraper",
+  "version": "1.0.0",
+  "description": "TikTok business lead scraper for Jamaica + Caribbean",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "scrape": "node src/index.js --mode=scrape",
+    "export": "node src/index.js --mode=export"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "axios": "^1.6.0",
+    "axios-retry": "^4.0.0",
+    "node-cron": "^3.0.3",
+    "json2csv": "^6.0.0-alpha.2",
+    "dotenv": "^16.3.1",
+    "p-limit": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
