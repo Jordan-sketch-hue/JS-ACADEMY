@@ -13,7 +13,7 @@ export default function FollowUpsPage() {
 
   const load = useCallback(async () => {
     const { data } = await supabase
-      .from("follow_ups")
+      .from("tp2_follow_ups")
       .select("*, leads(business_name,phone,parish,category)")
       .eq("completed", false)
       .order("due_date");
@@ -34,7 +34,7 @@ export default function FollowUpsPage() {
   });
 
   const complete = async (id: string) => {
-    await supabase.from("follow_ups").update({ completed: true, completed_at: new Date().toISOString() }).eq("id", id);
+    await supabase.from("tp2_follow_ups").update({ completed: true, completed_at: new Date().toISOString() }).eq("id", id);
     load();
   };
 

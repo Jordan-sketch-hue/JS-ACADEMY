@@ -119,14 +119,14 @@ async function seed() {
 
   for (const lead of SEED_LEADS) {
     const { data: ex } = await supabase
-      .from("leads")
+      .from("tp2_leads")
       .select("id")
       .eq("business_name", lead.business_name)
       .eq("parish", lead.parish);
 
     if (ex && ex.length > 0) { skip++; continue; }
 
-    const { error } = await supabase.from("leads").insert({
+    const { error } = await supabase.from("tp2_leads").insert({
       ...lead,
       status: "New",
       source: "Field Research",

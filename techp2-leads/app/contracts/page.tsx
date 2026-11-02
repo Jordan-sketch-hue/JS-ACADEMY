@@ -21,7 +21,7 @@ export default function ContractsPage() {
 
   useEffect(() => {
     supabase
-      .from("contracts")
+      .from("tp2_contracts")
       .select("*, leads(business_name,parish,category)")
       .order("created_at", { ascending: false })
       .then(({ data }) => {

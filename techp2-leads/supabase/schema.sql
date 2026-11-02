@@ -1,10 +1,10 @@
 -- TechP2 Agriculture & Hardware Leads CRM
--- Supabase schema
+-- Supabase schema (tp2_ prefixed to avoid conflicts in shared project)
 
 create extension if not exists "uuid-ossp";
 
 -- Leads table
-create table if not exists leads (
+create table if not exists tp2_leads (
   id uuid primary key default uuid_generate_v4(),
   created_at timestamptz default now(),
   updated_at timestamptz default now(),
@@ -59,9 +59,9 @@ create table if not exists leads (
 );
 
 -- Notes per lead
-create table if not exists lead_notes (
+create table if not exists tp2_lead_notes (
   id uuid primary key default uuid_generate_v4(),
-  lead_id uuid references leads(id) on delete cascade,
+  lead_id uuid references tp2_leads(id) on delete cascade,
   created_at timestamptz default now(),
   note_type text default 'General' check (note_type in (
     'General','Call Log','Site Visit','Email','Text','Meeting',
@@ -72,9 +72,9 @@ create table if not exists lead_notes (
 );
 
 -- Call logs (dedicated)
-create table if not exists call_logs (
+create table if not exists tp2_call_logs (
   id uuid primary key default uuid_generate_v4(),
-  lead_id uuid references leads(id) on delete cascade,
+  lead_id uuid references tp2_leads(id) on delete cascade,
   created_at timestamptz default now(),
   duration_mins integer,
   outcome text check (outcome in (
@@ -86,9 +86,9 @@ create table if not exists call_logs (
 );
 
 -- Follow-up tasks
-create table if not exists follow_ups (
+create table if not exists tp2_follow_ups (
   id uuid primary key default uuid_generate_v4(),
-  lead_id uuid references leads(id) on delete cascade,
+  lead_id uuid references tp2_leads(id) on delete cascade,
   created_at timestamptz default now(),
   due_date date not null,
   task_type text check (task_type in (
@@ -101,9 +101,9 @@ create table if not exists follow_ups (
 );
 
 -- Contracts / pricing agreements
-create table if not exists contracts (
+create table if not exists tp2_contracts (
   id uuid primary key default uuid_generate_v4(),
-  lead_id uuid references leads(id) on delete cascade,
+  lead_id uuid references tp2_leads(id) on delete cascade,
   created_at timestamptz default now(),
   contract_type text check (contract_type in (
     'Pricing Agreement','Supply Agreement','Distribution Agreement',
@@ -123,10 +123,10 @@ create table if not exists contracts (
 );
 
 -- Deliveries
-create table if not exists deliveries (
+create table if not exists tp2_deliveries (
   id uuid primary key default uuid_generate_v4(),
-  lead_id uuid references leads(id) on delete cascade,
-  contract_id uuid references contracts(id),
+  lead_id uuid references tp2_leads(id) on delete cascade,
+  contract_id uuid references tp2_contracts(id),
   created_at timestamptz default now(),
   delivery_date date,
   status text default 'Pending' check (status in (
@@ -140,35 +140,35 @@ create table if not exists deliveries (
 );
 
 -- RLS policies
-alter table leads enable row level security;
-alter table lead_notes enable row level security;
-alter table call_logs enable row level security;
-alter table follow_ups enable row level security;
-alter table contracts enable row level security;
-alter table deliveries enable row level security;
+alter table tp2_leads enable row level security;
+alter table tp2_lead_notes enable row level security;
+alter table tp2_call_logs enable row level security;
+alter table tp2_follow_ups enable row level security;
+alter table tp2_contracts enable row level security;
+alter table tp2_deliveries enable row level security;
 
 -- Open read/write for anon (single-user app — add auth later)
-create policy "Public access" on leads for all using (true) with check (true);
-create policy "Public access" on lead_notes for all using (true) with check (true);
-create policy "Public access" on call_logs for all using (true) with check (true);
-create policy "Public access" on follow_ups for all using (true) with check (true);
-create policy "Public access" on contracts for all using (true) with check (true);
-create policy "Public access" on deliveries for all using (true) with check (true);
+create policy "tp2 Public access" on tp2_leads for all using (true) with check (true);
+create policy "tp2 Public access" on tp2_lead_notes for all using (true) with check (true);
+create policy "tp2 Public access" on tp2_call_logs for all using (true) with check (true);
+create policy "tp2 Public access" on tp2_follow_ups for all using (true) with check (true);
+create policy "tp2 Public access" on tp2_contracts for all using (true) with check (true);
+create policy "tp2 Public access" on tp2_deliveries for all using (true) with check (true);
 
 -- Update trigger
-create or replace function update_updated_at()
+create or replace function tp2_update_updated_at()
 returns trigger as $$
 begin new.updated_at = now(); return new; end;
 $$ language plpgsql;
 
-create trigger set_updated_at before update on leads
-  for each row execute function update_updated_at();
+create trigger tp2_set_updated_at before update on tp2_leads
+  for each row execute function tp2_update_updated_at();
 
 -- Indexes
-create index on leads(parish);
-create index on leads(status);
-create index on leads(category);
-create index on leads(follow_up_required) where follow_up_required = true;
-create index on follow_ups(due_date) where completed = false;
-create index on lead_notes(lead_id);
-create index on call_logs(lead_id);
+create index if not exists tp2_leads_parish_idx on tp2_leads(parish);
+create index if not exists tp2_leads_status_idx on tp2_leads(status);
+create index if not exists tp2_leads_category_idx on tp2_leads(category);
+create index if not exists tp2_leads_followup_idx on tp2_leads(follow_up_required) where follow_up_required = true;
+create index if not exists tp2_followups_due_idx on tp2_follow_ups(due_date) where completed = false;
+create index if not exists tp2_lead_notes_lead_idx on tp2_lead_notes(lead_id);
+create index if not exists tp2_call_logs_lead_idx on tp2_call_logs(lead_id);

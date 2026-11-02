@@ -28,7 +28,7 @@ function NewContractForm() {
   });
 
   useEffect(() => {
-    supabase.from("leads").select("id,business_name,parish").order("business_name")
+    supabase.from("tp2_leads").select("id,business_name,parish").order("business_name")
       .then(({ data }) => { if (data) setLeads(data); });
   }, []);
 
@@ -37,13 +37,13 @@ function NewContractForm() {
   const save = async () => {
     if (!form.lead_id || !form.title) return;
     setSaving(true);
-    const { data } = await supabase.from("contracts").insert({
+    const { data } = await supabase.from("tp2_contracts").insert({
       ...form,
       total_value: form.total_value ? parseFloat(form.total_value) : null,
       products: form.products.length ? form.products : null,
     }).select().single();
     if (data) {
-      await supabase.from("leads").update({ has_contract: true }).eq("id", form.lead_id);
+      await supabase.from("tp2_leads").update({ has_contract: true }).eq("id", form.lead_id);
       router.push(leadId ? `/leads/${leadId}` : `/contracts/${data.id}`);
     }
     setSaving(false);

@@ -16,9 +16,9 @@ export default function Dashboard() {
 
   const load = useCallback(async () => {
     const [l, f] = await Promise.all([
-      supabase.from("leads").select("*").order("created_at", { ascending: false }),
+      supabase.from("tp2_leads").select("*").order("created_at", { ascending: false }),
       supabase
-        .from("follow_ups")
+        .from("tp2_follow_ups")
         .select("*, leads(business_name,phone,parish)")
         .eq("completed", false)
         .lte("due_date", new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0])

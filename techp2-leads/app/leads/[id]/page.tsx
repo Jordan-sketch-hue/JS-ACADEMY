@@ -39,11 +39,11 @@ export default function LeadDetail() {
 
   const load = useCallback(async () => {
     const [l, n, c, f, ct] = await Promise.all([
-      supabase.from("leads").select("*").eq("id", id).single(),
-      supabase.from("lead_notes").select("*").eq("lead_id", id).order("created_at", { ascending: false }),
-      supabase.from("call_logs").select("*").eq("lead_id", id).order("created_at", { ascending: false }),
-      supabase.from("follow_ups").select("*").eq("lead_id", id).order("due_date"),
-      supabase.from("contracts").select("*").eq("lead_id", id).order("created_at", { ascending: false }),
+      supabase.from("tp2_leads").select("*").eq("id", id).single(),
+      supabase.from("tp2_lead_notes").select("*").eq("lead_id", id).order("created_at", { ascending: false }),
+      supabase.from("tp2_call_logs").select("*").eq("lead_id", id).order("created_at", { ascending: false }),
+      supabase.from("tp2_follow_ups").select("*").eq("lead_id", id).order("due_date"),
+      supabase.from("tp2_contracts").select("*").eq("lead_id", id).order("created_at", { ascending: false }),
     ]);
     if (l.data) setLead(l.data);
     if (n.data) setNotes(n.data);
@@ -56,7 +56,7 @@ export default function LeadDetail() {
   useEffect(() => { load(); }, [load]);
 
   const updateStatus = async (newStatus: string) => {
-    await supabase.from("leads").update({ status: newStatus }).eq("id", id);
+    await supabase.from("tp2_leads").update({ status: newStatus }).eq("id", id);
     setLead(prev => prev ? { ...prev, status: newStatus as any } : prev);
     setShowStatusModal(false);
   };
@@ -226,7 +226,7 @@ export default function LeadDetail() {
                 <button
                   onClick={async () => {
                     const newVal = !lead.follow_up_required;
-                    await supabase.from("leads").update({ follow_up_required: newVal }).eq("id", id);
+                    await supabase.from("tp2_leads").update({ follow_up_required: newVal }).eq("id", id);
                     setLead(prev => prev ? { ...prev, follow_up_required: newVal } : prev);
                   }}
                   className={`w-12 h-6 rounded-full transition-fast relative ${lead.follow_up_required ? "bg-[#C9930C]" : "bg-[#2a2a2a]"}`}
@@ -323,7 +323,7 @@ export default function LeadDetail() {
                   {!fu.completed && (
                     <button
                       onClick={async () => {
-                        await supabase.from("follow_ups").update({ completed: true, completed_at: new Date().toISOString() }).eq("id", fu.id);
+                        await supabase.from("tp2_follow_ups").update({ completed: true, completed_at: new Date().toISOString() }).eq("id", fu.id);
                         load();
                       }}
                       className="p-2 text-[#555] hover:text-green-400"
@@ -407,7 +407,7 @@ function CallModal({ leadId, onClose }: { leadId: string; onClose: () => void })
 
   const save = async () => {
     setSaving(true);
-    await supabase.from("call_logs").insert({
+    await supabase.from("tp2_call_logs").insert({
       lead_id: leadId,
       outcome,
       duration_mins: duration ? parseInt(duration) : null,
@@ -416,7 +416,7 @@ function CallModal({ leadId, onClose }: { leadId: string; onClose: () => void })
       follow_up_date: followUp ? followUpDate : null,
     });
     if (followUp && followUpDate) {
-      await supabase.from("follow_ups").insert({
+      await supabase.from("tp2_follow_ups").insert({
         lead_id: leadId,
         due_date: followUpDate,
         task_type: "Call",
@@ -424,9 +424,9 @@ function CallModal({ leadId, onClose }: { leadId: string; onClose: () => void })
         completed: false,
         priority: "High",
       });
-      await supabase.from("leads").update({ follow_up_required: true, follow_up_date: followUpDate }).eq("id", leadId);
+      await supabase.from("tp2_leads").update({ follow_up_required: true, follow_up_date: followUpDate }).eq("id", leadId);
     }
-    await supabase.from("lead_notes").insert({
+    await supabase.from("tp2_lead_notes").insert({
       lead_id: leadId,
       note_type: "Call Log",
       content: `${outcome}${duration ? ` · ${duration} min` : ""}${summary ? ` · ${summary}` : ""}`,
@@ -498,7 +498,7 @@ function NoteModal({ leadId, onClose }: { leadId: string; onClose: () => void })
   const save = async () => {
     if (!content.trim()) return;
     setSaving(true);
-    await supabase.from("lead_notes").insert({ lead_id: leadId, note_type: type, content });
+    await supabase.from("tp2_lead_notes").insert({ lead_id: leadId, note_type: type, content });
     setSaving(false);
     onClose();
   };
@@ -543,11 +543,11 @@ function FollowUpModal({ leadId, onClose }: { leadId: string; onClose: () => voi
     if (!date) return;
     setSaving(true);
     await Promise.all([
-      supabase.from("follow_ups").insert({
+      supabase.from("tp2_follow_ups").insert({
         lead_id: leadId, due_date: date, task_type: taskType,
         description: desc, completed: false, priority,
       }),
-      supabase.from("leads").update({ follow_up_required: true, follow_up_date: date }).eq("id", leadId),
+      supabase.from("tp2_leads").update({ follow_up_required: true, follow_up_date: date }).eq("id", leadId),
     ]);
     setSaving(false);
     onClose();

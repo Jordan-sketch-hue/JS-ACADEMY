@@ -53,7 +53,7 @@ export default function NewLeadPage() {
   const save = async () => {
     if (!form.business_name.trim()) return;
     setSaving(true);
-    const { data, error } = await supabase.from("leads").insert({
+    const { data, error } = await supabase.from("tp2_leads").insert({
       ...form,
       products_needed: form.products_needed.length ? form.products_needed : null,
       follow_up_date: form.follow_up_required && form.follow_up_date ? form.follow_up_date : null,

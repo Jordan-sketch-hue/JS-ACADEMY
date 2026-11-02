@@ -27,7 +27,7 @@ export default function LeadsPage() {
 
   const load = useCallback(async () => {
     const { data } = await supabase
-      .from("leads")
+      .from("tp2_leads")
       .select("*")
       .order("priority", { ascending: false })
       .order("created_at", { ascending: false });

@@ -289,15 +289,15 @@ async function upsertLeads(leads: ScrapedLead[]) {
   for (const lead of enriched) {
     // Dedup by phone or business name + parish
     const query = lead.phone
-      ? supabase.from("leads").select("id").eq("phone", lead.phone)
-      : supabase.from("leads").select("id")
+      ? supabase.from("tp2_leads").select("id").eq("phone", lead.phone)
+      : supabase.from("tp2_leads").select("id")
           .eq("business_name", lead.business_name)
           .eq("parish", lead.parish);
 
     const { data: existing } = await query;
     if (existing && existing.length > 0) { skipped++; continue; }
 
-    const { error } = await supabase.from("leads").insert({
+    const { error } = await supabase.from("tp2_leads").insert({
       business_name: lead.business_name,
       phone: lead.phone,
       email: lead.email,
