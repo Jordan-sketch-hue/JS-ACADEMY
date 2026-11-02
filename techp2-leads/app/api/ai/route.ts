@@ -3,8 +3,8 @@ import { NextRequest } from "next/server";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-const SYSTEM = `You are an intelligent B2B sales assistant for TechP2, a sole trader procurement business in Jamaica.
-TechP2 sources and procures agriculture and hardware supplies for businesses in St. Ann, Portland, St. Mary, and St. Thomas.
+const SYSTEM = `You are an intelligent B2B sales assistant for Agri-H Leads, a sole trader procurement business in Jamaica.
+The business sources and procures agriculture and hardware supplies for businesses in St. Ann, Portland, St. Mary, and St. Thomas.
 
 You help the sales agent with:
 - Drafting professional follow-up messages (WhatsApp, SMS, email)

@@ -63,7 +63,7 @@ export default function LeadsPage() {
       <header className="bg-[#111] border-b border-[#2a2a2a] sticky top-0 z-30 safe-top">
         <div className="px-4 py-3 flex items-center justify-between max-w-6xl mx-auto">
           <div>
-            <p className="text-[#C9930C] text-[10px] font-semibold tracking-widest uppercase">TechP2</p>
+            <p className="text-[#C9930C] text-[10px] font-semibold tracking-widest uppercase">Agri-H Leads</p>
             <h1 className="text-white font-bold">All Leads <span className="text-[#C9930C]">{filtered.length}</span></h1>
           </div>
           <Link href="/leads/new" className="flex items-center gap-1 bg-[#C9930C] text-black text-sm font-bold px-3 py-1.5 rounded-lg">

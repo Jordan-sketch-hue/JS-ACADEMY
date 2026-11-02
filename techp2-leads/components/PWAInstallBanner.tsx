@@ -69,7 +69,7 @@ export default function PWAInstallBanner() {
               <Smartphone className="w-5 h-5 text-black" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white font-semibold text-sm">Install TechP2 CRM</p>
+              <p className="text-white font-semibold text-sm">Install Agri-H Leads</p>
               <p className="text-[#888] text-xs mt-0.5">Add to your home screen for offline access & push notifications</p>
               <div className="flex gap-2 mt-3">
                 <button

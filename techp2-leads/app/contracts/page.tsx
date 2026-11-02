@@ -38,7 +38,7 @@ export default function ContractsPage() {
         <div className="px-4 py-3 flex items-center gap-3 max-w-6xl mx-auto">
           <button onClick={() => router.back()} className="text-[#888]"><ArrowLeft className="w-5 h-5" /></button>
           <div className="flex-1">
-            <p className="text-[#C9930C] text-[10px] font-semibold tracking-widest uppercase">TechP2</p>
+            <p className="text-[#C9930C] text-[10px] font-semibold tracking-widest uppercase">Agri-H Leads</p>
             <h1 className="text-white font-bold">Contracts & Agreements</h1>
           </div>
           <Link href="/contracts/new" className="flex items-center gap-1 bg-[#C9930C] text-black text-sm font-bold px-3 py-1.5 rounded-lg">

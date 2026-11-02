@@ -78,7 +78,7 @@ export default function AIPage() {
           <div className="flex-1 flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-[#C9930C]" />
             <div>
-              <p className="text-[#C9930C] text-[10px] font-semibold tracking-widest uppercase">TechP2 AI</p>
+              <p className="text-[#C9930C] text-[10px] font-semibold tracking-widest uppercase">Agri-H AI</p>
               <p className="text-white text-sm font-bold">Sales Assistant</p>
             </div>
           </div>
