@@ -49,7 +49,7 @@ export default function FollowUpsPage() {
     <div className="min-h-screen bg-[#0a0a0a] pb-20">
       <header className="bg-[#111] border-b border-[#2a2a2a] sticky top-0 z-30 safe-top">
         <div className="px-4 py-3 flex items-center gap-3 max-w-6xl mx-auto">
-          <button onClick={() => router.back()} className="text-[#888]"><ArrowLeft className="w-5 h-5" /></button>
+          <button onClick={() => router.back()} className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-white hover:border-[#C9930C] transition-fast"><ArrowLeft className="w-4 h-4" /></button>
           <div className="flex-1">
             <p className="text-[#C9930C] text-[10px] font-semibold tracking-widest uppercase">Agri-H Leads</p>
             <h1 className="text-white font-bold">Follow-ups</h1>

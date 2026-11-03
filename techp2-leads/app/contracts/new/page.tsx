@@ -55,7 +55,7 @@ function NewContractForm() {
     <div className="min-h-screen bg-[#0a0a0a] pb-24">
       <header className="bg-[#111] border-b border-[#2a2a2a] sticky top-0 z-30 safe-top">
         <div className="px-4 py-4 flex items-center gap-3 max-w-6xl mx-auto">
-          <button onClick={() => router.back()} className="text-[#888]"><ArrowLeft className="w-5 h-5" /></button>
+          <button onClick={() => router.back()} className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-white hover:border-[#C9930C] transition-fast"><ArrowLeft className="w-4 h-4" /></button>
           <h1 className="text-white font-bold flex-1">New Contract</h1>
           <button onClick={save} disabled={saving || !form.lead_id || !form.title}
             className="flex items-center gap-1.5 bg-[#C9930C] text-black font-bold px-4 py-2 rounded-lg text-sm disabled:opacity-50">

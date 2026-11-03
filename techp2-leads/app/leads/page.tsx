@@ -2,7 +2,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase, Lead } from "@/lib/supabase";
 import Link from "next/link";
-import { Search, Plus, Filter, Phone, MapPin, Wheat, Hammer, ChevronRight } from "lucide-react";
+import { Search, Plus, Filter, Phone, MapPin, Wheat, Hammer, ChevronRight, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const PARISHES = ["All", "St. Ann", "Portland", "St. Mary", "St. Thomas"];
 const STATUSES = ["All","New","Contacted","Interested","Proposal Sent","Negotiating","Converted","Not Interested","Follow Up","Cold"];
@@ -16,6 +17,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function LeadsPage() {
+  const router = useRouter();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [filtered, setFiltered] = useState<Lead[]>([]);
   const [search, setSearch] = useState("");
@@ -62,9 +64,12 @@ export default function LeadsPage() {
       {/* Header */}
       <header className="bg-[#111] border-b border-[#2a2a2a] sticky top-0 z-30 safe-top">
         <div className="px-4 py-3 flex items-center justify-between max-w-6xl mx-auto">
-          <div>
-            <p className="text-[#C9930C] text-[10px] font-semibold tracking-widest uppercase">Agri-H Leads</p>
-            <h1 className="text-white font-bold">All Leads <span className="text-[#C9930C]">{filtered.length}</span></h1>
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.push("/")} className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-white hover:border-[#C9930C] transition-fast"><ArrowLeft className="w-4 h-4" /></button>
+            <div>
+              <p className="text-[#C9930C] text-[10px] font-semibold tracking-widest uppercase">Agri-H Leads</p>
+              <h1 className="text-white font-bold">All Leads <span className="text-[#C9930C]">{filtered.length}</span></h1>
+            </div>
           </div>
           <Link href="/leads/new" className="flex items-center gap-1 bg-[#C9930C] text-black text-sm font-bold px-3 py-1.5 rounded-lg">
             <Plus className="w-4 h-4" /> Add

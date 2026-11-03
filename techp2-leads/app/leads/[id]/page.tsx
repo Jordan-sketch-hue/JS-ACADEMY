@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 const STATUS_OPTIONS = ["New","Contacted","Interested","Proposal Sent","Negotiating","Converted","Not Interested","Follow Up","Cold"];
+const PARISH_OPTIONS = ["St. Ann", "Portland", "St. Mary", "St. Thomas", "Other"];
 const STATUS_COLORS: Record<string, string> = {
   New: "bg-blue-900/50 text-blue-400", Contacted: "bg-green-900/50 text-green-400",
   Interested: "bg-purple-900/50 text-purple-400", "Proposal Sent": "bg-amber-900/50 text-amber-400",
@@ -36,6 +37,7 @@ export default function LeadDetail() {
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [showFollowUpModal, setShowFollowUpModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showParishModal, setShowParishModal] = useState(false);
 
   const load = useCallback(async () => {
     const [l, n, c, f, ct] = await Promise.all([
@@ -61,6 +63,12 @@ export default function LeadDetail() {
     setShowStatusModal(false);
   };
 
+  const updateParish = async (newParish: string) => {
+    await supabase.from("tp2_leads").update({ parish: newParish }).eq("id", id);
+    setLead(prev => prev ? { ...prev, parish: newParish as any } : prev);
+    setShowParishModal(false);
+  };
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
       <div className="w-8 h-8 border-2 border-[#C9930C] border-t-transparent rounded-full animate-spin" />
@@ -81,9 +89,7 @@ export default function LeadDetail() {
       {/* Header */}
       <header className="bg-[#111] border-b border-[#2a2a2a] sticky top-0 z-30 safe-top">
         <div className="px-4 py-3 flex items-center gap-3 max-w-6xl mx-auto">
-          <button onClick={() => router.back()} className="text-[#888] hover:text-white">
-            <ArrowLeft className="w-5 h-5" />
-          </button>
+          <button onClick={() => router.back()} className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-white hover:border-[#C9930C] transition-fast"><ArrowLeft className="w-4 h-4" /></button>
           <div className="flex-1 min-w-0">
             <h1 className="text-white font-bold text-base leading-tight truncate">{lead.business_name}</h1>
             <div className="flex items-center gap-2 mt-0.5">
@@ -157,9 +163,16 @@ export default function LeadDetail() {
           <div className="space-y-4">
             <div className="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 space-y-3">
               <h3 className="text-[#C9930C] text-xs font-semibold tracking-widest uppercase">Business Info</h3>
+              {lead.parish && (
+                <div className="flex justify-between items-center">
+                  <span className="text-[#555] text-sm">Parish</span>
+                  <button onClick={() => setShowParishModal(true)} className="flex items-center gap-1 text-white text-sm">
+                    {lead.parish} <span className="text-[#555] text-xs ml-1">v</span>
+                  </button>
+                </div>
+              )}
               {[
                 { label: "Contact", value: lead.contact_name, icon: Building },
-                { label: "Parish", value: lead.parish, icon: MapPin },
                 { label: "Community", value: lead.community },
                 { label: "Category", value: lead.category },
                 { label: "Type", value: lead.business_type },

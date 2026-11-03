@@ -74,7 +74,7 @@ export default function AIPage() {
     <div className="flex flex-col h-screen bg-[#0a0a0a]">
       <header className="bg-[#111] border-b border-[#2a2a2a] flex-shrink-0 safe-top">
         <div className="px-4 py-3 flex items-center gap-3 max-w-6xl mx-auto">
-          <button onClick={() => router.back()} className="text-[#888]"><ArrowLeft className="w-5 h-5" /></button>
+          <button onClick={() => router.back()} className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] text-white hover:border-[#C9930C] transition-fast"><ArrowLeft className="w-4 h-4" /></button>
           <div className="flex-1 flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-[#C9930C]" />
             <div>
