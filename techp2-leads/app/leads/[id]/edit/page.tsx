@@ -129,7 +129,7 @@ export default function EditLeadPage() {
             <div className="flex gap-2">
               {CATEGORIES.map(c => (
                 <button key={c} onClick={() => set("category", c)}
-                  className={lex-1 py-2.5 rounded-xl border text-sm font-semibold }>
+                  className={`flex-1 py-2.5 rounded-xl border text-sm font-semibold ${form.category === c ? "bg-[#C9930C] border-[#C9930C] text-black" : "border-[#2a2a2a] text-[#888]"}`}>
                   {c === "Agriculture" ? "Agri" : c === "Hardware" ? "HW" : "Both"}
                 </button>
               ))}
@@ -154,7 +154,7 @@ export default function EditLeadPage() {
             <div className="flex flex-wrap gap-1.5">
               {SOURCES.map(s => (
                 <button key={s} onClick={() => set("source", s)}
-                  className={	ext-xs px-3 py-1.5 rounded-full border }>
+                  className={`text-xs px-3 py-1.5 rounded-full border ${form.source === s ? "bg-[#C9930C] border-[#C9930C] text-black font-semibold" : "border-[#2a2a2a] text-[#888]"}`}>
                   {s}
                 </button>
               ))}
@@ -172,7 +172,7 @@ export default function EditLeadPage() {
             <div className="flex flex-wrap gap-1.5">
               {products.map(p => (
                 <button key={p} onClick={() => toggleProduct(p)}
-                  className={	ext-xs px-3 py-1.5 rounded-full border }>
+                  className={`text-xs px-3 py-1.5 rounded-full border ${form.products_needed.includes(p) ? "bg-[#C9930C] border-[#C9930C] text-black font-semibold" : "border-[#2a2a2a] text-[#888]"}`}>
                   {p}
                 </button>
               ))}
@@ -194,7 +194,7 @@ export default function EditLeadPage() {
             <div className="flex flex-wrap gap-1.5">
               {["Call","Text","Email","WhatsApp","In-Person"].map(c => (
                 <button key={c} onClick={() => set("preferred_contact", c)}
-                  className={	ext-xs px-3 py-1.5 rounded-full border }>
+                  className={`text-xs px-3 py-1.5 rounded-full border ${form.preferred_contact === c ? "bg-[#C9930C] border-[#C9930C] text-black font-semibold" : "border-[#2a2a2a] text-[#888]"}`}>
                   {c}
                 </button>
               ))}
@@ -222,8 +222,8 @@ export default function EditLeadPage() {
           <div className="flex items-center justify-between bg-[#1a1a1a] rounded-xl p-4">
             <p className="text-white text-sm">Follow-up required</p>
             <button onClick={() => set("follow_up_required", !form.follow_up_required)}
-              className={w-12 h-6 rounded-full relative }>
-              <span className={bsolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all } />
+              className={`w-12 h-6 rounded-full relative transition-colors ${form.follow_up_required ? "bg-[#C9930C]" : "bg-[#2a2a2a]"}`}>
+              <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all ${form.follow_up_required ? "left-6" : "left-0.5"}`} />
             </button>
           </div>
           {form.follow_up_required && (
