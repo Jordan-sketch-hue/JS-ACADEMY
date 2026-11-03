@@ -21,7 +21,7 @@ export default function Dashboard() {
       supabase.from("tp2_leads").select("*").order("created_at", { ascending: false }),
       supabase
         .from("tp2_follow_ups")
-        .select("*, leads(business_name,phone,parish)")
+        .select("*, tp2_leads(business_name,phone,parish)")
         .eq("completed", false)
         .lte("due_date", new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0])
         .order("due_date"),
