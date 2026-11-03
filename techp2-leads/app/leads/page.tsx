@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import { PullIndicator } from "@/components/PullIndicator";
 import { supabase, Lead } from "@/lib/supabase";
 import Link from "next/link";
 import { Search, Plus, Filter, Phone, MapPin, Wheat, Hammer, ChevronRight, ArrowLeft } from "lucide-react";
@@ -18,6 +20,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function LeadsPage() {
   const router = useRouter();
+  const { refreshing, pullDelta, threshold } = usePullToRefresh(load);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [filtered, setFiltered] = useState<Lead[]>([]);
   const [search, setSearch] = useState("");
@@ -61,6 +64,7 @@ export default function LeadsPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] pb-20">
+      <PullIndicator delta={pullDelta} threshold={threshold} refreshing={refreshing} />
       {/* Header */}
       <header className="bg-[#111] border-b border-[#2a2a2a] sticky top-0 z-30 safe-top">
         <div className="px-4 py-3 flex items-center justify-between max-w-6xl mx-auto">
