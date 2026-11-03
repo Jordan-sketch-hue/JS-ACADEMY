@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JST DM Toolkit</title>
+<meta name="description" content="J Supreme Tech outreach DM toolkit — tap a category or lead, copy your message.">
+<meta name="theme-color" content="#d4a84b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DM Toolkit">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#f5f5f7;--surface:#ffffff;--border:#e4e4e7;--fg:#111216;--muted:#71717a;--accent:#b8881e;--accent-l:#d4a84b;--green:#16a34a;--red:#dc2626;--orange:#ea580c;--sheet-bg:#ffffff;color-scheme:light;}
+@media(prefers-color-scheme:dark){:root{--bg:#0e0f11;--surface:#181a1e;--border:#2a2d34;--fg:#f0f0f0;--muted:#6b7280;--accent:#d4a84b;--accent-l:#e8c06a;--green:#3dd68c;--red:#f87171;--orange:#fb923c;--sheet-bg:#13151a;color-scheme:dark;}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--fg);min-height:100dvh;padding-top:env(safe-area-inset-top,0px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:env(safe-area-inset-bottom,0px);}
+.header{padding-block:20px 14px;border-bottom:1px solid var(--border);}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.header h1{font-size:24px;font-weight:800;line-height:1.1;letter-spacing:-.02em;}
+.header p{font-size:13px;color:var(--muted);margin-top:4px;}
+.stat-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;}
+.stat-chip{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 10px;}
+.stat-chip strong{color:var(--accent);}
+.currency-toggle{font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--accent);border:none;border-radius:4px;padding:4px 12px;cursor:pointer;transition:opacity .15s;}
+.currency-toggle:hover{opacity:.85;}
+.tab-nav{display:flex;border-bottom:1px solid var(--border);padding-top:2px;position:sticky;top:env(safe-area-inset-top,0);z-index:20;background:var(--bg);}
+.tab-btn{flex:1;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;padding:12px 6px;cursor:pointer;transition:color .15s,border-color .15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-badge{font-size:10px;font-weight:800;background:var(--accent);color:#fff;border-radius:99px;padding:1px 6px;min-width:18px;text-align:center;}
+.tab-badge-fu{font-size:10px;font-weight:800;background:var(--orange);color:#fff;border-radius:99px;padding:1px 6px;min-width:18px;text-align:center;}
+.view{display:none;}.view.active{display:block;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:16px;padding-bottom:max(40px,env(safe-area-inset-bottom,40px));}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 14px 14px;cursor:pointer;user-select:none;transition:border-color .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent;min-height:88px;display:flex;flex-direction:column;gap:10px;}
+.tile:active{opacity:.75;transform:scale(.98);}
+.tile.active,.tile:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);}
+.tile-icon{width:28px;height:28px;color:var(--accent);flex-shrink:0;}
+.tile-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
+.tile-label{font-size:12px;font-weight:700;color:var(--fg);line-height:1.3;letter-spacing:-.01em;}
+.leads-toolbar{display:flex;gap:8px;padding:14px 0 10px;flex-wrap:wrap;align-items:center;}
+.filter-btn{font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--border);border-radius:4px;padding:5px 12px;cursor:pointer;background:var(--surface);color:var(--muted);transition:all .15s;}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.search-box{flex:1;min-width:140px;font-family:inherit;font-size:13px;border:1px solid var(--border);border-radius:6px;padding:6px 12px;background:var(--surface);color:var(--fg);outline:none;}
+.search-box:focus{border-color:var(--accent);}
+.niche-filter{font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--border);border-radius:4px;padding:5px 10px;background:var(--surface);color:var(--fg);cursor:pointer;outline:none;min-width:110px;}
+.niche-filter:focus{border-color:var(--accent);}
+.leads-list{display:flex;flex-direction:column;gap:8px;padding-bottom:max(40px,env(safe-area-inset-bottom,40px));}
+.lead-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.lead-card.lead-followup{border-color:var(--orange);}
+.lead-top{display:flex;align-items:flex-start;gap:10px;}
+.lead-avatar{width:38px;height:38px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;text-transform:uppercase;}
+.lead-avatar.fu{background:var(--orange);}
+.lead-info{flex:1;min-width:0;}
+.lead-name{font-size:14px;font-weight:800;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lead-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.lead-badges{display:flex;gap:6px;flex-wrap:wrap;}
+.badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:3px;padding:2px 7px;}
+.badge-cat{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent);}
+.badge-status-new{background:#dbeafe;color:#1d4ed8;}
+.badge-status-sent{background:#dcfce7;color:#15803d;}
+.badge-status-replied{background:#fef9c3;color:#854d0e;}
+.badge-status-converted{background:#f0fdf4;color:#15803d;}
+.badge-status-skip{background:#fee2e2;color:#991b1b;}
+.badge-status-follow_up{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;}
+.badge-hot{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;font-weight:800;}
+.status-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding-top:2px;}
+.status-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-right:2px;}
+.status-btn{font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--border);border-radius:4px;padding:3px 8px;cursor:pointer;background:var(--surface);color:var(--muted);transition:all .12s;}
+.status-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.status-btn.active[data-status="follow_up"]{background:var(--orange);border-color:var(--orange);}
+.status-btn:hover:not(.active){border-color:var(--accent);color:var(--accent);}
+@media(prefers-color-scheme:dark){
+.badge-status-new{background:#1e3a5f;color:#93c5fd;}
+.badge-status-sent{background:#14532d;color:#86efac;}
+.badge-status-replied{background:#422006;color:#fde047;}
+.badge-status-converted{background:#14532d;color:#86efac;}
+.badge-status-skip{background:#450a0a;color:#fca5a5;}
+.badge-status-follow_up{background:#431407;color:#fb923c;border-color:#c2410c;}
+}
+.lead-actions{display:flex;gap:6px;}
+.btn-tiktok{flex:1;padding:10px;background:#010101;color:#fff;font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:none;border-radius:8px;cursor:pointer;transition:opacity .15s;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-tiktok:hover{opacity:.8;}
+.btn-msg{flex:1;padding:10px;background:var(--accent);color:#fff;font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:none;border-radius:8px;cursor:pointer;transition:background .15s;}
+.btn-msg.copied{background:var(--green);}
+.cat-picker-row{display:flex;align-items:center;gap:8px;padding:8px 0 2px;}
+.cat-picker-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+.cat-picker{flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);color:var(--fg);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
+.cat-picker.overridden{border-color:var(--accent);color:var(--accent);}
+.leads-empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.leads-empty h3{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--fg);}
+.leads-empty p{font-size:13px;line-height:1.6;}
+.leads-empty code{font-family:monospace;font-size:12px;background:var(--border);padding:2px 6px;border-radius:3px;color:var(--fg);}
+.sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;opacity:0;pointer-events:none;transition:opacity .22s;}
+.sheet-backdrop.open{opacity:1;pointer-events:all;}
+.sheet{position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--sheet-bg);border-radius:20px 20px 0 0;border-top:1px solid var(--border);padding-bottom:max(env(safe-area-inset-bottom,0px),20px);transform:translateY(100%);transition:transform .3s cubic-bezier(.25,.8,.25,1);max-height:85dvh;display:flex;flex-direction:column;}
+.sheet.open{transform:translateY(0);}
+.sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
+.sheet-header{display:flex;align-items:center;gap:12px;padding:14px 20px;flex-shrink:0;border-bottom:1px solid var(--border);}
+.sheet-icon{width:26px;height:26px;color:var(--accent);flex-shrink:0;}
+.sheet-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
+.sheet-title{font-size:15px;font-weight:800;flex:1;letter-spacing:-.01em;}
+.sheet-close{width:30px;height:30px;border-radius:6px;background:var(--border);border:none;cursor:pointer;color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sheet-body{overflow-y:auto;padding:18px 20px;flex:1;}
+.message-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:14px;line-height:1.75;color:var(--fg);white-space:pre-wrap;word-break:break-word;font-family:'Outfit',system-ui,sans-serif;}
+.copy-row{margin-top:14px;}
+.btn-copy{width:100%;padding:14px;background:var(--accent);color:#fff;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;border-radius:10px;cursor:pointer;transition:background .15s;}
+.btn-copy:active{opacity:.85;}
+.btn-copy.copied{background:var(--green);}
+.copy-note{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center;margin-top:10px;}
+.sheet-tiktok-row{margin-top:10px;}
+.btn-tiktok-full{display:block;width:100%;padding:13px;background:#010101;color:#fff;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;border-radius:10px;cursor:pointer;text-align:center;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="eyebrow">JST Outreach</div>
+  <h1>DM Toolkit</h1>
+  <p>Categories or leads — copy your message, open TikTok</p>
+  <div class="stat-row">
+    <div class="stat-chip"><strong>18</strong> categories</div>
+    <div class="stat-chip" id="leadCountChip"><strong>—</strong> leads</div>
+    <div class="stat-chip" id="hotCountChip" hidden><strong>0</strong> 🔥 hot</div>
+  </div>
+</div>
+<nav class="tab-nav" style="gap:4px;padding-inline:0;">
+  <button class="tab-btn active" data-tab="categories">Categories</button>
+  <button class="tab-btn" data-tab="leads">Leads <span class="tab-badge" id="newBadge" hidden>0</span></button>
+  <button class="tab-btn" data-tab="followup">Follow Up <span class="tab-badge-fu" id="fuBadge" hidden>0</span></button>
+  <button class="currency-toggle" id="currencyToggle" style="margin-left:auto;margin-right:12px;align-self:center;flex-shrink:0;">JMD</button>
+</nav>
+<div class="view active" id="view-categories"><div class="grid" id="grid"></div></div>
+<div class="view" id="view-leads">
+  <div class="leads-toolbar">
+    <button class="filter-btn active" data-filter="new">New</button>
+    <button class="filter-btn" data-filter="hot">🔥 Hot</button>
+    <button class="filter-btn" data-filter="sent">Sent</button>
+    <button class="filter-btn" data-filter="replied">Replied</button>
+    <button class="filter-btn" data-filter="all">All</button>
+    <select class="niche-filter" id="nicheFilter"><option value="">All Niches</option></select>
+    <input class="search-box" id="leadSearch" type="search" placeholder="Search username…">
+  </div>
+  <div class="leads-list" id="leadsList"></div>
+</div>
+<div class="view" id="view-followup">
+  <div class="leads-toolbar">
+    <input class="search-box" id="fuSearch" type="search" placeholder="Search username…">
+  </div>
+  <div class="leads-list" id="fuList"></div>
+</div>
+<div class="sheet-backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-icon" id="sheetIcon"></div>
+    <div class="sheet-title" id="sheetTitle"></div>
+    <button class="sheet-close" id="sheetClose">&#x2715;</button>
+  </div>
+  <div class="sheet-body">
+    <div class="message-box" id="messageBox"></div>
+    <div class="copy-row"><button class="btn-copy" id="copyBtn"><span id="copyLabel">Copy Message</span></button></div>
+    <div id="sheetTikTokRow" class="sheet-tiktok-row" hidden>
+      <a class="btn-tiktok-full" id="sheetTikTokBtn" href="#" target="_blank" rel="noopener">Open TikTok Profile</a>
+    </div>
+    <div class="copy-note">Paste into TikTok DMs</div>
+  </div>
+</div>
+<script>
+const SUPA_URL='https://ibtadbwtrxglujkzqofs.supabase.co';
+const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlidGFkYnd0cnhnbHVqa3pxb2ZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTE2NTUsImV4cCI6MjA5NDI2NzY1NX0.ihwCJOvYU2hZL3aruKzgrN9BqA42o-fivqc-yMjm6Qw';
+const BASE='https://jst-client-templates.vercel.app';
+const PORTFOLIO='https://jsupremetech.online/#work';
+let currency='JMD';
+const PRICES={
+  JMD:{website:'J$35,000',app:'J$60,000',both:'J$55,000',marketing:'J$40,000/mo'},
+  USD:{website:'$400 USD',app:'$600 USD',both:'$800 USD',marketing:'$265 USD/mo'},
+};
+const ICONS={
+  fashion:`<path d="M6 2h12l-1 5H7L6 2z"/><path d="M7 7c0 5 3 9 5 11 2-2 5-6 5-11"/><path d="M6 2 4 6l3 1M18 2l2 4-3 1"/>`,
+  beauty:`<circle cx="12" cy="8" r="4"/><path d="M8 12c-2 1-3 3-3 5h14c0-2-1-4-3-5"/><path d="M10 4V2M14 4V2"/>`,
+  food:`<path d="M3 11h18M12 3v8M8 3c0 4 2 6 4 8M16 3c0 4-2 6-4 8"/><rect x="3" y="11" width="18" height="2" rx="1"/><path d="M5 13v8M19 13v8"/>`,
+  bakery:`<path d="M3 12h18M6 12V8a6 6 0 0 1 12 0v4"/><rect x="3" y="12" width="18" height="8" rx="2"/><path d="M9 16h6"/>`,
+  furniture:`<path d="M4 8h16v8H4z"/><path d="M4 12H2v4h2M20 12h2v4h-2M6 16v3M18 16v3"/>`,
+  retail:`<path d="M6 2 4 6v2a2 2 0 0 0 4 0V8M10 8a2 2 0 0 0 4 0V8M16 8a2 2 0 0 0 4 0V6l-2-4"/><path d="M4 8h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M10 14h4"/>`,
+  automotive:`<rect x="3" y="10" width="18" height="8" rx="2"/><path d="M5 10l2-5h10l2 5"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>`,
+  logistics:`<rect x="1" y="3" width="13" height="13" rx="1"/><path d="M14 8h4l3 5v2h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="17.5" cy="18.5" r="2.5"/>`,
+  packaging:`<path d="M21 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"/><rect x="1" y="8" width="22" height="13" rx="2"/><path d="M8 8v13M16 8v13M8 14h8"/>`,
+  creative:`<circle cx="13.5" cy="6.5" r="3.5"/><path d="m3 16 4-4 3 3 5-5 4 4"/>`,
+  floral:`<circle cx="12" cy="12" r="3"/><path d="M12 9a3 3 0 0 0 0-6 3 3 0 0 0 0 6zM12 15a3 3 0 0 0 0 6 3 3 0 0 0 0-6zM9 12a3 3 0 0 0-6 0 3 3 0 0 0 6 0zM15 12a3 3 0 0 0 6 0 3 3 0 0 0-6 0z"/>`,
+  accessories:`<path d="M22 7h-7M17 2l5 5-5 5"/><path d="M2 17l5 5 5-5"/><path d="M2 7h7a5 5 0 0 1 5 5v3"/>`,
+  events:`<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><circle cx="12" cy="16" r="1"/><circle cx="8" cy="16" r="1"/><circle cx="16" cy="16" r="1"/>`,
+  techrepair:`<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>`,
+  crafts:`<path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>`,
+  realestate:`<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`,
+  wellness:`<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>`,
+  hospitality:`<path d="M3 9l9-7 9 7"/><path d="M9 22V12h6v10"/><path d="M3 22h18"/><circle cx="12" cy="7" r="1"/>`,
+};
+const CATEGORIES=[
+  {id:'fashion',label:'Fashion & clothing',slug:'boutique-intuition',base:'Hi! Quick question — does your fashion brand have a website?\n\nWe build sites for boutiques with product catalogues, online ordering and a full management dashboard.\n\nWe also offer social media management with sales included — content, posting and direct sales follow-up.\n\nReply PREVIEW to see a free mockup for your brand.'},
+  {id:'beauty',label:'Beauty & hair',slug:'glam-life-beauty',base:'Hi! Does your salon or beauty business have a website?\n\nWe create sites with service menus, online booking and a client management dashboard.\n\nWe also run social media for beauty brands — content, reels, and active sales outreach included.\n\nReply PREVIEW for a free mockup.'},
+  {id:'food',label:'Restaurants & food',slug:'cre8tive-cafe',base:'Hi! Does your restaurant or food business have a website?\n\nWe build digital menus, online ordering, payment and management dashboards.\n\nWe also handle social media with food content, reels, and sales — all included.\n\nReply PREVIEW for a free mockup.'},
+  {id:'bakery',label:'Bakeries',slug:'keke-the-baker',base:'Hi! Does your bakery have a website?\n\nWe build product catalogues, custom order forms, payment and management dashboards.\n\nWe also manage social media for bakeries — daily content, promotions and sales outreach.\n\nReply PREVIEW for a free mockup.'},
+  {id:'furniture',label:'Furniture & home',slug:'atelier-luxridge',base:'Hi! Does your furniture or interior design business have a website?\n\nWe create product showcases, quote request forms, payment and management tools.\n\nWe can also run your social media — design content, product features, and sales follow-up.\n\nReply PREVIEW for a free mockup.'},
+  {id:'retail',label:'Wholesale & retail',slug:'trust-depot',base:'Hi! Does your store have a website?\n\nWe build product catalogues, online ordering, payment and inventory management dashboards.\n\nWe also manage social media with daily posts, promotions and active sales — all in one package.\n\nReply PREVIEW for a free mockup.'},
+  {id:'automotive',label:'Automotive',slug:'buff-n-beam',base:'Hi! Does your auto business have a website?\n\nWe build service listings, online booking, payment and management dashboards.\n\nWe can also handle your social media — before/afters, promos and sales outreach included.\n\nReply PREVIEW for a free mockup.'},
+  {id:'logistics',label:'Logistics & transport',slug:'harbor-jet-logistics',base:'Hi! Does your delivery or logistics business have a website?\n\nWe build booking systems, shipment tracking, payment and fleet management dashboards.\n\nWe also run social media for logistics brands — content, reels, and client acquisition.\n\nReply PREVIEW for a free mockup.'},
+  {id:'packaging',label:'Packaging & printing',slug:'sett-to-go',base:'Hi! Does your print or packaging business have a website?\n\nWe build product catalogues, custom order forms, payment and management dashboards.\n\nSocial media management with product content and sales is also available.\n\nReply PREVIEW for a free mockup.'},
+  {id:'creative',label:'Creative & digital',slug:'ecm-graphics',base:'Hi! Does your creative business have a website?\n\nWe build portfolio sites, client booking, payment and project management dashboards.\n\nWe also manage social media for creatives — content strategy, posting and sales outreach.\n\nReply PREVIEW for a free mockup.'},
+  {id:'floral',label:'Floral & gifts',slug:'bouquets-by-mira',base:'Hi! Does your floral or gift business have a website?\n\nWe build product catalogues, online ordering, payment and management dashboards.\n\nWe can also run your social media — daily content, arrangement features and sales.\n\nReply PREVIEW for a free mockup.'},
+  {id:'accessories',label:'Accessories & jewellery',slug:'trendy-accessories',base:'Hi! Does your accessories or jewellery business have a website?\n\nWe build product catalogues, online ordering, payment and management dashboards.\n\nWe also manage social media for jewellery brands — lookbooks, reels, and sales outreach.\n\nReply PREVIEW for a free mockup.'},
+  {id:'events',label:'Events & entertainment',slug:'beach-picnic-ja',base:'Hi! Does your events or entertainment business have a website?\n\nWe build event listings, ticket booking, payment and management dashboards.\n\nWe also run social media for event brands — promo content, countdowns and ticket sales.\n\nReply PREVIEW for a free mockup.'},
+  {id:'techrepair',label:'Tech repair & services',slug:'savvy-apple',base:'Hi! Does your tech repair business have a website?\n\nWe build service listings, repair booking, payment and management dashboards.\n\nWe can also handle your social media — tips content, promos and customer acquisition.\n\nReply PREVIEW for a free mockup.'},
+  {id:'crafts',label:'Crafts & printing',slug:'ecm-graphics',base:'Hi! Does your crafts or printing business have a website?\n\nWe build portfolio displays, custom order forms, payment and management dashboards.\n\nWe also manage social media for craft brands — process content, launches and sales.\n\nReply PREVIEW for a free mockup.'},
+  {id:'realestate',label:'Real estate & property',slug:'atelier-luxridge',base:'Hi! Does your real estate business have a website?\n\nWe build listing pages, lead capture, payment and management dashboards.\n\nWe also handle social media for property brands — listings, neighbourhood content and sales leads.\n\nReply PREVIEW for a free mockup.'},
+  {id:'wellness',label:'Fitness & wellness',slug:'peak-wellness-ja',base:'Hi! Does your fitness or wellness business have a website?\n\nWe build service menus, class booking, payment and client management dashboards.\n\nWe can also manage your social media — transformation content, tips and client acquisition.\n\nReply PREVIEW for a free mockup.'},
+  {id:'hospitality',label:'Tourism & hospitality',slug:'beach-picnic-ja',base:'Hi! Does your tourism or hospitality business have a website?\n\nWe build booking systems, service listings, payment and management dashboards.\n\nWe also run social media for hospitality brands — destination content, promos and booking sales.\n\nReply PREVIEW for a free mockup.'},
+];
+const CAT_MAP=Object.fromEntries(CATEGORIES.map(c=>[c.id,c]));
+const CAT_OVERRIDES_KEY='_jst_cat_overrides';
+let catOverrides={};
+try{catOverrides=JSON.parse(localStorage.getItem(CAT_OVERRIDES_KEY)||'{}')}catch(e){}
+function setCatOverride(leadId,catId){catOverrides[leadId]=catId;try{localStorage.setItem(CAT_OVERRIDES_KEY,JSON.stringify(catOverrides))}catch(e){}}
+function getCat(lead){const ov=catOverrides[lead.id];if(ov)return CAT_MAP[ov]||null;return CAT_MAP[lead.category]||inferCategory(lead);}
+const INFER_KEYWORDS={
+  fashion:['fashion','clothing','clothes','wear','boutique','apparel','style','outfit','dress','shirt','shoes','sneaker','jeans','streetwear','menswear','womenswear','swimwear','bag','purse'],
+  beauty:['beauty','hair','locs','loctician','salon','nails','makeup','cosmetics','skincare','spa','brow','lash','twists','braids','weave','wig','barber','grooming','facial'],
+  food:['food','restaurant','chef','cook','kitchen','meal','catering','jerk','curry','roti','oxtail','ackee','patty','diner','cafe','eatery','cuisine','foodie','menu'],
+  bakery:['bak','cake','pastry','dessert','cupcake','cookie','bread','pastries','sweet','sugar','frosting','fondant','bun','cheesecake','brownie','muffin','donut'],
+  furniture:['furniture','interior','decor','sofa','couch','table','chair','cabinet','wood','upholstery','renovation'],
+  retail:['store','shop','retail','sell','sale','product','merchandise','stock','market','vendor','ecommerce','gift','wholesale','dropship'],
+  automotive:['car','auto','vehicle','mechanic','garage','detailing','wash','tint','rim','wheel','engine','motor','repair','dealership','truck','rental'],
+  logistics:['delivery','courier','shipping','logistics','freight','transport','cargo','move','mover','dispatch','pickup','supply','warehouse','fleet','driver'],
+  packaging:['print','packaging','label','box','wrap','logo','sign','banner','vinyl','graphics','sublimation','embroidery'],
+  creative:['photography','photo','video','film','creative','artist','art','studio','media','content','creator','graphic','designer','illustrat','animation','music','dj','podcast'],
+  floral:['flower','floral','bouquet','garden','plant','arrangement','centerpiece','florist','bloom','rose','lily','orchid'],
+  accessories:['accessories','jewel','jewellery','jewelry','watch','handbag','sunglasses','bracelet','necklace','ring','earring'],
+  events:['event','party','entertainment','venue','concert','festival','promoter','sound','booking','club','host','mc','emcee','nightlife','vip'],
+  techrepair:['tech','repair','phone','laptop','computer','device','screen','fix','iphone','samsung','gadget'],
+  realestate:['real estate','realtor','property','land','house','home','construction','builder','contractor','renovate','invest','listing','airbnb','mortgage'],
+  wellness:['fitness','gym','trainer','health','wellness','yoga','pilates','nutrition','diet','weight','workout','coach','massage','physio','therapy','meditation'],
+  hospitality:['hotel','villa','resort','guesthouse','tourism','tour','travel','excursion','transfer','airport','guide','accommodation'],
+};
+function inferCategory(lead){
+  const text=((lead.username||'')+' '+(lead.display_name||'')).toLowerCase();
+  let best=null,bestScore=0;
+  for(const[cat,kws]of Object.entries(INFER_KEYWORDS)){let s=0;for(const kw of kws){if(text.includes(kw))s++;}if(s>bestScore){bestScore=s;best=cat;}}
+  return bestScore>0?CAT_MAP[best]||null:null;
+}
+function buildMessage(cat,lead){
+  const p=PRICES[currency];
+  const slug=cat?cat.slug:'velvet-vault';
+  const base=cat?cat.base:'Hi! Does your business have a website?\n\nWe build sites with online ordering, booking and a management dashboard.\n\nWe also offer social media management with sales included.\n\nReply PREVIEW to see a free mockup.';
+  return base+'\n\nMockup: '+BASE+'/t/'+slug+'\n\nPortfolio: '+PORTFOLIO+'\n\nPackages:\n• Website only: '+p.website+'\n• Mobile app: '+p.app+'\n• Website + App: '+p.both+'\n• Social media + sales: '+p.marketing;
+}
+async function fetchLeads(filter,search){
+  filter=filter||'new';search=search||'';
+  let url=SUPA_URL+'/rest/v1/tiktok_leads?select=id,username,display_name,followers,category,profile_url,status,is_hot&order=is_hot.desc,followers.desc&limit=1500';
+  if(filter==='hot')url+='&is_hot=eq.true&status=eq.new';
+  else if(filter==='follow_up')url+='&status=eq.follow_up';
+  else if(filter!=='all')url+='&status=eq.'+filter;
+  if(search)url+='&username=ilike.*'+encodeURIComponent(search)+'*';
+  const res=await fetch(url,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+SUPA_ANON}});
+  if(!res.ok)return null;
+  return res.json();
+}
+const STATUS_CYCLE=['new','sent','replied','converted','follow_up','skip'];
+async function updateStatus(id,newStatus){
+  const body={status:newStatus};
+  if(newStatus==='sent')body.contacted_at=new Date().toISOString();
+  await fetch(SUPA_URL+'/rest/v1/tiktok_leads?id=eq.'+id,{method:'PATCH',
+    headers:{apikey:SUPA_ANON,Authorization:'Bearer '+SUPA_ANON,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify(body)});
+}
+const markSent=id=>updateStatus(id,'sent');
+let currentCat=null,currentLead=null,activeTile=null,leadsFilter='new',allLeads=null,fuLeads=null;
+const grid=document.getElementById('grid');
+CATEGORIES.forEach(cat=>{
+  const icon=ICONS[cat.id];
+  const svg=icon?'<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">'+icon+'</svg>':'';
+  const tile=document.createElement('div');
+  tile.className='tile';
+  tile.innerHTML='<div class="tile-icon">'+svg+'</div><div class="tile-label">'+cat.label+'</div>';
+  tile.addEventListener('click',()=>openSheet(cat,null,tile,svg));
+  grid.appendChild(tile);
+});
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='leads'&&allLeads===null)loadLeads();
+    if(btn.dataset.tab==='followup'&&fuLeads===null)loadFollowUp();
+  });
+});
+async function loadLeads(){
+  const list=document.getElementById('leadsList');
+  list.innerHTML='<div class="leads-empty"><p>Loading leads…</p></div>';
+  const data=await fetchLeads(leadsFilter,document.getElementById('leadSearch').value.trim());
+  if(data===null){list.innerHTML='<div class="leads-empty"><h3>One setup step needed</h3><p>Run this SQL in your <a href="https://supabase.com/dashboard/project/ibtadbwtrxglujkzqofs/sql/new" target="_blank" style="color:var(--accent)">Supabase SQL editor</a> to unlock leads:</p><br><code>CREATE POLICY &quot;anon_read&quot; ON tiktok_leads FOR SELECT TO anon USING (true);</code></div>';return;}
+  allLeads=data;updateCounts(data);
+  if(!data.length){const msgs={new:'<h3>No new leads</h3><p>All caught up!</p>',hot:'<h3>No hot leads yet</h3>',sent:'<h3>Nothing sent yet</h3>',replied:'<h3>No replies tracked</h3>',all:'<h3>No leads</h3><p>Run the scraper.</p>'};list.innerHTML='<div class="leads-empty">'+(msgs[leadsFilter]||msgs.all)+'</div>';return;}
+  list.innerHTML='';data.forEach(lead=>list.appendChild(buildLeadCard(lead)));filterLeadCards();
+}
+async function loadFollowUp(){
+  const list=document.getElementById('fuList');
+  list.innerHTML='<div class="leads-empty"><p>Loading follow-ups…</p></div>';
+  const data=await fetchLeads('follow_up',document.getElementById('fuSearch').value.trim());
+  if(data===null){list.innerHTML='<div class="leads-empty"><h3>Setup needed</h3></div>';return;}
+  fuLeads=data;
+  const badge=document.getElementById('fuBadge');
+  if(data.length>0){badge.textContent=data.length;badge.hidden=false;}else badge.hidden=true;
+  if(!data.length){list.innerHTML='<div class="leads-empty"><h3>No follow-ups yet</h3><p>Mark a lead as <strong>Follow Up</strong> on the Leads tab.</p></div>';return;}
+  list.innerHTML='';data.forEach(lead=>list.appendChild(buildLeadCard(lead,true)));
+}
+function updateCounts(data){
+  const nc=data.filter(l=>l.status==='new').length;
+  const hc=data.filter(l=>l.is_hot&&l.status==='new').length;
+  const badge=document.getElementById('newBadge');
+  document.getElementById('leadCountChip').innerHTML='<strong>'+data.length+'</strong> leads';
+  if(nc>0){badge.textContent=nc;badge.hidden=false;}else badge.hidden=true;
+  const hchip=document.getElementById('hotCountChip');
+  if(hc>0){hchip.innerHTML='<strong>'+hc+'</strong> 🔥 hot';hchip.hidden=false;}else hchip.hidden=true;
+}
+function buildLeadCard(lead,isFollowUp){
+  isFollowUp=isFollowUp||false;
+  let cat=getCat(lead);
+  const initial=(lead.display_name||lead.username||'?')[0];
+  const followers=lead.followers>=1000?(lead.followers/1000).toFixed(1)+'K':lead.followers;
+  const profileUrl=lead.profile_url||'https://www.tiktok.com/@'+lead.username;
+  const card=document.createElement('div');
+  card.className='lead-card'+(isFollowUp?' lead-followup':'');
+  card.dataset.id=lead.id;
+  const statusBadges=STATUS_CYCLE.map(s=>'<button class="status-btn'+((lead.status||'new')===s?' active':'')+'" data-status="'+s+'" data-id="'+lead.id+'">'+(s==='follow_up'?'Follow Up':s)+'</button>').join('');
+  const catOpts=CATEGORIES.map(c=>'<option value="'+c.id+'"'+((catOverrides[lead.id]||cat&&cat.id)===c.id?' selected':'')+'>'+(c.label.replace(/&/g,'&amp;'))+'</option>').join('');
+  card.innerHTML='<div class="lead-top"><div class="lead-avatar'+(isFollowUp?' fu':'')+'">'+initial+'</div><div class="lead-info"><div class="lead-name">@'+lead.username+'</div><div class="lead-meta">'+(lead.display_name||'')+' \xb7 '+followers+' followers</div></div></div>'
+    +'<div class="lead-badges">'+(lead.is_hot?'<span class="badge badge-hot">🔥 Hot Lead</span>':'')+(isFollowUp?'<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #fed7aa">↩ Follow Up</span>':'')+'<span class="badge badge-cat">'+(cat?cat.label:(lead.category||'general'))+'</span><span class="badge badge-status-'+(lead.status||'new')+' status-badge" data-id="'+lead.id+'">'+(lead.status||'new')+'</span></div>'
+    +'<div class="lead-actions"><button class="btn-tiktok" data-url="'+profileUrl+'" data-id="'+lead.id+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.15 8.15 0 0 0 4.77 1.52V6.76a4.86 4.86 0 0 1-1-.07z"/></svg>Open TikTok</button><button class="btn-msg" data-leadid="'+lead.id+'">Copy Message</button></div>'
+    +'<div class="cat-picker-row"><span class="cat-picker-label">Category</span><select class="cat-picker'+(catOverrides[lead.id]?' overridden':'')+'"><option value="">-- auto-detect --</option>'+catOpts+'</select></div>'
+    +'<div class="status-row"><span class="status-label">Status:</span>'+statusBadges+'</div>';
+  card.querySelectorAll('.status-btn').forEach(btn=>{
+    btn.addEventListener('click',async e=>{
+      const ns=e.currentTarget.dataset.status,id=e.currentTarget.dataset.id;
+      card.querySelectorAll('.status-btn').forEach(b=>b.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      const sb=card.querySelector('.status-badge');
+      if(sb){sb.className='badge badge-status-'+ns+' status-badge';sb.textContent=ns;}
+      lead.status=ns;await updateStatus(id,ns);
+      fuLeads=null;
+      const fuBadge=document.getElementById('fuBadge');
+      const rf=await fetchLeads('follow_up','');
+      if(rf){fuLeads=rf;if(rf.length>0){fuBadge.textContent=rf.length;fuBadge.hidden=false;}else fuBadge.hidden=true;}
+    });
+  });
+  card.querySelector('.btn-tiktok').addEventListener('click',async e=>{
+    const id=e.currentTarget.dataset.id,url=e.currentTarget.dataset.url;
+    window.open(url,'_blank','noopener');
+    if((lead.status||'new')==='new'){
+      await updateStatus(id,'sent');lead.status='sent';
+      card.querySelectorAll('.status-btn').forEach(b=>b.classList.toggle('active',b.dataset.status==='sent'));
+      const sb=card.querySelector('.status-badge');
+      if(sb){sb.className='badge badge-status-sent status-badge';sb.textContent='sent';}
+    }
+  });
+  card.querySelector('.cat-picker').addEventListener('change',e=>{
+    const sel=e.currentTarget,picked=sel.value;
+    if(picked){setCatOverride(lead.id,picked);cat=CAT_MAP[picked]||null;sel.classList.add('overridden');}
+    else{delete catOverrides[lead.id];try{localStorage.setItem(CAT_OVERRIDES_KEY,JSON.stringify(catOverrides))}catch(er){}cat=getCat(lead);sel.classList.remove('overridden');}
+    const cb=card.querySelector('.badge-cat');if(cb)cb.textContent=cat?cat.label:(lead.category||'general');
+  });
+  card.querySelector('.btn-msg').addEventListener('click',e=>{
+    const btn=e.currentTarget,msg=buildMessage(cat,lead);
+    navigator.clipboard.writeText(msg).then(()=>{btn.classList.add('copied');btn.textContent='Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.textContent='Copy Message';},2200);})
+    .catch(()=>openSheet(cat,lead,null,cat?'<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">'+ICONS[cat.id]+'</svg>':''));
+  });
+  return card;
+}
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');leadsFilter=btn.dataset.filter;allLeads=null;loadLeads();});
+});
+document.getElementById('leadSearch').addEventListener('input',()=>{allLeads=null;loadLeads();});
+// Populate niche filter select
+const nicheFilter=document.getElementById('nicheFilter');
+CATEGORIES.forEach(cat=>{const o=document.createElement('option');o.value=cat.id;o.textContent=cat.label;nicheFilter.appendChild(o);});
+let activeNiche='';
+nicheFilter.addEventListener('change',()=>{activeNiche=nicheFilter.value;filterLeadCards();});
+function filterLeadCards(){
+  const list=document.getElementById('leadsList');
+  list.querySelectorAll('.lead-card').forEach(card=>{
+    if(!activeNiche){card.style.display='';return;}
+    const id=card.dataset.id;
+    const lead=allLeads&&allLeads.find(l=>l.id===id);
+    if(!lead){card.style.display='';return;}
+    const cat=getCat(lead);
+    card.style.display=(cat&&cat.id===activeNiche)?'':'none';
+  });
+}
+document.getElementById('fuSearch').addEventListener('input',()=>{fuLeads=null;loadFollowUp();});
+const sheet=document.getElementById('sheet'),backdrop=document.getElementById('backdrop');
+const sheetIcon=document.getElementById('sheetIcon'),sheetTitle=document.getElementById('sheetTitle');
+const messageBox=document.getElementById('messageBox'),copyBtn=document.getElementById('copyBtn');
+const copyLabel=document.getElementById('copyLabel'),sheetClose=document.getElementById('sheetClose');
+const sheetTikTokRow=document.getElementById('sheetTikTokRow'),sheetTikTokBtn=document.getElementById('sheetTikTokBtn');
+function openSheet(cat,lead,tile,svg){
+  if(activeTile)activeTile.classList.remove('active');
+  activeTile=tile;if(tile)tile.classList.add('active');
+  currentCat=cat;currentLead=lead;
+  sheetIcon.innerHTML=svg||'';
+  sheetTitle.textContent=lead?('@'+lead.username):(cat?cat.label:'Message');
+  messageBox.textContent=buildMessage(cat,lead);resetBtn();
+  if(lead&&lead.profile_url){sheetTikTokBtn.href=lead.profile_url||'https://www.tiktok.com/@'+lead.username;sheetTikTokRow.hidden=false;}
+  else sheetTikTokRow.hidden=true;
+  sheet.classList.add('open');backdrop.classList.add('open');
+}
+function closeSheet(){sheet.classList.remove('open');backdrop.classList.remove('open');if(activeTile)activeTile.classList.remove('active');activeTile=null;currentCat=null;currentLead=null;}
+sheetClose.addEventListener('click',closeSheet);backdrop.addEventListener('click',closeSheet);
+document.getElementById('currencyToggle').addEventListener('click',function(){currency=currency==='JMD'?'USD':'JMD';this.textContent=currency;if((currentCat||currentLead)&&sheet.classList.contains('open'))messageBox.textContent=buildMessage(currentCat,currentLead);});
+copyBtn.addEventListener('click',()=>{
+  const msg=buildMessage(currentCat,currentLead);
+  navigator.clipboard.writeText(msg).then(()=>{copyBtn.classList.add('copied');copyLabel.textContent='Copied';if(currentLead)markSent(currentLead.id);setTimeout(resetBtn,2200);})
+  .catch(()=>{const r=document.createRange();r.selectNodeContents(messageBox);const s=window.getSelection();s.removeAllRanges();s.addRange(r);copyLabel.textContent='Selected — copy manually';});
+});
+function resetBtn(){copyBtn.classList.remove('copied');copyLabel.textContent='Copy Message';}
+let startY=0;
+sheet.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;},{passive:true});
+sheet.addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-startY>80)closeSheet();},{passive:true});
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').then(reg=>{
+    reg.addEventListener('updatefound',()=>{const nw=reg.installing;nw.addEventListener('statechange',()=>{if(nw.state==='activated')window.location.reload();});});
+    setInterval(()=>reg.update(),60000);
+  }).catch(()=>{});
+}
+</script>
+</body>
+</html>
