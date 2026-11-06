@@ -25,8 +25,9 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .stat-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;}
 .stat-chip{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 10px;}
 .stat-chip strong{color:var(--accent);}
-.currency-toggle{font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--accent);border:none;border-radius:4px;padding:4px 12px;cursor:pointer;transition:opacity .15s;}
-.currency-toggle:hover{opacity:.85;}
+.currency-seg{display:inline-flex;border:1px solid var(--accent);border-radius:4px;overflow:hidden;}
+.cur-opt{font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--surface);border:none;padding:4px 10px;cursor:pointer;transition:background .12s,color .12s;}
+.cur-opt.active{background:var(--accent);color:#fff;}
 .tab-nav{display:flex;border-bottom:1px solid var(--border);padding-top:2px;position:sticky;top:env(safe-area-inset-top,0);z-index:20;background:var(--bg);}
 .tab-btn{flex:1;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;padding:12px 6px;cursor:pointer;transition:color .15s,border-color .15s;display:flex;align-items:center;justify-content:center;gap:5px;}
 .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
@@ -40,13 +41,16 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .tile-icon{width:28px;height:28px;color:var(--accent);flex-shrink:0;}
 .tile-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
 .tile-label{font-size:12px;font-weight:700;color:var(--fg);line-height:1.3;letter-spacing:-.01em;}
-.leads-toolbar{display:flex;gap:8px;padding:14px 0 10px;flex-wrap:wrap;align-items:center;}
+.leads-toolbar{display:flex;flex-direction:column;gap:8px;padding:14px 0 10px;}
+.toolbar-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
 .filter-btn{font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--border);border-radius:4px;padding:5px 12px;cursor:pointer;background:var(--surface);color:var(--muted);transition:all .15s;}
 .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.niche-select{font-family:inherit;font-size:11px;font-weight:700;border:1px solid var(--border);border-radius:4px;padding:5px 10px;background:var(--surface);color:var(--fg);cursor:pointer;outline:none;flex:1;min-width:140px;}
+.niche-select:focus{border-color:var(--accent);}
+.sort-select{font-family:inherit;font-size:11px;font-weight:700;border:1px solid var(--border);border-radius:4px;padding:5px 10px;background:var(--surface);color:var(--fg);cursor:pointer;outline:none;}
+.sort-select:focus{border-color:var(--accent);}
 .search-box{flex:1;min-width:140px;font-family:inherit;font-size:13px;border:1px solid var(--border);border-radius:6px;padding:6px 12px;background:var(--surface);color:var(--fg);outline:none;}
 .search-box:focus{border-color:var(--accent);}
-.niche-filter{font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--border);border-radius:4px;padding:5px 10px;background:var(--surface);color:var(--fg);cursor:pointer;outline:none;min-width:110px;}
-.niche-filter:focus{border-color:var(--accent);}
 .leads-list{display:flex;flex-direction:column;gap:8px;padding-bottom:max(40px,env(safe-area-inset-bottom,40px));}
 .lead-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;}
 .lead-card.lead-followup{border-color:var(--orange);}
@@ -125,21 +129,51 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
     <div class="stat-chip" id="hotCountChip" hidden><strong>0</strong> 🔥 hot</div>
   </div>
 </div>
-<nav class="tab-nav" style="gap:4px;padding-inline:0;">
+<nav class="tab-nav">
   <button class="tab-btn active" data-tab="categories">Categories</button>
   <button class="tab-btn" data-tab="leads">Leads <span class="tab-badge" id="newBadge" hidden>0</span></button>
   <button class="tab-btn" data-tab="followup">Follow Up <span class="tab-badge-fu" id="fuBadge" hidden>0</span></button>
-  <button class="currency-toggle" id="currencyToggle" style="margin-left:auto;margin-right:12px;align-self:center;flex-shrink:0;">JMD</button>
+  <span class="currency-seg" id="currencySeg" style="margin-left:auto;margin-right:8px;align-self:center;"><button class="cur-opt active" data-cur="JMD">JMD</button><button class="cur-opt" data-cur="USD">USD</button></span>
 </nav>
 <div class="view active" id="view-categories"><div class="grid" id="grid"></div></div>
 <div class="view" id="view-leads">
   <div class="leads-toolbar">
-    <button class="filter-btn active" data-filter="new">New</button>
-    <button class="filter-btn" data-filter="hot">🔥 Hot</button>
-    <button class="filter-btn" data-filter="sent">Sent</button>
-    <button class="filter-btn" data-filter="replied">Replied</button>
-    <button class="filter-btn" data-filter="all">All</button>
-    <select class="niche-filter" id="nicheFilter"><option value="">All Niches</option></select>
+    <div class="toolbar-row">
+      <button class="filter-btn active" data-filter="new">New</button>
+      <button class="filter-btn" data-filter="hot">🔥 Hot</button>
+      <button class="filter-btn" data-filter="sent">Sent</button>
+      <button class="filter-btn" data-filter="replied">Replied</button>
+      <button class="filter-btn" data-filter="all">All</button>
+    </div>
+    <div class="toolbar-row">
+      <select class="niche-select" id="nicheSelect">
+        <option value="all">All niches</option>
+        <option value="general">General (no category)</option>
+        <option value="fashion">Fashion &amp; clothing</option>
+        <option value="beauty">Beauty &amp; hair</option>
+        <option value="food">Restaurants &amp; food</option>
+        <option value="bakery">Bakeries</option>
+        <option value="retail">Wholesale &amp; retail</option>
+        <option value="automotive">Automotive</option>
+        <option value="logistics">Logistics &amp; transport</option>
+        <option value="packaging">Packaging &amp; printing</option>
+        <option value="creative">Creative &amp; digital</option>
+        <option value="events">Events &amp; entertainment</option>
+        <option value="furniture">Furniture &amp; home</option>
+        <option value="floral">Floral &amp; gifts</option>
+        <option value="accessories">Accessories &amp; jewellery</option>
+        <option value="techrepair">Tech repair</option>
+        <option value="realestate">Real estate</option>
+        <option value="wellness">Fitness &amp; wellness</option>
+        <option value="hospitality">Tourism &amp; hospitality</option>
+      </select>
+      <select class="sort-select" id="sortSelect">
+        <option value="hot">Hot first</option>
+        <option value="followers_desc">Followers ↓</option>
+        <option value="followers_asc">Followers ↑</option>
+        <option value="newest">Newest</option>
+      </select>
+    </div>
     <input class="search-box" id="leadSearch" type="search" placeholder="Search username…">
   </div>
   <div class="leads-list" id="leadsList"></div>
@@ -170,12 +204,12 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 <script>
 const SUPA_URL='https://ibtadbwtrxglujkzqofs.supabase.co';
 const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlidGFkYnd0cnhnbHVqa3pxb2ZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTE2NTUsImV4cCI6MjA5NDI2NzY1NX0.ihwCJOvYU2hZL3aruKzgrN9BqA42o-fivqc-yMjm6Qw';
-const BASE='https://jst-client-templates.vercel.app';
+const BASE='https://templates.jsupremetech.online';
 const PORTFOLIO='https://jsupremetech.online/#work';
-let currency='JMD';
+let currency=localStorage.getItem('dm_currency')||'JMD';
 const PRICES={
-  JMD:{website:'J$35,000',app:'J$60,000',both:'J$55,000',marketing:'J$40,000/mo'},
-  USD:{website:'$400 USD',app:'$600 USD',both:'$800 USD',marketing:'$265 USD/mo'},
+  JMD:{website:'J$35,000',app:'J$60,000',both:'J$55,000',marketing:'J$30,000/mo',sales:'J$30,000/mo',bundle:'J$40,000/mo'},
+  USD:{website:'$400 USD',app:'$600 USD',both:'$800 USD',marketing:'$200 USD/mo',sales:'$200 USD/mo',bundle:'$265 USD/mo'},
 };
 const ICONS={
   fashion:`<path d="M6 2h12l-1 5H7L6 2z"/><path d="M7 7c0 5 3 9 5 11 2-2 5-6 5-11"/><path d="M6 2 4 6l3 1M18 2l2 4-3 1"/>`,
@@ -198,24 +232,24 @@ const ICONS={
   hospitality:`<path d="M3 9l9-7 9 7"/><path d="M9 22V12h6v10"/><path d="M3 22h18"/><circle cx="12" cy="7" r="1"/>`,
 };
 const CATEGORIES=[
-  {id:'fashion',label:'Fashion & clothing',slug:'boutique-intuition',base:'Hi! Quick question — does your fashion brand have a website?\n\nWe build sites for boutiques with product catalogues, online ordering and a full management dashboard.\n\nWe also offer social media management with sales included — content, posting and direct sales follow-up.\n\nReply PREVIEW to see a free mockup for your brand.'},
-  {id:'beauty',label:'Beauty & hair',slug:'glam-life-beauty',base:'Hi! Does your salon or beauty business have a website?\n\nWe create sites with service menus, online booking and a client management dashboard.\n\nWe also run social media for beauty brands — content, reels, and active sales outreach included.\n\nReply PREVIEW for a free mockup.'},
-  {id:'food',label:'Restaurants & food',slug:'cre8tive-cafe',base:'Hi! Does your restaurant or food business have a website?\n\nWe build digital menus, online ordering, payment and management dashboards.\n\nWe also handle social media with food content, reels, and sales — all included.\n\nReply PREVIEW for a free mockup.'},
-  {id:'bakery',label:'Bakeries',slug:'keke-the-baker',base:'Hi! Does your bakery have a website?\n\nWe build product catalogues, custom order forms, payment and management dashboards.\n\nWe also manage social media for bakeries — daily content, promotions and sales outreach.\n\nReply PREVIEW for a free mockup.'},
-  {id:'furniture',label:'Furniture & home',slug:'atelier-luxridge',base:'Hi! Does your furniture or interior design business have a website?\n\nWe create product showcases, quote request forms, payment and management tools.\n\nWe can also run your social media — design content, product features, and sales follow-up.\n\nReply PREVIEW for a free mockup.'},
-  {id:'retail',label:'Wholesale & retail',slug:'trust-depot',base:'Hi! Does your store have a website?\n\nWe build product catalogues, online ordering, payment and inventory management dashboards.\n\nWe also manage social media with daily posts, promotions and active sales — all in one package.\n\nReply PREVIEW for a free mockup.'},
-  {id:'automotive',label:'Automotive',slug:'buff-n-beam',base:'Hi! Does your auto business have a website?\n\nWe build service listings, online booking, payment and management dashboards.\n\nWe can also handle your social media — before/afters, promos and sales outreach included.\n\nReply PREVIEW for a free mockup.'},
-  {id:'logistics',label:'Logistics & transport',slug:'harbor-jet-logistics',base:'Hi! Does your delivery or logistics business have a website?\n\nWe build booking systems, shipment tracking, payment and fleet management dashboards.\n\nWe also run social media for logistics brands — content, reels, and client acquisition.\n\nReply PREVIEW for a free mockup.'},
-  {id:'packaging',label:'Packaging & printing',slug:'sett-to-go',base:'Hi! Does your print or packaging business have a website?\n\nWe build product catalogues, custom order forms, payment and management dashboards.\n\nSocial media management with product content and sales is also available.\n\nReply PREVIEW for a free mockup.'},
-  {id:'creative',label:'Creative & digital',slug:'ecm-graphics',base:'Hi! Does your creative business have a website?\n\nWe build portfolio sites, client booking, payment and project management dashboards.\n\nWe also manage social media for creatives — content strategy, posting and sales outreach.\n\nReply PREVIEW for a free mockup.'},
-  {id:'floral',label:'Floral & gifts',slug:'bouquets-by-mira',base:'Hi! Does your floral or gift business have a website?\n\nWe build product catalogues, online ordering, payment and management dashboards.\n\nWe can also run your social media — daily content, arrangement features and sales.\n\nReply PREVIEW for a free mockup.'},
-  {id:'accessories',label:'Accessories & jewellery',slug:'trendy-accessories',base:'Hi! Does your accessories or jewellery business have a website?\n\nWe build product catalogues, online ordering, payment and management dashboards.\n\nWe also manage social media for jewellery brands — lookbooks, reels, and sales outreach.\n\nReply PREVIEW for a free mockup.'},
-  {id:'events',label:'Events & entertainment',slug:'beach-picnic-ja',base:'Hi! Does your events or entertainment business have a website?\n\nWe build event listings, ticket booking, payment and management dashboards.\n\nWe also run social media for event brands — promo content, countdowns and ticket sales.\n\nReply PREVIEW for a free mockup.'},
-  {id:'techrepair',label:'Tech repair & services',slug:'savvy-apple',base:'Hi! Does your tech repair business have a website?\n\nWe build service listings, repair booking, payment and management dashboards.\n\nWe can also handle your social media — tips content, promos and customer acquisition.\n\nReply PREVIEW for a free mockup.'},
-  {id:'crafts',label:'Crafts & printing',slug:'ecm-graphics',base:'Hi! Does your crafts or printing business have a website?\n\nWe build portfolio displays, custom order forms, payment and management dashboards.\n\nWe also manage social media for craft brands — process content, launches and sales.\n\nReply PREVIEW for a free mockup.'},
-  {id:'realestate',label:'Real estate & property',slug:'atelier-luxridge',base:'Hi! Does your real estate business have a website?\n\nWe build listing pages, lead capture, payment and management dashboards.\n\nWe also handle social media for property brands — listings, neighbourhood content and sales leads.\n\nReply PREVIEW for a free mockup.'},
-  {id:'wellness',label:'Fitness & wellness',slug:'peak-wellness-ja',base:'Hi! Does your fitness or wellness business have a website?\n\nWe build service menus, class booking, payment and client management dashboards.\n\nWe can also manage your social media — transformation content, tips and client acquisition.\n\nReply PREVIEW for a free mockup.'},
-  {id:'hospitality',label:'Tourism & hospitality',slug:'beach-picnic-ja',base:'Hi! Does your tourism or hospitality business have a website?\n\nWe build booking systems, service listings, payment and management dashboards.\n\nWe also run social media for hospitality brands — destination content, promos and booking sales.\n\nReply PREVIEW for a free mockup.'},
+  {id:'fashion',label:'Fashion & clothing',slug:'demo-fashion-boutique',base:'Hi! We build websites and run marketing & sales for fashion brands. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'beauty',label:'Beauty & hair',slug:'demo-beauty-bar',base:'Hi! We build websites and run marketing & sales for salons and beauty businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'food',label:'Restaurants & food',slug:'demo-cafe-pizzeria',base:'Hi! We build websites and run marketing & sales for restaurants and food businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'bakery',label:'Bakeries',slug:'demo-bakery',base:'Hi! We build websites and run marketing & sales for bakeries. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'furniture',label:'Furniture & home',slug:'demo-luxury-furniture',base:'Hi! We build websites and run marketing & sales for furniture and interior design businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'retail',label:'Wholesale & retail',slug:'demo-wholesale-depot',base:'Hi! We build websites and run marketing & sales for retail businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'automotive',label:'Automotive',slug:'demo-auto-detailing',base:'Hi! We build websites and run marketing & sales for auto businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'logistics',label:'Logistics & transport',slug:'demo-logistics',base:'Hi! We build websites and run marketing & sales for delivery and logistics companies. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'packaging',label:'Packaging & printing',slug:'demo-packaging',base:'Hi! We build websites and run marketing & sales for print and packaging businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'creative',label:'Creative & digital',slug:'demo-design-studio',base:'Hi! We build websites and run marketing & sales for creative businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'floral',label:'Floral & gifts',slug:'demo-floral-shop',base:'Hi! We build websites and run marketing & sales for floral and gift businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'accessories',label:'Accessories & jewellery',slug:'demo-accessories',base:'Hi! We build websites and run marketing & sales for accessories and jewellery brands. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'events',label:'Events & entertainment',slug:'demo-events',base:'Hi! We build websites and run marketing & sales for events and entertainment businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'techrepair',label:'Tech repair & services',slug:'demo-tech-accessories',base:'Hi! We build websites and run marketing & sales for tech repair businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'crafts',label:'Crafts & printing',slug:'demo-design-studio',base:'Hi! We build websites and run marketing & sales for craft and printing businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'realestate',label:'Real estate & property',slug:'demo-luxury-furniture',base:'Hi! We build websites and run marketing & sales for real estate businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'wellness',label:'Fitness & wellness',slug:'demo-wellness',base:'Hi! We build websites and run marketing & sales for fitness and wellness businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
+  {id:'hospitality',label:'Tourism & hospitality',slug:'demo-events',base:'Hi! We build websites and run marketing & sales for tourism and hospitality businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.'},
 ];
 const CAT_MAP=Object.fromEntries(CATEGORIES.map(c=>[c.id,c]));
 const CAT_OVERRIDES_KEY='_jst_cat_overrides';
@@ -251,19 +285,42 @@ function inferCategory(lead){
 function buildMessage(cat,lead){
   const p=PRICES[currency];
   const slug=cat?cat.slug:'velvet-vault';
-  const base=cat?cat.base:'Hi! Does your business have a website?\n\nWe build sites with online ordering, booking and a management dashboard.\n\nWe also offer social media management with sales included.\n\nReply PREVIEW to see a free mockup.';
-  return base+'\n\nMockup: '+BASE+'/t/'+slug+'\n\nPortfolio: '+PORTFOLIO+'\n\nPackages:\n• Website only: '+p.website+'\n• Mobile app: '+p.app+'\n• Website + App: '+p.both+'\n• Social media + sales: '+p.marketing;
+  const base=cat?cat.base:'Hi! We build websites and run marketing & sales for businesses. Reply PREVIEW for a free website mockup or STRATEGY for a marketing & sales plan.';
+  return base+'\n\nWebsite mockup: '+BASE+'/t/'+slug+'\n\nOur work: '+PORTFOLIO+'\n\nPackages:\n• Website: '+p.website+' | App: '+p.app+' | Both: '+p.both+'\n• Marketing: '+p.marketing+' | Sales: '+p.sales+' | Bundle: '+p.bundle;
 }
-async function fetchLeads(filter,search){
-  filter=filter||'new';search=search||'';
-  let url=SUPA_URL+'/rest/v1/tiktok_leads?select=id,username,display_name,followers,category,profile_url,status,is_hot&order=is_hot.desc,followers.desc&limit=1500';
-  if(filter==='hot')url+='&is_hot=eq.true&status=eq.new';
-  else if(filter==='follow_up')url+='&status=eq.follow_up';
-  else if(filter!=='all')url+='&status=eq.'+filter;
-  if(search)url+='&username=ilike.*'+encodeURIComponent(search)+'*';
+let _leadsCache=null,_fuCache=null;
+async function fetchAllLeads(){
+  if(_leadsCache!==null)return _leadsCache;
+  const url=SUPA_URL+'/rest/v1/tiktok_leads?select=id,username,display_name,followers,category,profile_url,status,is_hot&order=followers.desc&limit=2000&status=neq.follow_up';
   const res=await fetch(url,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+SUPA_ANON}});
   if(!res.ok)return null;
-  return res.json();
+  _leadsCache=await res.json();
+  return _leadsCache;
+}
+async function fetchFollowUpLeads(search){
+  if(_fuCache!==null)return applySearch(_fuCache,search);
+  const url=SUPA_URL+'/rest/v1/tiktok_leads?select=id,username,display_name,followers,category,profile_url,status,is_hot&order=followers.desc&limit=500&status=eq.follow_up';
+  const res=await fetch(url,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+SUPA_ANON}});
+  if(!res.ok)return null;
+  _fuCache=await res.json();
+  return applySearch(_fuCache,search);
+}
+function applySearch(data,search){
+  if(!search)return data;
+  const q=search.toLowerCase();
+  return data.filter(l=>(l.username||'').toLowerCase().includes(q)||(l.display_name||'').toLowerCase().includes(q));
+}
+function applyFilters(data){
+  const search=document.getElementById('leadSearch').value.trim();
+  let f=applySearch(data,search);
+  if(leadsFilter==='hot')f=f.filter(l=>l.is_hot&&l.status==='new');
+  else if(leadsFilter!=='all')f=f.filter(l=>l.status===leadsFilter);
+  if(nicheFilter==='general')f=f.filter(l=>!getCat(l));
+  else if(nicheFilter!=='all')f=f.filter(l=>{const c=getCat(l);return c&&c.id===nicheFilter;});
+  if(leadsSort==='hot')f=[...f.filter(l=>l.is_hot),...f.filter(l=>!l.is_hot)];
+  else if(leadsSort==='followers_desc')f=[...f].sort((a,b)=>(b.followers||0)-(a.followers||0));
+  else if(leadsSort==='followers_asc')f=[...f].sort((a,b)=>(a.followers||0)-(b.followers||0));
+  return f;
 }
 const STATUS_CYCLE=['new','sent','replied','converted','follow_up','skip'];
 async function updateStatus(id,newStatus){
@@ -274,7 +331,7 @@ async function updateStatus(id,newStatus){
     body:JSON.stringify(body)});
 }
 const markSent=id=>updateStatus(id,'sent');
-let currentCat=null,currentLead=null,activeTile=null,leadsFilter='new',allLeads=null,fuLeads=null;
+let currentCat=null,currentLead=null,activeTile=null,leadsFilter='new',nicheFilter='all',leadsSort='hot';
 const grid=document.getElementById('grid');
 CATEGORIES.forEach(cat=>{
   const icon=ICONS[cat.id];
@@ -291,25 +348,26 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('view-'+btn.dataset.tab).classList.add('active');
-    if(btn.dataset.tab==='leads'&&allLeads===null)loadLeads();
-    if(btn.dataset.tab==='followup'&&fuLeads===null)loadFollowUp();
+    if(btn.dataset.tab==='leads')loadLeads();
+    if(btn.dataset.tab==='followup')loadFollowUp();
   });
 });
 async function loadLeads(){
   const list=document.getElementById('leadsList');
-  list.innerHTML='<div class="leads-empty"><p>Loading leads…</p></div>';
-  const data=await fetchLeads(leadsFilter,document.getElementById('leadSearch').value.trim());
+  if(_leadsCache===null)list.innerHTML='<div class="leads-empty"><p>Loading leads…</p></div>';
+  const data=await fetchAllLeads();
   if(data===null){list.innerHTML='<div class="leads-empty"><h3>One setup step needed</h3><p>Run this SQL in your <a href="https://supabase.com/dashboard/project/ibtadbwtrxglujkzqofs/sql/new" target="_blank" style="color:var(--accent)">Supabase SQL editor</a> to unlock leads:</p><br><code>CREATE POLICY &quot;anon_read&quot; ON tiktok_leads FOR SELECT TO anon USING (true);</code></div>';return;}
-  allLeads=data;updateCounts(data);
-  if(!data.length){const msgs={new:'<h3>No new leads</h3><p>All caught up!</p>',hot:'<h3>No hot leads yet</h3>',sent:'<h3>Nothing sent yet</h3>',replied:'<h3>No replies tracked</h3>',all:'<h3>No leads</h3><p>Run the scraper.</p>'};list.innerHTML='<div class="leads-empty">'+(msgs[leadsFilter]||msgs.all)+'</div>';return;}
-  list.innerHTML='';data.forEach(lead=>list.appendChild(buildLeadCard(lead)));filterLeadCards();
+  updateCounts(data);
+  const filtered=applyFilters(data);
+  if(!filtered.length){list.innerHTML='<div class="leads-empty"><h3>No leads match</h3><p>'+(nicheFilter!=='all'?'No '+nicheFilter+' leads here.':'All caught up!')+'</p></div>';return;}
+  const PAGE=50;list.innerHTML='';filtered.slice(0,PAGE).forEach(lead=>list.appendChild(buildLeadCard(lead)));
+  if(filtered.length>PAGE){const btn=document.createElement('button');btn.className='filter-btn';btn.style.cssText='width:100%;margin:10px 0;padding:10px;';btn.textContent='Load more ('+( filtered.length-PAGE)+' remaining)';let shown=PAGE;btn.addEventListener('click',()=>{filtered.slice(shown,shown+PAGE).forEach(lead=>list.insertBefore(buildLeadCard(lead),btn));shown+=PAGE;if(shown>=filtered.length)btn.remove();else btn.textContent='Load more ('+(filtered.length-shown)+' remaining)';});list.appendChild(btn);}
 }
 async function loadFollowUp(){
   const list=document.getElementById('fuList');
-  list.innerHTML='<div class="leads-empty"><p>Loading follow-ups…</p></div>';
-  const data=await fetchLeads('follow_up',document.getElementById('fuSearch').value.trim());
+  if(_fuCache===null)list.innerHTML='<div class="leads-empty"><p>Loading follow-ups…</p></div>';
+  const data=await fetchFollowUpLeads(document.getElementById('fuSearch').value.trim());
   if(data===null){list.innerHTML='<div class="leads-empty"><h3>Setup needed</h3></div>';return;}
-  fuLeads=data;
   const badge=document.getElementById('fuBadge');
   if(data.length>0){badge.textContent=data.length;badge.hidden=false;}else badge.hidden=true;
   if(!data.length){list.innerHTML='<div class="leads-empty"><h3>No follow-ups yet</h3><p>Mark a lead as <strong>Follow Up</strong> on the Leads tab.</p></div>';return;}
@@ -378,25 +436,11 @@ function buildLeadCard(lead,isFollowUp){
   return card;
 }
 document.querySelectorAll('.filter-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');leadsFilter=btn.dataset.filter;allLeads=null;loadLeads();});
+  btn.addEventListener('click',()=>{document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');leadsFilter=btn.dataset.filter;loadLeads();});
 });
-document.getElementById('leadSearch').addEventListener('input',()=>{allLeads=null;loadLeads();});
-// Populate niche filter select
-const nicheFilter=document.getElementById('nicheFilter');
-CATEGORIES.forEach(cat=>{const o=document.createElement('option');o.value=cat.id;o.textContent=cat.label;nicheFilter.appendChild(o);});
-let activeNiche='';
-nicheFilter.addEventListener('change',()=>{activeNiche=nicheFilter.value;filterLeadCards();});
-function filterLeadCards(){
-  const list=document.getElementById('leadsList');
-  list.querySelectorAll('.lead-card').forEach(card=>{
-    if(!activeNiche){card.style.display='';return;}
-    const id=card.dataset.id;
-    const lead=allLeads&&allLeads.find(l=>l.id===id);
-    if(!lead){card.style.display='';return;}
-    const cat=getCat(lead);
-    card.style.display=(cat&&cat.id===activeNiche)?'':'none';
-  });
-}
+document.getElementById('nicheSelect').addEventListener('change',e=>{nicheFilter=e.target.value;loadLeads();});
+document.getElementById('sortSelect').addEventListener('change',e=>{leadsSort=e.target.value;loadLeads();});
+document.getElementById('leadSearch').addEventListener('input',()=>{loadLeads();});
 document.getElementById('fuSearch').addEventListener('input',()=>{fuLeads=null;loadFollowUp();});
 const sheet=document.getElementById('sheet'),backdrop=document.getElementById('backdrop');
 const sheetIcon=document.getElementById('sheetIcon'),sheetTitle=document.getElementById('sheetTitle');
@@ -416,7 +460,8 @@ function openSheet(cat,lead,tile,svg){
 }
 function closeSheet(){sheet.classList.remove('open');backdrop.classList.remove('open');if(activeTile)activeTile.classList.remove('active');activeTile=null;currentCat=null;currentLead=null;}
 sheetClose.addEventListener('click',closeSheet);backdrop.addEventListener('click',closeSheet);
-document.getElementById('currencyToggle').addEventListener('click',function(){currency=currency==='JMD'?'USD':'JMD';this.textContent=currency;if((currentCat||currentLead)&&sheet.classList.contains('open'))messageBox.textContent=buildMessage(currentCat,currentLead);});
+document.querySelectorAll('.cur-opt').forEach(b=>b.classList.toggle('active',b.dataset.cur===currency));
+document.getElementById('currencySeg').addEventListener('click',function(e){const btn=e.target.closest('.cur-opt');if(!btn)return;currency=btn.dataset.cur;try{localStorage.setItem('dm_currency',currency);}catch(e){}document.querySelectorAll('.cur-opt').forEach(b=>b.classList.toggle('active',b.dataset.cur===currency));if((currentCat||currentLead)&&sheet.classList.contains('open'))messageBox.textContent=buildMessage(currentCat,currentLead);});
 copyBtn.addEventListener('click',()=>{
   const msg=buildMessage(currentCat,currentLead);
   navigator.clipboard.writeText(msg).then(()=>{copyBtn.classList.add('copied');copyLabel.textContent='Copied';if(currentLead)markSent(currentLead.id);setTimeout(resetBtn,2200);})
@@ -426,6 +471,7 @@ function resetBtn(){copyBtn.classList.remove('copied');copyLabel.textContent='Co
 let startY=0;
 sheet.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;},{passive:true});
 sheet.addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-startY>80)closeSheet();},{passive:true});
+fetchAllLeads();fetchFollowUpLeads('');
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js').then(reg=>{
     reg.addEventListener('updatefound',()=>{const nw=reg.installing;nw.addEventListener('statechange',()=>{if(nw.state==='activated')window.location.reload();});});
