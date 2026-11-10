@@ -30,9 +30,9 @@ const CATEGORIES = [
 type Category = (typeof CATEGORIES)[number]
 
 const STATIC_STORIES = [
-  { label: "Beauty & Wellness",     title: "Your Glow-Up Starts Here", catSlug: "beauty",      gradient: "linear-gradient(135deg,#1a0a0a 0%,#2d1a0e 100%)" },
-  { label: "Home & Living",         title: "Curated for Your Space",   catSlug: "home-living", gradient: "linear-gradient(135deg,#0d1a1a 0%,#0d2b1a 100%)" },
-  { label: "Jewelry & Accessories", title: "Wear What Speaks",         catSlug: "jewelry",     gradient: "linear-gradient(135deg,#1a1200 0%,#2b2200 100%)" },
+  { label: "Beauty & Wellness",     title: "Your Glow-Up Starts Here", catSlug: "beauty",      staticImg: "/hero/story-beauty.jpg" },
+  { label: "Home & Living",         title: "Curated for Your Space",   catSlug: "home-living", staticImg: "/hero/story-home.jpg" },
+  { label: "Jewelry & Accessories", title: "Wear What Speaks",         catSlug: "jewelry",     staticImg: "/hero/story-jewelry.jpg" },
 ]
 
 const STATIC_ARRIVALS = [
@@ -108,11 +108,14 @@ export default async function HomePage() {
 
       {/* HERO */}
       <section className="hero">
-        {heroProduct?.image_url ? (
-          <Image src={heroProduct.image_url} alt="Featured product" fill className="hero-img" priority sizes="100vw" />
-        ) : (
-          <div style={{ position:"absolute",inset:0,background:"linear-gradient(135deg,#0D0D0D 0%,#1a1507 50%,#0D0D0D 100%)" }} />
-        )}
+        <Image
+          src={heroProduct?.image_url ?? "/hero/hero-1.jpg"}
+          alt={heroProduct?.name ?? "Premium curated products"}
+          fill
+          className="hero-img"
+          priority
+          sizes="100vw"
+        />
         <div className="hero-overlay" />
         <div className="hero-content">
           <p className="hero-eyebrow">Premium Curated Store · Jamaica</p>
@@ -128,14 +131,15 @@ export default async function HomePage() {
       {/* EDITORIAL STORIES */}
       <section className="stories-grid">
         {(stories.length > 0 ? stories.map(p => ({
-          label: p.category ?? "", title: p.name, catSlug: p.slug, gradient: "", imageUrl: p.image_url, productSlug: p.slug
+          label: p.category ?? "", title: p.name, catSlug: p.slug, staticImg: "", imageUrl: p.image_url, productSlug: p.slug
         })) : STATIC_STORIES.map(s => ({ ...s, imageUrl: null, productSlug: null }))).map((item, i) => (
           <Link key={i} href={item.productSlug ? "/shop/" + item.productSlug : "/shop?category=" + item.catSlug} className="story-card">
-            {item.imageUrl ? (
-              <Image src={item.imageUrl} alt={item.title} fill sizes="33vw" />
-            ) : (
-              <div className="story-card-bg" style={{ background: item.gradient }} />
-            )}
+            <Image
+              src={item.imageUrl ?? (item.staticImg || "/hero/story-beauty.jpg")}
+              alt={item.title}
+              fill
+              sizes="(max-width:500px) 100vw,(max-width:900px) 50vw,33vw"
+            />
             <div className="story-overlay" />
             <div className="story-text">
               <span className="stamp" style={{ display:"block",marginBottom:8 }}>{item.label}</span>
@@ -185,18 +189,46 @@ export default async function HomePage() {
       {/* TRUST BAR */}
       <section className="trust-bar">
         <div className="trust-bar-inner">
-          {[
-            { icon: "🚚", title: "Island-Wide Delivery", desc: "Fast shipping across Jamaica" },
-            { icon: "🔒", title: "Secure Checkout",      desc: "Payments via HandyPay" },
-            { icon: "✨", title: "Curated Quality",      desc: "Every product hand-selected" },
-            { icon: "💬", title: "Customer First",       desc: "Support when you need it" },
-          ].map((t, i) => (
-            <div key={i}>
-              <div style={{ fontSize:28,marginBottom:12 }}>{t.icon}</div>
-              <p style={{ fontFamily:"var(--font-serif)",fontWeight:700,color:"#fff",fontSize:14,marginBottom:4 }}>{t.title}</p>
-              <p style={{ fontSize:12,color:"rgba(255,255,255,0.4)" }}>{t.desc}</p>
-            </div>
-          ))}
+          {/* Truck icon */}
+          <div>
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color:"rgba(200,168,75,0.85)", marginBottom:14 }}>
+              <rect x="1" y="8" width="18" height="13" rx="1.5"/>
+              <path d="M19 11h5l4 5v5h-9V11z"/>
+              <circle cx="7" cy="23" r="2.5"/>
+              <circle cx="24" cy="23" r="2.5"/>
+            </svg>
+            <p style={{ fontFamily:"var(--font-serif)",fontWeight:700,color:"#fff",fontSize:14,marginBottom:4 }}>Island-Wide Delivery</p>
+            <p style={{ fontSize:12,color:"rgba(255,255,255,0.4)" }}>Fast shipping across Jamaica</p>
+          </div>
+          {/* Lock icon */}
+          <div>
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color:"rgba(200,168,75,0.85)", marginBottom:14 }}>
+              <rect x="6" y="14" width="20" height="14" rx="2"/>
+              <path d="M10 14v-4a6 6 0 0112 0v4"/>
+              <circle cx="16" cy="21" r="1.5" fill="currentColor" stroke="none"/>
+            </svg>
+            <p style={{ fontFamily:"var(--font-serif)",fontWeight:700,color:"#fff",fontSize:14,marginBottom:4 }}>Secure Checkout</p>
+            <p style={{ fontSize:12,color:"rgba(255,255,255,0.4)" }}>Payments via HandyPay</p>
+          </div>
+          {/* Checkmark badge icon */}
+          <div>
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color:"rgba(200,168,75,0.85)", marginBottom:14 }}>
+              <path d="M16 2l3 5h5l-4 4 1.5 5.5L16 14l-5.5 2.5L12 11 8 7h5z"/>
+              <path d="M11 18l3 3 7-7" strokeWidth="2"/>
+            </svg>
+            <p style={{ fontFamily:"var(--font-serif)",fontWeight:700,color:"#fff",fontSize:14,marginBottom:4 }}>Curated Quality</p>
+            <p style={{ fontSize:12,color:"rgba(255,255,255,0.4)" }}>Every product hand-selected</p>
+          </div>
+          {/* Chat bubble icon */}
+          <div>
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color:"rgba(200,168,75,0.85)", marginBottom:14 }}>
+              <path d="M4 6h24a2 2 0 012 2v13a2 2 0 01-2 2H10l-6 4V8a2 2 0 012-2z"/>
+              <line x1="10" y1="13" x2="22" y2="13"/>
+              <line x1="10" y1="18" x2="17" y2="18"/>
+            </svg>
+            <p style={{ fontFamily:"var(--font-serif)",fontWeight:700,color:"#fff",fontSize:14,marginBottom:4 }}>Customer First</p>
+            <p style={{ fontSize:12,color:"rgba(255,255,255,0.4)" }}>Support when you need it</p>
+          </div>
         </div>
       </section>
 
