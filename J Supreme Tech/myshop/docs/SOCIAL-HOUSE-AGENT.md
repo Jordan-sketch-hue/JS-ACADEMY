@@ -142,3 +142,54 @@ Env: all keys above
 ---
 
 ## Status: OPEN — Begin after checkout deploy
+---
+
+## 9. Post Interactions (User Engagement Layer)
+
+### Per-Post Actions
+| Action | Description | Stored In |
+|--------|-------------|-----------|
+| Like | Heart/like a post | `myshop_inspire_posts.likes` |
+| Save / Bookmark | Save to personal collection | `myshop_user_saves` table |
+| Comment | Threaded comments | `myshop_comments` table |
+| Share | Copy link / share to WhatsApp, IG, Twitter | Client-side Web Share API |
+| Download | Save image to device (editorial posts) | Direct URL download |
+| Add to Inbox | Saves post to user's personal inbox/collection | `myshop_user_inbox` table |
+| Share to Account | Share post to another connected account | OAuth + Graph API |
+
+### Database (new tables)
+```sql
+CREATE TABLE myshop_user_saves (
+  user_id uuid REFERENCES auth.users,
+  post_id uuid REFERENCES myshop_inspire_posts,
+  saved_at timestamptz DEFAULT now(),
+  PRIMARY KEY (user_id, post_id)
+);
+
+CREATE TABLE myshop_comments (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id uuid REFERENCES myshop_inspire_posts,
+  user_id uuid REFERENCES auth.users,
+  body text NOT NULL,
+  created_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE myshop_user_inbox (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES auth.users,
+  post_id uuid REFERENCES myshop_inspire_posts,
+  note text,
+  added_at timestamptz DEFAULT now()
+);
+```
+
+### UI Interaction Bar (bottom of each post card)
+```
+[♥ Like]  [💬 Comment]  [🔖 Save]  [↗ Share]  [⬇ Download]  [📥 Add to Inbox]
+```
+- All actions require auth (soft prompt: "Sign up for free to save")
+- Comment count badge on post card
+- Save triggers gold pulse animation
+- Share opens native OS share sheet on mobile
+
+### Status: OPEN — Wire up after feed scroll is built
