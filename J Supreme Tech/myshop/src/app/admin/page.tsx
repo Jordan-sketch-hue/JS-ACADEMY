@@ -7,7 +7,8 @@ import { InspireAdmin } from "./InspireAdmin"
 
 const CATEGORIES = [
   "Clothing", "Accessories", "Shoes", "Bags", "Jewellery",
-  "Skincare", "Fragrance", "Home", "Electronics",`n  "Adult & Intimate", "Other",
+    "Skincare", "Fragrance", "Home", "Electronics",
+  "Adult & Intimate", "Other",
 ]
 
 const empty = {
