@@ -160,6 +160,8 @@ export default function Nav() {
               </span>
             </li>
             <li><Link href="/shop?sort=new" className="ms-nav-link" onClick={() => setMegaOpen(false)}>New In</Link></li>
+            <li><Link href="/inspire" className="ms-nav-link" onClick={() => setMegaOpen(false)}>Inspire</Link></li>
+            <li><Link href="/blog" className="ms-nav-link" onClick={() => setMegaOpen(false)}>Journal</Link></li>
             <li><Link href="/shop" className="ms-nav-link" onClick={() => setMegaOpen(false)}>All Products</Link></li>
           </ul>
 
@@ -217,6 +219,8 @@ export default function Nav() {
                 {c.name}
               </Link>
             ))}
+            <Link href="/inspire" className="ms-mobile-link" onClick={() => setMobileOpen(false)}>Inspire</Link>
+            <Link href="/blog" className="ms-mobile-link" onClick={() => setMobileOpen(false)}>Journal</Link>
             <Link href="/shop" className="ms-mobile-link" onClick={() => setMobileOpen(false)}>All Products</Link>
             <Link href="/account/login" className="ms-mobile-link" onClick={() => setMobileOpen(false)}>My Account</Link>
           </nav>

@@ -15,16 +15,16 @@ export const metadata: Metadata = {
   creator: "Mine & Yours Shop",
   publisher: "J Supreme Tech",
   formatDetection: { email: false, address: false, telephone: false },
-  metadataBase: new URL("https://myshop-three-tau.vercel.app"),
+  metadataBase: new URL("https://mineandyoursshop.online"),
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://myshop-three-tau.vercel.app",
+    url: "https://mineandyoursshop.online",
     siteName: "Mine & Yours Shop",
     title: "Mine & Yours Shop — Premium Curated Store | Jamaica",
     description: "Discover curated collections of premium products — jewelry, home decor, electronics, beauty and more. Fast delivery across Jamaica.",
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "MyShop — Premium Curated Store" }],
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "Mine & Yours Shop — Premium Curated Store" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -52,13 +52,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Nav />
           <ToastContainer />
           <main style={{ flex: 1 }}>{children}</main>
-          <footer style={{ background: "var(--dark)", color: "rgba(255,255,255,0.4)", textAlign: "center", padding: "32px 24px", fontSize: 12, letterSpacing: "0.08em" }}>
-            <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
-              <span style={{ fontFamily: "var(--font-serif)", fontWeight: 900, fontSize: 16, color: "#fff" }}>MY<span style={{ color: "var(--gold)" }}>SHOP</span></span>
-              <span>&copy; {new Date().getFullYear()} Mine & Yours Shop</span>
-              <div style={{ display: "flex", gap: 24 }}>
-                <a href="/shop" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Shop</a>
-                <a href="/cart" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>Cart</a>
+          <footer style={{ background: "var(--dark)", color: "rgba(255,255,255,0.35)", padding: "56px 24px 36px" }}>
+            <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "48px", marginBottom: "48px" }}>
+                <div>
+                  <span style={{ fontFamily: "var(--font-serif)", fontWeight: 900, fontSize: 20, color: "#fff", display: "block", marginBottom: 12 }}>
+                    Mine &amp; Yours<span style={{ color: "var(--gold)" }}> Shop</span>
+                  </span>
+                  <p style={{ fontSize: 13, lineHeight: 1.7, maxWidth: 280 }}>Premium curated products, fast delivery across Jamaica and beyond.</p>
+                  <a href="tel:+16582182282" style={{ display: "inline-block", marginTop: 16, fontSize: 13, color: "var(--gold)", textDecoration: "none", fontWeight: 600 }}>(658) 218-2282</a>
+                </div>
+                <div>
+                  <p style={{ fontSize: 10, fontFamily: "var(--font-stamp)", letterSpacing: ".18em", color: "rgba(255,255,255,0.4)", marginBottom: 16 }}>Shop</p>
+                  {([["All Products","/shop"],["New In","/shop?sort=new"],["Cart","/cart"],["Inspire","/inspire"],["Journal","/blog"]] as [string,string][]).map(([l,h]) => (
+                    <a key={h} href={h} style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 8 }}>{l}</a>
+                  ))}
+                </div>
+                <div>
+                  <p style={{ fontSize: 10, fontFamily: "var(--font-stamp)", letterSpacing: ".18em", color: "rgba(255,255,255,0.4)", marginBottom: 16 }}>Account</p>
+                  {([["Create Account","/account/signup"],["Sign In","/account/login"],["My Account","/account"]] as [string,string][]).map(([l,h]) => (
+                    <a key={h} href={h} style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 8 }}>{l}</a>
+                  ))}
+                </div>
+              </div>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 24, display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, fontSize: 11 }}>
+                <span>&copy; {new Date().getFullYear()} Mine &amp; Yours Shop. All rights reserved.</span>
+                <a href="https://jsupremetech.online" target="_blank" rel="noopener" style={{ color: "#666", textDecoration: "none" }}>Powered by J Supreme Tech</a>
               </div>
             </div>
           </footer>
@@ -67,15 +86,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          "name": "MyShop",
+          "name": "Mine & Yours Shop",
           "description": "Premium curated online store with jewelry, home decor, electronics and more.",
-          "url": "https://myshop-three-tau.vercel.app",
-          "potentialAction": { "@type": "SearchAction", "target": "https://myshop-three-tau.vercel.app/shop?q={search_term_string}", "query-input": "required name=search_term_string" }
+          "url": "https://mineandyoursshop.online",
+          "potentialAction": { "@type": "SearchAction", "target": "https://mineandyoursshop.online/shop?q={search_term_string}", "query-input": "required name=search_term_string" }
         })}} />
       </body>
     </html>
   )
 }
-
-
-
