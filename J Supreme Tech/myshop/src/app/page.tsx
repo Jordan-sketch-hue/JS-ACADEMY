@@ -1,4 +1,4 @@
-﻿export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic"
 import type { Metadata } from "next"
 import { supabase } from "@/lib/supabase"
 import Image from "next/image"
@@ -25,7 +25,9 @@ const CATEGORIES = [
   { name: "Office Products",       slug: "office" },
   { name: "Pet Supplies",          slug: "pets" },
   { name: "Adults Only · 18+",     slug: "adults", href: "/adults" },
-]
+] as const
+
+type Category = (typeof CATEGORIES)[number]
 
 const STATIC_STORIES = [
   { label: "Beauty & Wellness",     title: "Your Glow-Up Starts Here", catSlug: "beauty",      gradient: "linear-gradient(135deg,#1a0a0a 0%,#2d1a0e 100%)" },
@@ -34,9 +36,9 @@ const STATIC_STORIES = [
 ]
 
 const STATIC_ARRIVALS = [
-  { category: "Electronics & Tech",    name: "Smart Home Essentials",      price: "J$12,500+", href: "/shop?category=electronics", gradient: "linear-gradient(135deg,#0d1a2b,#0a1520)" },
-  { category: "Jewelry & Accessories", name: "Gold-Tone Statement Pieces", price: "J$3,800+",  href: "/shop?category=jewelry",     gradient: "linear-gradient(135deg,#1a1200,#2b2200)" },
-  { category: "Beauty & Wellness",     name: "Wellness Collection",        price: "J$2,200+",  href: "/shop?category=beauty",      gradient: "linear-gradient(135deg,#1a0a1a,#2b0d2b)" },
+  { category: "Electronics & Tech",    name: "Smart Home Essentials",       price: "J$12,500+", href: "/shop?category=electronics", gradient: "linear-gradient(135deg,#0d1a2b,#0a1520)" },
+  { category: "Jewelry & Accessories", name: "Gold-Tone Statement Pieces",  price: "J$3,800+",  href: "/shop?category=jewelry",     gradient: "linear-gradient(135deg,#1a1200,#2b2200)" },
+  { category: "Beauty & Wellness",     name: "Wellness Collection",         price: "J$2,200+",  href: "/shop?category=beauty",      gradient: "linear-gradient(135deg,#1a0a1a,#2b0d2b)" },
 ]
 
 async function getFeatured(limit = 6): Promise<Product[]> {
@@ -91,6 +93,10 @@ export default async function HomePage() {
         .cats-section{padding:64px 24px;max-width:1280px;margin:0 auto}
         .cats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
         .cat-card{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--dark);text-decoration:none;display:block}
+        .cat-img-static{position:absolute;inset:0;object-fit:cover;transition:opacity 0.55s ease;width:100%;height:100%}
+        .cat-img-kinetic{position:absolute;inset:0;object-fit:cover;opacity:0;transition:opacity 0.55s ease;width:100%;height:100%}
+        .cat-card:hover .cat-img-kinetic{opacity:1}
+        .cat-card:hover .cat-img-static{opacity:0}
         .cat-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;background:linear-gradient(to top,rgba(0,0,0,0.75),transparent)}
         .trust-bar{background:var(--dark);padding:48px 24px}
         .trust-bar-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center}
@@ -121,9 +127,9 @@ export default async function HomePage() {
 
       {/* EDITORIAL STORIES */}
       <section className="stories-grid">
-        {(stories.length > 0 ? stories.map((p) => ({
-          label: p.category ?? "", title: p.name, catSlug: p.category ?? "", gradient: "", imageUrl: p.image_url as string | null, productSlug: p.slug as string
-        })) : STATIC_STORIES.map((s) => ({ label: s.label, title: s.title, catSlug: s.catSlug, gradient: s.gradient, imageUrl: null as null, productSlug: null as null }))).map((item, i) => (
+        {(stories.length > 0 ? stories.map(p => ({
+          label: p.category ?? "", title: p.name, catSlug: p.slug, gradient: "", imageUrl: p.image_url, productSlug: p.slug
+        })) : STATIC_STORIES.map(s => ({ ...s, imageUrl: null, productSlug: null }))).map((item, i) => (
           <Link key={i} href={item.productSlug ? "/shop/" + item.productSlug : "/shop?category=" + item.catSlug} className="story-card">
             {item.imageUrl ? (
               <Image src={item.imageUrl} alt={item.title} fill sizes="33vw" />
@@ -151,15 +157,15 @@ export default async function HomePage() {
             <Link href="/shop" className="btn-outline">View All</Link>
           </div>
           <div className="arrivals-grid">
-            {(newArrivals.length > 0 ? newArrivals.map((p) => ({
-              category: p.category ?? "", name: p.name, price: "J$" + (p.price_jmd/100).toLocaleString(), href: "/shop/" + p.slug, imageUrl: p.image_url as string | null, gradient: ""
-            })) : STATIC_ARRIVALS.map((s) => ({ ...s, imageUrl: null as null }))).map((item, i) => (
+            {(newArrivals.length > 0 ? newArrivals.map(p => ({
+              category: p.category ?? "", name: p.name, price: "J$" + (p.price_jmd/100).toLocaleString(), href: "/shop/" + p.slug, imageUrl: p.image_url, gradient: ""
+            })) : STATIC_ARRIVALS).map((item, i) => (
               <Link key={i} href={item.href} className="arrival-card">
                 <div className="arrival-img">
-                  {item.imageUrl ? (
-                    <Image src={item.imageUrl} alt={item.name} fill sizes="(max-width:900px) 50vw,33vw" />
+                  {"imageUrl" in item && item.imageUrl ? (
+                    <Image src={item.imageUrl as string} alt={item.name} fill sizes="(max-width:900px) 50vw,33vw" />
                   ) : (
-                    <div className="arrival-ph" style={{ background: item.gradient || "linear-gradient(135deg,#111,#1a1a1a)" }}>
+                    <div className="arrival-ph" style={{ background: ("gradient" in item ? item.gradient : "") || "linear-gradient(135deg,#111,#1a1a1a)" }}>
                       <span className="stamp" style={{ fontSize:10 }}>{item.category}</span>
                       <span style={{ fontFamily:"var(--font-serif)",fontSize:11,color:"rgba(255,255,255,0.3)" }}>Shop Collection</span>
                     </div>
@@ -201,15 +207,31 @@ export default async function HomePage() {
           <h2 style={{ fontFamily:"var(--font-serif)",fontSize:"clamp(24px,3vw,38px)",fontWeight:900,color:"var(--ink)" }}>Shop the Collections</h2>
         </div>
         <div className="cats-grid">
-          {CATEGORIES.map((cat, i) => (
-            <Link key={cat.slug} href={(cat as {slug:string;href?:string}).href ?? "/shop?category=" + cat.slug} className="cat-card">
-              <div style={{ position:"absolute",inset:0,background:`linear-gradient(135deg,hsl(${i * 26 % 360},25%,8%),hsl(${(i * 26 + 50) % 360},18%,13%))` }} />
-              <div className="cat-overlay">
-                <span className="stamp">{cat.name}{(cat as {slug:string;href?:string}).href ? " 🔒" : ""}</span>
-                <p style={{ fontFamily:"var(--font-serif)",fontSize:12,color:"rgba(255,255,255,0.45)",marginTop:4 }}>Shop Now</p>
-              </div>
-            </Link>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const c = cat as Category & { href?: string }
+            return (
+              <Link key={cat.slug} href={c.href ?? "/shop?category=" + cat.slug} className="cat-card">
+                <Image
+                  src={`/categories/${cat.slug}-static.jpg`}
+                  alt={cat.name}
+                  fill
+                  className="cat-img-static"
+                  sizes="(max-width:900px) 50vw,25vw"
+                />
+                <Image
+                  src={`/categories/${cat.slug}-kinetic.jpg`}
+                  alt={cat.name + " in action"}
+                  fill
+                  className="cat-img-kinetic"
+                  sizes="(max-width:900px) 50vw,25vw"
+                />
+                <div className="cat-overlay">
+                  <span className="stamp">{cat.name}{c.href ? " 🔒" : ""}</span>
+                  <p style={{ fontFamily:"var(--font-serif)",fontSize:12,color:"rgba(255,255,255,0.45)",marginTop:4 }}>Shop Now</p>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </section>
 
