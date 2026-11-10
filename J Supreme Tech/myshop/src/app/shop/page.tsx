@@ -76,11 +76,18 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         }
         .shop-count { font-size: 12px; color: var(--ink-muted); letter-spacing: 0.06em; }
         .shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-        /* chips: desktop hidden, mobile visible */
-        .shop-chips-wrap { display: none; padding: 20px 24px 0; max-width: 1280px; margin: 0 auto; }
-        .shop-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+        /* chips: desktop hidden, mobile visible — single scrollable row */
+        .shop-chips-wrap {
+          display: none; padding: 16px 0 0; max-width: 100%; overflow: hidden;
+        }
+        .shop-chips {
+          display: flex; gap: 8px; flex-wrap: nowrap;
+          overflow-x: auto; -webkit-overflow-scrolling: touch;
+          padding: 0 20px 12px; scrollbar-width: none;
+        }
+        .shop-chips::-webkit-scrollbar { display: none; }
         .shop-chip {
-          display: inline-flex; padding: 7px 16px;
+          display: inline-flex; padding: 8px 16px; flex-shrink: 0;
           font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
           text-decoration: none; border: 1px solid var(--border);
           color: var(--ink-muted); transition: all 0.2s; white-space: nowrap;
