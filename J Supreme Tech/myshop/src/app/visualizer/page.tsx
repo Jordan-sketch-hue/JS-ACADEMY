@@ -28,7 +28,7 @@ const SCENES: Scene[] = [
     id: "living-room-modern",
     title: "Modern Living Room",
     description: "A warm, curated living space — click any glowing dot to shop the exact piece.",
-    imageUrl: "https://d3u0tzju9qaucj.cloudfront.net/6b92ed1e-f628-44cd-902f-cc0ffa9be3dd/01a1c67f-075b-7d7a-8125-59ef79967b0e/ff4e1bbf-7a6f-4cb4-a193-862fada23e1e.png",
+    imageUrl: "/scenes/living-room.jpg",
     theme: "Home & Living",
     hotspots: [
       { id: "h1", x: 22, y: 68, label: "Boucle Throw Cushion", price: "J$4,500", slug: "boucle-throw-cushion", category: "Home & Living" },
@@ -41,7 +41,7 @@ const SCENES: Scene[] = [
     id: "bedroom-luxe",
     title: "Luxe Bedroom Suite",
     description: "Sleep in style. Every piece is available — tap the dots to discover pricing.",
-    imageUrl: "https://d3u0tzju9qaucj.cloudfront.net/6b92ed1e-f628-44cd-902f-cc0ffa9be3dd/01a1c67f-08f3-77b1-aedf-e96aab960566/b659bbe2-489d-48ce-85a5-d4cd90a352b1.png",
+    imageUrl: "/scenes/bedroom.jpg",
     theme: "Home & Living",
     hotspots: [
       { id: "h5", x: 30, y: 35, label: "Linen Duvet Set — Queen", price: "J$12,800", slug: "linen-duvet-set-queen", category: "Home & Living" },
@@ -54,7 +54,7 @@ const SCENES: Scene[] = [
     id: "home-office-setup",
     title: "Productive Home Office",
     description: "Your best work starts with the right setup. Shop each piece directly.",
-    imageUrl: "https://d3u0tzju9qaucj.cloudfront.net/6b92ed1e-f628-44cd-902f-cc0ffa9be3dd/01a1c67f-0a40-70f2-8c60-02b5b3254bcf/9e54965a-a77c-49ab-8395-b1748fa701cf.png",
+    imageUrl: "/scenes/home-office.jpg",
     theme: "Electronics",
     hotspots: [
       { id: "h9",  x: 45, y: 40, label: "Portable Monitor 15.6\"", price: "J$28,000", slug: "portable-monitor-15", category: "Electronics & Tech" },
