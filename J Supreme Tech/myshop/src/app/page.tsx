@@ -133,6 +133,7 @@ export default async function HomePage() {
           className="hero-img"
           priority
           sizes="100vw"
+          quality={90}
         />
         <div className="hero-overlay" />
         <div className="hero-content">
@@ -157,6 +158,7 @@ export default async function HomePage() {
               alt={item.title}
               fill
               sizes="(max-width:500px) 100vw,(max-width:900px) 50vw,33vw"
+              quality={90}
             />
             <div className="story-overlay" />
             <div className="story-text">
@@ -185,7 +187,7 @@ export default async function HomePage() {
               <Link key={i} href={item.href} className="arrival-card">
                 <div className="arrival-img">
                   {"imageUrl" in item && item.imageUrl ? (
-                    <Image src={item.imageUrl as string} alt={item.name} fill sizes="(max-width:900px) 50vw,33vw" />
+                    <Image src={item.imageUrl as string} alt={item.name} fill sizes="(max-width:900px) 50vw,33vw" quality={90} />
                   ) : (
                     <div className="arrival-ph" style={{ background: ("gradient" in item ? item.gradient : "") || "linear-gradient(135deg,#111,#1a1a1a)" }}>
                       <span className="stamp" style={{ fontSize:10 }}>{item.category}</span>
@@ -267,6 +269,7 @@ export default async function HomePage() {
                   fill
                   className="cat-img-static"
                   sizes="(max-width:900px) 50vw,25vw"
+                  quality={90}
                 />
                 <Image
                   src={`/categories/${cat.slug}-kinetic.jpg`}
@@ -274,6 +277,7 @@ export default async function HomePage() {
                   fill
                   className="cat-img-kinetic"
                   sizes="(max-width:900px) 50vw,25vw"
+                  quality={90}
                 />
                 <div className="cat-overlay">
                   <span className="stamp">{cat.name}{c.href ? " 🔒" : ""}</span>

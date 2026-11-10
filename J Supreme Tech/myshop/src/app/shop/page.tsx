@@ -5,6 +5,7 @@ import { ProductCard, ProductCardSkeleton } from "@/components/ProductCard"
 import type { Product } from "@/lib/types"
 import Image from "next/image"
 import Link from "next/link"
+import { CategoryDropdown } from "@/components/CategoryDropdown"
 
 export const metadata: Metadata = {
   title: "Shop All Products — Premium Curated Store",
@@ -76,24 +77,22 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         }
         .shop-count { font-size: 12px; color: var(--ink-muted); letter-spacing: 0.06em; }
         .shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-        /* chips: desktop hidden, mobile visible — single scrollable row */
-        .shop-chips-wrap {
-          display: none; padding: 16px 0 0; max-width: 100%; overflow: hidden;
+        /* category dropdown: desktop hidden, mobile visible */
+        .shop-cat-dropdown-wrap {
+          display: none; padding: 16px 20px 0;
         }
-        .shop-chips {
-          display: flex; gap: 8px; flex-wrap: nowrap;
-          overflow-x: auto; -webkit-overflow-scrolling: touch;
-          padding: 0 20px 12px; scrollbar-width: none;
+        .shop-cat-select {
+          width: 100%; padding: 12px 16px;
+          font-family: var(--font-sans); font-size: 12px; font-weight: 600;
+          letter-spacing: 0.08em; text-transform: uppercase;
+          background: var(--surface); color: var(--ink);
+          border: 1px solid var(--border); border-radius: 0;
+          appearance: none; -webkit-appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+          background-repeat: no-repeat; background-position: right 14px center;
+          cursor: pointer;
         }
-        .shop-chips::-webkit-scrollbar { display: none; }
-        .shop-chip {
-          display: inline-flex; padding: 8px 16px; flex-shrink: 0;
-          font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-          text-decoration: none; border: 1px solid var(--border);
-          color: var(--ink-muted); transition: all 0.2s; white-space: nowrap;
-        }
-        .shop-chip:hover { border-color: var(--gold); color: var(--gold); }
-        .shop-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+        .shop-cat-select:focus { outline: none; border-color: var(--gold); }
         /* banner */
         .shop-hero-banner {
           position: relative; height: 300px; overflow: hidden;
@@ -112,7 +111,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           .shop-layout { grid-template-columns: 1fr; padding-top: 32px; }
           .shop-sidebar { position: static; display: none; }
           .shop-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-          .shop-chips-wrap { display: block; }
+          .shop-cat-dropdown-wrap { display: block; }
           .shop-hero-banner { height: 220px; }
         }
         @media (max-width: 500px) {
@@ -147,14 +146,9 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </div>
       </div>
 
-      {/* Mobile-only chips (desktop uses sidebar) */}
-      <div className="shop-chips-wrap">
-        <div className="shop-chips">
-          <Link href="/shop" className={`shop-chip${!category ? " active" : ""}`}>All</Link>
-          {CATEGORIES.map(c => (
-            <Link key={c.slug} href={`/shop?category=${c.slug}`} className={`shop-chip${category === c.slug ? " active" : ""}`}>{c.name}</Link>
-          ))}
-        </div>
+      {/* Mobile-only category dropdown (desktop uses sidebar) */}
+      <div className="shop-cat-dropdown-wrap">
+        <CategoryDropdown categories={CATEGORIES} current={category} />
       </div>
 
       <div className="shop-layout">
