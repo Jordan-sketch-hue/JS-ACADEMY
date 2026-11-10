@@ -1,174 +1,183 @@
-﻿import Link from 'next/link'
-import Image from 'next/image'
-import { supabase } from '@/lib/supabase'
-import { ProductCard, ProductCardSkeleton } from '@/components/ProductCard'
-import type { Product } from '@/lib/types'
+export const dynamic = "force-dynamic"
+import type { Metadata } from "next"
+import { supabase } from "@/lib/supabase"
+import Image from "next/image"
+import Link from "next/link"
+import type { Product } from "@/lib/types"
 
-const HERO_IMAGE = 'https://d3u0tzju9qaucj.cloudfront.net/6b92ed1e-f628-44cd-902f-cc0ffa9be3dd/d52c0156-f214-45c5-97e2-f36fd25cac93/c2b6e796-5009-4262-9067-41b946830323.png'
+export const metadata: Metadata = {
+  title: "MyShop — Premium Curated Store | Shop Online Jamaica",
+  description: "Discover curated collections of premium products. Jewelry, home decor, electronics, beauty and more. Fast delivery across Jamaica.",
+}
 
 const CATEGORIES = [
-  { name: 'Baby & Toddler',        slug: 'baby',             desc: 'Safe and fun products for your little ones',              image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&q=80' },
-  { name: 'Beauty & Wellness',     slug: 'beauty',           desc: 'Skincare, tools and beauty essentials for your ritual',   image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&q=80' },
-  { name: 'Cellphone Accessories', slug: 'cellphone',        desc: 'Cases, chargers and must-have phone accessories',         image: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600&q=80' },
-  { name: 'Electronics & Tech',    slug: 'electronics',      desc: 'Gadgets, devices and cutting-edge technology',            image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=600&q=80' },
-  { name: 'Fitness & Outdoor',     slug: 'fitness',          desc: 'Gear for workouts and outdoor adventures',                image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80' },
-  { name: 'Furniture',             slug: 'furniture',        desc: 'Stylish pieces for every room in your home',              image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80' },
-  { name: 'Patio & Garden',        slug: 'garden',           desc: 'Outdoor living and garden essentials',                    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80' },
-  { name: 'Home Improvement',      slug: 'home-improvement', desc: 'Tools and supplies for every DIY project',                image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&q=80' },
-  { name: 'Home & Living',         slug: 'home-living',      desc: 'Decor, lighting and everything to elevate your space',    image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&q=80' },
-  { name: 'Jewelry & Accessories', slug: 'jewelry',          desc: 'Statement pieces and everyday essentials',                image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80' },
-  { name: 'Lifestyle Finds',       slug: 'lifestyle',        desc: 'Viral picks, trending items and our must-haves',          image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80' },
-  { name: 'Office Products',       slug: 'office',           desc: 'Everything for a productive workspace',                   image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80' },
-  { name: 'Pet Supplies',          slug: 'pets',             desc: 'Toys, treats and essentials for your pets',               image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80' },
+  { name: "Baby & Toddler",        slug: "baby" },
+  { name: "Beauty & Wellness",     slug: "beauty" },
+  { name: "Cellphone Accessories", slug: "cellphone" },
+  { name: "Electronics & Tech",    slug: "electronics" },
+  { name: "Fitness & Outdoor",     slug: "fitness" },
+  { name: "Furniture",             slug: "furniture" },
+  { name: "Patio & Garden",        slug: "garden" },
+  { name: "Home Improvement",      slug: "home-improvement" },
+  { name: "Home & Living",         slug: "home-living" },
+  { name: "Jewelry & Accessories", slug: "jewelry" },
+  { name: "Lifestyle Finds",       slug: "lifestyle" },
+  { name: "Office Products",       slug: "office" },
+  { name: "Pet Supplies",          slug: "pets" },
+  { name: "Adults Only · 18+",      slug: "adults", href: "/adults" },
 ]
 
-async function getNewArrivals(): Promise<Product[]> {
-  const { data } = await supabase
-    .from('myshop_products')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(8)
-  return (data ?? []) as Product[]
+async function getFeatured(limit = 6): Promise<Product[]> {
+  try {
+    const { data } = await supabase
+      .from("myshop_products").select("*")
+      .eq("active", true).not("image_url", "is", null)
+      .order("created_at", { ascending: false }).limit(limit)
+    return (data ?? []) as Product[]
+  } catch {
+    return []
+  }
 }
 
 export default async function HomePage() {
-  const products = await getNewArrivals()
+  const featured = await getFeatured(6)
+  const heroProduct = featured[0]
+  const stories = featured.slice(0, 3)
+  const newArrivals = featured.slice(0, 3)
 
   return (
-    <div className="animate-fade-in">
-      {/* Hero */}
-      <section className="bg-[#0a0f1e] text-white relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #1a3a6e 0%, transparent 60%), radial-gradient(circle at 80% 20%, #c8a84b22 0%, transparent 60%)' }}
-        />
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)', backgroundSize: '48px 48px' }}
-        />
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .hero{position:relative;height:92vh;min-height:560px;overflow:hidden;background:var(--dark)}
+        .hero-img{object-fit:cover;object-position:center}
+        .hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,0.72) 40%,rgba(0,0,0,0.2))}
+        .hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 clamp(24px,6vw,120px);max-width:720px}
+        .hero-eyebrow{font-family:var(--font-stamp);font-size:11px;letter-spacing:.22em;color:var(--gold);margin-bottom:20px}
+        .hero-title{font-family:var(--font-serif);font-size:clamp(38px,5.5vw,72px);font-weight:900;line-height:1.05;color:#fff;margin-bottom:28px}
+        .hero-title em{font-style:italic;color:var(--gold)}
+        .hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+        .stories-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px 0}
+        .story-card{position:relative;aspect-ratio:3/4;overflow:hidden;cursor:pointer;text-decoration:none}
+        .story-card img{object-fit:cover;transition:transform 0.6s ease}
+        .story-card:hover img{transform:scale(1.04)}
+        .story-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 40%,transparent)}
+        .story-text{position:absolute;bottom:0;left:0;right:0;padding:28px 24px}
+        .arrivals-section{background:#F5F4F0;padding:72px 24px}
+        .arrivals-inner{max-width:1280px;margin:0 auto}
+        .section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px}
+        .arrivals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+        .arrival-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;transition:all 0.3s;text-decoration:none}
+        .arrival-card:hover{border-color:rgba(200,168,75,0.4);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.08)}
+        .arrival-img{position:relative;aspect-ratio:1;overflow:hidden;background:#F5F4F0}
+        .arrival-img img{object-fit:cover;transition:transform 0.6s}
+        .arrival-card:hover .arrival-img img{transform:scale(1.04)}
+        .arrival-body{padding:16px 18px 20px}
+        .cats-section{padding:64px 24px;max-width:1280px;margin:0 auto}
+        .cats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+        .cat-card{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--dark);text-decoration:none}
+        .cat-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent)}
+        .visualizer-cta{background:var(--dark);padding:80px 24px;text-align:center}
+        .visualizer-cta-inner{max-width:640px;margin:0 auto}
+        @media(max-width:900px){.stories-grid,.arrivals-grid{grid-template-columns:repeat(2,1fr)}.cats-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:500px){.stories-grid{grid-template-columns:1fr}.arrivals-grid{grid-template-columns:1fr}}
+      ` }} />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-28">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: text content */}
-            <div>
-              <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-3 py-1 text-xs font-medium mb-6 text-[#c8a84b] tracking-wide uppercase">
-                <span className="w-1.5 h-1.5 bg-[#c8a84b] rounded-full animate-pulse" />
-                PREMIUM DROPSHIP STORE
-              </div>
-              <h1 className="text-4xl sm:text-6xl font-black leading-[1.05] mb-6 max-w-xl">
-                Shop The <span className="text-[#c8a84b]">Vibe.</span>
-              </h1>
-              <p className="text-white/60 text-lg max-w-md mb-10 leading-relaxed">
-                Trending finds, curated collections, and premium goods ΓÇö delivered from worldwide to your door.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Link href="/shop" className="inline-flex items-center gap-2 bg-[#c8a84b] hover:bg-[#d4b455] text-[#0a0f1e] font-bold px-6 py-3.5 rounded-full transition-all hover:scale-105 hover:shadow-lg hover:shadow-[#c8a84b]/30">
-                  Shop All ΓåÆ
-                </Link>
-                <Link href="/shop?category=jewelry" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-3.5 rounded-full transition-all hover:scale-105">
-                  Shop Jewelry
-                </Link>
-              </div>
-
-              <div className="flex gap-8 mt-16 pt-8 border-t border-white/10">
-                <div><p className="text-2xl font-black">25+</p><p className="text-white/50 text-xs mt-0.5">Curated products</p></div>
-                <div><p className="text-2xl font-black">13</p><p className="text-white/50 text-xs mt-0.5">Categories</p></div>
-                <div><p className="text-2xl font-black">JAΓåÆUS</p><p className="text-white/50 text-xs mt-0.5">Worldwide shipping</p></div>
-              </div>
-            </div>
-
-            {/* Right: hero product image */}
-            <div className="relative hidden lg:block">
-              <div
-                className="relative rounded-3xl overflow-hidden aspect-[4/3]"
-                style={{ boxShadow: '0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06)' }}
-              >
-                <Image
-                  src={HERO_IMAGE}
-                  alt="Premium products ΓÇö jewelry, electronics, home decor and more"
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="50vw"
-                />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(10,15,30,0.25) 0%, transparent 60%)' }} />
-              </div>
-              {/* Floating badge */}
-              <div
-                className="absolute -bottom-4 -left-4 glass-dark rounded-2xl px-4 py-3 flex items-center gap-3"
-                style={{ border: '1px solid rgba(201,168,76,0.3)' }}
-              >
-                <span className="text-2xl font-black text-[#c8a84b]">13</span>
-                <div>
-                  <p className="text-white text-xs font-bold leading-tight">Categories</p>
-                  <p className="text-white/50 text-[10px]">Everything you need</p>
-                </div>
-              </div>
-            </div>
+      {/* HERO */}
+      <section className="hero">
+        {heroProduct?.image_url ? (
+          <Image src={heroProduct.image_url} alt="Featured product" fill className="hero-img" priority sizes="100vw" />
+        ) : (
+          <div style={{ position:"absolute",inset:0,background:"linear-gradient(135deg,#0D0D0D,#1a1a1a)" }} />
+        )}
+        <div className="hero-overlay" />
+        <div className="hero-content">
+          <p className="hero-eyebrow">Premium Curated Store</p>
+          <h1 className="hero-title">Find the Things<br /><em>Worth Having.</em></h1>
+          <div className="hero-actions">
+            <Link href="/shop" className="btn-primary">Shop All Products</Link>
+            <Link href="/shop?category=jewelry" className="btn-outline-white">Explore Jewelry</Link>
           </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="flex items-baseline justify-between mb-8">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#c8a84b] mb-1">EXPLORE</p>
-            <h2 className="text-2xl sm:text-3xl font-black">Shop by Category</h2>
-          </div>
-          <Link href="/shop" className="text-sm font-semibold text-[#0a0f1e] hover:text-[#c8a84b] transition-colors flex items-center gap-1">
-            View all <span>ΓåÆ</span>
-          </Link>
-        </div>
+      {/* EDITORIAL STORIES */}
+      {stories.length > 0 && (
+        <section className="stories-grid">
+          {stories.map(p => (
+            <Link key={p.id} href={"/shop/" + p.slug} className="story-card">
+              {p.image_url && (
+                <Image src={p.image_url} alt={p.name} fill sizes="33vw" />
+              )}
+              <div className="story-overlay" />
+              <div className="story-text">
+                {p.category && <span className="stamp" style={{ display:"block",marginBottom:8 }}>{p.category}</span>}
+                <p style={{ fontFamily:"var(--font-serif)",fontSize:"clamp(15px,2vw,20px)",fontWeight:800,color:"#fff",lineHeight:1.2 }}>{p.name}</p>
+              </div>
+            </Link>
+          ))}
+        </section>
+      )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {CATEGORIES.map((cat, i) => (
-            <Link
-              key={cat.slug}
-              href={`/shop?category=${cat.slug}`}
-              className="animate-fade-in relative rounded-2xl overflow-hidden aspect-[4/3] group"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <Image
-                src={cat.image}
-                alt={cat.name}
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-4">
-                <h3 className="text-white font-bold text-sm leading-tight">{cat.name}</h3>
-                <p className="text-white/70 text-xs mt-0.5 line-clamp-2">{cat.desc}</p>
-                <span className="inline-flex items-center gap-1 text-white/90 text-xs font-semibold mt-2">SHOP NOW ΓåÆ</span>
+      {/* NEW ARRIVALS */}
+      {newArrivals.length > 0 && (
+        <section className="arrivals-section">
+          <div className="arrivals-inner">
+            <div className="section-header">
+              <div>
+                <span className="stamp" style={{ display:"block",marginBottom:8 }}>Just In</span>
+                <h2 style={{ fontFamily:"var(--font-serif)",fontSize:"clamp(24px,3vw,38px)",fontWeight:900,color:"var(--ink)" }}>New Arrivals</h2>
+              </div>
+              <Link href="/shop" className="btn-outline">View All</Link>
+            </div>
+            <div className="arrivals-grid">
+              {newArrivals.map(p => (
+                <Link key={p.id} href={"/shop/" + p.slug} className="arrival-card">
+                  <div className="arrival-img">
+                    {p.image_url && <Image src={p.image_url} alt={p.name} fill sizes="(max-width:900px) 50vw,33vw" />}
+                  </div>
+                  <div className="arrival-body">
+                    {p.category && <span className="stamp" style={{ display:"block",marginBottom:6 }}>{p.category}</span>}
+                    <p style={{ fontFamily:"var(--font-serif)",fontSize:16,fontWeight:700,color:"var(--ink)",marginBottom:8,lineHeight:1.3 }}>{p.name}</p>
+                    <p style={{ fontFamily:"var(--font-serif)",fontSize:18,fontWeight:900,color:"var(--ink)" }}>{"J$" + (p.price_jmd/100).toLocaleString()}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* CATEGORY GRID */}
+      <section className="cats-section">
+        <div style={{ marginBottom:40 }}>
+          <span className="stamp" style={{ display:"block",marginBottom:8 }}>Browse by Category</span>
+          <h2 style={{ fontFamily:"var(--font-serif)",fontSize:"clamp(24px,3vw,38px)",fontWeight:900,color:"var(--ink)" }}>Shop the Collections</h2>
+        </div>
+        <div className="cats-grid">
+          {CATEGORIES.map(cat => (
+            <Link key={cat.slug} href={(cat as {slug:string;href?:string}).href ?? "/shop?category=" + cat.slug} className="cat-card">
+              <div className="cat-overlay">
+                <span className="stamp">{cat.name}{(cat as {slug:string;href?:string}).href ? " 🔒" : ""}</span>
+                <p style={{ fontFamily:"var(--font-serif)",fontSize:12,color:"rgba(255,255,255,0.5)",marginTop:4 }}>Shop Now</p>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* New Arrivals */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
-        <div className="flex items-baseline justify-between mb-8">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#c8a84b] mb-1">TRENDING</p>
-            <h2 className="text-2xl sm:text-3xl font-black">New Arrivals</h2>
-          </div>
-          <Link href="/shop" className="text-sm font-semibold text-[#0a0f1e] hover:text-[#c8a84b] transition-colors flex items-center gap-1">
-            All products ΓåÆ
-          </Link>
+      {/* AI VISUALIZER CTA */}
+      <section className="visualizer-cta">
+        <div className="visualizer-cta-inner">
+          <span className="stamp" style={{ display:"block",marginBottom:16 }}>AI Room Visualizer</span>
+          <h2 style={{ fontFamily:"var(--font-serif)",fontSize:"clamp(28px,4vw,48px)",fontWeight:900,color:"#fff",lineHeight:1.1,marginBottom:16 }}>
+            See It In <em style={{ fontStyle:"italic",color:"var(--gold)" }}>Your Space</em>
+          </h2>
+          <p style={{ color:"rgba(255,255,255,0.5)",fontSize:15,lineHeight:1.8,marginBottom:32 }}>
+            Generate a room scene with our AI — every item you see is purchasable directly from the store.
+          </p>
+          <Link href="/visualizer" className="btn-gold">Try the Visualizer</Link>
         </div>
-
-        {products.length === 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
-          </div>
-        )}
       </section>
-    </div>
+    </>
   )
 }
