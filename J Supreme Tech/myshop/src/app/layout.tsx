@@ -1,9 +1,11 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import "./globals.css"
 import { CartProvider } from "@/context/CartContext"
 import { CurrencyProvider } from "@/context/CurrencyContext"
 import Nav from "@/components/Nav"
 import { ToastContainer } from "@/components/ToastContainer"
+import RegionPip from "@/components/RegionPip"
+import AuthTrigger from "@/components/AuthTrigger"
 
 export const metadata: Metadata = {
   title: {
@@ -53,6 +55,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CurrencyProvider>
             <Nav />
             <ToastContainer />
+            <RegionPip />
+            <AuthTrigger />
             <main style={{ flex: 1 }}>{children}</main>
             <footer style={{ background: "var(--dark)", color: "rgba(255,255,255,0.35)", padding: "56px 24px 36px" }}>
               <div style={{ maxWidth: 1280, margin: "0 auto" }}>
@@ -98,3 +102,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   )
 }
+
