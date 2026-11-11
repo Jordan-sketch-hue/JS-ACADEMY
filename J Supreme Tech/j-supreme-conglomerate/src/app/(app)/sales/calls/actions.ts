@@ -15,6 +15,11 @@ export interface CallLogRow {
   booked_followup: boolean;
   notes: string | null;
   created_at: string;
+  // cost tracking (v1.0.22+)
+  rime_chars?: number;
+  anthropic_input_tokens?: number;
+  anthropic_output_tokens?: number;
+  cost_usd?: number;
 }
 
 export interface CallSummary {
@@ -29,7 +34,11 @@ export async function fetchCallLogs(limit = 100): Promise<CallLogRow[]> {
   await requireOwnerClerkId();
 
   const botUrl = process.env.SALES_BOT_URL ?? "https://ample-exploration-production-ef51.up.railway.app";
-  const adminKey = process.env.SALES_BOT_ADMIN_KEY ?? "jst-sales-bot-2026";
+  const adminKey = process.env.SALES_BOT_ADMIN_KEY;
+  if (!adminKey) {
+    console.error("[calls] SALES_BOT_ADMIN_KEY env var not set");
+    return [];
+  }
 
   try {
     const res = await fetch(`${botUrl}/call-logs?limit=${limit}`, {
@@ -40,7 +49,8 @@ export async function fetchCallLogs(limit = 100): Promise<CallLogRow[]> {
       console.error("[calls] fetchCallLogs bot error:", res.status);
       return [];
     }
-    const data = await res.json() as CallLogRow[];
+    const body = await res.json() as { call_logs: CallLogRow[] } | CallLogRow[];
+    const data = Array.isArray(body) ? body : body.call_logs ?? [];
     return data;
   } catch (e: any) {
     console.error("[calls] fetchCallLogs error:", e.message);
