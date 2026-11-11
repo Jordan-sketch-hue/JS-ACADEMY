@@ -18,6 +18,7 @@ import { fileURLToPath } from "url";
 import xlsx from "xlsx";
 import https from "https";
 import http from "http";
+import { SEED_PRODUCTS, MARKUP_RULES } from "./seed-urls.mjs";
 
 puppeteer.use(StealthPlugin());
 
@@ -25,8 +26,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
 
-const MARGIN    = 1.35;    // 35% markup — change this to adjust all prices
 const JMD_RATE  = 157;     // USD → JMD rate (update monthly)
+const DEFAULT_MARKUP = { min: 50, max: 90 }; // fallback if category not in MARKUP_RULES
 const MAX_IMG_KB = 200;
 
 // Admin API auth
@@ -82,9 +83,12 @@ function loadResearchSheet() {
 
 // ─── PRICE ────────────────────────────────────────────────────────────────────
 
-function calcPriceJmd(usdPrice) {
-  const raw = usdPrice * JMD_RATE * MARGIN;
-  return Math.round(raw / 100) * 100; // nearest J$100
+function calcPriceJmd(usdPrice, category) {
+  const range = MARKUP_RULES?.[category] ?? DEFAULT_MARKUP;
+  const pct = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+  const raw = usdPrice * JMD_RATE * (1 + pct / 100);
+  const price = Math.round(raw / 100) * 100; // nearest J$100
+  return { price, pct };
 }
 
 function toSlug(name) {
@@ -482,13 +486,23 @@ async function main() {
   const args    = process.argv.slice(2);
   const catIdx  = args.indexOf("--category");
   const catArg  = catIdx !== -1 ? args[catIdx + 1] : null;
-  const urls    = args.filter((a) => a.startsWith("http"));
+  const seedMode = args.includes("--seed");
+
+  // --seed: iterate all URLs from SEED_PRODUCTS, using per-entry category
+  let urls;
+  if (seedMode) {
+    urls = SEED_PRODUCTS.map((p) => p.url);
+    console.log(`\n🌱  Seed mode — ${urls.length} products across all categories\n`);
+  } else {
+    urls = args.filter((a) => a.startsWith("http"));
+  }
 
   if (!urls.length) {
     console.log("\nUsage:");
-    console.log("  node scripts/scrape-product.mjs <url1> [url2 ...] [--category 'Furniture']\n");
+    console.log("  node scripts/scrape-product.mjs <url1> [url2 ...] [--category 'Furniture']");
+    console.log("  node scripts/scrape-product.mjs --seed\n");
     console.log("Example:");
-    console.log('  node scripts/scrape-product.mjs https://www.cjdropshipping.com/product/xxxx https://www.amazon.com/dp/xxxx --category "Fitness"\n');
+    console.log('  node scripts/scrape-product.mjs https://www.cjdropshipping.com/product/xxxx --category "Fitness"\n');
     process.exit(1);
   }
 
@@ -501,6 +515,9 @@ async function main() {
   const results = { inserted: [], flagged: [], rejected: [] };
 
   for (const url of urls) {
+    // In seed mode, derive category from SEED_PRODUCTS entry instead of CLI arg
+    const seedEntry = seedMode ? SEED_PRODUCTS.find((p) => p.url === url) : null;
+    const effectiveCatArg = seedEntry?.category ?? catArg;
     console.log(`\n🔍  ${url}`);
 
     // 1. Scrape
@@ -542,7 +559,7 @@ async function main() {
     }
 
     // 4. Category
-    const category = catArg || demand?.sheetCategory?.trim() || guessCategory(scraped.name);
+    const category = effectiveCatArg || demand?.sheetCategory?.trim() || guessCategory(scraped.name);
 
     // 5. Slug + Image
     const slug    = toSlug(scraped.name);
@@ -568,7 +585,7 @@ async function main() {
 
     // 6. Price
     const rawUsd  = scraped.price || (demand?.avgPrice ? parseFloat(demand.avgPrice) : 15);
-    const priceJmd = calcPriceJmd(rawUsd);
+    const { price: priceJmd, pct: markupPct } = calcPriceJmd(rawUsd, category);
 
     // 7. Insert
     const variants = (scraped.variants || []).filter((v) => v.options.length > 1);
@@ -588,6 +605,11 @@ async function main() {
       delivery_days_max: shipping.defaultMax,
       supplier_url:      url,
       supplier_name:     shipping.supplierName,
+      cost_usd:          rawUsd,
+      markup_pct:        markupPct,
+      is_promo:          false,
+      promo_price_jmd:   null,
+      promo_ends_at:     null,
     };
     if (variants.length) {
       console.log(`    🎨 Variants: ${variants.map((v) => `${v.label}(${v.options.length})`).join(", ")}`);

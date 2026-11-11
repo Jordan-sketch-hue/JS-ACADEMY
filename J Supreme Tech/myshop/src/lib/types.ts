@@ -29,6 +29,11 @@ export interface Product {
   delivery_days_max?: number
   supplier_url?: string
   supplier_name?: string
+  cost_usd?: number
+  markup_pct?: number
+  is_promo?: boolean
+  promo_price_jmd?: number | null
+  promo_ends_at?: string | null
 }
 
 export interface CartItem {
