@@ -1,4 +1,4 @@
-import {
+﻿import {
   api,
   escapeHtml,
   formatStatus,
@@ -41,6 +41,15 @@ async function boot() {
       },
     });
     await initSupabase();
+
+    // Supabase recovery redirect: #access_token=...&type=recovery
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    if (hashParams.get('type') === 'recovery' && hashParams.get('access_token')) {
+      history.replaceState({}, '', loginPath);
+      renderSetPassword();
+      return;
+    }
+
     if (getSession()) await refreshCurrentUser();
     window.addEventListener('popstate', () => renderRoute(location.pathname, false));
     renderRoute(location.pathname || '/admin/login', true);
@@ -194,6 +203,46 @@ function renderLogin() {
       toast('Password reset email sent.', 'success');
     } catch (err) {
       toast(err.message, 'error');
+    }
+  });
+}
+
+
+function renderSetPassword() {
+  app.innerHTML = `
+    <div class="login-wrap">
+      <form class="login-card" id="set-password-form">
+        <img src="/images/logo.png?v=mqbi8stn" alt="Solace Auto Imports" width="80" height="80" style="display:block;margin:0 auto 1rem;border-radius:50%" />
+        <h1>Set New Password</h1>
+        <p>Enter a new password for your Solace backoffice account.</p>
+        <div class="field"><label>New Password</label><input type="password" name="password" required autocomplete="new-password" minlength="8" /></div>
+        <div class="field"><label>Confirm Password</label><input type="password" name="confirm" required autocomplete="new-password" minlength="8" /></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Set Password</button>
+        <p class="status-msg" id="set-status"></p>
+      </form>
+    </div>`;
+
+  document.getElementById("set-password-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const password = fd.get("password");
+    const confirm = fd.get("confirm");
+    const status = document.getElementById("set-status");
+    if (password !== confirm) { status.textContent = "Passwords do not match."; return; }
+    status.textContent = "Saving...";
+    try {
+      const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+      const config = await fetch("/api/config").then((r) => r.json());
+      const sb = createClient(config.supabaseUrl, config.supabaseAnonKey, {
+        auth: { detectSessionInUrl: true, persistSession: false },
+      });
+      const { error } = await sb.auth.updateUser({ password });
+      if (error) throw error;
+      await sb.auth.signOut();
+      toast("Password updated. Please sign in.", "success");
+      navigate(loginPath, true);
+    } catch (err) {
+      status.textContent = err.message;
     }
   });
 }

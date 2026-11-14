@@ -52,7 +52,8 @@ export async function signOut() {
 }
 
 export async function resetPassword(email) {
-  const redirectTo = `${window.location.origin}/admin/login`;
+  const base = location.pathname.startsWith('/backoffice') ? '/backoffice' : '/admin';
+  const redirectTo = `${window.location.origin}${base}/login`;
   const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
   if (error) throw error;
 }
