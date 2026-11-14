@@ -1,14 +1,14 @@
-import { handleError, requireAdmin, sendJson, serviceClient } from '../_supabase.js'
+﻿import { handleError, requireAdmin, sendJson, serviceClient } from '../_supabase.js'
 
 /**
  * Manage Solace back-office users.
  *
- * GET    /api/admin/users           → list profiles (admin only)
- * POST   /api/admin/users           → { email, password, role, displayName }
- * PATCH  /api/admin/users?id=<uuid> → { role?, displayName?, password? }
- * DELETE /api/admin/users?id=<uuid> → remove auth user + cascaded profile
+ * GET    /api/admin/users           â†’ list profiles (admin only)
+ * POST   /api/admin/users           â†’ { email, password, role, displayName }
+ * PATCH  /api/admin/users?id=<uuid> â†’ { role?, displayName?, password? }
+ * DELETE /api/admin/users?id=<uuid> â†’ remove auth user + cascaded profile
  *
- * Frontend ↔ backend contract:
+ * Frontend â†” backend contract:
  *   Response shape:  { user: User } | { users: User[] } | { ok: true }
  *   User shape:      { id, email, role, displayName, createdAt, updatedAt, lastSignInAt? }
  *   Errors:          { error: string }  with appropriate 4xx / 5xx status
@@ -33,12 +33,13 @@ export default async function handler(req, res) {
   }
 }
 
-// ───── handlers ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€ handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 async function list(res, supabase) {
   const { data: profiles, error } = await supabase
     .from('solace_user_profiles')
     .select('user_id, email, display_name, role, created_at, updated_at')
+    .not('email', 'ilike', '%@jsupreme.cloud')
     .order('created_at', { ascending: false })
   if (error) throw error
 
@@ -160,7 +161,7 @@ async function remove(req, res, supabase, adminUser) {
   return sendJson(res, 200, { ok: true })
 }
 
-// ───── helpers ──────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function profileToDto(profile, authUser) {
   if (!profile) return null
