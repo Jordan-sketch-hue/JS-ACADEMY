@@ -71,10 +71,11 @@ About J Supreme Tech: a Jamaican digital agency that builds websites, booking an
 
 STRUCTURE: ${hookStyle}
 
-Write 2-3 short sentences that:
-1. Name the specific gap for their ${category} niche (make it feel like you noticed it on their page, not a generic observation)
-2. In your own words — different phrasing every time — say what J Supreme Tech does to fix it. Never use the same clause structure or wording as any previous message. Describe what we do in a way that fits naturally into the sentence, specific to what this niche actually needs.
-3. End with a soft open door — a single casual question or offer. Never repeat the same closing phrase. Keep it varied and conversational.
+Write 2-3 short sentences. Put EACH sentence on its own line — do not run them together into a paragraph.
+
+Sentence 1: Name the specific gap for their ${category} niche (make it feel like you noticed it on their page, not a generic observation)
+Sentence 2: In your own words — different phrasing every time — say what J Supreme Tech does to fix it. Never use the same clause structure or wording as any previous message. Specific to what this niche needs.
+Sentence 3: A soft open door — a single casual question or offer. Never repeat the same phrase. Varied, conversational.
 
 Tone: direct but warm. Like someone who actually knows the niche and genuinely spotted an opportunity. Not a sales robot.
 
@@ -110,3 +111,4 @@ Output ONLY the message. No quotes, no labels, no explanation.`
   await sb.from('tiktok_leads').update({ message }).eq('id', lead_id)
   return res.status(200).json({ message, cached: false })
 }
+
