@@ -32,34 +32,6 @@ const HOOK_STYLES = [
   'Start with what their audience is probably doing after watching their content, then say what you do.',
 ]
 
-const JST_DESCRIPTIONS = [
-  'We handle the whole digital side — the site, the booking or ordering flow, and the system behind it.',
-  'We set up the infrastructure behind a page like theirs — the site, the sales flow, all of it.',
-  'That is exactly what we build — the digital layer that sits behind the content and turns it into revenue.',
-  'We put the backend in place: the site, the checkout or booking flow, the whole system.',
-  'We are a digital agency out of Jamaica — we build the site and the sales or booking system behind it.',
-  'We specialize in building that missing piece — the online infrastructure that actually converts.',
-  'We handle websites, booking systems, and the digital setup that makes content work commercially.',
-  'That is the kind of problem we solve — the gap between strong content and an actual way to sell.',
-  'We build the digital side of things: the site, the checkout, the systems that capture that audience.',
-  'We set up everything from the site to the ordering or booking flow — the full commercial layer.',
-]
-
-const SOFT_CLOSES = [
-  'Worth a conversation?',
-  'Happy to show you what that looks like.',
-  'Open to a quick chat about it?',
-  'Worth a look if the timing is right.',
-  'Let me know if that is something you would want to explore.',
-  'Could be worth a quick back and forth.',
-  'Happy to walk you through what we would do.',
-  'Open to talking through it if you are curious.',
-  'Worth exploring if growth is on your radar.',
-  'Let me know if that resonates.',
-  'Happy to send over a few examples.',
-  'Worth a quick conversation if you are open to it.',
-]
-
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)]
 }
@@ -87,8 +59,6 @@ module.exports = async (req, res) => {
 
   const gap = CATEGORY_GAPS[category] || CATEGORY_GAPS.general
   const hookStyle = pick(HOOK_STYLES)
-  const jstDesc = pick(JST_DESCRIPTIONS)
-  const softClose = pick(SOFT_CLOSES)
   const followerCtx = followers > 10000
     ? `They have ${(followers / 1000).toFixed(0)}K followers.`
     : followers > 0 ? `They have ${followers} followers.` : ''
@@ -97,16 +67,14 @@ module.exports = async (req, res) => {
 
 The common gap for businesses like theirs: they are ${gap}.
 
-J Supreme Tech is a Jamaican digital agency. For this message, describe what we do using ONLY this phrasing (do not rephrase or expand it): "${jstDesc}"
-
-The closing line must be EXACTLY: "${softClose}" — use it verbatim, do not alter it.
+About J Supreme Tech: a Jamaican digital agency that builds websites, booking and ordering systems, and the digital infrastructure that turns social media content into actual sales.
 
 STRUCTURE: ${hookStyle}
 
 Write 2-3 short sentences that:
 1. Name the specific gap for their ${category} niche (make it feel like you noticed it on their page, not a generic observation)
-2. Use the JST description above word for word to say what we do about it
-3. End with the closing line above word for word
+2. In your own words — different phrasing every time — say what J Supreme Tech does to fix it. Never use the same clause structure or wording as any previous message. Describe what we do in a way that fits naturally into the sentence, specific to what this niche actually needs.
+3. End with a soft open door — a single casual question or offer. Never repeat the same closing phrase. Keep it varied and conversational.
 
 Tone: direct but warm. Like someone who actually knows the niche and genuinely spotted an opportunity. Not a sales robot.
 
@@ -117,7 +85,7 @@ Rules:
 - Do NOT use exclamation marks or emoji
 - Do NOT start with "Hi", "Hey", or "Hello"
 - Write like a real person: contractions fine, casual fine
-- Each message must feel specific to this niche, not copy-pasted
+- Every single sentence must feel written fresh for this specific account — no copy-paste energy
 
 Output ONLY the message. No quotes, no labels, no explanation.`
 
