@@ -10,11 +10,13 @@ const JARVIS_ENDPOINT = 'https://jarvis-wa-reader-production.up.railway.app/send
 const JARVIS_SECRET = process.env.JARVIS_WA_SECRET || 'jst-wa-send-2026'
 const JORDAN_JID = '6582182282'
 
+const PREVIEW  = /\bpreview\b/i
+const GROW     = /\bgrow\b/i
 const POSITIVE = /\b(y|yes|yeah|yep|sure|interested|definitely|absolutely|ok|okay|yh|yea)\b/i
 const NEGATIVE = /\b(n|no|nope|not interested|stop|unsubscribe|remove)\b/i
 
 async function notifyJordan(from: string, body: string, sentiment: string) {
-  const emoji = sentiment === 'positive' ? '🟢' : sentiment === 'negative' ? '🔴' : '🟡'
+  const emoji = sentiment === 'preview' ? '👀' : sentiment === 'grow' ? '📈' : sentiment === 'positive' ? '🟢' : sentiment === 'negative' ? '🔴' : '🟡'
   const msg = `${emoji} SMS Reply\n\nFrom: ${from}\nMessage: "${body}"\n\nStatus: ${sentiment.toUpperCase()}`
   await fetch(JARVIS_ENDPOINT, {
     method: 'POST',
@@ -38,7 +40,9 @@ export async function POST(req: NextRequest) {
     const to: string = msg?.to?.[0]?.phone_number || ''
 
     let sentiment = 'neutral'
-    if (POSITIVE.test(body)) sentiment = 'positive'
+    if (PREVIEW.test(body)) sentiment = 'preview'
+    else if (GROW.test(body)) sentiment = 'grow'
+    else if (POSITIVE.test(body)) sentiment = 'positive'
     else if (NEGATIVE.test(body)) sentiment = 'negative'
 
     await supabase.from('sms_replies').insert({
