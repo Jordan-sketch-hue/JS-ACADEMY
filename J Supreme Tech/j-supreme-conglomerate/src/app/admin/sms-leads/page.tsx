@@ -6,6 +6,8 @@ const supabase = createClient(
 )
 
 const SENTIMENT_LABEL: Record<string, { label: string; color: string }> = {
+  preview:  { label: 'WANTS MOCKUP', color: '#8b5cf6' },
+  grow:     { label: 'WANTS PLAN', color: '#3b82f6' },
   positive: { label: 'INTERESTED', color: '#22c55e' },
   negative: { label: 'NOT INTERESTED', color: '#ef4444' },
   neutral:  { label: 'UNCLEAR', color: '#f59e0b' },
@@ -29,7 +31,9 @@ export default async function SmsLeadsPage() {
     .order('created_at', { ascending: false })
     .limit(200)
 
-  const all = replies || []
+  const all      = replies || []
+  const preview  = all.filter(r => r.sentiment === 'preview')
+  const grow     = all.filter(r => r.sentiment === 'grow')
   const positive = all.filter(r => r.sentiment === 'positive')
   const negative = all.filter(r => r.sentiment === 'negative')
   const neutral  = all.filter(r => r.sentiment === 'neutral')
@@ -46,8 +50,10 @@ export default async function SmsLeadsPage() {
         </div>
 
         {/* Stats row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 28 }}>
           {[
+            { label: 'Wants Mockup', count: preview.length, color: '#8b5cf6' },
+            { label: 'Wants Plan', count: grow.length, color: '#3b82f6' },
             { label: 'Interested', count: positive.length, color: '#22c55e' },
             { label: 'Not Interested', count: negative.length, color: '#ef4444' },
             { label: 'Unclear', count: neutral.length, color: '#f59e0b' },
