@@ -291,6 +291,15 @@ function inferCategory(lead){
   return bestScore>0?CAT_MAP[best]||null:null;
 }
 function pickMsg(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function buildFooter(cat){
+  const p=PRICES[currency];
+  const items=[
+    `Website ${p.website}`,`App ${p.app}`,`Both ${p.both}`,
+    `Marketing ${p.marketing}`,`Sales ${p.sales}`,`Bundle ${p.bundle}`
+  ];
+  for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}
+  return items.join(` | `)+`\n\nReply PREVIEW for a free mockup or GROW to see the full plan.\n\nMockup: ${BASE}/t/${cat.slug}\nPortfolio: ${PORTFOLIO}`;
+}
 function buildMessage(cat,lead){
   if(cat&&cat.bases)return pickMsg(cat.bases);
   return pickMsg(['Most businesses here are building an audience without the digital infrastructure to convert it. We build the site, the campaigns, and the systems that make it commercial.','There is good content here but no commercial layer behind it — no proper site, no booking or ordering flow. We set that whole side up.','The audience is there but the infrastructure to monetise it is not. We handle that — websites, campaigns, booking systems, the full setup.']);
@@ -466,7 +475,20 @@ async function generateLeadMsg(lead,cat,force=false){
   }catch(e){console.error(e);}
   if(btn){btn.textContent='Regenerate';btn.disabled=false;}
 }
-function onGenBtn(){if(currentLead&&currentCat){generateLeadMsg(currentLead,currentCat,true);}else if(currentCat){messageBox.textContent=buildMessage(currentCat,null);resetBtn();}}
+function onGenBtn(){
+  if(currentLead&&currentCat){generateLeadMsg(currentLead,currentCat,true);return;}
+  if(!currentCat)return;
+  const btn=document.getElementById('genBtn');
+  btn.textContent='Generating...';btn.disabled=true;
+  fetch('/api/regen',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({category:currentCat.id})})
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.text)messageBox.textContent=d.text+'\n\n'+buildFooter(currentCat);
+      else messageBox.textContent=buildMessage(currentCat,null);
+    })
+    .catch(()=>messageBox.textContent=buildMessage(currentCat,null))
+    .finally(()=>{btn.textContent='Regenerate';btn.disabled=false;});
+}
 function openSheet(cat,lead,tile,svg){
   if(activeTile)activeTile.classList.remove('active');
   activeTile=tile;if(tile)tile.classList.add('active');
