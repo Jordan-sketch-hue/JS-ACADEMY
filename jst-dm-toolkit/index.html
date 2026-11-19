@@ -465,7 +465,7 @@ async function generateLeadMsg(lead,cat,force=false){
   }catch(e){console.error(e);}
   if(btn){btn.textContent='Regenerate';btn.disabled=false;}
 }
-function onGenBtn(){if(currentLead&&currentCat)generateLeadMsg(currentLead,currentCat,true);}
+function onGenBtn(){if(currentLead&&currentCat){generateLeadMsg(currentLead,currentCat,true);}else if(currentCat){messageBox.textContent=buildMessage(currentCat,null);resetBtn();}}
 function openSheet(cat,lead,tile,svg){
   if(activeTile)activeTile.classList.remove('active');
   activeTile=tile;if(tile)tile.classList.add('active');
@@ -480,7 +480,7 @@ function openSheet(cat,lead,tile,svg){
     if(btn){btn.textContent=lead.message?'Regenerate':'Generating...';btn.disabled=!lead.message;}
     if(!lead.message){generateLeadMsg(lead,cat);}
   } else {
-    if(genRow)genRow.hidden=true;
+    if(genRow){genRow.hidden=false;const btn=document.getElementById('genBtn');if(btn){btn.textContent='Regenerate';btn.disabled=false;}}
     messageBox.textContent=buildMessage(cat,lead);
   }
   resetBtn();
