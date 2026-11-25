@@ -1,0 +1,232 @@
+/*
+ * animations.css — JST shared motion system.
+ *
+ * Usage:
+ *   Import in app/globals.css: @import "../shared/animations.css";
+ *   Apply to elements: class="reveal-up" or via useReveal hook (data-reveal).
+ *   The --i custom property drives stagger: style={{ "--i": index }}.
+ *
+ * All animations respect prefers-reduced-motion — they collapse to
+ * opacity-only or disable entirely when the user has requested reduced motion.
+ */
+
+/* ─── Motion tokens ───────────────────────────────────────────────────────── */
+
+:root {
+  --anim-duration-fast:   0.3s;
+  --anim-duration-base:   0.55s;
+  --anim-duration-slow:   0.8s;
+  --anim-ease-out:        cubic-bezier(0.16, 1, 0.3, 1);
+  --anim-ease-in-out:     cubic-bezier(0.4, 0, 0.2, 1);
+  --anim-stagger-step:    0.08s;    /* multiplied by --i for staggered children */
+  --anim-translate-sm:    16px;
+  --anim-translate-md:    32px;
+  --anim-translate-lg:    48px;
+  --anim-scale-card:      0.96;
+}
+
+/* ─── Keyframes ───────────────────────────────────────────────────────────── */
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--anim-translate-md));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-down {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--anim-translate-md)));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-left {
+  from {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--anim-translate-md)));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes reveal-right {
+  from {
+    opacity: 0;
+    transform: translateX(var(--anim-translate-md));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(var(--anim-scale-card));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% center; }
+  to   { background-position: 200% center;  }
+}
+
+/* ─── Base reveal state ───────────────────────────────────────────────────── */
+/* Applied by useReveal hook before intersection fires */
+
+[data-reveal] {
+  opacity: 0;
+  /* pointer-events off until visible so invisible elements don't intercept clicks */
+  pointer-events: none;
+}
+
+[data-reveal="visible"] {
+  pointer-events: auto;
+}
+
+/* ─── Reveal variants ─────────────────────────────────────────────────────── */
+/* Applied when useReveal adds "visible" and the matching variant class exists */
+
+[data-reveal="visible"].animate-up {
+  animation: reveal-up var(--anim-duration-base) var(--anim-ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--anim-stagger-step));
+}
+
+[data-reveal="visible"].animate-down {
+  animation: reveal-down var(--anim-duration-base) var(--anim-ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--anim-stagger-step));
+}
+
+[data-reveal="visible"].animate-left {
+  animation: reveal-left var(--anim-duration-base) var(--anim-ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--anim-stagger-step));
+}
+
+[data-reveal="visible"].animate-right {
+  animation: reveal-right var(--anim-duration-base) var(--anim-ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--anim-stagger-step));
+}
+
+[data-reveal="visible"].animate-scale {
+  animation: reveal-scale var(--anim-duration-base) var(--anim-ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--anim-stagger-step));
+}
+
+[data-reveal="visible"].animate-fade {
+  animation: fade-in var(--anim-duration-base) var(--anim-ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--anim-stagger-step));
+}
+
+/* ─── Section heading reveal ──────────────────────────────────────────────── */
+/* Applied to <h2> and <p> subline pairs in section components */
+
+.section-heading {
+  opacity: 0;
+  transform: translateY(var(--anim-translate-sm));
+  transition:
+    opacity var(--anim-duration-base) var(--anim-ease-out),
+    transform var(--anim-duration-base) var(--anim-ease-out);
+}
+
+.section-heading.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-subline {
+  opacity: 0;
+  transform: translateY(var(--anim-translate-sm));
+  transition:
+    opacity var(--anim-duration-base) var(--anim-ease-out) 0.1s,
+    transform var(--anim-duration-base) var(--anim-ease-out) 0.1s;
+}
+
+.section-subline.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Skeleton / loading shimmer ──────────────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-card) 25%,
+    color-mix(in srgb, var(--accent) 8%, var(--bg-card)) 50%,
+    var(--bg-card) 75%
+  );
+  background-size: 200% auto;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: var(--radius-sm, 4px);
+}
+
+/* ─── Hover lift utility ──────────────────────────────────────────────────── */
+
+.hover-lift {
+  transition:
+    transform var(--anim-duration-fast) var(--anim-ease-out),
+    box-shadow var(--anim-duration-fast) var(--anim-ease-out);
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ─── Reduced-motion overrides ────────────────────────────────────────────── */
+/* When user requests reduced motion: keep visibility changes but skip translate/scale */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;              /* skip initial hide */
+    pointer-events: auto;
+    transition: none;
+    animation: none;
+  }
+
+  [data-reveal="visible"].animate-up,
+  [data-reveal="visible"].animate-down,
+  [data-reveal="visible"].animate-left,
+  [data-reveal="visible"].animate-right,
+  [data-reveal="visible"].animate-scale,
+  [data-reveal="visible"].animate-fade {
+    animation: none;
+  }
+
+  .section-heading,
+  .section-subline {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .hover-lift:hover {
+    transform: none;
+  }
+
+  .skeleton {
+    animation: none;
+    background: var(--bg-card);
+  }
+}
