@@ -109,14 +109,27 @@ export function useRevealChildren<T extends HTMLElement = HTMLElement>(
       { threshold, rootMargin }
     );
 
-    children.forEach((child) => {
-      if (child.dataset.reveal === undefined) {
-        child.dataset.reveal = "";
-      }
+    const observeChild = (child: HTMLElement) => {
+      if (child.dataset.reveal === undefined) child.dataset.reveal = "";
       observer.observe(child);
-    });
+    };
 
-    return () => observer.disconnect();
+    children.forEach(observeChild);
+
+    // Re-observe children added after a filter/category change (React mounts new nodes
+    // without changing our deps, so the IntersectionObserver never sees them otherwise).
+    const mo = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        mutation.addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+          if (node.matches(childSelector)) observeChild(node);
+          node.querySelectorAll<HTMLElement>(childSelector).forEach(observeChild);
+        });
+      }
+    });
+    mo.observe(container, { childList: true, subtree: true });
+
+    return () => { observer.disconnect(); mo.disconnect(); };
   }, [childSelector, threshold, rootMargin, once]);
 
   return ref;

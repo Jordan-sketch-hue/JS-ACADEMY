@@ -46,21 +46,24 @@ alter table jst_tenant_members enable row level security;
 create policy "member_can_read_own_tenant" on jst_tenant_members
   for select using (user_id = auth.uid());
 
+-- Helper: get current user's role in a tenant (SECURITY DEFINER bypasses RLS, preventing recursion)
+create or replace function jst_my_role_in_tenant(p_tenant_id uuid)
+returns text language sql security definer as $$
+  select role from jst_tenant_members
+  where tenant_id = p_tenant_id and user_id = auth.uid()
+  limit 1;
+$$;
+
+-- Helper: get current user's tenant IDs as an array (uuid[] required for = any())
+create or replace function jst_my_tenant_ids()
+returns uuid[] language sql security definer as $$
+  select array_agg(tenant_id) from jst_tenant_members where user_id = auth.uid();
+$$;
+
 create policy "admin_can_manage_members" on jst_tenant_members
   for all using (
-    exists (
-      select 1 from jst_tenant_members m
-      where m.tenant_id = jst_tenant_members.tenant_id
-        and m.user_id = auth.uid()
-        and m.role in ('owner', 'admin')
-    )
+    jst_my_role_in_tenant(tenant_id) in ('owner', 'admin')
   );
-
--- Helper function: get current user's tenant_ids
-create or replace function jst_my_tenant_ids()
-returns setof uuid language sql security definer as $$
-  select tenant_id from jst_tenant_members where user_id = auth.uid();
-$$;
 
 -- ─── 3. Tenant policies (APPEND-ONLY) ────────────────────────────────────────
 create table if not exists tenant_policies (
@@ -120,7 +123,7 @@ create policy "tenant_admins_read_consent" on consent_events
   );
 
 create policy "anyone_can_record_consent" on consent_events
-  for insert with check (true);
+  for insert with check (user_id is null or user_id = auth.uid());
 
 -- NO UPDATE or DELETE — consent evidence is immutable
 
@@ -152,8 +155,18 @@ alter table lp_pages enable row level security;
 create policy "public_read_published_lp" on lp_pages
   for select using (published = true);
 
-create policy "tenant_members_manage_lp" on lp_pages
-  for all using (tenant_id = any(jst_my_tenant_ids()));
+create policy "tenant_members_read_lp" on lp_pages
+  for select using (tenant_id = any(jst_my_tenant_ids()));
+
+create policy "tenant_editors_write_lp" on lp_pages
+  for all using (
+    tenant_id = any(jst_my_tenant_ids())
+    and jst_my_role_in_tenant(tenant_id) in ('owner', 'admin', 'editor')
+  )
+  with check (
+    tenant_id = any(jst_my_tenant_ids())
+    and jst_my_role_in_tenant(tenant_id) in ('owner', 'admin', 'editor')
+  );
 
 -- ─── 6. CRM leads table ──────────────────────────────────────────────────────
 create table if not exists jst_leads (
@@ -179,8 +192,18 @@ alter table jst_leads enable row level security;
 create policy "public_insert_lead" on jst_leads
   for insert with check (true);
 
-create policy "tenant_members_manage_leads" on jst_leads
-  for all using (tenant_id = any(jst_my_tenant_ids()));
+create policy "tenant_members_read_leads" on jst_leads
+  for select using (tenant_id = any(jst_my_tenant_ids()));
+
+create policy "tenant_editors_write_leads" on jst_leads
+  for all using (
+    tenant_id = any(jst_my_tenant_ids())
+    and jst_my_role_in_tenant(tenant_id) in ('owner', 'admin', 'editor')
+  )
+  with check (
+    tenant_id = any(jst_my_tenant_ids())
+    and jst_my_role_in_tenant(tenant_id) in ('owner', 'admin', 'editor')
+  );
 
 -- ─── 7. Indexes ──────────────────────────────────────────────────────────────
 create index if not exists idx_tenant_members_user     on jst_tenant_members(user_id);
