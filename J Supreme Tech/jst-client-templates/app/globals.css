@@ -1,0 +1,36 @@
+/* globals.css — JST Client Templates
+   Import the animation token system built in Programme B.
+   Add your design-token overrides below the import.
+*/
+
+@import "../shared/animations.css";
+
+/* ─── Design tokens (override per template) ──────────────────────────────── */
+:root {
+  --bg:          #ffffff;
+  --bg-surface:  #f8f8f8;
+  --bg-card:     #ffffff;
+  --text-primary:    #0a0a0a;
+  --text-secondary:  #444444;
+  --text-muted:      #888888;
+  --border:          #e5e5e5;
+  --accent:          #0a0a0a;
+  --radius:          0.5rem;
+  --radius-lg:       0.75rem;
+  --font-heading:    "Bebas Neue", sans-serif;
+  --font-body:       "Montserrat", sans-serif;
+}
+
+/* ─── Base resets ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+img, video { max-width: 100%; display: block; }
