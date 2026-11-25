@@ -1,102 +1,109 @@
-﻿/**
- * ContactForm — submits lead data to Supabase ct_leads table.
- * Sends slug as clientId for reliable lookup.
- */
 "use client";
+
 import { useState } from "react";
-import { Button } from "@shared/components/ui/Button";
-import type { ClientConfig } from "@shared/types/config";
+import { useReveal, useRevealChildren } from "../../lib/useReveal";
 
-interface Props { config: ClientConfig; slug: string; }
-interface FormState { name: string; phone: string; email: string; message: string; }
-interface Errors { name?: string; phone?: string; message?: string; }
-
-function validate(f: FormState): Errors {
-  const e: Errors = {};
-  if (!f.name.trim()) e.name = "Name is required";
-  if (!f.phone.trim()) e.phone = "Phone is required";
-  if (!f.message.trim()) e.message = "Message is required";
-  return e;
+interface Props {
+  heading?: string;
+  subline?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  onSubmit?: (data: ContactData) => Promise<void>;
 }
 
-export function ContactForm({ config, slug }: Props) {
-  const [form, setForm] = useState<FormState>({ name: "", phone: "", email: "", message: "" });
-  const [errors, setErrors] = useState<Errors>({});
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+export interface ContactData { name: string; email: string; phone: string; subject: string; message: string; }
 
-  const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((prev) => ({ ...prev, [k]: e.target.value }));
+export function ContactForm({ heading = "Get in Touch", subline, phone, email, address, onSubmit }: Props) {
+  const headingRef = useReveal<HTMLDivElement>({ threshold: 0.2 });
+  const fieldsRef  = useRevealChildren<HTMLDivElement>(".form-field", { threshold: 0.1 });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [form, setForm] = useState<ContactData>({ name: "", email: "", phone: "", subject: "", message: "" });
+
+  const set = (k: keyof ContactData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm(prev => ({ ...prev, [k]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const errs = validate(form);
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-    setErrors({});
     setStatus("loading");
-
-    try {
-      const res = await fetch("/api/submit-lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, clientId: slug }),
-      });
-      if (!res.ok) throw new Error("Server error");
-      setStatus("success");
-      setForm({ name: "", phone: "", email: "", message: "" });
-    } catch {
-      setStatus("error");
-    }
+    try { await onSubmit?.(form); setStatus("success"); }
+    catch { setStatus("error"); }
   };
 
-  const inputCls = "w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]";
-  const errCls = "mt-1 text-xs text-red-500";
-
-  if (status === "success") {
-    return (
-      <section id="contact" className="py-20 px-4 bg-[var(--bg-surface)] overflow-hidden" style={{ maxWidth: "100vw", boxSizing: "border-box" }}>
-        <div className="mx-auto max-w-xl text-center">
-          <p className="text-2xl font-bold text-[var(--text-primary)]">Message received!</p>
-          <p className="mt-2 text-sm text-[var(--text-secondary)]">
-            We will get back to you shortly. You can also reach us directly at{" "}
-            <a href={`tel:${config.contact.phone}`} className="text-[var(--accent)] font-semibold">{config.contact.phone}</a>.
-          </p>
-        </div>
-      </section>
-    );
-  }
+  const inputCls = "w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--bg)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] transition-colors";
+  const labelCls = "block text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)] mb-1";
 
   return (
-    <section id="contact" className="py-20 px-4 bg-[var(--bg-surface)] overflow-hidden" style={{ maxWidth: "100vw", boxSizing: "border-box" }}>
-      <div className="mx-auto max-w-xl">
-        <h2 className="mb-8 text-3xl font-bold text-[var(--text-primary)]">Get in Touch</h2>
-        <form onSubmit={handleSubmit} noValidate className="space-y-4">
-          <div>
-            <input type="text" placeholder="Your name *" value={form.name} onChange={set("name")} className={inputCls} />
-            {errors.name && <p className={errCls}>{errors.name}</p>}
-          </div>
-          <div>
-            <input type="tel" placeholder="Phone number *" value={form.phone} onChange={set("phone")} className={inputCls} />
-            {errors.phone && <p className={errCls}>{errors.phone}</p>}
-          </div>
-          <div>
-            <input type="email" placeholder="Email (optional)" value={form.email} onChange={set("email")} className={inputCls} />
-          </div>
-          <div>
-            <textarea placeholder="Message *" rows={4} value={form.message} onChange={set("message")} className={inputCls} />
-            {errors.message && <p className={errCls}>{errors.message}</p>}
-          </div>
-          <Button type="submit" variant="primary" size="lg" disabled={status === "loading"} className="w-full">
-            {status === "loading" ? "Sending..." : "Send Message"}
-          </Button>
-          {status === "error" && (
-            <p className="text-center text-sm text-red-500">Something went wrong. Please try again or call us directly.</p>
-          )}
-        </form>
-        <div className="mt-6 space-y-1 text-sm text-[var(--text-secondary)]">
-          {config.contact.address && <p>📍 {config.contact.address}</p>}
-          <p>📞 <a href={`tel:${config.contact.phone}`} className="text-[var(--accent)]">{config.contact.phone}</a></p>
-          {config.contact.email && <p>✉️ <a href={`mailto:${config.contact.email}`} className="text-[var(--accent)]">{config.contact.email}</a></p>}
+    <section id="contact" className="py-20 px-6 bg-[var(--bg)]">
+      <div className="mx-auto max-w-6xl grid gap-12 lg:grid-cols-2 items-start">
+
+        {/* Info panel */}
+        <div ref={headingRef} data-reveal className="animate-left">
+          <h2 className="text-3xl font-bold text-[var(--text-primary)]">{heading}</h2>
+          {subline && <p className="mt-3 text-sm text-[var(--text-muted)] leading-relaxed">{subline}</p>}
+
+          <dl className="mt-8 space-y-4">
+            {phone && (
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Phone</dt>
+                <dd><a href={`tel:${phone}`} className="text-sm text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors">{phone}</a></dd>
+              </div>
+            )}
+            {email && (
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Email</dt>
+                <dd><a href={`mailto:${email}`} className="text-sm text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors">{email}</a></dd>
+              </div>
+            )}
+            {address && (
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Address</dt>
+                <dd className="text-sm text-[var(--text-primary)] whitespace-pre-line">{address}</dd>
+              </div>
+            )}
+          </dl>
         </div>
+
+        {/* Form */}
+        {status === "success" ? (
+          <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--bg-card)] p-10 text-center">
+            <p className="text-xl font-bold text-[var(--text-primary)]">Message Sent</p>
+            <p className="mt-2 text-sm text-[var(--text-muted)]">We&apos;ll be in touch shortly.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div ref={fieldsRef} className="space-y-4">
+              <div data-reveal className="form-field animate-up" style={{ "--i": 0 } as React.CSSProperties}>
+                <label className={labelCls}>Name *</label>
+                <input required type="text" value={form.name} onChange={set("name")} className={inputCls} placeholder="Your name" />
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div data-reveal className="form-field animate-up" style={{ "--i": 1 } as React.CSSProperties}>
+                  <label className={labelCls}>Email *</label>
+                  <input required type="email" value={form.email} onChange={set("email")} className={inputCls} placeholder="you@example.com" />
+                </div>
+                <div data-reveal className="form-field animate-up" style={{ "--i": 2 } as React.CSSProperties}>
+                  <label className={labelCls}>Phone</label>
+                  <input type="tel" value={form.phone} onChange={set("phone")} className={inputCls} placeholder="+1 876 000 0000" />
+                </div>
+              </div>
+              <div data-reveal className="form-field animate-up" style={{ "--i": 3 } as React.CSSProperties}>
+                <label className={labelCls}>Subject</label>
+                <input type="text" value={form.subject} onChange={set("subject")} className={inputCls} placeholder="How can we help?" />
+              </div>
+              <div data-reveal className="form-field animate-up" style={{ "--i": 4 } as React.CSSProperties}>
+                <label className={labelCls}>Message *</label>
+                <textarea required rows={5} value={form.message} onChange={set("message")} className={inputCls} placeholder="Tell us more…" />
+              </div>
+              {status === "error" && <p className="text-xs text-red-500">Something went wrong. Please try again.</p>}
+              <div data-reveal className="form-field animate-up" style={{ "--i": 5 } as React.CSSProperties}>
+                <button type="submit" disabled={status === "loading"} className="w-full rounded-[var(--radius)] bg-[var(--accent)] py-3 text-sm font-bold uppercase tracking-widest text-white hover:opacity-90 transition-opacity disabled:opacity-60">
+                  {status === "loading" ? "Sending…" : "Send Message"}
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
       </div>
     </section>
   );
