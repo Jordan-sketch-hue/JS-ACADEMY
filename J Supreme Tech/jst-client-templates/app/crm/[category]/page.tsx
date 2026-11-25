@@ -27,23 +27,25 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }): Promise<Metadata> {
+  const { category } = await params;
   return {
     robots: { index: false, follow: false },
-    title: `${params.category} CRM | JST`,
+    title: `${category} CRM | JST`,
   };
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 interface Props {
-  params: { category: string };
-  searchParams?: { tab?: string };
+  params: Promise<{ category: string }>;
+  searchParams?: Promise<{ tab?: string }>;
 }
 
-export default function CRMCategoryPage({ params, searchParams }: Props) {
-  const slug = params.category as CategorySlug;
+export default async function CRMCategoryPage({ params, searchParams }: Props) {
+  const { category } = await params;
+  const slug = category as CategorySlug;
 
   // 404 for unknown slugs
   let config;
@@ -53,7 +55,8 @@ export default function CRMCategoryPage({ params, searchParams }: Props) {
     notFound();
   }
 
-  const initialTab = searchParams?.tab ?? config.crmTabs[0];
+  const resolvedSearch = searchParams ? await searchParams : undefined;
+  const initialTab = resolvedSearch?.tab ?? config.crmTabs[0];
 
   return (
     <CRMShell
